@@ -42,6 +42,7 @@
 
 ## 관련 링크
 
-- [아이디어]()
-- [프로토타입]()
-- [그라운드 룰]()
+- [백로그](https://docs.google.com/spreadsheets/d/11td2bnmG7gzeYL5YFO96Hj5Sy3nQfgub6IWgPe18LpA/edit#gid=2081874115)
+- [프로토타입](https://www.figma.com/file/f1V4JJinMyF0ZPv5Krqa39/Untitled?node-id=0%3A1)
+- [화이트보드](https://www.figma.com/file/vAAmBNwDsIiC9YzSEiSxCv/Untitled?node-id=0%3A1)
+- [그라운드 룰](https://github.com/boostcampwm-2021/android01-calandar/wiki/Team-Rule)
