@@ -25,12 +25,11 @@
 
 |K003|K005|K033|K056|
 |:--:|:--:|:--:|:--:|
-🎸[김민석](https://github.com/PsPLoG)<br>(ISFP)|:fire:[김성환](https://github.com/shshksh)<br>(ISTJ)|🥑[심은석](https://github.com/simeunseok)<br>(ESTJ)|[🥕차지원](https://github.com/Cha-Ji)<br>(ENTJ)
+🎸[김민석](https://github.com/PsPLoG)<br>(ISFP)|:fire:[김성환](https://github.com/shshksh)<br>(ISTJ)|🥑[심은석](https://poised-party-c87.notion.site/53ecb5bfb44d48b0aba237b0ce3ae4a6)<br>(ESTJ)|[🥕차지원](https://github.com/Cha-Ji)<br>(ENTJ)
 
 
 ## 시연
 (대충 개쩌는 캘린더 보여주는 영상) :+1: 
-ㄷㄷ
 
 ## 사용 가이드
 (코드 위주의 기능 커스터마이징 방법)
