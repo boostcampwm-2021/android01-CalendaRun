@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "969552868617",
+    "project_id": "calendarun-496ef",
+    "storage_bucket": "calendarun-496ef.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:969552868617:android:0883d9aebfe785bf894fd8",
+        "android_client_info": {
+          "package_name": "com.drunkenboys.calendarun"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "969552868617-bd4bpbtqahmisq5e5jnpsgnrvpanuh4b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD9eXO5MQd50gOqu93bTdzPJAPThlP5nyk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "969552868617-bd4bpbtqahmisq5e5jnpsgnrvpanuh4b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
