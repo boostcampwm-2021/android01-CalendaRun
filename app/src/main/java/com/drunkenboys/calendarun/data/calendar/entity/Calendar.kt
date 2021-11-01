@@ -1,4 +1,4 @@
-package com.drunkenboys.calendarun.data.local.calendar.entity
+package com.drunkenboys.calendarun.data.calendar.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
