@@ -16,4 +16,5 @@ interface CalendarDao {
 
     @Query("SELECT * FROM `calendar` WHERE id == :id")
     suspend fun fetchCalendar(id: Int): Calendar
+    
 }
