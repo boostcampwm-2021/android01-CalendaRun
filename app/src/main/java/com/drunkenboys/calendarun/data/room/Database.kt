@@ -2,6 +2,7 @@ package com.drunkenboys.calendarun.data.room
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.drunkenboys.calendarun.data.calendar.entity.Calendar
 import com.drunkenboys.calendarun.data.calendar.local.CalendarDao
 import com.drunkenboys.calendarun.data.checkpoint.entity.CheckPoint
@@ -10,6 +11,7 @@ import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import com.drunkenboys.calendarun.data.schedule.local.ScheduleDao
 
 @Database(entities = [Calendar::class, CheckPoint::class, Schedule::class], version = 1)
+@TypeConverters(Converters::class)
 abstract class Database : RoomDatabase() {
 
     abstract fun calendarDao(): CalendarDao
