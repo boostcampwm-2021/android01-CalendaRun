@@ -12,9 +12,9 @@ interface ScheduleDao {
     suspend fun insertSchedule(schedule: Schedule)
 
     @Query("SELECT * FROM `schedule`")
-    suspend fun fetchAllSchedule()
+    suspend fun fetchAllSchedule(): List<Schedule>
 
     @Query("SELECT * FROM `schedule` WHERE id == :id")
-    suspend fun fetchSchedule(id: Int)
+    suspend fun fetchSchedule(id: Int): Schedule
 
 }

@@ -12,9 +12,9 @@ interface CheckPointDao {
     suspend fun insertCheckPoint(checkPoint: CheckPoint)
 
     @Query("SELECT * FROM `checkpoint`")
-    suspend fun fetchAllCheckPoint()
+    suspend fun fetchAllCheckPoint(): List<CheckPoint>
 
     @Query("SELECT * FROM `checkpoint` WHERE id == :id")
-    suspend fun fetchCheckPoint(id: Int)
+    suspend fun fetchCheckPoint(id: Int): CheckPoint
 
 }
