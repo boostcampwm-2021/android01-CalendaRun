@@ -116,6 +116,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginTop="16dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toTopOf="@+id/btn_addCalendar_saveCalendar"
             app:layout_constraintEnd_toEndOf="@id/tv_addCalendar_calendarName"
             app:layout_constraintStart_toStartOf="@id/tv_addCalendar_calendarName"
