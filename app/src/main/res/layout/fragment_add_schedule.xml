@@ -5,6 +5,9 @@
 
     <data>
 
+        <variable
+            name="viewModel"
+            type="com.drunkenboys.calendarun.ui.addschedule.AddScheduleViewModel" />
     </data>
 
     <LinearLayout
@@ -44,6 +47,7 @@
                     android:importantForAutofill="no"
                     android:inputType="text"
                     android:paddingVertical="16dp"
+                    android:text="@={viewModel.title}"
                     android:textColor="@color/black"
                     android:textSize="24sp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -86,6 +90,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="end"
                     android:paddingVertical="8dp"
+                    android:text="@{viewModel.startDate.toString()}"
                     android:textColor="@color/black"
                     android:textSize="16sp"
                     app:layout_constraintBottom_toTopOf="@id/tv_addSchedule_scheduleEndInput"
@@ -100,6 +105,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="end"
                     android:paddingVertical="8dp"
+                    android:text="@{viewModel.endDate.toString()}"
                     android:textColor="@color/black"
                     android:textSize="16sp"
                     app:layout_constraintBottom_toTopOf="@id/divider_addSchedule_timeBottom"
@@ -129,6 +135,7 @@
                     android:importantForAutofill="no"
                     android:inputType="text"
                     android:paddingVertical="16dp"
+                    android:text="@={viewModel.memo}"
                     android:textColor="@color/black"
                     android:textSize="14sp"
                     app:drawableStartCompat="@drawable/ic_assignment"
@@ -153,6 +160,7 @@
                     android:drawablePadding="8dp"
                     android:gravity="center_vertical"
                     android:paddingVertical="16dp"
+                    android:text="@{viewModel.calendarName}"
                     android:textColor="@color/black"
                     app:drawableStartCompat="@drawable/ic_calendar_today"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -176,12 +184,13 @@
                     android:drawablePadding="8dp"
                     android:gravity="center_vertical"
                     android:paddingVertical="16dp"
-                    android:text="@string/notification_before_10_minute"
+                    android:text="@{viewModel.notification.message}"
                     android:textColor="@color/black"
                     app:drawableStartCompat="@drawable/ic_notifications"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/divider_addSchedule_calendarNameBottom" />
+                    app:layout_constraintTop_toBottomOf="@id/divider_addSchedule_calendarNameBottom"
+                    tools:text="@string/notification_before_10_minute" />
 
                 <View
                     android:id="@+id/divider_addSchedule_notificationBottom"
@@ -206,6 +215,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/divider_addSchedule_notificationBottom" />
 
+                <!--android:backgroundTint="@{viewModel.tagColor}" Int 컬러 값 변환 로직이 필요함-->
                 <View
                     android:layout_width="16dp"
                     android:layout_height="16dp"
