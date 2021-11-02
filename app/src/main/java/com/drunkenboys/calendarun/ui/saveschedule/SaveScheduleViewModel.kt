@@ -39,7 +39,8 @@ class SaveScheduleViewModel @Inject constructor(private val scheduleDataSource: 
     private val _notification = MutableLiveData(ScheduleNotificationType.TEN_MINUTES_AGO)
     val notification: MutableLiveData<ScheduleNotificationType> = _notification
 
-    private val _tagColor = MutableLiveData<Int>()
+    // TODO: 2021-11-03 컬러 리소스를 뭐로 표현할 지 정해야 함.
+    private val _tagColor = MutableLiveData(0)
     val tagColor: LiveData<Int> = _tagColor
 
     private val _saveScheduleEvent = MutableLiveData<Unit>()
@@ -73,7 +74,6 @@ class SaveScheduleViewModel @Inject constructor(private val scheduleDataSource: 
         if (title.value.isNullOrEmpty()) return true
         startDate.value ?: return true
         endDate.value ?: return true
-        if (memo.value.isNullOrEmpty()) return true
         if (calendarName.value.isNullOrEmpty()) return true
 
         return false
