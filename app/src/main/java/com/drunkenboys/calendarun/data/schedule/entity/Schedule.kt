@@ -23,7 +23,7 @@ data class Schedule(
     val name: String,
     val startDate: Date,
     val endDate: Date,
-    val notification: Date,
+    val notification: Date?,
     val memo: String,
     // TODO <Library>.ScheduleColorType
     val color: Int
