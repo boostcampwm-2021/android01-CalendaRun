@@ -10,16 +10,12 @@ import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 
 // for view binding
-open class BaseViewFragment<T : ViewBinding>(
-    private val inflate: ((LayoutInflater, ViewGroup?, Boolean) -> T)? = null
-) : Fragment() {
+open class BaseViewFragment<T : ViewBinding>(private val inflate: ((LayoutInflater, ViewGroup?, Boolean) -> T)? = null) : Fragment() {
 
     var _binding: T? = null
     val binding get() = _binding ?: throw IllegalStateException(ERROR_BINDING_INITIALIZE)
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflate?.let {
             _binding = it.invoke(inflater, container, false)
             binding.root
@@ -40,9 +36,7 @@ open class BaseViewFragment<T : ViewBinding>(
 // for data binding
 open class BaseFragment<T : ViewDataBinding>(private val layoutId: Int) : BaseViewFragment<T>() {
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = DataBindingUtil.inflate(inflater, layoutId, container, false)
         return binding.root
     }

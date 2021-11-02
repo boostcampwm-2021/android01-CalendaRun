@@ -8,9 +8,7 @@ import androidx.databinding.ViewDataBinding
 import androidx.viewbinding.ViewBinding
 
 // for view binding
-open class BaseViewActivity<T : ViewBinding>(
-    private val inflate: ((LayoutInflater) -> T)? = null
-) : AppCompatActivity() {
+open class BaseViewActivity<T : ViewBinding>(private val inflate: ((LayoutInflater) -> T)? = null) : AppCompatActivity() {
 
     lateinit var binding: T
 
