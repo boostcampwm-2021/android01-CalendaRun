@@ -1,4 +1,4 @@
-package com.drunkenboys.calendarun.ui.addschedule
+package com.drunkenboys.calendarun.ui.saveschedule
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -6,8 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import com.drunkenboys.calendarun.data.schedule.local.ScheduleLocalDataSource
-import com.drunkenboys.calendarun.ui.addschedule.model.BehaviorType
-import com.drunkenboys.calendarun.ui.addschedule.model.ScheduleNotificationType
+import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
+import com.drunkenboys.calendarun.ui.saveschedule.model.ScheduleNotificationType
 import com.drunkenboys.calendarun.util.getOrThrow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -15,7 +15,7 @@ import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
-class AddScheduleViewModel @Inject constructor(private val scheduleDataSource: ScheduleLocalDataSource) : ViewModel() {
+class SaveScheduleViewModel @Inject constructor(private val scheduleDataSource: ScheduleLocalDataSource) : ViewModel() {
 
     private var scheduleId: Int? = null
 
@@ -52,7 +52,7 @@ class AddScheduleViewModel @Inject constructor(private val scheduleDataSource: S
         this.behaviorType = behaviorType
     }
 
-    fun addSchedule() {
+    fun saveSchedule() {
         if (isInvalidInput()) return
 
         viewModelScope.launch {

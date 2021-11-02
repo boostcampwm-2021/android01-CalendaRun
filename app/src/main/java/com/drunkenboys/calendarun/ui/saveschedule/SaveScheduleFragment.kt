@@ -1,17 +1,17 @@
-package com.drunkenboys.calendarun.ui.addschedule
+package com.drunkenboys.calendarun.ui.saveschedule
 
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
 import com.drunkenboys.calendarun.R
-import com.drunkenboys.calendarun.databinding.FragmentAddScheduleBinding
+import com.drunkenboys.calendarun.databinding.FragmentSaveScheduleBinding
 import com.drunkenboys.calendarun.ui.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class AddScheduleFragment : BaseFragment<FragmentAddScheduleBinding>(R.layout.fragment_add_schedule) {
+class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.fragment_save_schedule) {
 
-    private val viewModel: AddScheduleViewModel by viewModels()
+    private val viewModel: SaveScheduleViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

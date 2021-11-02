@@ -1,4 +1,4 @@
-package com.drunkenboys.calendarun.ui.addschedule.model
+package com.drunkenboys.calendarun.ui.saveschedule.model
 
 enum class ScheduleNotificationType(val message: String) {
     NONE("없음"),
