@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import com.drunkenboys.calendarun.data.schedule.local.ScheduleLocalDataSource
+import com.drunkenboys.calendarun.ui.addschedule.model.BehaviorType
 import com.drunkenboys.calendarun.ui.addschedule.model.ScheduleNotificationType
 import com.drunkenboys.calendarun.util.getOrThrow
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,7 +17,11 @@ import javax.inject.Inject
 @HiltViewModel
 class AddScheduleViewModel @Inject constructor(private val scheduleDataSource: ScheduleLocalDataSource) : ViewModel() {
 
-    private var calendarId: Int = -1
+    private var scheduleId: Int? = null
+
+    private var calendarId: Int? = null
+
+    private lateinit var behaviorType: BehaviorType
 
     val title = MutableLiveData("")
 
@@ -37,6 +42,13 @@ class AddScheduleViewModel @Inject constructor(private val scheduleDataSource: S
     private val _tagColor = MutableLiveData<Int>()
     val tagColor: LiveData<Int> = _tagColor
 
+    fun init(scheduleId: Int = 0, calendarId: Int, calendarName: String, behaviorType: BehaviorType) {
+        this.scheduleId = scheduleId
+        this.calendarId = calendarId
+        _calendarName.value = calendarName
+        this.behaviorType = behaviorType
+    }
+
     fun addSchedule() {
         if (!validateInput()) return
 
@@ -48,7 +60,9 @@ class AddScheduleViewModel @Inject constructor(private val scheduleDataSource: S
     }
 
     private fun validateInput(): Boolean {
-        if (calendarId < 0) return false
+        scheduleId ?: return false
+        calendarId ?: return false
+        if (!this::behaviorType.isInitialized) return false
         if (title.value.isNullOrEmpty()) return false
         startDate.value ?: return false
         endDate.value ?: return false
@@ -59,8 +73,8 @@ class AddScheduleViewModel @Inject constructor(private val scheduleDataSource: S
     }
 
     private fun createScheduleInstance() = Schedule(
-        id = 0,
-        calendarId = calendarId,
+        id = scheduleId ?: throw IllegalArgumentException(),
+        calendarId = calendarId ?: throw IllegalArgumentException(),
         name = title.getOrThrow(),
         startDate = startDate.getOrThrow(),
         endDate = endDate.getOrThrow(),
