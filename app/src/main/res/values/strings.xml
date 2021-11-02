@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">달려달력</string>
+
+    <string name="schedule_title">제목</string>
+    <string name="start">시작</string>
+    <string name="end">종료</string>
+    <string name="memo">메모</string>
+    <string name="calendar_name">캘린더 명</string>
+    <string name="notification_before_10_minute">10분 전 알림</string>
+    <string name="tag_color">태그 색상</string>
+    <string name="save">저장</string>
 </resources>
