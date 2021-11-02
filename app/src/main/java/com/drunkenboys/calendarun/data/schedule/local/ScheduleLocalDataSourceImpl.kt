@@ -4,8 +4,9 @@ import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class ScheduleLocalDataSourceImpl(
+class ScheduleLocalDataSourceImpl @Inject constructor(
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
     private val scheduleDao: ScheduleDao
 ) : ScheduleLocalDataSource {
