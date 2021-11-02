@@ -53,7 +53,7 @@ class AddScheduleViewModel @Inject constructor(private val scheduleDataSource: S
     }
 
     fun addSchedule() {
-        if (!validateInput()) return
+        if (isInvalidInput()) return
 
         viewModelScope.launch {
             val schedule = createScheduleInstance()
@@ -66,17 +66,17 @@ class AddScheduleViewModel @Inject constructor(private val scheduleDataSource: S
         }
     }
 
-    private fun validateInput(): Boolean {
-        scheduleId ?: return false
-        calendarId ?: return false
-        if (!this::behaviorType.isInitialized) return false
-        if (title.value.isNullOrEmpty()) return false
-        startDate.value ?: return false
-        endDate.value ?: return false
-        if (memo.value.isNullOrEmpty()) return false
-        if (calendarName.value.isNullOrEmpty()) return false
+    private fun isInvalidInput(): Boolean {
+        scheduleId ?: return true
+        calendarId ?: return true
+        if (!this::behaviorType.isInitialized) return true
+        if (title.value.isNullOrEmpty()) return true
+        startDate.value ?: return true
+        endDate.value ?: return true
+        if (memo.value.isNullOrEmpty()) return true
+        if (calendarName.value.isNullOrEmpty()) return true
 
-        return true
+        return false
     }
 
     private fun createScheduleInstance() = Schedule(
