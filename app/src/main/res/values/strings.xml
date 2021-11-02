@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">달려달력</string>
+
+    <!-- AddCalendarFragment -->
+    <string name="ui_date_format">%d.%d.%d</string>
+    <string name="calendar_title">달력 이름</string>
+    <string name="calendar_start_date">시작일</string>
+    <string name="calendar_end_date">종료일</string>
+    <string name="calendar_save">저장</string>
+
+    <!-- view_check_point -->
+    <string name="check_point_name">이름</string>
+    <string name="check_point_date">날짜</string>
+
 </resources>
