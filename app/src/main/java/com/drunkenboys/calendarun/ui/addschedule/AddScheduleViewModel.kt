@@ -42,6 +42,9 @@ class AddScheduleViewModel @Inject constructor(private val scheduleDataSource: S
     private val _tagColor = MutableLiveData<Int>()
     val tagColor: LiveData<Int> = _tagColor
 
+    private val _saveScheduleEvent = MutableLiveData<Unit>()
+    val saveScheduleEvent: LiveData<Unit> = _saveScheduleEvent
+
     fun init(scheduleId: Int = 0, calendarId: Int, calendarName: String, behaviorType: BehaviorType) {
         this.scheduleId = scheduleId
         this.calendarId = calendarId
@@ -55,7 +58,11 @@ class AddScheduleViewModel @Inject constructor(private val scheduleDataSource: S
         viewModelScope.launch {
             val schedule = createScheduleInstance()
 
-            scheduleDataSource.insertSchedule(schedule)
+            when (behaviorType) {
+                BehaviorType.INSERT -> scheduleDataSource.insertSchedule(schedule)
+                BehaviorType.UPDATE -> scheduleDataSource.updateSchedule(schedule)
+            }
+            _saveScheduleEvent.value = Unit
         }
     }
 
