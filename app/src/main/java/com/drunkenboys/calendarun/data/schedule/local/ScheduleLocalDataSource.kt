@@ -10,4 +10,6 @@ interface ScheduleLocalDataSource {
 
     suspend fun fetchSchedule(id: Int): Schedule
 
+    suspend fun updateSchedule(schedule: Schedule)
+
 }
