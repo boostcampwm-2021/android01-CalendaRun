@@ -4,8 +4,9 @@ import com.drunkenboys.calendarun.data.checkpoint.entity.CheckPoint
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class CheckPointLocalDataSourceImpl(
+class CheckPointLocalDataSourceImpl @Inject constructor(
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
     private val checkPointDao: CheckPointDao
 ) : CheckPointLocalDataSource {

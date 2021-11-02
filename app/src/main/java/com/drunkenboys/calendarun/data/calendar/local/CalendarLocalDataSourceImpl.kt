@@ -4,8 +4,9 @@ import com.drunkenboys.calendarun.data.calendar.entity.Calendar
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class CalendarLocalDataSourceImpl(
+class CalendarLocalDataSourceImpl @Inject constructor(
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
     private val calendarDao: CalendarDao
 ) : CalendarLocalDataSource {
