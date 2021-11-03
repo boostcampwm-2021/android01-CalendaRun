@@ -6,8 +6,8 @@
     <data>
 
         <variable
-            name="CheckPoint"
-            type="com.drunkenboys.calendarun.data.checkpoint.entity.CheckPoint" />
+            name="CheckPointModel"
+            type="com.drunkenboys.calendarun.ui.addcalendar.CheckPointModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -39,7 +39,6 @@
             android:id="@+id/et_checkPoint_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@{CheckPoint.name}"
             app:layout_constraintEnd_toEndOf="@id/tv_checkPoint_name"
             app:layout_constraintStart_toStartOf="@id/tv_checkPoint_name"
             app:layout_constraintTop_toBottomOf="@id/tv_checkPoint_name"
