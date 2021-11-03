@@ -2,6 +2,7 @@ package com.drunkenboys.calendarun.ui.saveschedule
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.databinding.FragmentSaveScheduleBinding
@@ -16,5 +17,13 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.viewModel = viewModel
+
+        observeTagColor()
+    }
+
+    private fun observeTagColor() {
+        viewModel.tagColor.observe(viewLifecycleOwner) {
+            binding.viewSaveScheduleTagColor.backgroundTintList = ContextCompat.getColorStateList(requireContext(), it)
+        }
     }
 }

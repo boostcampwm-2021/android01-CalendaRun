@@ -217,6 +217,7 @@
 
                 <!--android:backgroundTint="@{viewModel.tagColor}" Int 컬러 값 변환 로직이 필요함-->
                 <View
+                    android:id="@+id/view_saveSchedule_tagColor"
                     android:layout_width="16dp"
                     android:layout_height="16dp"
                     android:background="@drawable/bg_save_schedule_tag_color"

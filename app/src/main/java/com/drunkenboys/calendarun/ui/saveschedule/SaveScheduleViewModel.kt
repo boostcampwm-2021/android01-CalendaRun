@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import com.drunkenboys.calendarun.data.schedule.local.ScheduleLocalDataSource
 import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
@@ -39,8 +40,7 @@ class SaveScheduleViewModel @Inject constructor(private val scheduleDataSource: 
     private val _notification = MutableLiveData(ScheduleNotificationType.TEN_MINUTES_AGO)
     val notification: MutableLiveData<ScheduleNotificationType> = _notification
 
-    // TODO: 2021-11-03 컬러 리소스를 뭐로 표현할 지 정해야 함.
-    private val _tagColor = MutableLiveData(0)
+    private val _tagColor = MutableLiveData(R.color.black)
     val tagColor: LiveData<Int> = _tagColor
 
     private val _saveScheduleEvent = MutableLiveData<Unit>()
