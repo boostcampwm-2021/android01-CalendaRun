@@ -16,7 +16,7 @@ class DeleteScheduleDialog : DialogFragment() {
         .setTitle(R.string.delete_schedule_dialog_title)
         .setMessage(R.string.delete_schedule_dialog_message)
         .setPositiveButton(R.string.delete) { _, _ ->
-            viewModel
+            // TODO: 2021-11-04 일정 삭제 요청
         }
         .create()
 }
