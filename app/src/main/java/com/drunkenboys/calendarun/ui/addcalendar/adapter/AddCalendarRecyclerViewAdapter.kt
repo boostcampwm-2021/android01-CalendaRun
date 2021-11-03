@@ -1,52 +1,39 @@
 package com.drunkenboys.calendarun.ui.addcalendar.adapter
 
-import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import com.drunkenboys.calendarun.R
+import com.drunkenboys.calendarun.databinding.ViewCheckPointBinding
 import com.drunkenboys.calendarun.ui.addcalendar.CheckPointModel
 import com.drunkenboys.calendarun.ui.base.BaseViewHolder
 
 class AddCalendarRecyclerViewAdapter :
-    ListAdapter<CheckPointModel, BaseViewHolder<ViewDataBinding>>(addCalenderRecyclerViewDiffUtil) {
+    ListAdapter<CheckPointModel, BaseViewHolder<ViewDataBinding>>(diffUtil) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<ViewDataBinding> {
-        val layoutRes = when (viewType) {
-            TYPE_FOOTER -> R.layout.view_check_point_footer
-            else -> R.layout.view_check_point
-        }
+    override fun getItemCount() = super.getItemCount() + 1
 
-        return BaseViewHolder(
-            DataBindingUtil.inflate(
-                LayoutInflater.from(parent.context),
-                layoutRes,
-                parent,
-                false
-            )
-        )
-    }
-
-    override fun onBindViewHolder(holder: BaseViewHolder<ViewDataBinding>, position: Int) {
-        // TODO bind 코드 짜기
-    }
-
-    override fun getItemViewType(position: Int): Int = when (position) {
+    override fun getItemViewType(position: Int) = when (position) {
         itemCount + 1 -> TYPE_FOOTER
         else -> TYPE_ITEM
     }
 
-    companion object {
-        private val addCalenderRecyclerViewDiffUtil = object : DiffUtil.ItemCallback<CheckPointModel>() {
-            override fun areItemsTheSame(oldItem: CheckPointModel, newItem: CheckPointModel): Boolean {
-                TODO("Not yet implemented")
-            }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<ViewDataBinding> = BaseViewHolder(parent, viewType)
 
-            override fun areContentsTheSame(oldItem: CheckPointModel, newItem: CheckPointModel): Boolean {
-                TODO("Not yet implemented")
-            }
+    override fun onBindViewHolder(holder: BaseViewHolder<ViewDataBinding>, position: Int) {
+        if (getItemViewType(position) == TYPE_ITEM) {
+            val item = getItem(position)
+            (holder.binding as ViewCheckPointBinding).checkPointModel = item
+        }
+    }
+
+    companion object {
+        private val diffUtil = object : DiffUtil.ItemCallback<CheckPointModel>() {
+            override fun areItemsTheSame(oldItem: CheckPointModel, newItem: CheckPointModel) =
+                oldItem.name == newItem.name
+
+            override fun areContentsTheSame(oldItem: CheckPointModel, newItem: CheckPointModel) =
+                oldItem == newItem
         }
 
         private const val TYPE_ITEM = 1
