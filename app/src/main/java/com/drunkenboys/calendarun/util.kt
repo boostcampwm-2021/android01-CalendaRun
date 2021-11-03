@@ -1,4 +1,4 @@
-package com.drunkenboys.calendarun.data.calendar
+package com.drunkenboys.calendarun
 
 import android.annotation.SuppressLint
 import java.text.SimpleDateFormat

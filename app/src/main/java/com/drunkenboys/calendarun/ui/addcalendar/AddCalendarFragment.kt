@@ -6,8 +6,8 @@ import android.view.View
 import android.widget.TextView
 import androidx.fragment.app.viewModels
 import com.drunkenboys.calendarun.R
-import com.drunkenboys.calendarun.data.calendar.toStringDateFormat
 import com.drunkenboys.calendarun.databinding.FragmentAddCalendarBinding
+import com.drunkenboys.calendarun.toStringDateFormat
 import com.drunkenboys.calendarun.ui.addcalendar.adapter.AddCalendarRecyclerViewAdapter
 import com.drunkenboys.calendarun.ui.base.BaseFragment
 import java.util.*
