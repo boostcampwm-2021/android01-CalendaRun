@@ -1,12 +1,13 @@
 package com.drunkenboys.calendarun.ui.addcalendar
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import androidx.fragment.app.viewModels
 import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.databinding.FragmentAddCalendarBinding
 import com.drunkenboys.calendarun.showDatePickerDialog
-import com.drunkenboys.calendarun.toStringDateFormat
 import com.drunkenboys.calendarun.ui.addcalendar.adapter.AddCalendarRecyclerViewAdapter
 import com.drunkenboys.calendarun.ui.base.BaseFragment
 
@@ -21,12 +22,25 @@ class AddCalendarFragment : BaseFragment<FragmentAddCalendarBinding>(R.layout.fr
 
         setRecyclerViewAdapter()
         setTextDatePickerClickListener()
-        setCalendarObserver()
         setCheckPointListObserver()
+        setCalendarNameChangeListener()
+        setCalendarDateObserver()
     }
 
     private fun setRecyclerViewAdapter() {
         binding.rAddCalendarCheckPointList.adapter = recyclerViewAdapter
+    }
+
+    private fun setCalendarNameChangeListener() {
+        binding.etAddCalendarCalendarName.addTextChangedListener(object : TextWatcher {
+            override fun onTextChanged(name: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                addCalendarViewModel.setCalendarName(name.toString())
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun afterTextChanged(p0: Editable?) {}
+        })
     }
 
     private fun setTextDatePickerClickListener() {
@@ -42,13 +56,12 @@ class AddCalendarFragment : BaseFragment<FragmentAddCalendarBinding>(R.layout.fr
         }
     }
 
-    private fun setCalendarObserver() {
-        addCalendarViewModel.calendar.observe(viewLifecycleOwner, { calendar ->
-            with(binding) {
-                tvAddCalendarCalendarName.text = calendar.name
-                tvAddCalendarStartDatePicker.text = toStringDateFormat(calendar.startDate)
-                tvAddCalendarEndDatePicker.text = toStringDateFormat(calendar.endDate)
-            }
+    private fun setCalendarDateObserver() {
+        addCalendarViewModel.calendarStartDate.observe(viewLifecycleOwner, { date ->
+            binding.tvAddCalendarStartDatePicker.text = date
+        })
+        addCalendarViewModel.calendarEndDate.observe(viewLifecycleOwner, { date ->
+            binding.tvAddCalendarEndDatePicker.text = date
         })
     }
 
