@@ -26,11 +26,9 @@ class SaveScheduleViewModel @Inject constructor(private val scheduleDataSource: 
 
     val title = MutableLiveData("")
 
-    private val _startDate = MutableLiveData(Date())
-    val startDate: LiveData<Date> = _startDate
+    val startDate = MutableLiveData(Date())
 
-    private val _endDate = MutableLiveData(Date())
-    val endDate: LiveData<Date> = _endDate
+    val endDate = MutableLiveData(Date())
 
     val memo = MutableLiveData("")
 
