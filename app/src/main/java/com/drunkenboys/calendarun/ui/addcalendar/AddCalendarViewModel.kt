@@ -19,9 +19,6 @@ class AddCalendarViewModel @Inject constructor(
     private val checkPointLocalDataSource: CheckPointLocalDataSource
 ) : ViewModel() {
 
-    // TODO 캘린더를 추가하는 로직
-    // TODO 체크포인트를 추가하는 로직
-
     private val _calendar = MutableLiveData<Calendar>()
     val calendar: LiveData<Calendar> = _calendar
 
@@ -37,20 +34,6 @@ class AddCalendarViewModel @Inject constructor(
     private val _calendarEndDate = MutableLiveData<String>()
     val calendarEndDate: LiveData<String> = _calendarEndDate
 
-    fun fetchCalendar(id: Int) {
-        viewModelScope.launch {
-            val selectedCalendar = calendarLocalDataSource.fetchCalendar(id)
-            val selectedCheckPointList = checkPointLocalDataSource.fetchCalendarCheckPoints(id)
-
-            _calendar.postValue(selectedCalendar)
-            _calendarName.postValue(selectedCalendar.name)
-            _calendarStartDate.postValue(toStringDateFormat(selectedCalendar.startDate))
-            _calendarEndDate.postValue(toStringDateFormat(selectedCalendar.endDate))
-
-            _checkPointList.postValue(selectedCheckPointList)
-        }
-    }
-
     fun setCalendarName(name: String) {
         viewModelScope.launch {
             _calendarName.postValue(name)
@@ -63,9 +46,24 @@ class AddCalendarViewModel @Inject constructor(
         }
     }
 
+
     fun setCalendarEndDate(date: String) {
         viewModelScope.launch {
             _calendarEndDate.postValue(date)
+        }
+    }
+
+    fun fetchCalendar(id: Int) {
+        viewModelScope.launch {
+            val selectedCalendar = calendarLocalDataSource.fetchCalendar(id)
+            val selectedCheckPointList = checkPointLocalDataSource.fetchCalendarCheckPoints(id)
+
+            _calendar.postValue(selectedCalendar)
+            _calendarName.postValue(selectedCalendar.name)
+            _calendarStartDate.postValue(toStringDateFormat(selectedCalendar.startDate))
+            _calendarEndDate.postValue(toStringDateFormat(selectedCalendar.endDate))
+
+            _checkPointList.postValue(selectedCheckPointList)
         }
     }
 
