@@ -13,4 +13,7 @@
     <string name="notification_ten_minutes_ago">10분 전 알림</string>
     <string name="notification_a_hour_ago">한 시간 전 알림</string>
     <string name="notification_a_day_ago">하루 전 알림</string>
+
+    <string name="pick_date">요일 선택</string>
+    <string name="pick_time">시간 선택</string>
 </resources>

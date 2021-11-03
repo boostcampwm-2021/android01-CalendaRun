@@ -60,7 +60,7 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
 
     private suspend fun pickDateInMillis() = suspendCancellableCoroutine<Long?> { cont ->
         val datePicker = MaterialDatePicker.Builder.datePicker()
-            .setTitleText("요일 선택")
+            .setTitleText(getString(R.string.pick_date))
             .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
             .build()
         datePicker.apply {
@@ -78,7 +78,7 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
             .setTimeFormat(TimeFormat.CLOCK_12H)
             .setHour(12)
             .setMinute(0)
-            .setTitleText("시간 선택")
+            .setTitleText(R.string.pick_time)
             .build()
         timePicker.apply {
             addOnPositiveButtonClickListener { cont.resume(timePicker.hour to timePicker.minute) }
