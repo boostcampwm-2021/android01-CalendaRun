@@ -1,6 +1,7 @@
 package com.drunkenboys.calendarun.ui.saveschedule
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import com.drunkenboys.calendarun.data.schedule.local.FakeScheduleLocalDataSource
 import com.drunkenboys.calendarun.data.schedule.local.ScheduleLocalDataSource
 import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
@@ -8,7 +9,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.test.*
-import org.junit.*
+import org.junit.After
+import org.junit.Assert.assertEquals
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
+import java.util.*
 
 @ObsoleteCoroutinesApi
 @ExperimentalCoroutinesApi
@@ -43,7 +49,24 @@ class SaveScheduleViewModelTest {
 
         viewModel.init(1, 2, calendarName, BehaviorType.INSERT)
 
-        Assert.assertEquals(calendarName, viewModel.calendarName.value)
+        assertEquals(calendarName, viewModel.calendarName.value)
+    }
+
+    @Test
+    fun `일정_수정_시_뷰모델_초기화_테스트`() = testScope.runBlockingTest {
+        val calendarName = "내 캘린더"
+        val startDate = Date()
+        val endDate = Date()
+        dataSource.insertSchedule(Schedule(0, 0, "test", startDate, endDate, Schedule.NotificationType.A_HOUR_AGO, "memo", 0))
+
+        viewModel.init(0, 0, calendarName, BehaviorType.UPDATE)
+
+        assertEquals("test", viewModel.title.value)
+        assertEquals(startDate, viewModel.startDate.value)
+        assertEquals(endDate, viewModel.endDate.value)
+        assertEquals(Schedule.NotificationType.A_HOUR_AGO, viewModel.notificationType.value)
+        assertEquals("memo", viewModel.memo.value)
+        assertEquals(0, viewModel.tagColor.value)
     }
 
     @Test
@@ -53,7 +76,7 @@ class SaveScheduleViewModelTest {
         viewModel.init(1, 2, calendarName, BehaviorType.INSERT)
         viewModel.saveSchedule()
 
-        Assert.assertEquals(null, viewModel.saveScheduleEvent.value)
+        assertEquals(null, viewModel.saveScheduleEvent.value)
     }
 
     @Test
@@ -64,6 +87,6 @@ class SaveScheduleViewModelTest {
         viewModel.title.value = "내 일정"
         viewModel.saveSchedule()
 
-        Assert.assertEquals(Unit, viewModel.saveScheduleEvent.value)
+        assertEquals(Unit, viewModel.saveScheduleEvent.value)
     }
 }
