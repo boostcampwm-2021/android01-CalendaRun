@@ -8,6 +8,7 @@ import com.drunkenboys.calendarun.data.calendar.entity.Calendar
 import com.drunkenboys.calendarun.data.calendar.local.CalendarLocalDataSource
 import com.drunkenboys.calendarun.data.checkpoint.entity.CheckPoint
 import com.drunkenboys.calendarun.data.checkpoint.local.CheckPointLocalDataSource
+import com.drunkenboys.calendarun.toStringDateFormat
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -27,6 +28,9 @@ class AddCalendarViewModel @Inject constructor(
     private val _checkPointList = MutableLiveData<List<CheckPoint>>()
     val checkPointList: LiveData<List<CheckPoint>> = _checkPointList
 
+    private val _calendarName = MutableLiveData<String>()
+    val calendarName: LiveData<String> = _calendarName
+
     private val _calendarStartDate = MutableLiveData<String>()
     val calendarStartDate: LiveData<String> = _calendarStartDate
 
@@ -39,7 +43,17 @@ class AddCalendarViewModel @Inject constructor(
             val selectedCheckPointList = checkPointLocalDataSource.fetchCalendarCheckPoints(id)
 
             _calendar.postValue(selectedCalendar)
+            _calendarName.postValue(selectedCalendar.name)
+            _calendarStartDate.postValue(toStringDateFormat(selectedCalendar.startDate))
+            _calendarEndDate.postValue(toStringDateFormat(selectedCalendar.endDate))
+
             _checkPointList.postValue(selectedCheckPointList)
+        }
+    }
+
+    fun setCalendarName(name: String) {
+        viewModelScope.launch {
+            _calendarName.postValue(name)
         }
     }
 
