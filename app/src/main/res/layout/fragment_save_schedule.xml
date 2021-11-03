@@ -184,13 +184,12 @@
                     android:drawablePadding="8dp"
                     android:gravity="center_vertical"
                     android:paddingVertical="16dp"
-                    android:text="@{viewModel.notification.message}"
                     android:textColor="@color/black"
                     app:drawableStartCompat="@drawable/ic_notifications"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/divider_saveSchedule_calendarNameBottom"
-                    tools:text="@string/notification_before_10_minute" />
+                    tools:text="@string/notification_ten_minutes_ago" />
 
                 <View
                     android:id="@+id/divider_saveSchedule_notificationBottom"
@@ -215,7 +214,6 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/divider_saveSchedule_notificationBottom" />
 
-                <!--android:backgroundTint="@{viewModel.tagColor}" Int 컬러 값 변환 로직이 필요함-->
                 <View
                     android:id="@+id/view_saveSchedule_tagColor"
                     android:layout_width="16dp"
