@@ -4,7 +4,9 @@ import android.app.DatePickerDialog
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import androidx.fragment.app.viewModels
 import com.drunkenboys.calendarun.R
+import com.drunkenboys.calendarun.data.calendar.toStringDateFormat
 import com.drunkenboys.calendarun.databinding.FragmentAddCalendarBinding
 import com.drunkenboys.calendarun.ui.addcalendar.adapter.AddCalendarRecyclerViewAdapter
 import com.drunkenboys.calendarun.ui.base.BaseFragment
@@ -13,12 +15,16 @@ import java.util.*
 class AddCalendarFragment : BaseFragment<FragmentAddCalendarBinding>(R.layout.fragment_add_calendar) {
 
     private val recyclerViewAdapter by lazy { AddCalendarRecyclerViewAdapter() }
+    private val addCalendarViewModel by viewModels<AddCalendarViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
         setRecyclerViewAdapter()
         setTextDatePickerClickListener()
+        setCalendarObserver()
+        setCheckPointListObserver()
     }
 
     private fun setRecyclerViewAdapter() {
@@ -43,5 +49,21 @@ class AddCalendarFragment : BaseFragment<FragmentAddCalendarBinding>(R.layout.fr
         }
 
         DatePickerDialog(requireContext(), dateSetListener, year, month, dayOfMonth).show()
+    }
+
+    private fun setCalendarObserver() {
+        addCalendarViewModel.calendar.observe(viewLifecycleOwner, { calendar ->
+            with(binding) {
+                tvAddCalendarCalendarName.text = calendar.name
+                tvAddCalendarStartDatePicker.text = toStringDateFormat(calendar.startDate)
+                tvAddCalendarEndDatePicker.text = toStringDateFormat(calendar.endDate)
+            }
+        })
+    }
+
+    private fun setCheckPointListObserver() {
+        addCalendarViewModel.checkPointList.observe(viewLifecycleOwner, { checkPointList ->
+            recyclerViewAdapter.submitList(checkPointList)
+        })
     }
 }
