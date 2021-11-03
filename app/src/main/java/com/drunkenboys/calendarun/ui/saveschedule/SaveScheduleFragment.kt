@@ -8,9 +8,14 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupWithNavController
 import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.databinding.FragmentSaveScheduleBinding
 import com.drunkenboys.calendarun.ui.base.BaseFragment
+import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
 import com.drunkenboys.calendarun.ui.saveschedule.model.ScheduleNotificationType
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
@@ -26,18 +31,42 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
 
     private val viewModel: SaveScheduleViewModel by viewModels()
 
+    private val navController by lazy { findNavController() }
+    private val args: SaveScheduleFragmentArgs by navArgs()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.viewModel = viewModel
 
-        initViews()
+        init()
         observeNotification()
         observeTagColor()
     }
 
-    private fun initViews() {
+    private fun init() {
+        initToolbar()
         initTimePicker()
         initTvNotification()
+    }
+
+    private fun initToolbar() = with(binding) {
+        when (args.behaviorType) {
+            BehaviorType.INSERT -> toolbarSaveSchedule.title = "일정 추가"
+            BehaviorType.UPDATE -> {
+                toolbarSaveSchedule.title = "일정 수정"
+                toolbarSaveSchedule.inflateMenu(R.menu.menu_save_schedule_toolbar)
+            }
+        }
+        toolbarSaveSchedule.setOnMenuItemClickListener { item ->
+            if (item.itemId == R.id.menu_delete_schedule) {
+                DeleteScheduleDialog().show(parentFragmentManager, DeleteScheduleDialog::class.simpleName)
+                true
+            } else
+                false
+        }
+
+        val appBarConfig = AppBarConfiguration(navController.graph)
+        toolbarSaveSchedule.setupWithNavController(navController, appBarConfig)
     }
 
     private fun initTimePicker() {
