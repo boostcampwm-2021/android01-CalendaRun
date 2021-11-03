@@ -25,5 +25,12 @@
             android:name="behaviorType"
             android:defaultValue="INSERT"
             app:argType="com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType" />
+        <action
+            android:id="@+id/action_saveScheduleFragment_to_deleteScheduleDialog"
+            app:destination="@id/deleteScheduleDialog" />
     </fragment>
+    <dialog
+        android:id="@+id/deleteScheduleDialog"
+        android:name="com.drunkenboys.calendarun.ui.saveschedule.DeleteScheduleDialog"
+        android:label="DeleteScheduleDialog" />
 </navigation>

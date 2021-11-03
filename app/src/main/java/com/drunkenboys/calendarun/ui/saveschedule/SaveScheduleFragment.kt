@@ -38,16 +38,14 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
         super.onViewCreated(view, savedInstanceState)
         binding.viewModel = viewModel
 
-        init()
-        viewModel.init(args.scheduleId, args.calendarId, args.calendarName, args.behaviorType)
-        observeNotification()
-        observeTagColor()
-    }
-
-    private fun init() {
         initToolbar()
         initTimePicker()
         initTvNotification()
+
+        observeNotification()
+        observeTagColor()
+
+        viewModel.init(args)
     }
 
     private fun initToolbar() = with(binding) {
@@ -60,10 +58,11 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
         }
         toolbarSaveSchedule.setOnMenuItemClickListener { item ->
             if (item.itemId == R.id.menu_delete_schedule) {
-                DeleteScheduleDialog().show(parentFragmentManager, DeleteScheduleDialog::class.simpleName)
+                navController.navigate(SaveScheduleFragmentDirections.actionSaveScheduleFragmentToDeleteScheduleDialog())
                 true
-            } else
+            } else {
                 false
+            }
         }
 
         val appBarConfig = AppBarConfiguration(navController.graph)
