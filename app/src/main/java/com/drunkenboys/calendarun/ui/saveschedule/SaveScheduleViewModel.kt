@@ -36,8 +36,7 @@ class SaveScheduleViewModel @Inject constructor(private val scheduleDataSource: 
     private val _calendarName = MutableLiveData("test")
     val calendarName: LiveData<String> = _calendarName
 
-    private val _notification = MutableLiveData(ScheduleNotificationType.TEN_MINUTES_AGO)
-    val notification: MutableLiveData<ScheduleNotificationType> = _notification
+    val notification = MutableLiveData(ScheduleNotificationType.TEN_MINUTES_AGO)
 
     private val _tagColor = MutableLiveData(R.color.black)
     val tagColor: LiveData<Int> = _tagColor

@@ -2,6 +2,8 @@ package com.drunkenboys.calendarun.ui.saveschedule
 
 import android.os.Bundle
 import android.view.View
+import android.widget.ArrayAdapter
+import android.widget.ListPopupWindow
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
@@ -34,6 +36,11 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
     }
 
     private fun initViews() {
+        initTimePicker()
+        initTvNotification()
+    }
+
+    private fun initTimePicker() {
         binding.tvSaveScheduleScheduleStartInput.setOnClickListener { selectTime(viewModel.startDate) }
         binding.tvSaveScheduleScheduleEndInput.setOnClickListener { selectTime(viewModel.endDate) }
     }
@@ -81,6 +88,22 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
         }
 
         timePicker.show(parentFragmentManager, this@SaveScheduleFragment::class.simpleName)
+    }
+
+    private fun initTvNotification() {
+        val dropDownAdapter = ArrayAdapter.createFromResource(requireContext(), R.array.notification_type, R.layout.item_drop_down_list)
+        val listPopupWindow = ListPopupWindow(requireContext(), null, R.attr.listPopupWindowStyle).apply {
+            anchorView = binding.tvSaveScheduleNotification
+            setAdapter(dropDownAdapter)
+            setOnItemClickListener { _, _, position, _ ->
+                viewModel.notification.value = ScheduleNotificationType.values()[position]
+                dismiss()
+            }
+        }
+
+        binding.tvSaveScheduleNotification.setOnClickListener {
+            listPopupWindow.show()
+        }
     }
 
     private fun observeNotification() {
