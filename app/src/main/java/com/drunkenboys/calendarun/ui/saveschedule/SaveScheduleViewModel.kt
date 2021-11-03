@@ -44,11 +44,29 @@ class SaveScheduleViewModel @Inject constructor(private val scheduleDataSource: 
     private val _saveScheduleEvent = MutableLiveData<Unit>()
     val saveScheduleEvent: LiveData<Unit> = _saveScheduleEvent
 
-    fun init(scheduleId: Int = 0, calendarId: Int, calendarName: String, behaviorType: BehaviorType) {
+    fun init(scheduleId: Int, calendarId: Int, calendarName: String, behaviorType: BehaviorType) {
         this.scheduleId = scheduleId
         this.calendarId = calendarId
         _calendarName.value = calendarName
         this.behaviorType = behaviorType
+
+        if (behaviorType == BehaviorType.UPDATE) initData()
+    }
+
+    private fun initData() {
+        val scheduleId = scheduleId ?: return
+        if (scheduleId < 0) return
+
+        viewModelScope.launch {
+            val schedule = scheduleDataSource.fetchSchedule(scheduleId)
+
+            title.value = schedule.name
+            startDate.value = schedule.startDate
+            endDate.value = schedule.endDate
+            memo.value = schedule.memo
+//            notification = schedule.notification
+            _tagColor.value = schedule.color
+        }
     }
 
     fun Date.toFormatString(): String {

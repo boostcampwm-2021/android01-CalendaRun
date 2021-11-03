@@ -39,6 +39,7 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
         binding.viewModel = viewModel
 
         init()
+        viewModel.init(args.scheduleId, args.calendarId, args.calendarName, args.behaviorType)
         observeNotification()
         observeTagColor()
     }

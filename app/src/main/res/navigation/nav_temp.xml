@@ -10,6 +10,10 @@
         android:name="com.drunkenboys.calendarun.ui.saveschedule.SaveScheduleFragment"
         tools:layout="@layout/fragment_save_schedule">
         <argument
+            android:name="scheduleId"
+            android:defaultValue="-1"
+            app:argType="integer" />
+        <argument
             android:name="calendarId"
             android:defaultValue="-1"
             app:argType="integer" />
