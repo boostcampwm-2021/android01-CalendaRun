@@ -47,7 +47,7 @@ class SaveScheduleViewModelTest {
     fun `뷰모델_초기화_테스트`() {
         val calendarName = "내 캘린더"
 
-        viewModel.init(1, 2, calendarName, BehaviorType.INSERT)
+        viewModel.init(SaveScheduleFragmentArgs(1, 2, calendarName, BehaviorType.INSERT))
 
         assertEquals(calendarName, viewModel.calendarName.value)
     }
@@ -59,7 +59,7 @@ class SaveScheduleViewModelTest {
         val endDate = Date()
         dataSource.insertSchedule(Schedule(0, 0, "test", startDate, endDate, Schedule.NotificationType.A_HOUR_AGO, "memo", 0))
 
-        viewModel.init(0, 0, calendarName, BehaviorType.UPDATE)
+        viewModel.init(SaveScheduleFragmentArgs(0, 0, calendarName, BehaviorType.UPDATE))
 
         assertEquals("test", viewModel.title.value)
         assertEquals(startDate, viewModel.startDate.value)
@@ -73,7 +73,7 @@ class SaveScheduleViewModelTest {
     fun `제목_미입력_시_저장_테스트`() = testScope.runBlockingTest {
         val calendarName = "내 캘린더"
 
-        viewModel.init(1, 2, calendarName, BehaviorType.INSERT)
+        viewModel.init(SaveScheduleFragmentArgs(1, 2, calendarName, BehaviorType.INSERT))
         viewModel.saveSchedule()
 
         assertEquals(null, viewModel.saveScheduleEvent.value)
@@ -83,7 +83,7 @@ class SaveScheduleViewModelTest {
     fun `정상_입력_시_저장_테스트`() {
         val calendarName = "내 캘린더"
 
-        viewModel.init(1, 2, calendarName, BehaviorType.INSERT)
+        viewModel.init(SaveScheduleFragmentArgs(1, 2, calendarName, BehaviorType.INSERT))
         viewModel.title.value = "내 일정"
         viewModel.saveSchedule()
 
