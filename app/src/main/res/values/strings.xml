@@ -13,9 +13,9 @@
     <string name="check_point_date">날짜</string>
 
     <!-- view_check_point_footer-->
-    <string name="check_point_footer_save">저장</string>
-    <string name="schedule_title">제목</string>
+    <string name="check_point_footer_save">추가</string>
 
+    <string name="schedule_title">제목</string>
     <string name="start">시작</string>
     <string name="end">종료</string>
     <string name="memo">메모</string>
