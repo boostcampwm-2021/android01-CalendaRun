@@ -8,7 +8,6 @@ import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import com.drunkenboys.calendarun.data.schedule.local.ScheduleLocalDataSource
 import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
-import com.drunkenboys.calendarun.ui.saveschedule.model.ScheduleNotificationType
 import com.drunkenboys.calendarun.util.getOrThrow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -36,7 +35,7 @@ class SaveScheduleViewModel @Inject constructor(private val scheduleDataSource: 
     private val _calendarName = MutableLiveData("test")
     val calendarName: LiveData<String> = _calendarName
 
-    val notification = MutableLiveData(ScheduleNotificationType.TEN_MINUTES_AGO)
+    val notificationType = MutableLiveData(Schedule.NotificationType.TEN_MINUTES_AGO)
 
     private val _tagColor = MutableLiveData(R.color.black)
     val tagColor: LiveData<Int> = _tagColor
@@ -64,7 +63,7 @@ class SaveScheduleViewModel @Inject constructor(private val scheduleDataSource: 
             startDate.value = schedule.startDate
             endDate.value = schedule.endDate
             memo.value = schedule.memo
-//            notification = schedule.notification
+            notificationType.value = schedule.notificationType
             _tagColor.value = schedule.color
         }
     }
@@ -111,7 +110,7 @@ class SaveScheduleViewModel @Inject constructor(private val scheduleDataSource: 
         name = title.getOrThrow(),
         startDate = startDate.getOrThrow(),
         endDate = endDate.getOrThrow(),
-        notification = getNotificationDate(),
+        notificationType = notificationType.getOrThrow(),
         memo = memo.getOrThrow(),
         color = tagColor.getOrThrow()
     )
@@ -120,11 +119,11 @@ class SaveScheduleViewModel @Inject constructor(private val scheduleDataSource: 
         val calendar = Calendar.getInstance()
         calendar.time = startDate.getOrThrow()
 
-        when (notification.value) {
-            ScheduleNotificationType.NONE -> return null
-            ScheduleNotificationType.TEN_MINUTES_AGO -> calendar.add(Calendar.MINUTE, -10)
-            ScheduleNotificationType.A_HOUR_AGO -> calendar.add(Calendar.HOUR_OF_DAY, -1)
-            ScheduleNotificationType.A_DAY_AGO -> calendar.add(Calendar.DAY_OF_YEAR, -1)
+        when (notificationType.value) {
+            Schedule.NotificationType.NONE -> return null
+            Schedule.NotificationType.TEN_MINUTES_AGO -> calendar.add(Calendar.MINUTE, -10)
+            Schedule.NotificationType.A_HOUR_AGO -> calendar.add(Calendar.HOUR_OF_DAY, -1)
+            Schedule.NotificationType.A_DAY_AGO -> calendar.add(Calendar.DAY_OF_YEAR, -1)
         }
 
         return calendar.time

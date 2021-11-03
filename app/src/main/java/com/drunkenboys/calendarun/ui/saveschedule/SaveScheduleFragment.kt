@@ -13,10 +13,10 @@ import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.drunkenboys.calendarun.R
+import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import com.drunkenboys.calendarun.databinding.FragmentSaveScheduleBinding
 import com.drunkenboys.calendarun.ui.base.BaseFragment
 import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
-import com.drunkenboys.calendarun.ui.saveschedule.model.ScheduleNotificationType
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
@@ -128,7 +128,7 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
             anchorView = binding.tvSaveScheduleNotification
             setAdapter(dropDownAdapter)
             setOnItemClickListener { _, _, position, _ ->
-                viewModel.notification.value = ScheduleNotificationType.values()[position]
+                viewModel.notificationType.value = Schedule.NotificationType.values()[position]
                 dismiss()
             }
         }
@@ -139,12 +139,12 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
     }
 
     private fun observeNotification() {
-        viewModel.notification.observe(viewLifecycleOwner) { type ->
+        viewModel.notificationType.observe(viewLifecycleOwner) { type ->
             binding.tvSaveScheduleNotification.text = when (type) {
-                ScheduleNotificationType.NONE -> getString(R.string.notification_none)
-                ScheduleNotificationType.TEN_MINUTES_AGO -> getString(R.string.notification_ten_minutes_ago)
-                ScheduleNotificationType.A_HOUR_AGO -> getString(R.string.notification_a_hour_ago)
-                ScheduleNotificationType.A_DAY_AGO -> getString(R.string.notification_a_day_ago)
+                Schedule.NotificationType.NONE -> getString(R.string.notification_none)
+                Schedule.NotificationType.TEN_MINUTES_AGO -> getString(R.string.notification_ten_minutes_ago)
+                Schedule.NotificationType.A_HOUR_AGO -> getString(R.string.notification_a_hour_ago)
+                Schedule.NotificationType.A_DAY_AGO -> getString(R.string.notification_a_day_ago)
                 null -> ""
             }
         }
