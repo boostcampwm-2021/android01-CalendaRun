@@ -8,6 +8,7 @@ import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import com.drunkenboys.calendarun.data.schedule.local.ScheduleLocalDataSource
 import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
+import com.drunkenboys.calendarun.util.SingleLiveEvent
 import com.drunkenboys.calendarun.util.getOrThrow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -40,14 +41,14 @@ class SaveScheduleViewModel @Inject constructor(private val scheduleDataSource: 
     private val _tagColor = MutableLiveData(R.color.black)
     val tagColor: LiveData<Int> = _tagColor
 
-    private val _saveScheduleEvent = MutableLiveData<Unit>()
+    private val _saveScheduleEvent = SingleLiveEvent<Unit>()
     val saveScheduleEvent: LiveData<Unit> = _saveScheduleEvent
 
-    fun init(scheduleId: Int, calendarId: Int, calendarName: String, behaviorType: BehaviorType) {
-        this.scheduleId = scheduleId
-        this.calendarId = calendarId
-        _calendarName.value = calendarName
-        this.behaviorType = behaviorType
+    fun init(args: SaveScheduleFragmentArgs) {
+        this.scheduleId = args.scheduleId
+        this.calendarId = args.calendarId
+        _calendarName.value = args.calendarName
+        this.behaviorType = args.behaviorType
 
         if (behaviorType == BehaviorType.UPDATE) initData()
     }
