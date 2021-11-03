@@ -27,6 +27,12 @@ class AddCalendarViewModel @Inject constructor(
     private val _checkPointList = MutableLiveData<List<CheckPoint>>()
     val checkPointList: LiveData<List<CheckPoint>> = _checkPointList
 
+    private val _calendarStartDate = MutableLiveData<String>()
+    val calendarStartDate: LiveData<String> = _calendarStartDate
+
+    private val _calendarEndDate = MutableLiveData<String>()
+    val calendarEndDate: LiveData<String> = _calendarEndDate
+
     fun fetchCalendar(id: Int) {
         viewModelScope.launch {
             val selectedCalendar = calendarLocalDataSource.fetchCalendar(id)
@@ -34,6 +40,18 @@ class AddCalendarViewModel @Inject constructor(
 
             _calendar.postValue(selectedCalendar)
             _checkPointList.postValue(selectedCheckPointList)
+        }
+    }
+
+    fun setCalendarStartDate(date: String) {
+        viewModelScope.launch {
+            _calendarStartDate.postValue(date)
+        }
+    }
+
+    fun setCalendarEndDate(date: String) {
+        viewModelScope.launch {
+            _calendarEndDate.postValue(date)
         }
     }
 
