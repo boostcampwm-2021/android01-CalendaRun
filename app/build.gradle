@@ -89,4 +89,7 @@ dependencies {
 
     // for LiveData test
     testImplementation "androidx.arch.core:core-testing:2.1.0"
+
+    // room in m1 mac
+    kapt "org.xerial:sqlite-jdbc:3.34.0"
 }
