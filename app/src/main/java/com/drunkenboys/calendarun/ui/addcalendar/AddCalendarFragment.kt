@@ -1,16 +1,14 @@
 package com.drunkenboys.calendarun.ui.addcalendar
 
-import android.app.DatePickerDialog
 import android.os.Bundle
 import android.view.View
-import android.widget.TextView
 import androidx.fragment.app.viewModels
 import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.databinding.FragmentAddCalendarBinding
+import com.drunkenboys.calendarun.showDatePickerDialog
 import com.drunkenboys.calendarun.toStringDateFormat
 import com.drunkenboys.calendarun.ui.addcalendar.adapter.AddCalendarRecyclerViewAdapter
 import com.drunkenboys.calendarun.ui.base.BaseFragment
-import java.util.*
 
 class AddCalendarFragment : BaseFragment<FragmentAddCalendarBinding>(R.layout.fragment_add_calendar) {
 
@@ -32,23 +30,16 @@ class AddCalendarFragment : BaseFragment<FragmentAddCalendarBinding>(R.layout.fr
     }
 
     private fun setTextDatePickerClickListener() {
-        val textDatePickerClickListener = View.OnClickListener { view -> showDatePickerDialog(view as TextView) }
-
-        binding.tvAddCalendarStartDatePicker.setOnClickListener(textDatePickerClickListener)
-        binding.tvAddCalendarEndDatePicker.setOnClickListener(textDatePickerClickListener)
-    }
-
-    private fun showDatePickerDialog(textView: TextView) {
-        val cal = Calendar.getInstance()
-        val year = cal.get(Calendar.YEAR)
-        val month = cal.get(Calendar.MONTH)
-        val dayOfMonth = cal.get(Calendar.DAY_OF_MONTH)
-        val dateSetListener = DatePickerDialog.OnDateSetListener { _, pickYear, pickMonth, pickDayOfMonth ->
-            // TODO ViewModel에 저장하는 방식으로 개선
-            textView.text = getString(R.string.ui_date_format, pickYear, pickMonth, pickDayOfMonth)
+        binding.tvAddCalendarStartDatePicker.setOnClickListener {
+            showDatePickerDialog(requireContext()) { _, year, month, dayOfMonth ->
+                addCalendarViewModel.setCalendarStartDate(getString(R.string.ui_date_format, year, month, dayOfMonth))
+            }
         }
-
-        DatePickerDialog(requireContext(), dateSetListener, year, month, dayOfMonth).show()
+        binding.tvAddCalendarEndDatePicker.setOnClickListener {
+            showDatePickerDialog(requireContext()) { _, year, month, dayOfMonth ->
+                addCalendarViewModel.setCalendarEndDate(getString(R.string.ui_date_format, year, month, dayOfMonth))
+            }
+        }
     }
 
     private fun setCalendarObserver() {
