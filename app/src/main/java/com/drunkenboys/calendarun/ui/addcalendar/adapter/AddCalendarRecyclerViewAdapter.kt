@@ -4,12 +4,12 @@ import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
+import com.drunkenboys.calendarun.data.checkpoint.entity.CheckPoint
 import com.drunkenboys.calendarun.databinding.ViewCheckPointBinding
-import com.drunkenboys.calendarun.ui.addcalendar.CheckPointModel
 import com.drunkenboys.calendarun.ui.base.BaseViewHolder
 
 class AddCalendarRecyclerViewAdapter :
-    ListAdapter<CheckPointModel, BaseViewHolder<ViewDataBinding>>(diffUtil) {
+    ListAdapter<CheckPoint, BaseViewHolder<ViewDataBinding>>(diffUtil) {
 
     override fun getItemCount() = super.getItemCount() + 1
 
@@ -23,16 +23,16 @@ class AddCalendarRecyclerViewAdapter :
     override fun onBindViewHolder(holder: BaseViewHolder<ViewDataBinding>, position: Int) {
         if (getItemViewType(position) == TYPE_ITEM) {
             val item = getItem(position)
-            (holder.binding as ViewCheckPointBinding).checkPointModel = item
+            (holder.binding as ViewCheckPointBinding).checkPoint = item
         }
     }
 
     companion object {
-        private val diffUtil = object : DiffUtil.ItemCallback<CheckPointModel>() {
-            override fun areItemsTheSame(oldItem: CheckPointModel, newItem: CheckPointModel) =
+        private val diffUtil = object : DiffUtil.ItemCallback<CheckPoint>() {
+            override fun areItemsTheSame(oldItem: CheckPoint, newItem: CheckPoint) =
                 oldItem.name == newItem.name
 
-            override fun areContentsTheSame(oldItem: CheckPointModel, newItem: CheckPointModel) =
+            override fun areContentsTheSame(oldItem: CheckPoint, newItem: CheckPoint) =
                 oldItem == newItem
         }
 
