@@ -24,7 +24,6 @@ class AddCalendarFragment : BaseFragment<FragmentAddCalendarBinding>(R.layout.fr
         setTextDatePickerClickListener()
         setCheckPointListObserver()
         setCalendarNameChangeListener()
-        setCalendarDateObserver()
     }
 
     private fun setRecyclerViewAdapter() {
@@ -54,15 +53,6 @@ class AddCalendarFragment : BaseFragment<FragmentAddCalendarBinding>(R.layout.fr
                 addCalendarViewModel.setCalendarEndDate(getString(R.string.ui_date_format, year, month, dayOfMonth))
             }
         }
-    }
-
-    private fun setCalendarDateObserver() {
-        addCalendarViewModel.calendarStartDate.observe(viewLifecycleOwner, { date ->
-            binding.tvAddCalendarStartDatePicker.text = date
-        })
-        addCalendarViewModel.calendarEndDate.observe(viewLifecycleOwner, { date ->
-            binding.tvAddCalendarEndDatePicker.text = date
-        })
     }
 
     private fun setCheckPointListObserver() {
