@@ -59,6 +59,7 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
     }
 
     private suspend fun pickDateInMillis() = suspendCancellableCoroutine<Long?> { cont ->
+        // TODO: 2021-11-03 picker 생성을 util 패키지로 분리 고려
         val datePicker = MaterialDatePicker.Builder.datePicker()
             .setTitleText(getString(R.string.pick_date))
             .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
@@ -74,6 +75,7 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
     }
 
     private suspend fun pickTime() = suspendCancellableCoroutine<Pair<Int, Int>?> { cont ->
+        // TODO: 2021-11-03 picker 생성을 util 패키지로 분리 고려
         val timePicker = MaterialTimePicker.Builder()
             .setTimeFormat(TimeFormat.CLOCK_12H)
             .setHour(12)
