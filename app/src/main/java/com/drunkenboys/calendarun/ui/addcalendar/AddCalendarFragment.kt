@@ -8,9 +8,12 @@ import androidx.fragment.app.viewModels
 import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.databinding.FragmentAddCalendarBinding
 import com.drunkenboys.calendarun.showDatePickerDialog
+import com.drunkenboys.calendarun.toStringDateFormat
 import com.drunkenboys.calendarun.ui.addcalendar.adapter.AddCalendarRecyclerViewAdapter
 import com.drunkenboys.calendarun.ui.base.BaseFragment
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class AddCalendarFragment : BaseFragment<FragmentAddCalendarBinding>(R.layout.fragment_add_calendar) {
 
     private val recyclerViewAdapter by lazy { AddCalendarRecyclerViewAdapter() }
@@ -19,11 +22,15 @@ class AddCalendarFragment : BaseFragment<FragmentAddCalendarBinding>(R.layout.fr
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
+        setDataBinding()
         setRecyclerViewAdapter()
         setTextDatePickerClickListener()
         setCheckPointListObserver()
         setCalendarNameChangeListener()
+    }
+
+    private fun setDataBinding() {
+        binding.addCalendarViewModel = addCalendarViewModel
     }
 
     private fun setRecyclerViewAdapter() {
@@ -57,7 +64,15 @@ class AddCalendarFragment : BaseFragment<FragmentAddCalendarBinding>(R.layout.fr
 
     private fun setCheckPointListObserver() {
         addCalendarViewModel.checkPointList.observe(viewLifecycleOwner, { checkPointList ->
-            recyclerViewAdapter.submitList(checkPointList)
+            val checkPointModelList = mutableListOf<CheckPointModel>()
+            checkPointList.forEach { checkPoint ->
+                val checkPointModel = CheckPointModel(
+                    checkPoint.name,
+                    toStringDateFormat(checkPoint.endDate)
+                )
+                checkPointModelList.add(checkPointModel)
+            }
+            recyclerViewAdapter.submitList(checkPointModelList)
         })
     }
 }
