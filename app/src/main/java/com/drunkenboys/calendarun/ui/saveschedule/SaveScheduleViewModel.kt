@@ -12,6 +12,7 @@ import com.drunkenboys.calendarun.ui.saveschedule.model.ScheduleNotificationType
 import com.drunkenboys.calendarun.util.getOrThrow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
@@ -49,6 +50,16 @@ class SaveScheduleViewModel @Inject constructor(private val scheduleDataSource: 
         this.calendarId = calendarId
         _calendarName.value = calendarName
         this.behaviorType = behaviorType
+    }
+
+    fun Date.toFormatString(): String {
+        val calendar = Calendar.getInstance()
+        calendar.time = this
+
+        val amPm = if (calendar.get(Calendar.AM_PM) == Calendar.AM) "오전" else "오후"
+        val dateFormat = SimpleDateFormat("MM월 dd일 $amPm hh:mm", Locale.getDefault())
+
+        return dateFormat.format(this)
     }
 
     fun saveSchedule() {
