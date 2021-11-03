@@ -70,6 +70,7 @@ dependencies {
 
     // coroutine
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.0"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.0"
 
     // room
     implementation "androidx.room:room-runtime:$room_version"
@@ -83,4 +84,7 @@ dependencies {
     // hilt
     implementation "com.google.dagger:hilt-android:2.38.1"
     kapt "com.google.dagger:hilt-android-compiler:2.38.1"
+
+    // for LiveData test
+    testImplementation "androidx.arch.core:core-testing:2.1.0"
 }

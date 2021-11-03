@@ -24,4 +24,8 @@ class ScheduleLocalDataSourceImpl @Inject constructor(
     override suspend fun fetchSchedule(id: Int) = withContext(dispatcher) {
         scheduleDao.fetchSchedule(id)
     }
+
+    override suspend fun updateSchedule(schedule: Schedule) = withContext(dispatcher) {
+        scheduleDao.updateSchedule(schedule)
+    }
 }

@@ -17,7 +17,14 @@
     <string name="end">종료</string>
     <string name="memo">메모</string>
     <string name="calendar_name">캘린더 명</string>
-    <string name="notification_before_10_minute">10분 전 알림</string>
     <string name="tag_color">태그 색상</string>
     <string name="save">저장</string>
+
+    <string name="notification_none">없음</string>
+    <string name="notification_ten_minutes_ago">10분 전 알림</string>
+    <string name="notification_a_hour_ago">한 시간 전 알림</string>
+    <string name="notification_a_day_ago">하루 전 알림</string>
+
+    <string name="pick_date">요일 선택</string>
+    <string name="pick_time">시간 선택</string>
 </resources>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="notification_type">
+        <item>@string/notification_none</item>
+        <item>@string/notification_ten_minutes_ago</item>
+        <item>@string/notification_a_hour_ago</item>
+        <item>@string/notification_a_day_ago</item>
+    </string-array>
+</resources>
