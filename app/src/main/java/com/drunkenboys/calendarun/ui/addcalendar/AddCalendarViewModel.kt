@@ -9,6 +9,7 @@ import com.drunkenboys.calendarun.data.calendar.local.CalendarLocalDataSource
 import com.drunkenboys.calendarun.data.checkpoint.entity.CheckPoint
 import com.drunkenboys.calendarun.data.checkpoint.local.CheckPointLocalDataSource
 import com.drunkenboys.calendarun.toStringDateFormat
+import com.drunkenboys.calendarun.util.SingleLiveEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -33,12 +34,26 @@ class AddCalendarViewModel @Inject constructor(
     private val _calendarEndDate = MutableLiveData<String>()
     val calendarEndDate: LiveData<String> = _calendarEndDate
 
+    private val _pickStartDateEvent = SingleLiveEvent<Unit>()
+    val pickStartDateEvent: LiveData<Unit> = _pickStartDateEvent
+
+    private val _pickEndDateEvent = SingleLiveEvent<Unit>()
+    val pickEndDateEvent: LiveData<Unit> = _pickEndDateEvent
+
     fun setCalendarStartDate(date: String) {
         _calendarStartDate.value = date
     }
 
     fun setCalendarEndDate(date: String) {
         _calendarEndDate.value = date
+    }
+
+    fun emitPickStartDate() {
+        _pickStartDateEvent.value = Unit
+    }
+
+    fun emitPickEndDate() {
+        _pickEndDateEvent.value = Unit
     }
 
     fun fetchCalendar(id: Int) {
