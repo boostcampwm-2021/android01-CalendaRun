@@ -92,7 +92,9 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
     private fun observePickNotificationTypeEvent() {
         saveScheduleViewModel.pickNotificationTypeEvent.observe(viewLifecycleOwner) {
             val dropDownAdapter = ArrayAdapter.createFromResource(
-                requireContext(), R.array.saveSchedule_notificationType, R.layout.item_drop_down_list
+                requireContext(),
+                R.array.saveSchedule_notificationType,
+                R.layout.item_drop_down_list
             )
             val listPopupWindow = ListPopupWindow(requireContext(), null, R.attr.listPopupWindowStyle).apply {
                 anchorView = binding.tvSaveScheduleNotification
