@@ -1,4 +1,4 @@
-package com.drunkenboys.ckscalendar
+package com.drunkenboys.ckscalendar.month
 
 import android.graphics.Color
 import android.view.LayoutInflater
@@ -32,7 +32,7 @@ class MonthAdapter : RecyclerView.Adapter<MonthAdapter.Holder>() {
 
     class Holder(private val binding: ItemMonthCellBinding, calculateHeight: Int) : RecyclerView.ViewHolder(binding.root) {
 
-        private val weekDayColor = Color.WHITE
+        private val weekDayColor = Color.BLACK
         private val holidayColor = Color.RED
         private val saturdayColor = Color.BLUE
 

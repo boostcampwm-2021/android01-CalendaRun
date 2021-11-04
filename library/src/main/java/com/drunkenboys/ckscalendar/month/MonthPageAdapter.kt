@@ -1,4 +1,4 @@
-package com.drunkenboys.ckscalendar
+package com.drunkenboys.ckscalendar.month
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -8,6 +8,7 @@ import com.drunkenboys.ckscalendar.data.CalendarDate
 import com.drunkenboys.ckscalendar.data.CalendarSet
 import com.drunkenboys.ckscalendar.data.DayType
 import com.drunkenboys.ckscalendar.databinding.ItemMonthPageBinding
+import com.drunkenboys.ckscalendar.utils.TimeUtils.parseDayWeekToDayType
 import java.time.DayOfWeek
 import java.time.LocalDate
 
@@ -41,55 +42,59 @@ class MonthPageAdapter : RecyclerView.Adapter<MonthPageAdapter.Holder>() {
             binding.rvMonthCalendar.layoutManager = GridLayoutManager(itemView.context, 7)
         }
 
-        fun parseDayWeekToDayType(week: DayOfWeek): DayType {
-            return when (week) {
-                DayOfWeek.SATURDAY -> DayType.SATURDAY
-                DayOfWeek.SUNDAY -> DayType.HOLIDAY
-                else -> DayType.WEEKDAY
-            }
-
-        }
-
         fun bind(item: CalendarSet) {
             val dates = mutableListOf<CalendarDate>()
             val startMonth = item.startDate.monthValue
             val startDay = item.startDate.dayOfWeek
             val endMonth = item.endDate.monthValue
-            val endDay = item.endDate.dayOfWeek
 
             (startMonth..endMonth).forEach { month ->
                 when (month) {
                     startMonth -> {
-                        (0..startDay.ordinal).forEach {
-                            dates.add(CalendarDate(LocalDate.now(), DayType.PADDING))
+                        // add Start Padding
+                        if (startDay != DayOfWeek.SUNDAY) {
+                            dates.addAll(makePadding(startDay.ordinal))
                         }
-                        (1..item.startDate.lengthOfMonth()).forEach { day ->
-                            val local = LocalDate.of(item.startDate.year, month, day)
-                            val dayType = parseDayWeekToDayType(local.dayOfWeek)
-                            dates.add(CalendarDate(local, dayType))
-                        }
-                    }
-                    endMonth -> {
-                        (1..item.endDate.lengthOfMonth()).forEach { day ->
-                            val local = LocalDate.of(item.startDate.year, month, day)
-                            val dayType = parseDayWeekToDayType(local.dayOfWeek)
-                            dates.add(CalendarDate(local, dayType))
-                        }
-                        (0..(7 - endDay.ordinal)).forEach {
-                            dates.add(CalendarDate(LocalDate.now(), DayType.PADDING))
-                        }
+
+                        // add Start Dates
+                        dates.addAll(makeDates(item.startDate, month))
                     }
                     else -> {
-                        (1..item.endDate.lengthOfMonth()).forEach { day ->
-                            val local = LocalDate.of(item.startDate.year, month, day)
-                            val dayType = parseDayWeekToDayType(local.dayOfWeek)
-                            dates.add(CalendarDate(local, dayType))
-                        }
+                        // add Normal Dates
+                        dates.addAll(makeDates(item.endDate, month))
                     }
                 }
             }
+            // add End Padding
+            val weekPadding = 6 - dates.size % WEEK_SIZE
+            dates.addAll(makePadding(weekPadding))
+
+            // add FullSize Padding
+            if (dates.size < FULL_SIZE_CALENDAR) {
+                val fullSizePadding = FULL_SIZE_CALENDAR - dates.size - 1
+                dates.addAll(makePadding(fullSizePadding))
+            }
 
             monthAdapter.setItems(dates)
+        }
+
+        private fun makeDates(date: LocalDate, month: Int): List<CalendarDate> {
+            return (1..date.lengthOfMonth()).map { day ->
+                val local = LocalDate.of(date.year, month, day)
+                val dayType = parseDayWeekToDayType(local.dayOfWeek)
+                CalendarDate(local, dayType)
+            }
+        }
+
+        private fun makePadding(paddingCount: Int): List<CalendarDate> {
+            return (0..paddingCount).map {
+                CalendarDate(LocalDate.now(), DayType.PADDING)
+            }
+        }
+
+        companion object {
+            private const val WEEK_SIZE = 7
+            private const val FULL_SIZE_CALENDAR = 42
         }
     }
 }

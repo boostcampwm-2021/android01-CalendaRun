@@ -4,14 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_month_cell"
     android:layout_width="match_parent"
-    android:layout_height="80dp"
-    android:background="@drawable/bg_calendar_line_2dp">
+    android:layout_height="80dp">
 
     <TextView
         android:id="@+id/tv_month_day"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
