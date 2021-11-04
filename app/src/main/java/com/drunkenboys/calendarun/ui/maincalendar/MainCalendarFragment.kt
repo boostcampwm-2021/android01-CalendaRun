@@ -19,10 +19,23 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
 
         binding.toolbarMainCalendar.setupWithNavController(navController)
 
+        binding.toolbarMainCalendar.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.menu_main_calendar_search -> navigateToSearchSchedule()
+                else -> return@setOnMenuItemClickListener false
+            }
+            true
+        }
+
         // TODO: 2021-11-04 뷰모델 추가 시 이벤트 방식으로 변경 및 argument 설정
         binding.fabMainCalenderAddSchedule.setOnClickListener {
             val action = MainCalendarFragmentDirections.actionMainCalendarFragmentToSaveScheduleFragment()
             navController.navigate(action)
         }
+    }
+
+    private fun navigateToSearchSchedule() {
+        val action = MainCalendarFragmentDirections.actionMainCalendarFragmentToSearchScheduleFragment()
+        navController.navigate(action)
     }
 }
