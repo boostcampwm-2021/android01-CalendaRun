@@ -25,8 +25,7 @@ class AddCalendarViewModel @Inject constructor(
     private val _checkPointList = MutableLiveData<List<CheckPoint>>()
     val checkPointList: LiveData<List<CheckPoint>> = _checkPointList
 
-    private val _calendarName = MutableLiveData<String>()
-    val calendarName: LiveData<String> = _calendarName
+    val calendarName = MutableLiveData<String>()
 
     private val _calendarStartDate = MutableLiveData<String>()
     val calendarStartDate: LiveData<String> = _calendarStartDate
@@ -34,15 +33,9 @@ class AddCalendarViewModel @Inject constructor(
     private val _calendarEndDate = MutableLiveData<String>()
     val calendarEndDate: LiveData<String> = _calendarEndDate
 
-    fun setCalendarName(name: String) {
-        _calendarName.value = name
-
-    }
-
     fun setCalendarStartDate(date: String) {
         _calendarStartDate.value = date
     }
-
 
     fun setCalendarEndDate(date: String) {
         _calendarEndDate.value = date
@@ -54,7 +47,7 @@ class AddCalendarViewModel @Inject constructor(
             val selectedCheckPointList = checkPointLocalDataSource.fetchCalendarCheckPoints(id)
 
             _calendar.value = selectedCalendar
-            _calendarName.value = selectedCalendar.name
+            calendarName.value = selectedCalendar.name
             _calendarStartDate.value = toStringDateFormat(selectedCalendar.startDate)
             _calendarEndDate.value = toStringDateFormat(selectedCalendar.endDate)
 
