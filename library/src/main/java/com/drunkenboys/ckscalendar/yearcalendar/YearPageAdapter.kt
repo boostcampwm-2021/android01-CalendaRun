@@ -110,9 +110,9 @@ class YearPageAdapter : ListAdapter<CalendarSet, YearPageViewHolder>(DateDiffUti
 
     class DateDiffUtilCallback : DiffUtil.ItemCallback<CalendarSet>() {
 
-        override fun areItemsTheSame(oldItem: CalendarSet, newItem: CalendarSet) = oldItem == newItem
+        override fun areItemsTheSame(oldItem: CalendarSet, newItem: CalendarSet) = oldItem.id == newItem.id
 
-        override fun areContentsTheSame(oldItem: CalendarSet, newItem: CalendarSet) = oldItem.id == newItem.id
+        override fun areContentsTheSame(oldItem: CalendarSet, newItem: CalendarSet) = oldItem == newItem
     }
 
     companion object {
