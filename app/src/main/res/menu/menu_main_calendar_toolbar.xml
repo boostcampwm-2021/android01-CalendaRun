@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_main_calendar_calendar"
+        android:icon="@drawable/ic_calendar_today_white"
+        android:title="@string/calendar"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/menu_main_calendar_share"
+        android:icon="@drawable/ic_share_white"
+        android:title="@string/calendar"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/menu_main_calendar_search"
+        android:icon="@drawable/ic_search_white"
+        android:title="@string/calendar"
+        app:showAsAction="ifRoom" />
+</menu>
