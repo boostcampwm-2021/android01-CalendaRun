@@ -18,12 +18,6 @@
         android:id="@+id/layout_date_schedule"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <include layout="@layout/item_date_schedule" />
-
-        <include layout="@layout/item_date_schedule" />
-
-    </LinearLayout>
+        android:orientation="vertical" />
 
 </LinearLayout>
