@@ -8,6 +8,7 @@ import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import com.drunkenboys.calendarun.data.schedule.local.ScheduleLocalDataSource
 import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
+import com.drunkenboys.calendarun.ui.saveschedule.model.DateType
 import com.drunkenboys.calendarun.util.SingleLiveEvent
 import com.drunkenboys.calendarun.util.getOrThrow
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -44,6 +45,9 @@ class SaveScheduleViewModel @Inject constructor(private val scheduleDataSource: 
     private val _saveScheduleEvent = SingleLiveEvent<Unit>()
     val saveScheduleEvent: LiveData<Unit> = _saveScheduleEvent
 
+    private val _pickDateTimeEvent = SingleLiveEvent<DateType>()
+    val pickDateTimeEvent: LiveData<DateType> = _pickDateTimeEvent
+
     fun init(args: SaveScheduleFragmentArgs) {
         this.scheduleId = args.scheduleId
         this.calendarId = args.calendarId
@@ -67,6 +71,10 @@ class SaveScheduleViewModel @Inject constructor(private val scheduleDataSource: 
             notificationType.value = schedule.notificationType
             _tagColor.value = schedule.color
         }
+    }
+
+    fun emitPickDateTimeEvent(dateType: DateType) {
+        _pickDateTimeEvent.value = dateType
     }
 
     fun Date.toFormatString(): String {
