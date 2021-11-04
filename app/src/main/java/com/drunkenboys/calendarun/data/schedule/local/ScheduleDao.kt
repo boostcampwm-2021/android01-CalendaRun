@@ -1,9 +1,6 @@
 package com.drunkenboys.calendarun.data.schedule.local
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Update
+import androidx.room.*
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 
 @Dao
@@ -20,5 +17,8 @@ interface ScheduleDao {
 
     @Update
     suspend fun updateSchedule(schedule: Schedule)
+
+    @Delete
+    suspend fun deleteSchedule(schedule: Schedule)
 
 }

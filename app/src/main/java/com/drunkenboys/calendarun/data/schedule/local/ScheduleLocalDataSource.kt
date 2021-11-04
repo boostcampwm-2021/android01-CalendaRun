@@ -12,4 +12,6 @@ interface ScheduleLocalDataSource {
 
     suspend fun updateSchedule(schedule: Schedule)
 
+    suspend fun deleteSchedule(schedule: Schedule)
+
 }

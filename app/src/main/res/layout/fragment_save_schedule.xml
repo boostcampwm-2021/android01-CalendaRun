@@ -6,6 +6,8 @@
 
     <data>
 
+        <import type="com.drunkenboys.calendarun.ui.saveschedule.model.DateType" />
+
         <variable
             name="viewModel"
             type="com.drunkenboys.calendarun.ui.saveschedule.SaveScheduleViewModel" />
@@ -91,6 +93,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:gravity="end"
+                    android:onClick="@{() -> viewModel.emitPickDateTimeEvent(DateType.START) }"
                     android:paddingVertical="8dp"
                     android:text="@{viewModel.toFormatString(viewModel.startDate)}"
                     android:textColor="@color/black"
@@ -106,6 +109,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:gravity="end"
+                    android:onClick="@{() -> viewModel.emitPickDateTimeEvent(DateType.END) }"
                     android:paddingVertical="8dp"
                     android:text="@{viewModel.toFormatString(viewModel.endDate)}"
                     android:textColor="@color/black"
@@ -185,6 +189,7 @@
                     android:layout_height="wrap_content"
                     android:drawablePadding="8dp"
                     android:gravity="center_vertical"
+                    android:onClick="@{() -> viewModel.emitPickNotificationTypeEvent()}"
                     android:paddingVertical="16dp"
                     android:textColor="@color/black"
                     app:drawableStartCompat="@drawable/ic_notifications"

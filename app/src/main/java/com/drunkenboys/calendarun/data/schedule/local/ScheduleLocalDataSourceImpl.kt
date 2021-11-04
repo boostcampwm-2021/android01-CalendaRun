@@ -28,4 +28,8 @@ class ScheduleLocalDataSourceImpl @Inject constructor(
     override suspend fun updateSchedule(schedule: Schedule) = withContext(dispatcher) {
         scheduleDao.updateSchedule(schedule)
     }
+
+    override suspend fun deleteSchedule(schedule: Schedule) = withContext(dispatcher) {
+        scheduleDao.deleteSchedule(schedule)
+    }
 }
