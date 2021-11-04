@@ -45,7 +45,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:background="@null"
-                    android:hint="@string/schedule_title"
+                    android:hint="@string/saveSchedule_title"
                     android:importantForAutofill="no"
                     android:inputType="text"
                     android:paddingVertical="16dp"
@@ -71,7 +71,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:text="@string/start"
+                    android:text="@string/saveSchedule_start"
                     app:layout_constraintBottom_toTopOf="@id/tv_saveSchedule_scheduleEnd"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/divider_saveSchedule_titleBottom" />
@@ -81,7 +81,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:text="@string/end"
+                    android:text="@string/saveSchedule_end"
                     app:layout_constraintBottom_toTopOf="@id/divider_saveSchedule_timeBottom"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_saveSchedule_scheduleStart" />
@@ -121,7 +121,7 @@
                     android:layout_width="0dp"
                     android:layout_height="1dp"
                     android:layout_marginTop="100dp"
-                    android:background="@color/color_cccccc"
+                    android:background="@color/divider"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/divider_saveSchedule_titleBottom" />
@@ -133,7 +133,7 @@
                     android:background="@null"
                     android:drawablePadding="8dp"
                     android:gravity="center_vertical"
-                    android:hint="@string/memo"
+                    android:hint="@string/saveSchedule_memo"
                     android:importantForAutofill="no"
                     android:inputType="text"
                     android:paddingVertical="16dp"
@@ -150,7 +150,7 @@
                     android:id="@+id/divider_saveSchedule_memoBottom"
                     android:layout_width="0dp"
                     android:layout_height="1dp"
-                    android:background="@color/color_cccccc"
+                    android:background="@color/divider"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/et_saveSchedule_memo" />
@@ -168,13 +168,13 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/divider_saveSchedule_memoBottom"
-                    tools:text="@string/calendar_name" />
+                    tools:text="@string/saveSchedule_calendarName" />
 
                 <View
                     android:id="@+id/divider_saveSchedule_calendarNameBottom"
                     android:layout_width="0dp"
                     android:layout_height="1dp"
-                    android:background="@color/color_cccccc"
+                    android:background="@color/divider"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_saveSchedule_calendarName" />
@@ -191,13 +191,13 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/divider_saveSchedule_calendarNameBottom"
-                    tools:text="@string/notification_ten_minutes_ago" />
+                    tools:text="@string/saveSchedule_notificationTenMinutesAgo" />
 
                 <View
                     android:id="@+id/divider_saveSchedule_notificationBottom"
                     android:layout_width="0dp"
                     android:layout_height="1dp"
-                    android:background="@color/color_cccccc"
+                    android:background="@color/divider"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_saveSchedule_notification" />
@@ -209,7 +209,7 @@
                     android:drawablePadding="8dp"
                     android:gravity="center_vertical"
                     android:paddingVertical="16dp"
-                    android:text="@string/tag_color"
+                    android:text="@string/saveSchedule_tagColor"
                     android:textColor="@color/black"
                     app:drawableStartCompat="@drawable/ic_palette"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -235,7 +235,7 @@
             android:layout_height="60dp"
             android:layout_marginHorizontal="4dp"
             android:onClick="@{() -> viewModel.saveSchedule()}"
-            android:text="@string/save"
+            android:text="@string/saveSchedule_save"
             app:backgroundTint="@color/black" />
 
     </LinearLayout>

@@ -90,7 +90,7 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
     private suspend fun pickDateInMillis() = suspendCancellableCoroutine<Long?> { cont ->
         // TODO: 2021-11-03 picker 생성을 util 패키지로 분리 고려
         val datePicker = MaterialDatePicker.Builder.datePicker()
-            .setTitleText(getString(R.string.pick_date))
+            .setTitleText(getString(R.string.saveSchedule_pickDate))
             .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
             .build()
         datePicker.apply {
@@ -109,7 +109,7 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
             .setTimeFormat(TimeFormat.CLOCK_12H)
             .setHour(12)
             .setMinute(0)
-            .setTitleText(R.string.pick_time)
+            .setTitleText(R.string.saveSchedule_pickTime)
             .build()
         timePicker.apply {
             addOnPositiveButtonClickListener { cont.resume(timePicker.hour to timePicker.minute) }
@@ -122,7 +122,8 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
     }
 
     private fun initTvNotification() {
-        val dropDownAdapter = ArrayAdapter.createFromResource(requireContext(), R.array.notification_type, R.layout.item_drop_down_list)
+        val dropDownAdapter =
+            ArrayAdapter.createFromResource(requireContext(), R.array.saveSchedule_notificationType, R.layout.item_drop_down_list)
         val listPopupWindow = ListPopupWindow(requireContext(), null, R.attr.listPopupWindowStyle).apply {
             anchorView = binding.tvSaveScheduleNotification
             setAdapter(dropDownAdapter)
@@ -140,10 +141,10 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
     private fun observeNotification() {
         viewModel.notificationType.observe(viewLifecycleOwner) { type ->
             binding.tvSaveScheduleNotification.text = when (type) {
-                Schedule.NotificationType.NONE -> getString(R.string.notification_none)
-                Schedule.NotificationType.TEN_MINUTES_AGO -> getString(R.string.notification_ten_minutes_ago)
-                Schedule.NotificationType.A_HOUR_AGO -> getString(R.string.notification_a_hour_ago)
-                Schedule.NotificationType.A_DAY_AGO -> getString(R.string.notification_a_day_ago)
+                Schedule.NotificationType.NONE -> getString(R.string.saveSchedule_notificationNone)
+                Schedule.NotificationType.TEN_MINUTES_AGO -> getString(R.string.saveSchedule_notificationTenMinutesAgo)
+                Schedule.NotificationType.A_HOUR_AGO -> getString(R.string.saveSchedule_notificationAHourAgo)
+                Schedule.NotificationType.A_DAY_AGO -> getString(R.string.saveSchedule_notificationADayAgo)
                 null -> ""
             }
         }
