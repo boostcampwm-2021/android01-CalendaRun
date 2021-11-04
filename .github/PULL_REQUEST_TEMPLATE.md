@@ -7,6 +7,7 @@
 
 ## screenshot
 <!-- - 변경된 내용과 관련된 스크린샷(보이지 않는 경우 생략) -->
+<img src="이미지 url" width=350 />
 
 ## testchecklist
 <!-- - 테스트 코드를 작성한경우 리스트업 -->
