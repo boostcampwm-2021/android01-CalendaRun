@@ -1,4 +1,4 @@
-package com.drunkenboys.ckscalendar
+package com.drunkenboys.ckscalendar.month
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -6,9 +6,9 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.viewpager2.widget.ViewPager2
+import com.drunkenboys.ckscalendar.R
 import com.drunkenboys.ckscalendar.data.CalendarSet
 import com.drunkenboys.ckscalendar.databinding.LayoutMonthCalendarBinding
-import com.drunkenboys.ckscalendar.month.MonthPageAdapter
 import java.time.LocalDate
 
 class MonthCalendarView @JvmOverloads constructor(
@@ -37,7 +37,7 @@ class MonthCalendarView @JvmOverloads constructor(
             @SuppressLint("SetTextI18n")
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                binding.tvMonthCurrentMonth.text = calendarList[position].name
+                binding.tvMonthCalendarViewCurrentMonth.text = calendarList[position].name
             }
 
             override fun onPageScrollStateChanged(state: Int) {

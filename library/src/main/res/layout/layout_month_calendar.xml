@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:padding="1dp">
 
     <TextView
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp"
-        android:id="@+id/tv_month_currentMonth"
+        android:id="@+id/tv_monthCalendarView_currentMonth"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:padding="8dp"
         android:textColor="@color/black"
         android:textSize="20dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -19,12 +19,83 @@
         tools:ignore="SpUsage"
         tools:text="1월" />
 
+    <TextView
+        android:id="@+id/tv_monthCalendarView_sunday"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/sunday"
+        app:layout_constraintEnd_toStartOf="@id/tv_monthCalendarView_monday"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_monthCalendarView_currentMonth" />
+
+    <TextView
+        android:id="@+id/tv_monthCalendarView_monday"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/monday"
+        app:layout_constraintEnd_toStartOf="@id/tv_monthCalendarView_tuesday"
+        app:layout_constraintStart_toEndOf="@id/tv_monthCalendarView_sunday"
+        app:layout_constraintTop_toTopOf="@+id/tv_monthCalendarView_sunday" />
+
+    <TextView
+        android:id="@+id/tv_monthCalendarView_tuesday"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/tuesday"
+        app:layout_constraintEnd_toStartOf="@id/tv_monthCalendarView_wednesday"
+        app:layout_constraintStart_toEndOf="@id/tv_monthCalendarView_monday"
+        app:layout_constraintTop_toTopOf="@+id/tv_monthCalendarView_monday" />
+
+    <TextView
+        android:id="@+id/tv_monthCalendarView_wednesday"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/wednesday"
+        app:layout_constraintEnd_toStartOf="@id/tv_monthCalendarView_thursday"
+        app:layout_constraintStart_toEndOf="@id/tv_monthCalendarView_tuesday"
+        app:layout_constraintTop_toTopOf="@+id/tv_monthCalendarView_tuesday" />
+
+    <TextView
+        android:id="@+id/tv_monthCalendarView_thursday"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/thursday"
+        app:layout_constraintEnd_toStartOf="@id/tv_monthCalendarView_friday"
+        app:layout_constraintStart_toEndOf="@id/tv_monthCalendarView_wednesday"
+        app:layout_constraintTop_toTopOf="@+id/tv_monthCalendarView_wednesday" />
+
+    <TextView
+        android:id="@+id/tv_monthCalendarView_friday"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/friday"
+        app:layout_constraintEnd_toStartOf="@id/tv_monthCalendarView_saturday"
+        app:layout_constraintStart_toEndOf="@id/tv_monthCalendarView_thursday"
+        app:layout_constraintTop_toTopOf="@+id/tv_monthCalendarView_thursday" />
+
+    <TextView
+        android:id="@+id/tv_monthCalendarView_saturday"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/saturday"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tv_monthCalendarView_friday"
+        app:layout_constraintTop_toTopOf="@+id/tv_monthCalendarView_friday" />
+
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/vp_month_page"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:paddingTop="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_month_currentMonth" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_monthCalendarView_sunday" />
 </androidx.constraintlayout.widget.ConstraintLayout>
