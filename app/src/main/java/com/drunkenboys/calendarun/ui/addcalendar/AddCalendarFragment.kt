@@ -1,8 +1,6 @@
 package com.drunkenboys.calendarun.ui.addcalendar
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
 import androidx.fragment.app.viewModels
 import com.drunkenboys.calendarun.R
@@ -25,8 +23,8 @@ class AddCalendarFragment : BaseFragment<FragmentAddCalendarBinding>(R.layout.fr
         setDataBinding()
         setRecyclerViewAdapter()
         setTextDatePickerClickListener()
+        setAddCheckPointViewClickListener()
         setCheckPointListObserver()
-        setCalendarNameChangeListener()
     }
 
     private fun setDataBinding() {
@@ -37,17 +35,15 @@ class AddCalendarFragment : BaseFragment<FragmentAddCalendarBinding>(R.layout.fr
         binding.rAddCalendarCheckPointList.adapter = addCalendarAdapter
     }
 
-    private fun setCalendarNameChangeListener() {
-        binding.etAddCalendarCalendarName.addTextChangedListener(object : TextWatcher {
-            override fun onTextChanged(name: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                addCalendarViewModel.setCalendarName(name.toString())
-            }
-
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-            override fun afterTextChanged(p0: Editable?) {}
-        })
+    private fun setAddCheckPointViewClickListener() {
+        binding.btnAddCalendarAddCheckPointView.setOnClickListener {
+            val newList = emptyList<CheckPointModel>().toMutableList()
+            newList.add(CheckPointModel("", ""))
+            newList.addAll(addCalendarAdapter.currentList)
+            addCalendarAdapter.submitList(newList)
+        }
     }
+
 
     private fun setTextDatePickerClickListener() {
         binding.tvAddCalendarStartDatePicker.setOnClickListener {
