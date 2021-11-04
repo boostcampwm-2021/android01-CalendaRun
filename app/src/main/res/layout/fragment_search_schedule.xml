@@ -43,7 +43,6 @@
             android:id="@+id/rv_searchSchedule"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="16dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/item_date" />
 

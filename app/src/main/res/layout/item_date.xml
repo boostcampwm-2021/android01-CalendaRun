@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingVertical="8dp"
+        android:padding="16dp"
         tools:showIn="@layout/fragment_search_schedule">
 
         <TextView
