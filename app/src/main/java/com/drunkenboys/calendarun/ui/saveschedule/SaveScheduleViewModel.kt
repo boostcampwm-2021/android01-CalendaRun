@@ -129,4 +129,16 @@ class SaveScheduleViewModel @Inject constructor(private val scheduleDataSource: 
 
         return calendar.time
     }
+
+    fun deleteSchedule() {
+        val scheduleId = scheduleId ?: return
+        if (scheduleId < 0) return
+
+        viewModelScope.launch {
+            val deleteSchedule = scheduleDataSource.fetchSchedule(scheduleId)
+            scheduleDataSource.deleteSchedule(deleteSchedule)
+
+            _saveScheduleEvent.value = Unit
+        }
+    }
 }

@@ -5,11 +5,11 @@ import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.ListPopupWindow
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.navigation.navGraphViewModels
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.drunkenboys.calendarun.R
@@ -29,7 +29,8 @@ import kotlin.coroutines.resume
 @AndroidEntryPoint
 class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.fragment_save_schedule) {
 
-    private val saveScheduleViewModel: SaveScheduleViewModel by viewModels()
+    private val saveScheduleViewModel: SaveScheduleViewModel
+            by navGraphViewModels(R.id.saveScheduleFragment) { defaultViewModelProviderFactory }
 
     private val navController by lazy { findNavController() }
     private val args: SaveScheduleFragmentArgs by navArgs()
