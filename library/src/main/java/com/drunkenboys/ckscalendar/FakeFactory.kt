@@ -15,17 +15,17 @@ object FakeFactory {
         val sundayTextColor = ScheduleColorType.RED.color
 
         return CalendarDesignObject(
-            weekDayTextColor,
-            holidayTextColor,
-            saturdayTextColor,
-            sundayTextColor,
-            0,
-            16,
-            0,
-            0,
-            listOf(""),
-            listOf(""),
-            3
+            weekDayTextColor = weekDayTextColor,
+            holidayTextColor = holidayTextColor,
+            saturdayTextColor = saturdayTextColor,
+            sundayTextColor = sundayTextColor,
+            textSize = 0,
+            textAlign = 16,
+            selectedFrameColor = 0,
+            backgroundColor = 0,
+            weekSimpleStringSet = listOf(""),
+            weekFullStringSet = listOf(""),
+            visibleScheduleCount = 3
         )
     }
 
