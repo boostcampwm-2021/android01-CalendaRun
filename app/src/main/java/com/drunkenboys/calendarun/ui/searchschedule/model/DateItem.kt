@@ -1,12 +1,11 @@
 package com.drunkenboys.calendarun.ui.searchschedule.model
 
-import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import java.text.SimpleDateFormat
 import java.util.*
 
 data class DateItem(
     val date: Date,
-    val schedule: List<Schedule>
+    val scheduleList: List<DateScheduleItem>
 ) {
 
     val dateName: String = run {

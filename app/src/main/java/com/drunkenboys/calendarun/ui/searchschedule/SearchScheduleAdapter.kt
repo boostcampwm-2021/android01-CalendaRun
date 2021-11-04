@@ -23,7 +23,7 @@ class SearchScheduleAdapter : androidx.recyclerview.widget.ListAdapter<DateItem,
 
     private fun addDateScheduleItem(binding: ItemDateBinding, dateItem: DateItem) = with(binding) {
         layoutDateSchedule.removeAllViews()
-        dateItem.schedule.forEach { schedule ->
+        dateItem.scheduleList.forEach { schedule ->
             val dateScheduleBinding = ItemDateScheduleBinding.inflate(LayoutInflater.from(root.context), layoutDateSchedule, false)
             dateScheduleBinding.item = schedule
             layoutDateSchedule.addView(dateScheduleBinding.root)

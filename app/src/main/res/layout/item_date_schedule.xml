@@ -7,7 +7,7 @@
 
         <variable
             name="item"
-            type="com.drunkenboys.calendarun.data.schedule.entity.Schedule" />
+            type="com.drunkenboys.calendarun.ui.searchschedule.model.DateScheduleItem" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -32,7 +32,7 @@
             android:layout_marginStart="8dp"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="@{item.name}"
+            android:text="@{item.schedule.name}"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/view_dateSchedule_tagColor"
@@ -44,7 +44,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="@{item.startDate.toString()}"
+            android:text="@{item.duration}"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/tv_dateSchedule_name"
@@ -52,4 +52,5 @@
             tools:text="09:00 ~ 12:00" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </layout>

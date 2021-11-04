@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import com.drunkenboys.calendarun.data.schedule.local.ScheduleLocalDataSource
 import com.drunkenboys.calendarun.ui.searchschedule.model.DateItem
+import com.drunkenboys.calendarun.ui.searchschedule.model.DateScheduleItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.util.*
@@ -27,7 +28,7 @@ class SearchScheduleViewModel @Inject constructor(
             _listItem.value = scheduleDataSource.fetchAllSchedule()
                 .filter { schedule -> schedule.startDate >= today }
                 .groupBy { schedule -> schedule.dayMillis() }
-                .map { (dayMillis, scheduleList) -> DateItem(Date(dayMillis), scheduleList) }
+                .map { (dayMillis, scheduleList) -> DateItem(Date(dayMillis), scheduleList.map { DateScheduleItem(it) }) }
                 .sortedBy { dateItem -> dateItem.date }
         }
     }
