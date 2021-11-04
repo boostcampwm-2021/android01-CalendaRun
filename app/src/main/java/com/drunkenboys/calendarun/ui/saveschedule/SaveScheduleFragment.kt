@@ -29,14 +29,14 @@ import kotlin.coroutines.resume
 @AndroidEntryPoint
 class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.fragment_save_schedule) {
 
-    private val viewModel: SaveScheduleViewModel by viewModels()
+    private val saveScheduleViewModel: SaveScheduleViewModel by viewModels()
 
     private val navController by lazy { findNavController() }
     private val args: SaveScheduleFragmentArgs by navArgs()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.viewModel = viewModel
+        binding.viewModel = saveScheduleViewModel
 
         initToolbar()
         initTimePicker()
@@ -45,7 +45,7 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
         observeNotification()
         observeTagColor()
 
-        viewModel.init(args)
+        saveScheduleViewModel.init(args)
     }
 
     private fun initToolbar() = with(binding) {
@@ -70,8 +70,8 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
     }
 
     private fun initTimePicker() {
-        binding.tvSaveScheduleScheduleStartInput.setOnClickListener { selectTime(viewModel.startDate) }
-        binding.tvSaveScheduleScheduleEndInput.setOnClickListener { selectTime(viewModel.endDate) }
+        binding.tvSaveScheduleScheduleStartInput.setOnClickListener { selectTime(saveScheduleViewModel.startDate) }
+        binding.tvSaveScheduleScheduleEndInput.setOnClickListener { selectTime(saveScheduleViewModel.endDate) }
     }
 
     private fun selectTime(liveData: MutableLiveData<Date>) {
@@ -128,7 +128,7 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
             anchorView = binding.tvSaveScheduleNotification
             setAdapter(dropDownAdapter)
             setOnItemClickListener { _, _, position, _ ->
-                viewModel.notificationType.value = Schedule.NotificationType.values()[position]
+                saveScheduleViewModel.notificationType.value = Schedule.NotificationType.values()[position]
                 dismiss()
             }
         }
@@ -139,7 +139,7 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
     }
 
     private fun observeNotification() {
-        viewModel.notificationType.observe(viewLifecycleOwner) { type ->
+        saveScheduleViewModel.notificationType.observe(viewLifecycleOwner) { type ->
             binding.tvSaveScheduleNotification.text = when (type) {
                 Schedule.NotificationType.NONE -> getString(R.string.saveSchedule_notificationNone)
                 Schedule.NotificationType.TEN_MINUTES_AGO -> getString(R.string.saveSchedule_notificationTenMinutesAgo)
@@ -151,7 +151,7 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
     }
 
     private fun observeTagColor() {
-        viewModel.tagColor.observe(viewLifecycleOwner) { colorRes ->
+        saveScheduleViewModel.tagColor.observe(viewLifecycleOwner) { colorRes ->
             binding.viewSaveScheduleTagColor.backgroundTintList = ContextCompat.getColorStateList(requireContext(), colorRes)
         }
     }
