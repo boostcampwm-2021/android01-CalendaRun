@@ -89,4 +89,17 @@ class SaveScheduleViewModelTest {
 
         assertEquals(Unit, viewModel.saveScheduleEvent.value)
     }
+
+    @Test
+    fun `일정_삭제_테스트`() = testScope.runBlockingTest {
+        val calendarName = "내 캘린더"
+        val startDate = Date()
+        val endDate = Date()
+        dataSource.insertSchedule(Schedule(0, 0, "test", startDate, endDate, Schedule.NotificationType.A_HOUR_AGO, "memo", 0))
+        viewModel.init(SaveScheduleFragmentArgs(0, 0, calendarName, BehaviorType.UPDATE))
+        
+        viewModel.deleteSchedule()
+
+        assertEquals(Unit, viewModel.saveScheduleEvent.value)
+    }
 }

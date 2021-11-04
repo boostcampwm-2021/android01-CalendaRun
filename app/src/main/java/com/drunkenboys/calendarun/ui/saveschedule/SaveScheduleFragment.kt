@@ -5,11 +5,10 @@ import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.ListPopupWindow
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.navigation.navGraphViewModels
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.drunkenboys.calendarun.R
@@ -17,6 +16,7 @@ import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import com.drunkenboys.calendarun.databinding.FragmentSaveScheduleBinding
 import com.drunkenboys.calendarun.ui.base.BaseFragment
 import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
+import com.drunkenboys.calendarun.ui.saveschedule.model.DateType
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
@@ -29,7 +29,8 @@ import kotlin.coroutines.resume
 @AndroidEntryPoint
 class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.fragment_save_schedule) {
 
-    private val saveScheduleViewModel: SaveScheduleViewModel by viewModels()
+    private val saveScheduleViewModel: SaveScheduleViewModel
+            by navGraphViewModels(R.id.saveScheduleFragment) { defaultViewModelProviderFactory }
 
     private val navController by lazy { findNavController() }
     private val args: SaveScheduleFragmentArgs by navArgs()
@@ -39,9 +40,8 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
         binding.viewModel = saveScheduleViewModel
 
         initToolbar()
-        initTimePicker()
-        initTvNotification()
-
+        observePickDateTimeEvent()
+        observePickNotificationTypeEvent()
         observeNotification()
         observeTagColor()
 
@@ -69,21 +69,45 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
         toolbarSaveSchedule.setupWithNavController(navController, appBarConfig)
     }
 
-    private fun initTimePicker() {
-        binding.tvSaveScheduleScheduleStartInput.setOnClickListener { selectTime(saveScheduleViewModel.startDate) }
-        binding.tvSaveScheduleScheduleEndInput.setOnClickListener { selectTime(saveScheduleViewModel.endDate) }
+    private fun observePickDateTimeEvent() {
+        saveScheduleViewModel.pickDateTimeEvent.observe(viewLifecycleOwner) { dateType ->
+            dateType ?: return@observe
+
+            lifecycleScope.launch {
+                val calendar = Calendar.getInstance()
+
+                calendar.timeInMillis = pickDateInMillis() ?: return@launch
+                val (hour, minute) = pickTime() ?: return@launch
+                calendar.set(Calendar.HOUR_OF_DAY, hour)
+                calendar.set(Calendar.MINUTE, minute)
+
+                when (dateType) {
+                    DateType.START -> saveScheduleViewModel.startDate.value = calendar.time
+                    DateType.END -> saveScheduleViewModel.endDate.value = calendar.time
+                }
+            }
+        }
     }
 
-    private fun selectTime(liveData: MutableLiveData<Date>) {
-        lifecycleScope.launch {
-            val calendar = Calendar.getInstance()
+    private fun observePickNotificationTypeEvent() {
+        saveScheduleViewModel.pickNotificationTypeEvent.observe(viewLifecycleOwner) {
+            val dropDownAdapter = ArrayAdapter.createFromResource(
+                requireContext(),
+                R.array.saveSchedule_notificationType,
+                R.layout.item_drop_down_list
+            )
+            val listPopupWindow = ListPopupWindow(requireContext(), null, R.attr.listPopupWindowStyle).apply {
+                anchorView = binding.tvSaveScheduleNotification
+                setAdapter(dropDownAdapter)
+                setOnItemClickListener { _, _, position, _ ->
+                    saveScheduleViewModel.notificationType.value = Schedule.NotificationType.values()[position]
+                    dismiss()
+                }
+            }
 
-            calendar.timeInMillis = pickDateInMillis() ?: return@launch
-            val (hour, minute) = pickTime() ?: return@launch
-            calendar.set(Calendar.HOUR_OF_DAY, hour)
-            calendar.set(Calendar.MINUTE, minute)
-
-            liveData.value = calendar.time
+            binding.tvSaveScheduleNotification.setOnClickListener {
+                listPopupWindow.show()
+            }
         }
     }
 
@@ -119,23 +143,6 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
         }
 
         timePicker.show(parentFragmentManager, this@SaveScheduleFragment::class.simpleName)
-    }
-
-    private fun initTvNotification() {
-        val dropDownAdapter =
-            ArrayAdapter.createFromResource(requireContext(), R.array.saveSchedule_notificationType, R.layout.item_drop_down_list)
-        val listPopupWindow = ListPopupWindow(requireContext(), null, R.attr.listPopupWindowStyle).apply {
-            anchorView = binding.tvSaveScheduleNotification
-            setAdapter(dropDownAdapter)
-            setOnItemClickListener { _, _, position, _ ->
-                saveScheduleViewModel.notificationType.value = Schedule.NotificationType.values()[position]
-                dismiss()
-            }
-        }
-
-        binding.tvSaveScheduleNotification.setOnClickListener {
-            listPopupWindow.show()
-        }
     }
 
     private fun observeNotification() {
