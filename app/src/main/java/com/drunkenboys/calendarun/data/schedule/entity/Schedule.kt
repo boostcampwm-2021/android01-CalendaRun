@@ -23,8 +23,16 @@ data class Schedule(
     val name: String,
     val startDate: Date,
     val endDate: Date,
-    val notification: Date?,
+    val notificationType: NotificationType,
     val memo: String,
     // TODO <Library>.ScheduleColorType
     val color: Int
-)
+) {
+
+    enum class NotificationType {
+        NONE,
+        TEN_MINUTES_AGO,
+        A_HOUR_AGO,
+        A_DAY_AGO
+    }
+}

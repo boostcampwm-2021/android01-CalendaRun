@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_temp"
+    app:startDestination="@id/saveScheduleFragment">
+
+    <fragment
+        android:id="@+id/saveScheduleFragment"
+        android:name="com.drunkenboys.calendarun.ui.saveschedule.SaveScheduleFragment"
+        tools:layout="@layout/fragment_save_schedule">
+        <argument
+            android:name="scheduleId"
+            android:defaultValue="-1"
+            app:argType="integer" />
+        <argument
+            android:name="calendarId"
+            android:defaultValue="-1"
+            app:argType="integer" />
+        <argument
+            android:name="calendarName"
+            android:defaultValue="temp"
+            app:argType="string" />
+        <argument
+            android:name="behaviorType"
+            android:defaultValue="INSERT"
+            app:argType="com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType" />
+        <action
+            android:id="@+id/action_saveScheduleFragment_to_deleteScheduleDialog"
+            app:destination="@id/deleteScheduleDialog" />
+    </fragment>
+    <dialog
+        android:id="@+id/deleteScheduleDialog"
+        android:name="com.drunkenboys.calendarun.ui.saveschedule.DeleteScheduleDialog"
+        android:label="DeleteScheduleDialog" />
+</navigation>

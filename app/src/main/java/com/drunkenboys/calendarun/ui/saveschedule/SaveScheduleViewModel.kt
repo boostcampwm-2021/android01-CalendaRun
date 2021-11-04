@@ -8,7 +8,7 @@ import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import com.drunkenboys.calendarun.data.schedule.local.ScheduleLocalDataSource
 import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
-import com.drunkenboys.calendarun.ui.saveschedule.model.ScheduleNotificationType
+import com.drunkenboys.calendarun.util.SingleLiveEvent
 import com.drunkenboys.calendarun.util.getOrThrow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -36,19 +36,37 @@ class SaveScheduleViewModel @Inject constructor(private val scheduleDataSource: 
     private val _calendarName = MutableLiveData("test")
     val calendarName: LiveData<String> = _calendarName
 
-    val notification = MutableLiveData(ScheduleNotificationType.TEN_MINUTES_AGO)
+    val notificationType = MutableLiveData(Schedule.NotificationType.TEN_MINUTES_AGO)
 
     private val _tagColor = MutableLiveData(R.color.black)
     val tagColor: LiveData<Int> = _tagColor
 
-    private val _saveScheduleEvent = MutableLiveData<Unit>()
+    private val _saveScheduleEvent = SingleLiveEvent<Unit>()
     val saveScheduleEvent: LiveData<Unit> = _saveScheduleEvent
 
-    fun init(scheduleId: Int = 0, calendarId: Int, calendarName: String, behaviorType: BehaviorType) {
-        this.scheduleId = scheduleId
-        this.calendarId = calendarId
-        _calendarName.value = calendarName
-        this.behaviorType = behaviorType
+    fun init(args: SaveScheduleFragmentArgs) {
+        this.scheduleId = args.scheduleId
+        this.calendarId = args.calendarId
+        _calendarName.value = args.calendarName
+        this.behaviorType = args.behaviorType
+
+        if (behaviorType == BehaviorType.UPDATE) initData()
+    }
+
+    private fun initData() {
+        val scheduleId = scheduleId ?: return
+        if (scheduleId < 0) return
+
+        viewModelScope.launch {
+            val schedule = scheduleDataSource.fetchSchedule(scheduleId)
+
+            title.value = schedule.name
+            startDate.value = schedule.startDate
+            endDate.value = schedule.endDate
+            memo.value = schedule.memo
+            notificationType.value = schedule.notificationType
+            _tagColor.value = schedule.color
+        }
     }
 
     fun Date.toFormatString(): String {
@@ -93,7 +111,7 @@ class SaveScheduleViewModel @Inject constructor(private val scheduleDataSource: 
         name = title.getOrThrow(),
         startDate = startDate.getOrThrow(),
         endDate = endDate.getOrThrow(),
-        notification = getNotificationDate(),
+        notificationType = notificationType.getOrThrow(),
         memo = memo.getOrThrow(),
         color = tagColor.getOrThrow()
     )
@@ -102,11 +120,11 @@ class SaveScheduleViewModel @Inject constructor(private val scheduleDataSource: 
         val calendar = Calendar.getInstance()
         calendar.time = startDate.getOrThrow()
 
-        when (notification.value) {
-            ScheduleNotificationType.NONE -> return null
-            ScheduleNotificationType.TEN_MINUTES_AGO -> calendar.add(Calendar.MINUTE, -10)
-            ScheduleNotificationType.A_HOUR_AGO -> calendar.add(Calendar.HOUR_OF_DAY, -1)
-            ScheduleNotificationType.A_DAY_AGO -> calendar.add(Calendar.DAY_OF_YEAR, -1)
+        when (notificationType.value) {
+            Schedule.NotificationType.NONE -> return null
+            Schedule.NotificationType.TEN_MINUTES_AGO -> calendar.add(Calendar.MINUTE, -10)
+            Schedule.NotificationType.A_HOUR_AGO -> calendar.add(Calendar.HOUR_OF_DAY, -1)
+            Schedule.NotificationType.A_DAY_AGO -> calendar.add(Calendar.DAY_OF_YEAR, -1)
         }
 
         return calendar.time
