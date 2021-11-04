@@ -35,22 +35,17 @@ class AddCalendarViewModel @Inject constructor(
     val calendarEndDate: LiveData<String> = _calendarEndDate
 
     fun setCalendarName(name: String) {
-        viewModelScope.launch {
-            _calendarName.postValue(name)
-        }
+        _calendarName.value = name
+
     }
 
     fun setCalendarStartDate(date: String) {
-        viewModelScope.launch {
-            _calendarStartDate.postValue(date)
-        }
+        _calendarStartDate.value = date
     }
 
 
     fun setCalendarEndDate(date: String) {
-        viewModelScope.launch {
-            _calendarEndDate.postValue(date)
-        }
+        _calendarEndDate.value = date
     }
 
     fun fetchCalendar(id: Int) {
@@ -58,19 +53,19 @@ class AddCalendarViewModel @Inject constructor(
             val selectedCalendar = calendarLocalDataSource.fetchCalendar(id)
             val selectedCheckPointList = checkPointLocalDataSource.fetchCalendarCheckPoints(id)
 
-            _calendar.postValue(selectedCalendar)
-            _calendarName.postValue(selectedCalendar.name)
-            _calendarStartDate.postValue(toStringDateFormat(selectedCalendar.startDate))
-            _calendarEndDate.postValue(toStringDateFormat(selectedCalendar.endDate))
+            _calendar.value = selectedCalendar
+            _calendarName.value = selectedCalendar.name
+            _calendarStartDate.value = toStringDateFormat(selectedCalendar.startDate)
+            _calendarEndDate.value = toStringDateFormat(selectedCalendar.endDate)
 
-            _checkPointList.postValue(selectedCheckPointList)
+            _checkPointList.value = selectedCheckPointList
         }
     }
 
     fun saveCalendar() {
         viewModelScope.launch {
             calendarLocalDataSource.insertCalendar(_calendar.value ?: return@launch)
-            (_checkPointList.value ?: return@launch).forEach { checkPoint ->
+            _checkPointList.value?.forEach { checkPoint ->
                 checkPointLocalDataSource.insertCheckPoint(checkPoint)
             }
         }

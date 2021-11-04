@@ -16,7 +16,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class AddCalendarFragment : BaseFragment<FragmentAddCalendarBinding>(R.layout.fragment_add_calendar) {
 
-    private val recyclerViewAdapter by lazy { AddCalendarRecyclerViewAdapter() }
+    private val addCalendarAdapter = AddCalendarRecyclerViewAdapter()
     private val addCalendarViewModel by viewModels<AddCalendarViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -34,7 +34,7 @@ class AddCalendarFragment : BaseFragment<FragmentAddCalendarBinding>(R.layout.fr
     }
 
     private fun setRecyclerViewAdapter() {
-        binding.rAddCalendarCheckPointList.adapter = recyclerViewAdapter
+        binding.rAddCalendarCheckPointList.adapter = addCalendarAdapter
     }
 
     private fun setCalendarNameChangeListener() {
@@ -72,7 +72,7 @@ class AddCalendarFragment : BaseFragment<FragmentAddCalendarBinding>(R.layout.fr
                 )
                 checkPointModelList.add(checkPointModel)
             }
-            recyclerViewAdapter.submitList(checkPointModelList)
+            addCalendarAdapter.submitList(checkPointModelList)
         })
     }
 }
