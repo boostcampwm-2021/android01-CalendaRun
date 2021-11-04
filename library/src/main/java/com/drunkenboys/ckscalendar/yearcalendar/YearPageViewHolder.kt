@@ -37,6 +37,7 @@ sealed class YearPageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             binding.week = week
         }
 
+        // FIXME: 임시값 수정
         private fun createChildTv() = TextView((binding.root).context).apply {
             id = View.generateViewId()
             textSize = 10f
@@ -56,10 +57,17 @@ sealed class YearPageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         }
     }
 
-    class HeaderViewHolder(private val binding: ItemYearHeaderBinding) : YearPageViewHolder(binding.root) {
+    class YearPageMonthViewHolder(private val binding: ItemYearHeaderBinding) : YearPageViewHolder(binding.root) {
 
-        fun bind(header: Int) {
-            binding.header = header
+        fun bind(month: Int) {
+            binding.header = month
+        }
+    }
+
+    class YearPageYearViewHolder(private val binding: ItemYearHeaderBinding) : YearPageViewHolder(binding.root) {
+
+        fun bind(year: Int) {
+            binding.header = year
         }
     }
 }

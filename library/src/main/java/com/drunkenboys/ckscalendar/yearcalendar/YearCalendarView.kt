@@ -23,12 +23,13 @@ class YearCalendarView
         true
     )
 
-    private val weekAdapter = YearPageAdapter()
+    private val yearPageMonthAdapter = YearPageAdapter()
 
     init {
-        binding.rvYearCalendarView.adapter = weekAdapter
-        (1..12).forEach { month ->
-            weekAdapter.setItems(FakeFactory.createFakeMonth(2021, month))
+        binding.rvYearCalendarView.adapter = yearPageMonthAdapter
+        (2021..2080).forEach { year ->
+            yearPageMonthAdapter.setItems(FakeFactory.createFakeCalendarSetList(year))
+
         }
     }
 }
