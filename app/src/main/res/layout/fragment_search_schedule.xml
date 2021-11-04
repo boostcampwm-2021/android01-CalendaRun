@@ -14,17 +14,18 @@
         android:orientation="vertical">
 
         <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/layout_saveSchedule_toolbar"
+            android:id="@+id/layout_searchSchedule_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/toolbar_saveSchedule"
+                android:id="@+id/toolbar_searchSchedule"
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"
                 app:titleTextColor="@color/white">
 
                 <EditText
+                    android:id="@+id/et_searchSchedule_toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:backgroundTint="@color/white_alpha_50"
