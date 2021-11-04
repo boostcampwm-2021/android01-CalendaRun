@@ -9,6 +9,7 @@ import com.drunkenboys.calendarun.data.calendar.local.CalendarLocalDataSource
 import com.drunkenboys.calendarun.data.checkpoint.entity.CheckPoint
 import com.drunkenboys.calendarun.data.checkpoint.local.CheckPointLocalDataSource
 import com.drunkenboys.calendarun.toStringDateFormat
+import com.drunkenboys.calendarun.util.SingleLiveEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -25,8 +26,7 @@ class AddCalendarViewModel @Inject constructor(
     private val _checkPointList = MutableLiveData<List<CheckPoint>>()
     val checkPointList: LiveData<List<CheckPoint>> = _checkPointList
 
-    private val _calendarName = MutableLiveData<String>()
-    val calendarName: LiveData<String> = _calendarName
+    val calendarName = MutableLiveData<String>()
 
     private val _calendarStartDate = MutableLiveData<String>()
     val calendarStartDate: LiveData<String> = _calendarStartDate
@@ -34,23 +34,26 @@ class AddCalendarViewModel @Inject constructor(
     private val _calendarEndDate = MutableLiveData<String>()
     val calendarEndDate: LiveData<String> = _calendarEndDate
 
-    fun setCalendarName(name: String) {
-        viewModelScope.launch {
-            _calendarName.postValue(name)
-        }
-    }
+    private val _pickStartDateEvent = SingleLiveEvent<Unit>()
+    val pickStartDateEvent: LiveData<Unit> = _pickStartDateEvent
+
+    private val _pickEndDateEvent = SingleLiveEvent<Unit>()
+    val pickEndDateEvent: LiveData<Unit> = _pickEndDateEvent
 
     fun setCalendarStartDate(date: String) {
-        viewModelScope.launch {
-            _calendarStartDate.postValue(date)
-        }
+        _calendarStartDate.value = date
     }
 
-
     fun setCalendarEndDate(date: String) {
-        viewModelScope.launch {
-            _calendarEndDate.postValue(date)
-        }
+        _calendarEndDate.value = date
+    }
+
+    fun emitPickStartDate() {
+        _pickStartDateEvent.value = Unit
+    }
+
+    fun emitPickEndDate() {
+        _pickEndDateEvent.value = Unit
     }
 
     fun fetchCalendar(id: Int) {
@@ -58,19 +61,19 @@ class AddCalendarViewModel @Inject constructor(
             val selectedCalendar = calendarLocalDataSource.fetchCalendar(id)
             val selectedCheckPointList = checkPointLocalDataSource.fetchCalendarCheckPoints(id)
 
-            _calendar.postValue(selectedCalendar)
-            _calendarName.postValue(selectedCalendar.name)
-            _calendarStartDate.postValue(toStringDateFormat(selectedCalendar.startDate))
-            _calendarEndDate.postValue(toStringDateFormat(selectedCalendar.endDate))
+            _calendar.value = selectedCalendar
+            calendarName.value = selectedCalendar.name
+            _calendarStartDate.value = toStringDateFormat(selectedCalendar.startDate)
+            _calendarEndDate.value = toStringDateFormat(selectedCalendar.endDate)
 
-            _checkPointList.postValue(selectedCheckPointList)
+            _checkPointList.value = selectedCheckPointList
         }
     }
 
     fun saveCalendar() {
         viewModelScope.launch {
             calendarLocalDataSource.insertCalendar(_calendar.value ?: return@launch)
-            (_checkPointList.value ?: return@launch).forEach { checkPoint ->
+            _checkPointList.value?.forEach { checkPoint ->
                 checkPointLocalDataSource.insertCheckPoint(checkPoint)
             }
         }
