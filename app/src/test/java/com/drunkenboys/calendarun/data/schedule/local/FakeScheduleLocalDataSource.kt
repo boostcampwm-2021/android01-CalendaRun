@@ -23,4 +23,8 @@ class FakeScheduleLocalDataSource : ScheduleLocalDataSource {
         database.removeAt(targetIndex)
         database.add(targetIndex, schedule)
     }
+
+    override suspend fun deleteSchedule(schedule: Schedule) {
+        database.remove(schedule)
+    }
 }
