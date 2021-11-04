@@ -8,11 +8,13 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.viewpager2.widget.ViewPager2
 import com.drunkenboys.ckscalendar.data.CalendarSet
 import com.drunkenboys.ckscalendar.databinding.LayoutMonthCalendarBinding
+import com.drunkenboys.ckscalendar.month.MonthPageAdapter
 import java.time.LocalDate
 
 class MonthCalendarView @JvmOverloads constructor(
     context: Context,
-    attrs: AttributeSet? = null, defStyleAttr: Int = 0
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
 
     private val binding: LayoutMonthCalendarBinding by lazy { LayoutMonthCalendarBinding.inflate(LayoutInflater.from(context), this, true) }
@@ -26,6 +28,7 @@ class MonthCalendarView @JvmOverloads constructor(
         calendarList = generateCalendarOfYear(today.year)
         pageAdapter.setItems(calendarList)
 
+        binding.vpMonthPage.offscreenPageLimit = calendarList.size
         binding.vpMonthPage.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
                 super.onPageScrolled(position, positionOffset, positionOffsetPixels)
@@ -48,10 +51,10 @@ class MonthCalendarView @JvmOverloads constructor(
             val start = LocalDate.of(year, month, 1)
             val end = LocalDate.of(year, month, start.lengthOfMonth())
             CalendarSet(
-                month,
-                "${month}${context.getString(R.string.common_month)}",
-                start,
-                end
+                id = month,
+                name = "${month}${context.getString(R.string.common_month)}",
+                startDate = start,
+                endDate = end
             )
         }
     }
