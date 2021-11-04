@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="saveSchedule_notificationType">
+        <item>@string/saveSchedule_notificationNone</item>
+        <item>@string/saveSchedule_notificationTenMinutesAgo</item>
+        <item>@string/saveSchedule_notificationAHourAgo</item>
+        <item>@string/saveSchedule_notificationADayAgo</item>
+    </string-array>
+</resources>
