@@ -8,6 +8,7 @@ import com.drunkenboys.ckscalendar.data.CalendarDate
 import com.drunkenboys.ckscalendar.data.CalendarSet
 import com.drunkenboys.ckscalendar.data.DayType
 import com.drunkenboys.ckscalendar.databinding.ItemMonthPageBinding
+import com.drunkenboys.ckscalendar.utils.TimeUtils.parseDayWeekToDayType
 import java.time.DayOfWeek
 import java.time.LocalDate
 
@@ -88,14 +89,6 @@ class MonthPageAdapter : RecyclerView.Adapter<MonthPageAdapter.Holder>() {
         private fun makePadding(paddingCount: Int): List<CalendarDate> {
             return (0..paddingCount).map {
                 CalendarDate(LocalDate.now(), DayType.PADDING)
-            }
-        }
-
-        private fun parseDayWeekToDayType(week: DayOfWeek): DayType {
-            return when (week) {
-                DayOfWeek.SATURDAY -> DayType.SATURDAY
-                DayOfWeek.SUNDAY -> DayType.HOLIDAY
-                else -> DayType.WEEKDAY
             }
         }
 
