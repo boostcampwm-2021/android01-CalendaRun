@@ -3,7 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_temp"
-    app:startDestination="@id/saveScheduleFragment">
+    app:startDestination="@id/mainCalendarFragment">
+
+    <fragment
+        android:id="@+id/mainCalendarFragment"
+        android:name="com.drunkenboys.calendarun.ui.maincalendar.MainCalendarFragment"
+        android:label="fragment_main_calendar"
+        tools:layout="@layout/fragment_main_calendar">
+        <action
+            android:id="@+id/action_mainCalendarFragment_to_saveScheduleFragment"
+            app:destination="@id/saveScheduleFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/saveScheduleFragment"
@@ -29,8 +39,10 @@
             android:id="@+id/action_saveScheduleFragment_to_deleteScheduleDialog"
             app:destination="@id/deleteScheduleDialog" />
     </fragment>
+
     <dialog
         android:id="@+id/deleteScheduleDialog"
         android:name="com.drunkenboys.calendarun.ui.saveschedule.DeleteScheduleDialog"
         android:label="DeleteScheduleDialog" />
+
 </navigation>
