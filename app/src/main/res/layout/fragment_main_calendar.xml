@@ -21,7 +21,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/toolbar_saveSchedule"
+                android:id="@+id/toolbar_mainCalendar"
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"
                 app:menu="@menu/menu_main_calendar_toolbar"
@@ -31,7 +31,7 @@
         </com.google.android.material.appbar.AppBarLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fav_mainCalender_addSchedule"
+            android:id="@+id/fab_mainCalender_addSchedule"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
