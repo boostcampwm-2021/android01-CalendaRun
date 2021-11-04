@@ -48,6 +48,9 @@ class SaveScheduleViewModel @Inject constructor(private val scheduleDataSource: 
     private val _pickDateTimeEvent = SingleLiveEvent<DateType>()
     val pickDateTimeEvent: LiveData<DateType> = _pickDateTimeEvent
 
+    private val _pickNotificationTypeEvent = SingleLiveEvent<Unit>()
+    val pickNotificationTypeEvent: LiveData<Unit> = _pickNotificationTypeEvent
+
     fun init(args: SaveScheduleFragmentArgs) {
         this.scheduleId = args.scheduleId
         this.calendarId = args.calendarId
@@ -75,6 +78,10 @@ class SaveScheduleViewModel @Inject constructor(private val scheduleDataSource: 
 
     fun emitPickDateTimeEvent(dateType: DateType) {
         _pickDateTimeEvent.value = dateType
+    }
+
+    fun emitPickNotificationTypeEvent() {
+        _pickNotificationTypeEvent.value = Unit
     }
 
     fun Date.toFormatString(): String {

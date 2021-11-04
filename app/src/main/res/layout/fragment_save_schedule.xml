@@ -189,6 +189,7 @@
                     android:layout_height="wrap_content"
                     android:drawablePadding="8dp"
                     android:gravity="center_vertical"
+                    android:onClick="@{() -> viewModel.emitPickNotificationTypeEvent()}"
                     android:paddingVertical="16dp"
                     android:textColor="@color/black"
                     app:drawableStartCompat="@drawable/ic_notifications"
