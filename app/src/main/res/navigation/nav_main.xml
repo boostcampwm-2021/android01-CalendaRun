@@ -12,10 +12,18 @@
         tools:layout="@layout/fragment_main_calendar">
         <action
             android:id="@+id/action_mainCalendarFragment_to_saveScheduleFragment"
-            app:destination="@id/saveScheduleFragment" />
+            app:destination="@id/saveScheduleFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_mainCalendarFragment_to_searchScheduleFragment"
-            app:destination="@id/searchScheduleFragment" />
+            app:destination="@id/searchScheduleFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
 
     <fragment
@@ -55,7 +63,11 @@
         tools:layout="@layout/fragment_search_schedule">
         <action
             android:id="@+id/action_searchScheduleFragment_to_saveScheduleFragment"
-            app:destination="@id/saveScheduleFragment" />
+            app:destination="@id/saveScheduleFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
 </navigation>
