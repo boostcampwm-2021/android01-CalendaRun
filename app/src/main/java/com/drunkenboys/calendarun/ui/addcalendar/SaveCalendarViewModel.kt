@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class AddCalendarViewModel @Inject constructor(
+class SaveCalendarViewModel @Inject constructor(
     private val calendarLocalDataSource: CalendarLocalDataSource,
     private val checkPointLocalDataSource: CheckPointLocalDataSource
 ) : ViewModel() {

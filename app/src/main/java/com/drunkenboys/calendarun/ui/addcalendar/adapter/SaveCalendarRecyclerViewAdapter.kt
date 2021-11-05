@@ -9,11 +9,11 @@ import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.ui.addcalendar.CheckPointModel
 import com.drunkenboys.calendarun.ui.base.BaseViewHolder
 
-class AddCalendarRecyclerViewAdapter :
+class SaveCalendarRecyclerViewAdapter :
     ListAdapter<CheckPointModel, BaseViewHolder<ViewDataBinding>>(diffUtil) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<ViewDataBinding> {
-        return BaseViewHolder(parent, R.layout.view_check_point)
+        return BaseViewHolder(parent, R.layout.item_check_point)
     }
 
     override fun onBindViewHolder(holder: BaseViewHolder<ViewDataBinding>, position: Int) {

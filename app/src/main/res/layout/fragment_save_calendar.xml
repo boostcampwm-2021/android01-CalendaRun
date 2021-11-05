@@ -6,8 +6,8 @@
     <data>
 
         <variable
-            name="addCalendarViewModel"
-            type="com.drunkenboys.calendarun.ui.addcalendar.AddCalendarViewModel" />
+            name="saveCalendarViewModel"
+            type="com.drunkenboys.calendarun.ui.addcalendar.SaveCalendarViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -15,7 +15,7 @@
         android:layout_height="match_parent">
 
         <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/layout_addCalendar_toolbar"
+            android:id="@+id/layout_saveCalendar_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
@@ -34,17 +34,17 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:fillViewport="true"
-            app:layout_constraintBottom_toTopOf="@id/btn_addCalendar_saveCalendar"
+            app:layout_constraintBottom_toTopOf="@id/btn_saveCalendar_saveCalendar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/layout_addCalendar_toolbar">
+            app:layout_constraintTop_toBottomOf="@id/layout_saveCalendar_toolbar">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
                 <TextView
-                    android:id="@+id/tv_addCalendar_calendarName"
+                    android:id="@+id/tv_saveCalendar_calendarName"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
@@ -55,100 +55,100 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <EditText
-                    android:id="@+id/et_addCalendar_calendarName"
+                    android:id="@+id/et_saveCalendar_calendarName"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:ems="10"
                     android:inputType="text"
-                    android:text="@={addCalendarViewModel.calendarName}"
-                    app:layout_constraintEnd_toEndOf="@+id/tv_addCalendar_calendarName"
-                    app:layout_constraintStart_toStartOf="@id/tv_addCalendar_calendarName"
-                    app:layout_constraintTop_toBottomOf="@id/tv_addCalendar_calendarName"
+                    android:text="@={saveCalendarViewModel.calendarName}"
+                    app:layout_constraintEnd_toEndOf="@+id/tv_saveCalendar_calendarName"
+                    app:layout_constraintStart_toStartOf="@id/tv_saveCalendar_calendarName"
+                    app:layout_constraintTop_toBottomOf="@id/tv_saveCalendar_calendarName"
                     tools:text="수능 캘린더" />
 
                 <TextView
-                    android:id="@+id/tv_addCalendar_startDate"
+                    android:id="@+id/tv_saveCalendar_startDate"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
                     android:text="@string/calendar_start_date"
-                    app:layout_constraintEnd_toStartOf="@+id/tv_addCalendar_endDate"
+                    app:layout_constraintEnd_toStartOf="@+id/tv_saveCalendar_endDate"
                     app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toStartOf="@+id/et_addCalendar_calendarName"
-                    app:layout_constraintTop_toBottomOf="@id/et_addCalendar_calendarName" />
+                    app:layout_constraintStart_toStartOf="@+id/et_saveCalendar_calendarName"
+                    app:layout_constraintTop_toBottomOf="@id/et_saveCalendar_calendarName" />
 
                 <TextView
-                    android:id="@+id/tv_addCalendar_endDate"
+                    android:id="@+id/tv_saveCalendar_endDate"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:text="@string/calendar_end_date"
-                    app:layout_constraintEnd_toEndOf="@+id/et_addCalendar_calendarName"
+                    app:layout_constraintEnd_toEndOf="@+id/et_saveCalendar_calendarName"
                     app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/tv_addCalendar_startDate"
-                    app:layout_constraintTop_toBottomOf="@id/et_addCalendar_calendarName" />
+                    app:layout_constraintStart_toEndOf="@+id/tv_saveCalendar_startDate"
+                    app:layout_constraintTop_toBottomOf="@id/et_saveCalendar_calendarName" />
 
                 <TextView
-                    android:id="@+id/tv_addCalendar_startDatePicker"
+                    android:id="@+id/tv_saveCalendar_startDatePicker"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:onClick="@{() -> addCalendarViewModel.emitPickStartDate()}"
-                    android:text="@{addCalendarViewModel.calendarStartDate}"
-                    app:layout_constraintEnd_toEndOf="@id/tv_addCalendar_startDate"
-                    app:layout_constraintStart_toStartOf="@+id/tv_addCalendar_startDate"
-                    app:layout_constraintTop_toBottomOf="@id/tv_addCalendar_startDate"
+                    android:onClick="@{() -> saveCalendarViewModel.emitPickStartDate()}"
+                    android:text="@{saveCalendarViewModel.calendarStartDate}"
+                    app:layout_constraintEnd_toEndOf="@id/tv_saveCalendar_startDate"
+                    app:layout_constraintStart_toStartOf="@+id/tv_saveCalendar_startDate"
+                    app:layout_constraintTop_toBottomOf="@id/tv_saveCalendar_startDate"
                     tools:text="2021.03.06" />
 
                 <TextView
-                    android:id="@+id/tv_addCalendar_endDatePicker"
+                    android:id="@+id/tv_saveCalendar_endDatePicker"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:onClick="@{() -> addCalendarViewModel.emitPickEndDate()}"
-                    android:text="@{addCalendarViewModel.calendarEndDate}"
-                    app:layout_constraintEnd_toEndOf="@id/tv_addCalendar_endDate"
-                    app:layout_constraintStart_toStartOf="@id/tv_addCalendar_endDate"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_addCalendar_endDate"
+                    android:onClick="@{() -> saveCalendarViewModel.emitPickEndDate()}"
+                    android:text="@{saveCalendarViewModel.calendarEndDate}"
+                    app:layout_constraintEnd_toEndOf="@id/tv_saveCalendar_endDate"
+                    app:layout_constraintStart_toStartOf="@id/tv_saveCalendar_endDate"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_saveCalendar_endDate"
                     tools:text="2021.11.05" />
 
                 <View
-                    android:id="@+id/divider_addCalendar_startDatePickerBottom"
+                    android:id="@+id/divider_saveCalendar_startDatePickerBottom"
                     android:layout_width="0dp"
                     android:layout_height="1dp"
                     android:background="@color/black"
-                    app:layout_constraintEnd_toEndOf="@id/tv_addCalendar_startDatePicker"
-                    app:layout_constraintStart_toStartOf="@id/tv_addCalendar_startDatePicker"
-                    app:layout_constraintTop_toBottomOf="@id/tv_addCalendar_startDatePicker" />
+                    app:layout_constraintEnd_toEndOf="@id/tv_saveCalendar_startDatePicker"
+                    app:layout_constraintStart_toStartOf="@id/tv_saveCalendar_startDatePicker"
+                    app:layout_constraintTop_toBottomOf="@id/tv_saveCalendar_startDatePicker" />
 
                 <View
-                    android:id="@+id/divider_addCalendar_endDatePickerBottom"
+                    android:id="@+id/divider_saveCalendar_endDatePickerBottom"
                     android:layout_width="0dp"
                     android:layout_height="1dp"
                     android:background="@color/black"
-                    app:layout_constraintEnd_toEndOf="@id/tv_addCalendar_endDatePicker"
-                    app:layout_constraintStart_toStartOf="@id/tv_addCalendar_endDatePicker"
-                    app:layout_constraintTop_toBottomOf="@id/tv_addCalendar_endDatePicker" />
+                    app:layout_constraintEnd_toEndOf="@id/tv_saveCalendar_endDatePicker"
+                    app:layout_constraintStart_toStartOf="@id/tv_saveCalendar_endDatePicker"
+                    app:layout_constraintTop_toBottomOf="@id/tv_saveCalendar_endDatePicker" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/r_addCalendar_checkPointList"
+                    android:id="@+id/r_saveCalendar_checkPointList"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:nestedScrollingEnabled="false"
                     android:overScrollMode="never"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    app:layout_constraintEnd_toEndOf="@id/tv_addCalendar_calendarName"
-                    app:layout_constraintStart_toStartOf="@id/tv_addCalendar_calendarName"
-                    app:layout_constraintTop_toBottomOf="@id/divider_addCalendar_startDatePickerBottom"
+                    app:layout_constraintEnd_toEndOf="@id/tv_saveCalendar_calendarName"
+                    app:layout_constraintStart_toStartOf="@id/tv_saveCalendar_calendarName"
+                    app:layout_constraintTop_toBottomOf="@id/divider_saveCalendar_startDatePickerBottom"
                     app:reverseLayout="true"
                     app:stackFromEnd="true" />
 
 
                 <Button
-                    android:id="@+id/btn_addCalendar_addCheckPointView"
+                    android:id="@+id/btn_saveCalendar_addCheckPointView"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="8dp"
@@ -157,13 +157,13 @@
                     app:iconGravity="textStart"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/r_addCalendar_checkPointList" />
+                    app:layout_constraintTop_toBottomOf="@+id/r_saveCalendar_checkPointList" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>
 
         <Button
-            android:id="@+id/btn_addCalendar_saveCalendar"
+            android:id="@+id/btn_saveCalendar_saveCalendar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="8dp"

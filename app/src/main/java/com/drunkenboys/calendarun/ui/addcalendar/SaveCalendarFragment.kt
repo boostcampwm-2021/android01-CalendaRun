@@ -4,18 +4,18 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
 import com.drunkenboys.calendarun.R
-import com.drunkenboys.calendarun.databinding.FragmentAddCalendarBinding
+import com.drunkenboys.calendarun.databinding.FragmentSaveCalendarBinding
 import com.drunkenboys.calendarun.showDatePickerDialog
 import com.drunkenboys.calendarun.toStringDateFormat
-import com.drunkenboys.calendarun.ui.addcalendar.adapter.AddCalendarRecyclerViewAdapter
+import com.drunkenboys.calendarun.ui.addcalendar.adapter.SaveCalendarRecyclerViewAdapter
 import com.drunkenboys.calendarun.ui.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class AddCalendarFragment : BaseFragment<FragmentAddCalendarBinding>(R.layout.fragment_add_calendar) {
+class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.fragment_save_calendar) {
 
-    private val addCalendarAdapter = AddCalendarRecyclerViewAdapter()
-    private val addCalendarViewModel by viewModels<AddCalendarViewModel>()
+    private val saveCalendarAdapter = SaveCalendarRecyclerViewAdapter()
+    private val saveCalendarViewModel by viewModels<SaveCalendarViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -28,37 +28,37 @@ class AddCalendarFragment : BaseFragment<FragmentAddCalendarBinding>(R.layout.fr
     }
 
     private fun setDataBinding() {
-        binding.addCalendarViewModel = addCalendarViewModel
+        binding.saveCalendarViewModel = saveCalendarViewModel
     }
 
     private fun setRecyclerViewAdapter() {
-        binding.rAddCalendarCheckPointList.adapter = addCalendarAdapter
+        binding.rSaveCalendarCheckPointList.adapter = saveCalendarAdapter
     }
 
     private fun setAddCheckPointViewClickListener() {
-        binding.btnAddCalendarAddCheckPointView.setOnClickListener {
+        binding.btnSaveCalendarAddCheckPointView.setOnClickListener {
             val newList = emptyList<CheckPointModel>().toMutableList()
             newList.add(CheckPointModel("", ""))
-            newList.addAll(addCalendarAdapter.currentList)
-            addCalendarAdapter.submitList(newList)
+            newList.addAll(saveCalendarAdapter.currentList)
+            saveCalendarAdapter.submitList(newList)
         }
     }
 
     private fun setPickDateTimeEventObserver() {
-        addCalendarViewModel.pickStartDateEvent.observe(viewLifecycleOwner) {
+        saveCalendarViewModel.pickStartDateEvent.observe(viewLifecycleOwner) {
             showDatePickerDialog(requireContext()) { _, year, month, dayOfMonth ->
-                addCalendarViewModel.setCalendarStartDate(getString(R.string.ui_date_format, year, month, dayOfMonth))
+                saveCalendarViewModel.setCalendarStartDate(getString(R.string.ui_date_format, year, month, dayOfMonth))
             }
         }
-        addCalendarViewModel.pickEndDateEvent.observe(viewLifecycleOwner) {
+        saveCalendarViewModel.pickEndDateEvent.observe(viewLifecycleOwner) {
             showDatePickerDialog(requireContext()) { _, year, month, dayOfMonth ->
-                addCalendarViewModel.setCalendarEndDate(getString(R.string.ui_date_format, year, month, dayOfMonth))
+                saveCalendarViewModel.setCalendarEndDate(getString(R.string.ui_date_format, year, month, dayOfMonth))
             }
         }
     }
 
     private fun setCheckPointListObserver() {
-        addCalendarViewModel.checkPointList.observe(viewLifecycleOwner, { checkPointList ->
+        saveCalendarViewModel.checkPointList.observe(viewLifecycleOwner, { checkPointList ->
             val checkPointModelList = mutableListOf<CheckPointModel>()
             checkPointList.forEach { checkPoint ->
                 val checkPointModel = CheckPointModel(
@@ -67,7 +67,7 @@ class AddCalendarFragment : BaseFragment<FragmentAddCalendarBinding>(R.layout.fr
                 )
                 checkPointModelList.add(checkPointModel)
             }
-            addCalendarAdapter.submitList(checkPointModelList)
+            saveCalendarAdapter.submitList(checkPointModelList)
         })
     }
 }
