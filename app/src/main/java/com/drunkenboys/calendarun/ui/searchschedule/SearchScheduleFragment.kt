@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.databinding.FragmentSearchScheduleBinding
 import com.drunkenboys.calendarun.ui.base.BaseFragment
+import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -28,6 +29,7 @@ class SearchScheduleFragment : BaseFragment<FragmentSearchScheduleBinding>(R.lay
         setupToolbar()
         initRvSearchSchedule()
         observeListItem()
+        observeScheduleClickEvent()
 
         searchScheduleViewModel.fetchScheduleList()
     }
@@ -57,6 +59,17 @@ class SearchScheduleFragment : BaseFragment<FragmentSearchScheduleBinding>(R.lay
     private fun observeListItem() {
         searchScheduleViewModel.listItem.observe(viewLifecycleOwner) { listItem ->
             searchScheduleAdapter.submitList(listItem)
+        }
+    }
+
+    private fun observeScheduleClickEvent() {
+        // TODO: 2021-11-05 전달하는 파라미터 개수를 변경할 필요가 있는 듯?
+        searchScheduleViewModel.scheduleClickEvent.observe(viewLifecycleOwner) { scheduleId ->
+            val action = SearchScheduleFragmentDirections.actionSearchScheduleFragmentToSaveScheduleFragment(
+                scheduleId = scheduleId,
+                behaviorType = BehaviorType.UPDATE
+            )
+            navController.navigate(action)
         }
     }
 }
