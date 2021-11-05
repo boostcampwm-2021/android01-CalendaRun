@@ -18,8 +18,8 @@ data class DateScheduleItem(val schedule: Schedule) {
         val endDateCal = Calendar.getInstance().apply { time = endDate }
 
         return when {
-            startDateCal.get(Calendar.YEAR) < endDateCal.get(Calendar.YEAR) -> SimpleDateFormat("yy년 m월 d일 hh:mm", Locale.getDefault())
-            startDateCal.get(Calendar.MONTH) < endDateCal.get(Calendar.MONTH) -> SimpleDateFormat("m월 d일 hh:mm", Locale.getDefault())
+            startDateCal.get(Calendar.YEAR) < endDateCal.get(Calendar.YEAR) -> SimpleDateFormat("yyyy년 M월 d일 hh:mm", Locale.getDefault())
+            startDateCal.get(Calendar.MONTH) < endDateCal.get(Calendar.MONTH) -> SimpleDateFormat("M월 d일 hh:mm", Locale.getDefault())
             startDateCal.get(Calendar.DAY_OF_YEAR) < endDateCal.get(Calendar.DAY_OF_YEAR) ->
                 SimpleDateFormat("d일 hh:mm", Locale.getDefault())
             else -> SimpleDateFormat("hh:mm", Locale.getDefault())
