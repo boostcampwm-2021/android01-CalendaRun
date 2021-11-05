@@ -19,7 +19,7 @@ class SearchScheduleViewModel @Inject constructor(
     private val scheduleDataSource: ScheduleLocalDataSource
 ) : ViewModel() {
 
-    val word = MutableLiveData<String>()
+    val word = MutableLiveData("")
 
     private val _listItem = MutableLiveData<List<DateItem>>()
     val listItem: LiveData<List<DateItem>> = _listItem
@@ -33,14 +33,29 @@ class SearchScheduleViewModel @Inject constructor(
 
             _listItem.value = scheduleDataSource.fetchAllSchedule()
                 .filter { schedule -> schedule.startDate >= today }
-                .groupBy { schedule -> schedule.dayMillis() }
-                .map { (dayMillis, scheduleList) ->
-                    val dateScheduleList = scheduleList.map { schedule ->
-                        DateScheduleItem(schedule, _scheduleClickEvent::setValue)
-                    }
-                    DateItem(Date(dayMillis), dateScheduleList)
-                }
-                .sortedBy { dateItem -> dateItem.date }
+                .mapToDateItem()
+        }
+    }
+
+    private fun List<Schedule>.mapToDateItem() = groupBy { schedule -> schedule.dayMillis() }
+        .map { (dayMillis, scheduleList) ->
+            val dateScheduleList = scheduleList.map { schedule ->
+                DateScheduleItem(schedule, _scheduleClickEvent::setValue)
+            }
+            DateItem(Date(dayMillis), dateScheduleList)
+        }
+        .sortedBy { dateItem -> dateItem.date }
+
+    fun searchSchedule(word: String) {
+        if (word.isEmpty()) {
+            fetchScheduleList()
+            return
+        }
+
+        viewModelScope.launch {
+            _listItem.value = scheduleDataSource.fetchAllSchedule()
+                .filter { schedule -> word in schedule.name }
+                .mapToDateItem()
         }
     }
 
