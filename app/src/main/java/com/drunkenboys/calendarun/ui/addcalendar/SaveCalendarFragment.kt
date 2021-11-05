@@ -14,8 +14,8 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.fragment_save_calendar) {
 
-    private val saveCalendarAdapter = SaveCalendarRecyclerViewAdapter()
     private val saveCalendarViewModel by viewModels<SaveCalendarViewModel>()
+    private val saveCalendarAdapter by lazy { SaveCalendarRecyclerViewAdapter() }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -55,6 +55,7 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
                 saveCalendarViewModel.setCalendarEndDate(getString(R.string.ui_date_format, year, month, dayOfMonth))
             }
         }
+
     }
 
     private fun setCheckPointListObserver() {

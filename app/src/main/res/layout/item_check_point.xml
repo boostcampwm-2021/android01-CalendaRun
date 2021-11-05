@@ -8,6 +8,7 @@
         <variable
             name="item"
             type="com.drunkenboys.calendarun.ui.addcalendar.CheckPointModel" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -50,6 +51,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:gravity="center_vertical"
+            android:text="@{item.date}"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="@+id/tv_checkPoint_date"
             app:layout_constraintStart_toStartOf="@+id/tv_checkPoint_date"
