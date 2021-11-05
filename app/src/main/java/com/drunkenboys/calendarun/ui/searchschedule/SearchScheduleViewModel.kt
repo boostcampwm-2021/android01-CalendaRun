@@ -10,6 +10,8 @@ import com.drunkenboys.calendarun.ui.searchschedule.model.DateItem
 import com.drunkenboys.calendarun.ui.searchschedule.model.DateScheduleItem
 import com.drunkenboys.calendarun.util.SingleLiveEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -26,6 +28,8 @@ class SearchScheduleViewModel @Inject constructor(
 
     private val _scheduleClickEvent = SingleLiveEvent<Int>()
     val scheduleClickEvent: LiveData<Int> = _scheduleClickEvent
+
+    private var debounceJob: Job = Job()
 
     fun fetchScheduleList() {
         viewModelScope.launch {
@@ -51,8 +55,11 @@ class SearchScheduleViewModel @Inject constructor(
             fetchScheduleList()
             return
         }
+        debounceJob.cancel()
+        debounceJob = Job()
 
-        viewModelScope.launch {
+        viewModelScope.launch(debounceJob) {
+            delay(500)
             _listItem.value = scheduleDataSource.fetchAllSchedule()
                 .filter { schedule -> word in schedule.name }
                 .mapToDateItem()
