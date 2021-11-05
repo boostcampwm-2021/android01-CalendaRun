@@ -29,15 +29,25 @@ class SearchScheduleViewModel @Inject constructor(
     private val _scheduleClickEvent = SingleLiveEvent<Int>()
     val scheduleClickEvent: LiveData<Int> = _scheduleClickEvent
 
+    private val _isSearching = MutableLiveData(false)
+    val isSearching: LiveData<Boolean> = _isSearching
+
     private var debounceJob: Job = Job()
 
     fun fetchScheduleList() {
-        viewModelScope.launch {
+        debounceJob.cancel()
+        debounceJob = Job()
+        _isSearching.value = true
+
+        viewModelScope.launch(debounceJob) {
+            delay(500)
             val today = Date()
 
             _listItem.value = scheduleDataSource.fetchAllSchedule()
                 .filter { schedule -> schedule.startDate >= today }
                 .mapToDateItem()
+
+            _isSearching.value = false
         }
     }
 
@@ -50,6 +60,13 @@ class SearchScheduleViewModel @Inject constructor(
         }
         .sortedBy { dateItem -> dateItem.date }
 
+    private fun Schedule.dayMillis() = Calendar.getInstance().apply {
+        time = this@dayMillis.startDate
+        set(Calendar.HOUR_OF_DAY, 0)
+        set(Calendar.MINUTE, 0)
+        set(Calendar.SECOND, 0)
+    }.timeInMillis
+
     fun searchSchedule(word: String) {
         if (word.isEmpty()) {
             fetchScheduleList()
@@ -57,19 +74,15 @@ class SearchScheduleViewModel @Inject constructor(
         }
         debounceJob.cancel()
         debounceJob = Job()
+        _isSearching.value = true
 
         viewModelScope.launch(debounceJob) {
             delay(500)
             _listItem.value = scheduleDataSource.fetchAllSchedule()
                 .filter { schedule -> word in schedule.name }
                 .mapToDateItem()
+
+            _isSearching.value = false
         }
     }
-
-    private fun Schedule.dayMillis() = Calendar.getInstance().apply {
-        time = this@dayMillis.startDate
-        set(Calendar.HOUR_OF_DAY, 0)
-        set(Calendar.MINUTE, 0)
-        set(Calendar.SECOND, 0)
-    }.timeInMillis
 }
