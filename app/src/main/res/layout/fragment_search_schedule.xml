@@ -6,6 +6,9 @@
 
     <data>
 
+        <variable
+            name="viewModel"
+            type="com.drunkenboys.calendarun.ui.searchschedule.SearchScheduleViewModel" />
     </data>
 
     <LinearLayout
@@ -32,6 +35,7 @@
                     android:hint="@string/searchSchedule_toolbarHint"
                     android:importantForAutofill="no"
                     android:inputType="text"
+                    android:text="@={viewModel.word}"
                     android:textColor="@color/white"
                     android:textColorHint="@color/searchSchedule_hint" />
 

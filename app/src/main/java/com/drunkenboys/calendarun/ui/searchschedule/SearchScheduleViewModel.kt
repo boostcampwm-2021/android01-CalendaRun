@@ -19,6 +19,8 @@ class SearchScheduleViewModel @Inject constructor(
     private val scheduleDataSource: ScheduleLocalDataSource
 ) : ViewModel() {
 
+    val word = MutableLiveData<String>()
+
     private val _listItem = MutableLiveData<List<DateItem>>()
     val listItem: LiveData<List<DateItem>> = _listItem
 
