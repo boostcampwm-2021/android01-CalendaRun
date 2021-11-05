@@ -8,6 +8,7 @@ import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import com.drunkenboys.calendarun.data.schedule.local.ScheduleLocalDataSource
 import com.drunkenboys.calendarun.ui.searchschedule.model.DateItem
 import com.drunkenboys.calendarun.ui.searchschedule.model.DateScheduleItem
+import com.drunkenboys.calendarun.util.SingleLiveEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.util.*
@@ -21,6 +22,9 @@ class SearchScheduleViewModel @Inject constructor(
     private val _listItem = MutableLiveData<List<DateItem>>()
     val listItem: LiveData<List<DateItem>> = _listItem
 
+    private val _scheduleClickEvent = SingleLiveEvent<Int>()
+    val scheduleClickEvent: LiveData<Int> = _scheduleClickEvent
+
     fun fetchScheduleList() {
         viewModelScope.launch {
             val today = Date()
@@ -28,7 +32,12 @@ class SearchScheduleViewModel @Inject constructor(
             _listItem.value = scheduleDataSource.fetchAllSchedule()
                 .filter { schedule -> schedule.startDate >= today }
                 .groupBy { schedule -> schedule.dayMillis() }
-                .map { (dayMillis, scheduleList) -> DateItem(Date(dayMillis), scheduleList.map { DateScheduleItem(it) }) }
+                .map { (dayMillis, scheduleList) ->
+                    val dateScheduleList = scheduleList.map { schedule ->
+                        DateScheduleItem(schedule, _scheduleClickEvent::setValue)
+                    }
+                    DateItem(Date(dayMillis), dateScheduleList)
+                }
                 .sortedBy { dateItem -> dateItem.date }
         }
     }

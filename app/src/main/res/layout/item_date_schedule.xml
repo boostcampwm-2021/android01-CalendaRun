@@ -13,7 +13,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp">
+        android:layout_marginTop="16dp"
+        android:onClick="@{() -> item.onClick.invoke(item.schedule.id)}">
 
         <View
             android:id="@+id/view_dateSchedule_tagColor"

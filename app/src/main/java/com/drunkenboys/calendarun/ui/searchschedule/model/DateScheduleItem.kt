@@ -4,7 +4,7 @@ import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import java.text.SimpleDateFormat
 import java.util.*
 
-data class DateScheduleItem(val schedule: Schedule) {
+data class DateScheduleItem(val schedule: Schedule, val onClick: (Int) -> Unit) {
 
     val duration: String = run {
         val startDateFormat = SimpleDateFormat("hh:mm", Locale.getDefault())
