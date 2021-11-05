@@ -35,12 +35,9 @@ class SearchScheduleViewModel @Inject constructor(
     private var debounceJob: Job = Job()
 
     fun fetchScheduleList() {
-        debounceJob.cancel()
-        debounceJob = Job()
         _isSearching.value = true
 
-        viewModelScope.launch(debounceJob) {
-            delay(500)
+        viewModelScope.launch {
             val today = Date()
 
             _listItem.value = scheduleDataSource.fetchAllSchedule()
@@ -68,21 +65,26 @@ class SearchScheduleViewModel @Inject constructor(
     }.timeInMillis
 
     fun searchSchedule(word: String) {
+        debounceJob.cancel()
+        debounceJob = Job()
         if (word.isEmpty()) {
             fetchScheduleList()
             return
         }
-        debounceJob.cancel()
-        debounceJob = Job()
         _isSearching.value = true
 
         viewModelScope.launch(debounceJob) {
-            delay(500)
+            delay(DEBOUNCE_DURATION)
             _listItem.value = scheduleDataSource.fetchAllSchedule()
                 .filter { schedule -> word in schedule.name }
                 .mapToDateItem()
 
             _isSearching.value = false
         }
+    }
+
+    companion object {
+
+        private const val DEBOUNCE_DURATION = 500L
     }
 }
