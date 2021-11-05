@@ -7,7 +7,6 @@ import androidx.core.content.getSystemService
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.databinding.FragmentSearchScheduleBinding
@@ -46,7 +45,13 @@ class SearchScheduleFragment : BaseFragment<FragmentSearchScheduleBinding>(R.lay
 
     private fun initRvSearchSchedule() {
         binding.rvSearchSchedule.adapter = searchScheduleAdapter
-        binding.rvSearchSchedule.addItemDecoration(DividerItemDecoration(requireContext(), RecyclerView.VERTICAL))
+        val itemDecoration = HorizontalInsetDividerDecoration(
+            context = requireContext(),
+            orientation = RecyclerView.VERTICAL,
+            leftInset = 16f,
+            rightInset = 16f
+        )
+        binding.rvSearchSchedule.addItemDecoration(itemDecoration)
     }
 
     private fun observeListItem() {
