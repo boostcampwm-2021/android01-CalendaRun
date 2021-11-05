@@ -38,4 +38,7 @@
     <string name="deleteScheduleDialog_cancel">취소</string>
     <string name="calendar">달력</string>
     <string name="mainCalender_addScheduleDescription">일정 추가 버튼</string>
+
+    <!--  fragment_search_schedule  -->
+    <string name="searchSchedule_toolbarHint">일정 검색</string>
 </resources>
