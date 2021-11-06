@@ -1,4 +1,4 @@
-package com.drunkenboys.calendarun.ui.addcalendar.adapter
+package com.drunkenboys.calendarun.ui.savecalendar.adapter
 
 import android.content.Context
 import android.view.ViewGroup
@@ -8,8 +8,8 @@ import com.drunkenboys.calendarun.BR
 import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.databinding.ItemCheckPointBinding
 import com.drunkenboys.calendarun.showDatePickerDialog
-import com.drunkenboys.calendarun.ui.addcalendar.CheckPointModel
 import com.drunkenboys.calendarun.ui.base.BaseViewHolder
+import com.drunkenboys.calendarun.ui.savecalendar.CheckPointModel
 import com.drunkenboys.calendarun.util.context
 
 class SaveCalendarRecyclerViewAdapter :

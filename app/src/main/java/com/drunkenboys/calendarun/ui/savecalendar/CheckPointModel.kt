@@ -1,4 +1,4 @@
-package com.drunkenboys.calendarun.ui.addcalendar
+package com.drunkenboys.calendarun.ui.savecalendar
 
 data class CheckPointModel(
     val name: String,

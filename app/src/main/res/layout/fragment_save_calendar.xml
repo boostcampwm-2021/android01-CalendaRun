@@ -7,7 +7,7 @@
 
         <variable
             name="saveCalendarViewModel"
-            type="com.drunkenboys.calendarun.ui.addcalendar.SaveCalendarViewModel" />
+            type="com.drunkenboys.calendarun.ui.savecalendar.SaveCalendarViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

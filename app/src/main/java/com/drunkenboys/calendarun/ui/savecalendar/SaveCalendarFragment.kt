@@ -1,4 +1,4 @@
-package com.drunkenboys.calendarun.ui.addcalendar
+package com.drunkenboys.calendarun.ui.savecalendar
 
 import android.os.Bundle
 import android.view.View
@@ -8,8 +8,8 @@ import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.databinding.FragmentSaveCalendarBinding
 import com.drunkenboys.calendarun.showDatePickerDialog
 import com.drunkenboys.calendarun.toStringDateFormat
-import com.drunkenboys.calendarun.ui.addcalendar.adapter.SaveCalendarRecyclerViewAdapter
 import com.drunkenboys.calendarun.ui.base.BaseFragment
+import com.drunkenboys.calendarun.ui.savecalendar.adapter.SaveCalendarRecyclerViewAdapter
 import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
 import dagger.hilt.android.AndroidEntryPoint
 

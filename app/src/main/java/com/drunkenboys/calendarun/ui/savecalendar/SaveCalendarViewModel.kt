@@ -1,4 +1,4 @@
-package com.drunkenboys.calendarun.ui.addcalendar
+package com.drunkenboys.calendarun.ui.savecalendar
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

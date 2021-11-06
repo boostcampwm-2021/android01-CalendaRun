@@ -7,7 +7,7 @@
 
         <variable
             name="item"
-            type="com.drunkenboys.calendarun.ui.addcalendar.CheckPointModel" />
+            type="com.drunkenboys.calendarun.ui.savecalendar.CheckPointModel" />
 
     </data>
 
