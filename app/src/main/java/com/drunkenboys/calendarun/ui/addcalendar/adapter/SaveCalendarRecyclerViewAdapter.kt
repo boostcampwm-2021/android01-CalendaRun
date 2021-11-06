@@ -20,12 +20,10 @@ class SaveCalendarRecyclerViewAdapter :
             binding.tvCheckPointDatePicker.setOnClickListener {
                 setCheckPointDate(context(), adapterPosition)
             }
+            binding.cbCheckPointSelect.setOnClickListener {
+                setCheckPointSelected(adapterPosition)
+            }
         }
-    }
-
-    override fun onBindViewHolder(holder: BaseViewHolder<ItemCheckPointBinding>, position: Int) {
-        holder.binding.setVariable(BR.item, currentList[position])
-        holder.binding.item = currentList[position]
     }
 
     private fun setCheckPointDate(context: Context, position: Int) {
@@ -37,6 +35,16 @@ class SaveCalendarRecyclerViewAdapter :
             newList[position] = newCheckPointModel
             submitList(newList)
         }
+    }
+
+    private fun setCheckPointSelected(position: Int) {
+        val currentItem = currentList[position]
+        currentItem.check = !(currentItem.check)
+    }
+
+    override fun onBindViewHolder(holder: BaseViewHolder<ItemCheckPointBinding>, position: Int) {
+        holder.binding.setVariable(BR.item, currentList[position])
+        holder.binding.item = currentList[position]
     }
 
     companion object {
