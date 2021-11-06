@@ -3,6 +3,7 @@ package com.drunkenboys.calendarun.ui.savecalendar
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.navArgs
 import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.databinding.FragmentSaveCalendarBinding
@@ -49,8 +50,8 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
 
     private fun setAddCheckPointViewClickListener() {
         binding.btnSaveCalendarAddCheckPointView.setOnClickListener {
-            val newList = emptyList<CheckPointModel>().toMutableList()
-            newList.add(CheckPointModel("", ""))
+            val newList = emptyList<CheckPointItem>().toMutableList()
+            newList.add(CheckPointItem())
             newList.addAll(saveCalendarAdapter.currentList)
             saveCalendarAdapter.submitList(newList)
         }
@@ -72,11 +73,11 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
 
     private fun setCheckPointListObserver() {
         saveCalendarViewModel.checkPointList.observe(viewLifecycleOwner, { checkPointList ->
-            val checkPointModelList = mutableListOf<CheckPointModel>()
+            val checkPointModelList = mutableListOf<CheckPointItem>()
             checkPointList.forEach { checkPoint ->
-                val checkPointModel = CheckPointModel(
-                    checkPoint.name,
-                    toStringDateFormat(checkPoint.endDate)
+                val checkPointModel = CheckPointItem(
+                    MutableLiveData(checkPoint.name),
+                    MutableLiveData(toStringDateFormat(checkPoint.endDate))
                 )
                 checkPointModelList.add(checkPointModel)
             }

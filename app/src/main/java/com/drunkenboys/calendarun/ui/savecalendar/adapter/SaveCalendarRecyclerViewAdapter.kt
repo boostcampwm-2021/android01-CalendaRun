@@ -18,7 +18,7 @@ class SaveCalendarRecyclerViewAdapter :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<ItemCheckPointBinding> {
         return BaseViewHolder<ItemCheckPointBinding>(parent, R.layout.item_check_point).apply {
             binding.tvCheckPointDatePicker.setOnClickListener {
-                setCheckPointDate(context(), adapterPosition)
+                setCheckPointDate(binding, context(), adapterPosition)
             }
             binding.cbCheckPointSelect.setOnClickListener {
                 setCheckPointSelected(adapterPosition)
@@ -26,14 +26,13 @@ class SaveCalendarRecyclerViewAdapter :
         }
     }
 
-    private fun setCheckPointDate(context: Context, position: Int) {
+    private fun setCheckPointDate(binding: ItemCheckPointBinding, context: Context, position: Int) {
         showDatePickerDialog(context) { _, year, month, dayOfMonth ->
             val currentItem = currentList[position]
             val newList = currentList.toMutableList()
             val date = context.getString(R.string.ui_date_format, year, month, dayOfMonth)
-            val newCheckPointModel = CheckPointModel(currentItem.name, date, currentItem.check)
-            newList[position] = newCheckPointModel
-            submitList(newList)
+            currentItem.date.value = date
+            binding.invalidateAll()
         }
     }
 
