@@ -25,6 +25,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"
                 app:menu="@menu/menu_main_calendar_toolbar"
+                app:navigationIcon="@drawable/ic_menu_24"
                 app:titleTextColor="@color/white"
                 tools:title="수능 캘린더" />
 
