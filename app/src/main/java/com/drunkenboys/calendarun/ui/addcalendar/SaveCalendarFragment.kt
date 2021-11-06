@@ -3,12 +3,14 @@ package com.drunkenboys.calendarun.ui.addcalendar
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.navArgs
 import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.databinding.FragmentSaveCalendarBinding
 import com.drunkenboys.calendarun.showDatePickerDialog
 import com.drunkenboys.calendarun.toStringDateFormat
 import com.drunkenboys.calendarun.ui.addcalendar.adapter.SaveCalendarRecyclerViewAdapter
 import com.drunkenboys.calendarun.ui.base.BaseFragment
+import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -17,14 +19,24 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
     private val saveCalendarViewModel by viewModels<SaveCalendarViewModel>()
     private val saveCalendarAdapter by lazy { SaveCalendarRecyclerViewAdapter() }
 
+    private val args: SaveCalendarFragmentArgs by navArgs()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        initToolbar()
         setDataBinding()
         setRecyclerViewAdapter()
         setAddCheckPointViewClickListener()
         setCheckPointListObserver()
         setPickDateTimeEventObserver()
+    }
+
+    private fun initToolbar() = with(binding) {
+        when (args.behaviorType) {
+            BehaviorType.INSERT -> toolbarSaveCalendar.title = "달력 추가"
+            BehaviorType.UPDATE -> toolbarSaveCalendar.title = "달력 수정"
+        }
     }
 
     private fun setDataBinding() {
