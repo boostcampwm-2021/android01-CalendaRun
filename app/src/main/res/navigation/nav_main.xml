@@ -45,4 +45,19 @@
         android:name="com.drunkenboys.calendarun.ui.saveschedule.DeleteScheduleDialog"
         android:label="DeleteScheduleDialog" />
 
+    <fragment
+        android:id="@+id/saveCalendarFragment"
+        android:name="com.drunkenboys.calendarun.ui.addcalendar.SaveCalendarFragment"
+        android:label="fragment_save_calendar"
+        tools:layout="@layout/fragment_save_calendar">
+        <argument
+            android:name="calendarId"
+            android:defaultValue="-1"
+            app:argType="integer" />
+        <argument
+            android:name="behaviorType"
+            android:defaultValue="INSERT"
+            app:argType="com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType" />
+    </fragment>
+
 </navigation>
