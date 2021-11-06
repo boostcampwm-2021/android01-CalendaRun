@@ -23,8 +23,10 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar_saveCalendar"
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"
+                app:menu="@menu/menu_save_calendar_toolbar"
                 app:titleTextColor="@color/white"
                 tools:title="달력 추가" />
 
