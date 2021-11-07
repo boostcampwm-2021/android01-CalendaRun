@@ -55,6 +55,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:gravity="center_vertical"
+            android:onClick="@{() -> adapter.setCheckPointDate(context, item)}"
             android:text="@={item.date}"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="@+id/tv_checkPoint_date"

@@ -9,7 +9,6 @@ import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.databinding.FragmentSaveCalendarBinding
 import com.drunkenboys.calendarun.showDatePickerDialog
 import com.drunkenboys.calendarun.toStringDateFormat
-import com.drunkenboys.calendarun.ui.addcalendar.SaveCalendarFragmentArgs
 import com.drunkenboys.calendarun.ui.base.BaseFragment
 import com.drunkenboys.calendarun.ui.savecalendar.adapter.SaveCalendarRecyclerViewAdapter
 import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
@@ -19,7 +18,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.fragment_save_calendar) {
 
     private val saveCalendarViewModel by viewModels<SaveCalendarViewModel>()
-    private val saveCalendarAdapter by lazy { SaveCalendarRecyclerViewAdapter() }
+    private val saveCalendarAdapter by lazy { SaveCalendarRecyclerViewAdapter(viewLifecycleOwner) }
 
     private val args: SaveCalendarFragmentArgs by navArgs()
 

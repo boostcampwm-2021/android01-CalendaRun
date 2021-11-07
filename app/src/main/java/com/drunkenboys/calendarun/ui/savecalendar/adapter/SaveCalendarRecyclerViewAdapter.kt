@@ -2,6 +2,7 @@ package com.drunkenboys.calendarun.ui.savecalendar.adapter
 
 import android.content.Context
 import android.view.ViewGroup
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.drunkenboys.calendarun.BR
@@ -10,40 +11,26 @@ import com.drunkenboys.calendarun.databinding.ItemCheckPointBinding
 import com.drunkenboys.calendarun.showDatePickerDialog
 import com.drunkenboys.calendarun.ui.base.BaseViewHolder
 import com.drunkenboys.calendarun.ui.savecalendar.CheckPointItem
-import com.drunkenboys.calendarun.util.context
 
-class SaveCalendarRecyclerViewAdapter :
+class SaveCalendarRecyclerViewAdapter(private val viewLifecycleOwner: LifecycleOwner) :
     ListAdapter<CheckPointItem, BaseViewHolder<ItemCheckPointBinding>>(diffUtil) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<ItemCheckPointBinding> {
-        return BaseViewHolder<ItemCheckPointBinding>(parent, R.layout.item_check_point).apply {
-            binding.tvCheckPointDatePicker.setOnClickListener {
-                setCheckPointDate(binding, context(), adapterPosition)
-            }
-            binding.cbCheckPointSelect.setOnClickListener {
-                setCheckPointSelected(adapterPosition)
-            }
-        }
-    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<ItemCheckPointBinding> =
+        BaseViewHolder(parent, R.layout.item_check_point)
 
-    private fun setCheckPointDate(binding: ItemCheckPointBinding, context: Context, position: Int) {
+    fun setCheckPointDate(context: Context, item: CheckPointItem) {
         showDatePickerDialog(context) { _, year, month, dayOfMonth ->
-            val currentItem = currentList[position]
-            val newList = currentList.toMutableList()
             val date = context.getString(R.string.ui_date_format, year, month, dayOfMonth)
-            currentItem.date.value = date
-            binding.invalidateAll()
+            item.date.value = date
         }
-    }
-
-    private fun setCheckPointSelected(position: Int) {
-        val currentItem = currentList[position]
-        currentItem.check = !(currentItem.check)
     }
 
     override fun onBindViewHolder(holder: BaseViewHolder<ItemCheckPointBinding>, position: Int) {
-        holder.binding.setVariable(BR.item, currentList[position])
-        holder.binding.item = currentList[position]
+        with(holder.binding) {
+            setVariable(BR.item, currentList[position])
+            setVariable(BR.adapter, this@SaveCalendarRecyclerViewAdapter)
+            lifecycleOwner = viewLifecycleOwner
+        }
     }
 
     companion object {
