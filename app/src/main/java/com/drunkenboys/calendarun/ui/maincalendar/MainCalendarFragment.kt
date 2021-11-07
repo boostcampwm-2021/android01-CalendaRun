@@ -18,13 +18,7 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         super.onViewCreated(view, savedInstanceState)
 
         with(binding.toolbarMainCalendar) {
-            setupWithNavController(navController)
-
-            setNavigationIcon(R.drawable.ic_menu_24)
-
-            setNavigationOnClickListener {
-                setupWithNavController(navController, binding.layoutDrawer)
-            }
+            setupWithNavController(navController, binding.layoutDrawer)
 
             setOnMenuItemClickListener { item ->
                 when (item.itemId) {
