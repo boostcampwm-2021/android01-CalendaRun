@@ -7,7 +7,8 @@
 
         <variable
             name="item"
-            type="com.drunkenboys.calendarun.ui.addcalendar.CheckPointModel" />
+            type="com.drunkenboys.calendarun.ui.savecalendar.CheckPointModel" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -31,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:text="@string/check_point_date"
-            app:layout_constraintEnd_toStartOf="@+id/btn_checkPoint_select"
+            app:layout_constraintEnd_toStartOf="@+id/cb_checkPoint_select"
             app:layout_constraintStart_toEndOf="@id/tv_checkPoint_name"
             app:layout_constraintTop_toTopOf="@id/tv_checkPoint_name" />
 
@@ -50,19 +51,18 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:gravity="center_vertical"
+            android:text="@={item.date}"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="@+id/tv_checkPoint_date"
             app:layout_constraintStart_toStartOf="@+id/tv_checkPoint_date"
             app:layout_constraintTop_toBottomOf="@id/tv_checkPoint_date"
             tools:text="2021.03.19" />
 
-        <ImageView
-            android:id="@+id/btn_checkPoint_select"
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/cb_checkPoint_select"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:padding="2dp"
-            android:src="@drawable/ic_check_box_20"
+            android:button="@drawable/selector_check_box_18"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

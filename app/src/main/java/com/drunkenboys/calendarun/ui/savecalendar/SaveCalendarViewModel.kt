@@ -1,4 +1,4 @@
-package com.drunkenboys.calendarun.ui.addcalendar
+package com.drunkenboys.calendarun.ui.savecalendar
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class AddCalendarViewModel @Inject constructor(
+class SaveCalendarViewModel @Inject constructor(
     private val calendarLocalDataSource: CalendarLocalDataSource,
     private val checkPointLocalDataSource: CheckPointLocalDataSource
 ) : ViewModel() {
