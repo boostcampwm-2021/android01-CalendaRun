@@ -28,12 +28,12 @@
             android:id="@+id/tv_itemWeek_sunday"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textAlignment="textStart"
             android:text="@{Integer.toString(week[0].date.dayOfMonth)}"
+            android:textAlignment="center"
             android:textColor="@{design.sundayTextColor}"
             android:visibility="@{week[0].dayType == DayType.PADDING ? View.INVISIBLE: View.VISIBLE}"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/tv_itemWeek_monday"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="일요일" />
 
@@ -41,72 +41,72 @@
             android:id="@+id/tv_itemWeek_monday"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textAlignment="textStart"
             android:text="@{Integer.toString(week[1].date.dayOfMonth)}"
+            android:textAlignment="center"
             android:textColor="@{design.weekDayTextColor}"
             android:visibility="@{week[1].dayType == DayType.PADDING ? View.INVISIBLE: View.VISIBLE}"
-            app:layout_constraintStart_toEndOf="@id/tv_itemWeek_sunday"
             app:layout_constraintEnd_toStartOf="@id/tv_itemWeek_tuesday"
+            app:layout_constraintStart_toEndOf="@id/tv_itemWeek_sunday"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tv_itemWeek_tuesday"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textAlignment="textStart"
             android:text="@{Integer.toString(week[2].date.dayOfMonth)}"
+            android:textAlignment="center"
             android:textColor="@{design.weekDayTextColor}"
             android:visibility="@{week[2].dayType == DayType.PADDING ? View.INVISIBLE: View.VISIBLE}"
-            app:layout_constraintStart_toEndOf="@id/tv_itemWeek_monday"
             app:layout_constraintEnd_toStartOf="@id/tv_itemWeek_wednesday"
+            app:layout_constraintStart_toEndOf="@id/tv_itemWeek_monday"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tv_itemWeek_wednesday"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textAlignment="textStart"
             android:text="@{Integer.toString(week[3].date.dayOfMonth)}"
+            android:textAlignment="center"
             android:textColor="@{design.weekDayTextColor}"
             android:visibility="@{week[3].dayType == DayType.PADDING ? View.INVISIBLE: View.VISIBLE}"
-            app:layout_constraintStart_toEndOf="@id/tv_itemWeek_tuesday"
             app:layout_constraintEnd_toStartOf="@id/tv_itemWeek_thursday"
+            app:layout_constraintStart_toEndOf="@id/tv_itemWeek_tuesday"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tv_itemWeek_thursday"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textAlignment="textStart"
             android:text="@{Integer.toString(week[4].date.dayOfMonth)}"
+            android:textAlignment="center"
             android:textColor="@{design.weekDayTextColor}"
             android:visibility="@{week[4].dayType == DayType.PADDING ? View.INVISIBLE: View.VISIBLE}"
-            app:layout_constraintStart_toEndOf="@id/tv_itemWeek_wednesday"
             app:layout_constraintEnd_toStartOf="@id/tv_itemWeek_friday"
+            app:layout_constraintStart_toEndOf="@id/tv_itemWeek_wednesday"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tv_itemWeek_friday"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textAlignment="textStart"
             android:text="@{Integer.toString(week[5].date.dayOfMonth)}"
+            android:textAlignment="center"
             android:textColor="@{design.weekDayTextColor}"
             android:visibility="@{week[5].dayType == DayType.PADDING ? View.INVISIBLE: View.VISIBLE}"
-            app:layout_constraintStart_toEndOf="@id/tv_itemWeek_thursday"
             app:layout_constraintEnd_toStartOf="@id/tv_itemWeek_saturday"
+            app:layout_constraintStart_toEndOf="@id/tv_itemWeek_thursday"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tv_itemWeek_saturday"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textAlignment="textStart"
             android:text="@{Integer.toString(week[6].date.dayOfMonth)}"
+            android:textAlignment="center"
             android:textColor="@{design.saturdayTextColor}"
             android:visibility="@{week[6].dayType == DayType.PADDING ? View.INVISIBLE: View.VISIBLE}"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/tv_itemWeek_friday"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
