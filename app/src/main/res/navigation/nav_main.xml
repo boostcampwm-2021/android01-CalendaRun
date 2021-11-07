@@ -32,7 +32,6 @@
         tools:layout="@layout/fragment_save_schedule">
         <argument
             android:name="behaviorType"
-            android:defaultValue="INSERT"
             app:argType="com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType" />
         <action
             android:id="@+id/action_saveScheduleFragment_to_deleteScheduleDialog"
