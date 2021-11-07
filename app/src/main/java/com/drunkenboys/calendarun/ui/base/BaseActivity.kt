@@ -8,7 +8,7 @@ import androidx.databinding.ViewDataBinding
 import androidx.viewbinding.ViewBinding
 
 // for view binding
-open class BaseViewActivity<T : ViewBinding>(private val inflate: ((LayoutInflater) -> T)? = null) : AppCompatActivity() {
+open class BaseViewActivity<T : ViewBinding>(private val inflate: ((LayoutInflater) -> T)?) : AppCompatActivity() {
 
     lateinit var binding: T
 
@@ -22,7 +22,7 @@ open class BaseViewActivity<T : ViewBinding>(private val inflate: ((LayoutInflat
 }
 
 // for data binding
-open class BaseActivity<T : ViewDataBinding>(private val layoutId: Int) : BaseViewActivity<T>() {
+open class BaseActivity<T : ViewDataBinding>(private val layoutId: Int) : BaseViewActivity<T>(null) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
