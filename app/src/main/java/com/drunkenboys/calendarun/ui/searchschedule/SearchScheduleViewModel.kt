@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.drunkenboys.calendarun.data.idstore.IdStore
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import com.drunkenboys.calendarun.data.schedule.local.ScheduleLocalDataSource
 import com.drunkenboys.calendarun.ui.searchschedule.model.DateItem
@@ -26,8 +27,8 @@ class SearchScheduleViewModel @Inject constructor(
     private val _listItem = MutableLiveData<List<DateItem>>()
     val listItem: LiveData<List<DateItem>> = _listItem
 
-    private val _scheduleClickEvent = SingleLiveEvent<Int>()
-    val scheduleClickEvent: LiveData<Int> = _scheduleClickEvent
+    private val _scheduleClickEvent = SingleLiveEvent<Unit>()
+    val scheduleClickEvent: LiveData<Unit> = _scheduleClickEvent
 
     private val _isSearching = MutableLiveData(false)
     val isSearching: LiveData<Boolean> = _isSearching
@@ -51,11 +52,17 @@ class SearchScheduleViewModel @Inject constructor(
     private fun List<Schedule>.mapToDateItem() = groupBy { schedule -> schedule.dayMillis() }
         .map { (dayMillis, scheduleList) ->
             val dateScheduleList = scheduleList.map { schedule ->
-                DateScheduleItem(schedule, _scheduleClickEvent::setValue)
+                DateScheduleItem(schedule) { emitScheduleClickEvent(schedule) }
             }
             DateItem(Date(dayMillis), dateScheduleList)
         }
         .sortedBy { dateItem -> dateItem.date }
+
+    private fun emitScheduleClickEvent(schedule: Schedule) {
+        IdStore.putId(IdStore.KEY_CALENDAR_ID, schedule.calendarId)
+        IdStore.putId(IdStore.KEY_SCHEDULE_ID, schedule.id)
+        _scheduleClickEvent.value = Unit
+    }
 
     private fun Schedule.dayMillis() = Calendar.getInstance().apply {
         time = this@dayMillis.startDate
