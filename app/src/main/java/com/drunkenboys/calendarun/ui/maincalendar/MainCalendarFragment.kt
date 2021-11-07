@@ -17,14 +17,22 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.toolbarMainCalendar.setupWithNavController(navController)
+        with(binding.toolbarMainCalendar) {
+            setupWithNavController(navController)
 
-        binding.toolbarMainCalendar.setOnMenuItemClickListener { item ->
-            when (item.itemId) {
-                R.id.menu_main_calendar_search -> navigateToSearchSchedule()
-                else -> return@setOnMenuItemClickListener false
+            setNavigationIcon(R.drawable.ic_menu_24)
+
+            setNavigationOnClickListener {
+                setupWithNavController(navController, binding.layoutDrawer)
             }
-            true
+
+            setOnMenuItemClickListener { item ->
+                when (item.itemId) {
+                    R.id.menu_main_calendar_search -> navigateToSearchSchedule()
+                    else -> return@setOnMenuItemClickListener false
+                }
+                true
+            }
         }
 
         // TODO: 2021-11-04 뷰모델 추가 시 이벤트 방식으로 변경 및 argument 설정
