@@ -5,8 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.drunkenboys.calendarun.R
+import com.drunkenboys.calendarun.data.calendar.local.CalendarLocalDataSource
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import com.drunkenboys.calendarun.data.schedule.local.ScheduleLocalDataSource
+import com.drunkenboys.calendarun.di.CalendarId
+import com.drunkenboys.calendarun.di.ScheduleId
 import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
 import com.drunkenboys.calendarun.ui.saveschedule.model.DateType
 import com.drunkenboys.calendarun.util.SingleLiveEvent
@@ -18,11 +21,12 @@ import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
-class SaveScheduleViewModel @Inject constructor(private val scheduleDataSource: ScheduleLocalDataSource) : ViewModel() {
-
-    private var scheduleId: Int? = null
-
-    private var calendarId: Int? = null
+class SaveScheduleViewModel @Inject constructor(
+    @CalendarId private val calendarId: Int,
+    @ScheduleId private val scheduleId: Int,
+    private val calendarDataSource: CalendarLocalDataSource,
+    private val scheduleDataSource: ScheduleLocalDataSource
+) : ViewModel() {
 
     private lateinit var behaviorType: BehaviorType
 
@@ -51,19 +55,20 @@ class SaveScheduleViewModel @Inject constructor(private val scheduleDataSource: 
     private val _pickNotificationTypeEvent = SingleLiveEvent<Unit>()
     val pickNotificationTypeEvent: LiveData<Unit> = _pickNotificationTypeEvent
 
-    fun init(args: SaveScheduleFragmentArgs) {
-        this.scheduleId = args.scheduleId
-        this.calendarId = args.calendarId
-        _calendarName.value = args.calendarName
-        this.behaviorType = args.behaviorType
+    fun init(behaviorType: BehaviorType) {
+        initCalendarName()
+        this.behaviorType = behaviorType
 
         if (behaviorType == BehaviorType.UPDATE) initData()
     }
 
-    private fun initData() {
-        val scheduleId = scheduleId ?: return
-        if (scheduleId < 0) return
+    private fun initCalendarName() {
+        viewModelScope.launch {
+            _calendarName.value = calendarDataSource.fetchCalendar(calendarId).name
+        }
+    }
 
+    private fun initData() {
         viewModelScope.launch {
             val schedule = scheduleDataSource.fetchSchedule(scheduleId)
 
@@ -109,8 +114,6 @@ class SaveScheduleViewModel @Inject constructor(private val scheduleDataSource: 
     }
 
     private fun isInvalidInput(): Boolean {
-        scheduleId ?: return true
-        calendarId ?: return true
         if (!this::behaviorType.isInitialized) return true
         if (title.value.isNullOrEmpty()) return true
         startDate.value ?: return true
@@ -121,8 +124,7 @@ class SaveScheduleViewModel @Inject constructor(private val scheduleDataSource: 
     }
 
     private fun createScheduleInstance() = Schedule(
-        id = scheduleId ?: throw IllegalArgumentException(),
-        calendarId = calendarId ?: throw IllegalArgumentException(),
+        calendarId = calendarId,
         name = title.getOrThrow(),
         startDate = startDate.getOrThrow(),
         endDate = endDate.getOrThrow(),
@@ -146,7 +148,6 @@ class SaveScheduleViewModel @Inject constructor(private val scheduleDataSource: 
     }
 
     fun deleteSchedule() {
-        val scheduleId = scheduleId ?: return
         if (scheduleId < 0) return
 
         viewModelScope.launch {

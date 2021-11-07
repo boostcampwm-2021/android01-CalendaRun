@@ -45,7 +45,7 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
         observeNotification()
         observeTagColor()
 
-        saveScheduleViewModel.init(args)
+        saveScheduleViewModel.init(args.behaviorType)
     }
 
     private fun initToolbar() = with(binding) {
