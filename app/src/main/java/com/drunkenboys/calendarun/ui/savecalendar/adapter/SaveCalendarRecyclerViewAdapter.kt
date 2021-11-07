@@ -9,11 +9,11 @@ import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.databinding.ItemCheckPointBinding
 import com.drunkenboys.calendarun.showDatePickerDialog
 import com.drunkenboys.calendarun.ui.base.BaseViewHolder
-import com.drunkenboys.calendarun.ui.savecalendar.CheckPointModel
+import com.drunkenboys.calendarun.ui.savecalendar.CheckPointItem
 import com.drunkenboys.calendarun.util.context
 
 class SaveCalendarRecyclerViewAdapter :
-    ListAdapter<CheckPointModel, BaseViewHolder<ItemCheckPointBinding>>(diffUtil) {
+    ListAdapter<CheckPointItem, BaseViewHolder<ItemCheckPointBinding>>(diffUtil) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<ItemCheckPointBinding> {
         return BaseViewHolder<ItemCheckPointBinding>(parent, R.layout.item_check_point).apply {
@@ -47,11 +47,12 @@ class SaveCalendarRecyclerViewAdapter :
     }
 
     companion object {
-        private val diffUtil = object : DiffUtil.ItemCallback<CheckPointModel>() {
-            override fun areItemsTheSame(oldItem: CheckPointModel, newItem: CheckPointModel) =
+
+        private val diffUtil = object : DiffUtil.ItemCallback<CheckPointItem>() {
+            override fun areItemsTheSame(oldItem: CheckPointItem, newItem: CheckPointItem) =
                 oldItem.date == newItem.date
 
-            override fun areContentsTheSame(oldItem: CheckPointModel, newItem: CheckPointModel) =
+            override fun areContentsTheSame(oldItem: CheckPointItem, newItem: CheckPointItem) =
                 oldItem == newItem
         }
     }
