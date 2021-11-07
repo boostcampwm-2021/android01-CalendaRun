@@ -42,4 +42,5 @@
 
     <!--  fragment_search_schedule  -->
     <string name="searchSchedule_toolbarHint">일정 검색</string>
+    <string name="mainCalendar_navi_label">메인 캘린더</string>
 </resources>
