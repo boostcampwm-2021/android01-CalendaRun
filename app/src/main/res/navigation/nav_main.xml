@@ -58,7 +58,7 @@
 
     <fragment
         android:id="@+id/saveCalendarFragment"
-        android:name="com.drunkenboys.calendarun.ui.addcalendar.SaveCalendarFragment"
+        android:name="com.drunkenboys.calendarun.ui.savecalendar.SaveCalendarFragment"
         android:label="fragment_save_calendar"
         tools:layout="@layout/fragment_save_calendar">
         <argument
@@ -70,7 +70,7 @@
             android:defaultValue="INSERT"
             app:argType="com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType" />
     </fragment>
-  
+
     <fragment
         android:id="@+id/searchScheduleFragment"
         android:name="com.drunkenboys.calendarun.ui.searchschedule.SearchScheduleFragment"
