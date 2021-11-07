@@ -9,6 +9,10 @@
             name="item"
             type="com.drunkenboys.calendarun.ui.savecalendar.CheckPointItem" />
 
+        <variable
+            name="adapter"
+            type="com.drunkenboys.calendarun.ui.savecalendar.adapter.SaveCalendarRecyclerViewAdapter" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
