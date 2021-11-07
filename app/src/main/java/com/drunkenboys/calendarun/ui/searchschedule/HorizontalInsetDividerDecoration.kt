@@ -12,7 +12,8 @@ class HorizontalInsetDividerDecoration(
     private val context: Context,
     private val orientation: Int,
     private var leftInset: Float = 0f,
-    private var rightInset: Float = 0f
+    private var rightInset: Float = 0f,
+    private val ignoreLast: Boolean = false
 ) : DividerItemDecoration(context, orientation) {
 
     private val mBounds = Rect()
@@ -48,7 +49,7 @@ class HorizontalInsetDividerDecoration(
         left += context.dp2px(leftInset).toInt()
         right -= context.dp2px(rightInset).toInt()
 
-        val childCount = parent.childCount
+        val childCount = if (ignoreLast) parent.childCount - 1 else parent.childCount
         for (i in 0 until childCount) {
             val child = parent.getChildAt(i)
             parent.getDecoratedBoundsWithMargins(child, mBounds)

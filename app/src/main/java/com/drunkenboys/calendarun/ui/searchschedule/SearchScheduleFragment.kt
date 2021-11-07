@@ -51,7 +51,8 @@ class SearchScheduleFragment : BaseFragment<FragmentSearchScheduleBinding>(R.lay
             context = requireContext(),
             orientation = RecyclerView.VERTICAL,
             leftInset = 16f,
-            rightInset = 16f
+            rightInset = 16f,
+            ignoreLast = true
         )
         binding.rvSearchSchedule.addItemDecoration(itemDecoration)
     }
