@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_mainCalendarFragment_to_saveScheduleFragment"
             app:destination="@id/saveScheduleFragment" />
+        <action
+            android:id="@+id/action_mainCalendarFragment_to_searchScheduleFragment"
+            app:destination="@id/searchScheduleFragment" />
     </fragment>
 
     <fragment
@@ -58,6 +61,16 @@
             android:name="behaviorType"
             android:defaultValue="INSERT"
             app:argType="com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType" />
+    </fragment>
+  
+    <fragment
+        android:id="@+id/searchScheduleFragment"
+        android:name="com.drunkenboys.calendarun.ui.searchschedule.SearchScheduleFragment"
+        android:label="fragment_search_schedule"
+        tools:layout="@layout/fragment_search_schedule">
+        <action
+            android:id="@+id/action_searchScheduleFragment_to_saveScheduleFragment"
+            app:destination="@id/saveScheduleFragment" />
     </fragment>
 
 </navigation>
