@@ -2,6 +2,7 @@ package com.drunkenboys.calendarun.ui.maincalendar
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
@@ -38,6 +39,13 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
             }
         }
 
+        binding.navView.setNavigationItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.menu_drawer_addCalendar -> navigateToAddSchedule()
+            }
+            true
+        }
+
         // TODO: 2021-11-04 뷰모델 추가 시 이벤트 방식으로 변경
         binding.fabMainCalenderAddSchedule.setOnClickListener {
             // TODO: 2021-11-07 ID를 초기화하는 코드를 뷰모델로 이동해야 함
@@ -58,5 +66,11 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
     private fun navigateToSearchSchedule() {
         val action = MainCalendarFragmentDirections.actionMainCalendarFragmentToSearchScheduleFragment()
         navController.navigate(action)
+    }
+
+    private fun navigateToAddSchedule() {
+        val action = MainCalendarFragmentDirections.actionMainCalendarFragmentToSaveCalendarFragment()
+        navController.navigate(action)
+        binding.layoutDrawer.closeDrawer(GravityCompat.START)
     }
 }

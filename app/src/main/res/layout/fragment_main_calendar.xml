@@ -14,18 +14,11 @@
         android:layout_height="match_parent"
         android:fitsSystemWindows="true">
 
-        <com.google.android.material.navigation.NavigationView
-            android:id="@+id/nav_view"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="start"
-            android:fitsSystemWindows="true" />
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true">
-          
+
             <com.google.android.material.appbar.AppBarLayout
                 android:id="@+id/layout_mainCalendar_toolbar"
                 android:layout_width="match_parent"
@@ -43,7 +36,7 @@
                     tools:title="수능 캘린더" />
 
             </com.google.android.material.appbar.AppBarLayout>
-  
+
             <com.drunkenboys.ckscalendar.yearcalendar.YearCalendarView
                 android:id="@+id/calendar_year"
                 android:layout_width="0dp"
@@ -74,5 +67,15 @@
                 app:srcCompat="@drawable/ic_add" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.google.android.material.navigation.NavigationView
+            android:id="@+id/nav_view"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:fitsSystemWindows="true"
+            app:headerLayout="@layout/drawer_header"
+            app:menu="@menu/menu_drawer" />
+
     </androidx.drawerlayout.widget.DrawerLayout>
 </layout>

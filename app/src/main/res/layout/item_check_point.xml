@@ -7,11 +7,11 @@
 
         <variable
             name="item"
-            type="com.drunkenboys.calendarun.ui.savecalendar.CheckPointItem" />
+            type="com.drunkenboys.calendarun.ui.savecalendar.model.CheckPointItem" />
 
         <variable
             name="adapter"
-            type="com.drunkenboys.calendarun.ui.savecalendar.adapter.SaveCalendarRecyclerViewAdapter" />
+            type="com.drunkenboys.calendarun.ui.savecalendar.SaveCalendarRecyclerViewAdapter" />
 
     </data>
 
