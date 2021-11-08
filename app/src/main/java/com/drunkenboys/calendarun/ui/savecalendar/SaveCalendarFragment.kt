@@ -10,7 +10,7 @@ import com.drunkenboys.calendarun.databinding.FragmentSaveCalendarBinding
 import com.drunkenboys.calendarun.showDatePickerDialog
 import com.drunkenboys.calendarun.toStringDateFormat
 import com.drunkenboys.calendarun.ui.base.BaseFragment
-import com.drunkenboys.calendarun.ui.savecalendar.adapter.SaveCalendarRecyclerViewAdapter
+import com.drunkenboys.calendarun.ui.savecalendar.model.CheckPointItem
 import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
 import dagger.hilt.android.AndroidEntryPoint
 
