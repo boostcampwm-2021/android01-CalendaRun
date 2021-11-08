@@ -19,18 +19,22 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.toolbarMainCalendar.setupWithNavController(navController)
-        binding.toolbarMainCalendar.setOnMenuItemClickListener { item ->
-            when (item.itemId) {
-                R.id.menu_main_calendar_search -> navigateToSearchSchedule()
-                R.id.menu_main_calendar_calendar -> {
+
+        with(binding.toolbarMainCalendar) {
+            setupWithNavController(navController, binding.layoutDrawer)
+
+            setOnMenuItemClickListener { item ->
+                when (item.itemId) {
+                    R.id.menu_main_calendar_search -> navigateToSearchSchedule()
+                    R.id.menu_main_calendar_calendar -> {
                     // TODO: CalendarView 내부로 전환
                     binding.calendarMonth.isVisible = binding.calendarMonth.isVisible.not()
                     binding.calendarYear.isVisible = binding.calendarYear.isVisible.not()
                 }
-                else -> return@setOnMenuItemClickListener false
+                    else -> return@setOnMenuItemClickListener false
+                }
+                true
             }
-            true
         }
 
         // TODO: 2021-11-04 뷰모델 추가 시 이벤트 방식으로 변경
