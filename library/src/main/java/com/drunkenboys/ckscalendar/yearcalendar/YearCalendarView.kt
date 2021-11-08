@@ -1,17 +1,21 @@
 package com.drunkenboys.ckscalendar.yearcalendar
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.compiler.plugins.kotlin.ComposeFqNames.key
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
@@ -21,6 +25,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.accessibility.AccessibilityViewCommand
 import androidx.databinding.DataBindingUtil
 import com.drunkenboys.ckscalendar.R
 import com.drunkenboys.ckscalendar.databinding.LayoutYearCalendarBinding
@@ -29,7 +34,10 @@ import com.drunkenboys.ckscalendar.data.CalendarDate
 import com.drunkenboys.ckscalendar.data.CalendarSet
 import com.drunkenboys.ckscalendar.data.DayType
 import com.drunkenboys.ckscalendar.utils.TimeUtils
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import java.time.DayOfWeek
+import java.time.LocalDate
 
 @ExperimentalAnimationApi
 @ExperimentalFoundationApi
@@ -49,7 +57,7 @@ class YearCalendarView
 
     init {
         val yearList =  mutableListOf<List<CalendarSet>>()
-        (2021..2080).forEach { year ->
+        (INIT_YEAR..LAST_YEAR).forEach { year ->
             yearList.add(FakeFactory.createFakeCalendarSetList(year))
         }
 
@@ -149,21 +157,30 @@ class YearCalendarView
     }
 
     //FIXME: 네이밍 수정해야할지도
+    @SuppressLint("CoroutineCreationDuringComposition")
     @ExperimentalAnimationApi
     @ExperimentalFoundationApi
     @Composable
     private fun YearCalendarRecyclerView(yearList: List<List<CalendarSet>>) {
-        LazyColumn {
+        val listState = rememberLazyListState()
+
+        LazyColumn(state = listState) {
             yearList.forEach { year ->
                 stickyHeader {
                     Text( //FIXME: background 투명하지 않게 설정
                         text = "${year[0].startDate.year}년",
-                        modifier = Modifier.background(color = Color.White).fillMaxWidth(),
+                        modifier = Modifier
+                            .background(color = Color.White)
+                            .fillMaxWidth(),
                         textAlign = TextAlign.Center
                     )
                 }
 
-                items(year) { month ->
+                items(
+                    items = year,
+                    key = { month ->
+                        month.startDate
+                    }) { month ->
                     // 월 + 주
                     calendarSetToCalendarDates(month).forEach { week ->
                         val weekIds = week.map { day ->
@@ -193,7 +210,9 @@ class YearCalendarView
                                 else
                                     Text(
                                         text = "${day.date.dayOfMonth}",
-                                        modifier = Modifier.layoutId(day.date.toString()).alpha(0f),
+                                        modifier = Modifier
+                                            .layoutId(day.date.toString())
+                                            .alpha(0f),
                                         textAlign = TextAlign.Center,
                                     )
                                 // TODO: 스케줄 탐색
@@ -204,6 +223,17 @@ class YearCalendarView
                 }
             }
         }
+
+        rememberCoroutineScope().launch {
+            listState.scrollToItem(index = initItemIndex())
+        }
+    }
+
+    private fun initItemIndex(): Int {
+        val today = LocalDate.now()
+
+        // 월 달력 12개 + 년 헤더 1개
+        return (today.year - INIT_YEAR) * 13 + today.monthValue - 1
     }
 
     private fun calendarSetToCalendarDates(month: CalendarSet): List<List<CalendarDate>> {
@@ -242,5 +272,10 @@ class YearCalendarView
 
     private fun isFirstWeek(week: List<CalendarDate>, monthId: Int) = week.any { day ->
         day.date.dayOfMonth == 1 && monthId == day.date.monthValue
+    }
+
+    companion object {
+        const val INIT_YEAR = 0
+        const val LAST_YEAR = 10000
     }
 }
