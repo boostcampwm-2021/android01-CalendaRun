@@ -10,6 +10,8 @@ import com.drunkenboys.calendarun.ui.searchschedule.model.DateItem
 import com.drunkenboys.calendarun.ui.searchschedule.model.DateScheduleItem
 import com.drunkenboys.calendarun.util.SingleLiveEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -19,28 +21,41 @@ class SearchScheduleViewModel @Inject constructor(
     private val scheduleDataSource: ScheduleLocalDataSource
 ) : ViewModel() {
 
+    val word = MutableLiveData("")
+
     private val _listItem = MutableLiveData<List<DateItem>>()
     val listItem: LiveData<List<DateItem>> = _listItem
 
     private val _scheduleClickEvent = SingleLiveEvent<Int>()
     val scheduleClickEvent: LiveData<Int> = _scheduleClickEvent
 
+    private val _isSearching = MutableLiveData(false)
+    val isSearching: LiveData<Boolean> = _isSearching
+
+    private var debounceJob: Job = Job()
+
     fun fetchScheduleList() {
+        _isSearching.value = true
+
         viewModelScope.launch {
             val today = Date()
 
             _listItem.value = scheduleDataSource.fetchAllSchedule()
                 .filter { schedule -> schedule.startDate >= today }
-                .groupBy { schedule -> schedule.dayMillis() }
-                .map { (dayMillis, scheduleList) ->
-                    val dateScheduleList = scheduleList.map { schedule ->
-                        DateScheduleItem(schedule, _scheduleClickEvent::setValue)
-                    }
-                    DateItem(Date(dayMillis), dateScheduleList)
-                }
-                .sortedBy { dateItem -> dateItem.date }
+                .mapToDateItem()
+
+            _isSearching.value = false
         }
     }
+
+    private fun List<Schedule>.mapToDateItem() = groupBy { schedule -> schedule.dayMillis() }
+        .map { (dayMillis, scheduleList) ->
+            val dateScheduleList = scheduleList.map { schedule ->
+                DateScheduleItem(schedule, _scheduleClickEvent::setValue)
+            }
+            DateItem(Date(dayMillis), dateScheduleList)
+        }
+        .sortedBy { dateItem -> dateItem.date }
 
     private fun Schedule.dayMillis() = Calendar.getInstance().apply {
         time = this@dayMillis.startDate
@@ -48,4 +63,28 @@ class SearchScheduleViewModel @Inject constructor(
         set(Calendar.MINUTE, 0)
         set(Calendar.SECOND, 0)
     }.timeInMillis
+
+    fun searchSchedule(word: String) {
+        debounceJob.cancel()
+        debounceJob = Job()
+        if (word.isEmpty()) {
+            fetchScheduleList()
+            return
+        }
+        _isSearching.value = true
+
+        viewModelScope.launch(debounceJob) {
+            delay(DEBOUNCE_DURATION)
+            _listItem.value = scheduleDataSource.fetchAllSchedule()
+                .filter { schedule -> word in schedule.name }
+                .mapToDateItem()
+
+            _isSearching.value = false
+        }
+    }
+
+    companion object {
+
+        private const val DEBOUNCE_DURATION = 500L
+    }
 }

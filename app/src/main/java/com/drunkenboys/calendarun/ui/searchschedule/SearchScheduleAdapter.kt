@@ -3,6 +3,7 @@ package com.drunkenboys.calendarun.ui.searchschedule
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import com.drunkenboys.calendarun.BR
 import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.databinding.ItemDateBinding
@@ -10,7 +11,7 @@ import com.drunkenboys.calendarun.databinding.ItemDateScheduleBinding
 import com.drunkenboys.calendarun.ui.base.BaseViewHolder
 import com.drunkenboys.calendarun.ui.searchschedule.model.DateItem
 
-class SearchScheduleAdapter : androidx.recyclerview.widget.ListAdapter<DateItem, BaseViewHolder<ItemDateBinding>>(diffUtil) {
+class SearchScheduleAdapter : ListAdapter<DateItem, BaseViewHolder<ItemDateBinding>>(diffUtil) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<ItemDateBinding> =
         BaseViewHolder(parent, R.layout.item_date)
