@@ -8,6 +8,10 @@
         <import type="androidx.core.content.ContextCompat" />
 
         <import type="com.drunkenboys.ckscalendar.data.ScheduleColorType" />
+
+        <variable
+            name="viewModel"
+            type="com.drunkenboys.calendarun.ui.saveschedule.SaveScheduleViewModel" />
     </data>
 
     <FrameLayout

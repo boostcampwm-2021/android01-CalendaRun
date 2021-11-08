@@ -55,6 +55,9 @@ class SaveScheduleViewModel @Inject constructor(
     private val _pickNotificationTypeEvent = SingleLiveEvent<Unit>()
     val pickNotificationTypeEvent: LiveData<Unit> = _pickNotificationTypeEvent
 
+    private val _isPickTagColorPopupVisible = MutableLiveData(false)
+    val isPickTagColorPopupVisible: LiveData<Boolean> = _isPickTagColorPopupVisible
+
     fun init(behaviorType: BehaviorType) {
         initCalendarName()
         this.behaviorType = behaviorType
@@ -156,5 +159,9 @@ class SaveScheduleViewModel @Inject constructor(
 
             _saveScheduleEvent.value = Unit
         }
+    }
+
+    fun togglePickTagColorPopup() {
+        _isPickTagColorPopupVisible.value = !_isPickTagColorPopupVisible.getOrThrow()
     }
 }

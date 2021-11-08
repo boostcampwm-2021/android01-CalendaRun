@@ -8,6 +8,8 @@
 
         <import type="com.drunkenboys.calendarun.ui.saveschedule.model.DateType" />
 
+        <import type="android.view.View" />
+
         <variable
             name="viewModel"
             type="com.drunkenboys.calendarun.ui.saveschedule.SaveScheduleViewModel" />
@@ -226,6 +228,7 @@
                     android:layout_width="16dp"
                     android:layout_height="16dp"
                     android:background="@drawable/bg_tag_color"
+                    android:onClick="@{() -> viewModel.togglePickTagColorPopup()}"
                     app:layout_constraintBottom_toBottomOf="@id/tv_saveSchedule_tagColor"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@id/tv_saveSchedule_tagColor"
@@ -236,8 +239,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
+                    android:visibility="@{viewModel.isPickTagColorPopupVisible() ? View.VISIBLE : View.GONE}"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/view_saveSchedule_tagColor" />
+                    app:layout_constraintTop_toBottomOf="@id/view_saveSchedule_tagColor"
+                    app:viewModel="@{viewModel}" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
