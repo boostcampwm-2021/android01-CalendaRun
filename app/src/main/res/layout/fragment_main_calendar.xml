@@ -6,6 +6,9 @@
 
     <data>
 
+        <variable
+            name="mainCalendarViewModel"
+            type="com.drunkenboys.calendarun.ui.maincalendar.MainCalendarViewModel" />
     </data>
 
     <androidx.drawerlayout.widget.DrawerLayout
@@ -32,6 +35,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="?actionBarSize"
                     app:menu="@menu/menu_main_calendar_toolbar"
+                    app:title="@{mainCalendarViewModel.calendar.name"
                     app:titleTextColor="@color/white"
                     tools:title="수능 캘린더" />
 

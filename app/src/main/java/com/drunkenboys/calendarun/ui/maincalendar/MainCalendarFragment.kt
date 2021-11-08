@@ -5,9 +5,11 @@ import android.view.View
 import androidx.core.view.GravityCompat
 import androidx.core.view.get
 import androidx.core.view.isVisible
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.drunkenboys.calendarun.R
+import com.drunkenboys.calendarun.data.calendar.entity.Calendar
 import com.drunkenboys.calendarun.data.idstore.IdStore
 import com.drunkenboys.calendarun.databinding.FragmentMainCalendarBinding
 import com.drunkenboys.calendarun.ui.base.BaseFragment
@@ -18,14 +20,18 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.fragment_main_calendar) {
 
     private val navController by lazy { findNavController() }
-
+    private val mainCalendarViewModel by viewModels<MainCalendarViewModel>()
     private var isMonthCalendar = true
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        mainCalendarViewModel.fetchCalendarList()
         setupCalendarView()
+        setDataBinding()
+        setCalendarObserver()
+        setCalendarListObserver()
         setupToolbar()
-        setupNavigationView()
         setupFab()
     }
 
@@ -33,6 +39,10 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         // TODO: CalendarView 내부로 전환
         binding.calendarMonth.isVisible = isMonthCalendar
         binding.calendarYear.isVisible = !isMonthCalendar
+    }
+
+    private fun setDataBinding() {
+        binding.mainCalendarViewModel = mainCalendarViewModel
     }
 
     private fun setupToolbar() {
@@ -55,16 +65,26 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         navController.navigate(action)
     }
 
-    private fun setupNavigationView() {
+    private fun setCalendarObserver() {
+        mainCalendarViewModel.calendar.observe(viewLifecycleOwner, { calendar ->
+            binding.toolbarMainCalendar.title = calendar.name
+        })
+    }
+
+    private fun setCalendarListObserver() {
+        mainCalendarViewModel.calendarList.observe(viewLifecycleOwner, { calendarList ->
+            setupNavigationView(calendarList)
+        })
+    }
+
+    private fun setupNavigationView(calendarList: List<Calendar>) {
         // TODO: 캘린더 목록 받아와서 아이템 추가하기 (ViewModel)
-        val calendarList = listOf("sample1", "sample2", "sample3")
         val menu = binding.navView.menu
 
-        calendarList.forEach { title ->
-            menu.add(title)
+        calendarList.forEach { calendar ->
+            menu.add(calendar.name)
                 .setIcon(R.drawable.ic_favorite_24)
         }
-
         menu.add(ADD_CALENDAR_TITLE)
             .setIcon(R.drawable.ic_add)
 
@@ -72,6 +92,10 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
             when (item) {
                 menu[calendarList.size] -> navigateToAddSchedule()
                 else -> {
+                    val selectedCalendar = calendarList.find { calendar -> calendar.name == item.title } ?: throw IllegalStateException()
+                    mainCalendarViewModel.setMainCalendar(selectedCalendar)
+                    item.isChecked = true
+                    // binding.layoutDrawer.closeDrawer(GravityCompat.START)
                     // TODO: item에 맞는 캘린더 뷰로 변경
                 }
             }
