@@ -4,11 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.compiler.plugins.kotlin.ComposeFqNames.key
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -25,7 +22,6 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.accessibility.AccessibilityViewCommand
 import androidx.databinding.DataBindingUtil
 import com.drunkenboys.ckscalendar.R
 import com.drunkenboys.ckscalendar.databinding.LayoutYearCalendarBinding
@@ -34,7 +30,6 @@ import com.drunkenboys.ckscalendar.data.CalendarDate
 import com.drunkenboys.ckscalendar.data.CalendarSet
 import com.drunkenboys.ckscalendar.data.DayType
 import com.drunkenboys.ckscalendar.utils.TimeUtils
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -93,7 +88,8 @@ class YearCalendarView
     private fun DayOfWeekTextView(dayOfWeek: String) {
         Text(
             text = dayOfWeek,
-            modifier = Modifier.layoutId(dayOfWeek)
+            modifier = Modifier.layoutId(dayOfWeek),
+            textAlign = TextAlign.Center
         )
     }
 
@@ -167,66 +163,68 @@ class YearCalendarView
         LazyColumn(state = listState) {
             yearList.forEach { year ->
                 stickyHeader {
-                    Text( //FIXME: background 투명하지 않게 설정
-                        text = "${year[0].startDate.year}년",
-                        modifier = Modifier
-                            .background(color = Color.White)
-                            .fillMaxWidth(),
-                        textAlign = TextAlign.Center
-                    )
+                    YearHeader(year)
                 }
 
-                items(
-                    items = year,
-                    key = { month ->
-                        month.startDate
-                    }) { month ->
-                    // 월 + 주
+                items(year) { month ->
                     calendarSetToCalendarDates(month).forEach { week ->
-                        val weekIds = week.map { day ->
-                            day.date.toString()
-                        }
+                        val weekIds = week.map { day -> day.date.toString() }
 
                         ConstraintLayout(dayOfWeekConstraints(weekIds), Modifier.fillMaxWidth()) {
-                            AnimatedVisibility(visible = isFirstWeek(week, month.id)) {
-                                Text(text = "${month.id}월")
+                            if (isFirstWeek(week, month.id)) Text(text = "${month.id}월")
+                                week.forEach { day ->
+
+                                // TODO: 디자인 설정
+                                if (day.dayType == DayType.PADDING) {
+                                    PaddingText(day = day)
+                                } else {
+                                    DayText(day = day)
+                                }
                             }
 
-                            // 일주일 나열
-                            // TODO: 디자인 설정
-                            week.forEach { day ->
-                                if (day.dayType != DayType.PADDING)
-                                    Text(
-                                        text = "${day.date.dayOfMonth}",
-                                        color = when (day.dayType) {
-                                            DayType.HOLIDAY -> Color.Red
-                                            DayType.SATURDAY -> Color.Blue
-                                            DayType.SUNDAY -> Color.Red
-                                            else -> Color.Black
-                                        },
-                                        modifier = Modifier.layoutId(day.date.toString()),
-                                        textAlign = TextAlign.Center,
-                                    )
-                                else
-                                    Text(
-                                        text = "${day.date.dayOfMonth}",
-                                        modifier = Modifier
-                                            .layoutId(day.date.toString())
-                                            .alpha(0f),
-                                        textAlign = TextAlign.Center,
-                                    )
-                                // TODO: 스케줄 탐색
-
-                            }
+                            // TODO: 스케줄 탐색
                         }
                     }
                 }
             }
         }
 
+        // 뷰가 호출되면 오늘 날짜가 보이게 스크롤
         rememberCoroutineScope().launch {
             listState.scrollToItem(index = initItemIndex())
         }
+    }
+    @Composable
+    private fun YearHeader(year: List<CalendarSet>) {
+        Text( //FIXME: background 투명하지 않게 설정
+            text = "${year[0].startDate.year}년",
+            modifier = Modifier.background(color = Color.White).fillMaxWidth(),
+            textAlign = TextAlign.Center
+        )
+    }
+
+    @Composable
+    private fun DayText(day: CalendarDate) {
+        Text(
+            text = "${day.date.dayOfMonth}",
+            color = when (day.dayType) {
+                DayType.HOLIDAY -> Color.Red
+                DayType.SATURDAY -> Color.Blue
+                DayType.SUNDAY -> Color.Red
+                else -> Color.Black
+            },
+            modifier = Modifier.layoutId(day.date.toString()),
+            textAlign = TextAlign.Center,
+        )
+    }
+
+    @Composable
+    private fun PaddingText(day: CalendarDate) {
+        Text(
+            text = "${day.date.dayOfMonth}",
+            modifier = Modifier.layoutId(day.date.toString()).alpha(0f),
+            textAlign = TextAlign.Center,
+        )
     }
 
     private fun initItemIndex(): Int {
@@ -275,6 +273,7 @@ class YearCalendarView
     }
 
     companion object {
+        const val TAG = "YEAR_CALENDAR"
         const val INIT_YEAR = 0
         const val LAST_YEAR = 10000
     }
