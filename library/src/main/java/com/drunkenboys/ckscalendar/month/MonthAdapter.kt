@@ -12,7 +12,7 @@ import com.drunkenboys.ckscalendar.databinding.ItemMonthCellBinding
 import com.drunkenboys.ckscalendar.listener.OnDayClickListener
 import com.drunkenboys.ckscalendar.listener.OnDaySecondClickListener
 
-class MonthAdapter(val onDaySelect: (Int, Int) -> Unit) : ListAdapter<CalendarDate, MonthAdapter.Holder>(diffUtil) {
+class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : ListAdapter<CalendarDate, MonthAdapter.Holder>(diffUtil) {
 
     var selectedPosition = -1
     var currentPagePosition = -1
@@ -52,7 +52,7 @@ class MonthAdapter(val onDaySelect: (Int, Int) -> Unit) : ListAdapter<CalendarDa
                 if (adapterPosition != -1 && currentList[adapterPosition].dayType != DayType.PADDING) {
                     notifyClickEventType()
                     notifyChangedSelectPosition(adapterPosition)
-                    onDaySelect.invoke(currentPagePosition, selectedPosition)
+                    onDaySelectStateListener.onDaySelectChange(currentPagePosition, selectedPosition)
                 }
             }
             binding.layoutMonthCell.layoutParams.height = calculateHeight
