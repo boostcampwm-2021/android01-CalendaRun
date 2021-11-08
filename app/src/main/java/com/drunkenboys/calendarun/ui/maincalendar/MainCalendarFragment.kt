@@ -80,6 +80,7 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
     private fun setupNavigationView(calendarList: List<Calendar>) {
         // TODO: 캘린더 목록 받아와서 아이템 추가하기 (ViewModel)
         val menu = binding.navView.menu
+        menu.clear()
 
         calendarList.forEach { calendar ->
             menu.add(calendar.name)
