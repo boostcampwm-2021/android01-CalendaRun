@@ -4,5 +4,6 @@ import java.time.LocalDate
 
 data class CalendarDate(
     val date: LocalDate,
-    val dayType: DayType
+    val dayType: DayType,
+    var isSelected: Boolean = false
 )

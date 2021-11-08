@@ -29,6 +29,7 @@ class MonthCalendarView @JvmOverloads constructor(
         binding.vpMonthPage.adapter = pageAdapter
         val today = LocalDate.now()
         calendarList = generateCalendarOfYear(today.year)
+
         pageAdapter.setItems(calendarList)
 
         binding.vpMonthPage.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
@@ -46,6 +47,13 @@ class MonthCalendarView @JvmOverloads constructor(
                 super.onPageScrollStateChanged(state)
             }
         })
+
+        calendarList.forEachIndexed { index, calendarSet ->
+            if (calendarSet.startDate.monthValue == today.monthValue) {
+                binding.vpMonthPage.setCurrentItem(index,false)
+                return@forEachIndexed
+            }
+        }
     }
 
     fun setOnDateClickListener(onDateClickListener: OnDayClickListener) {

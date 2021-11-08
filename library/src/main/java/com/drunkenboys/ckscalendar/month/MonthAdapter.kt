@@ -3,6 +3,8 @@ package com.drunkenboys.ckscalendar.month
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.drunkenboys.ckscalendar.data.CalendarDate
 import com.drunkenboys.ckscalendar.data.DayType
@@ -10,9 +12,7 @@ import com.drunkenboys.ckscalendar.databinding.ItemMonthCellBinding
 import com.drunkenboys.ckscalendar.listener.OnDayClickListener
 import com.drunkenboys.ckscalendar.listener.OnDaySecondClickListener
 
-class MonthAdapter(val onDaySelect: (Int, Int) -> Unit) : RecyclerView.Adapter<MonthAdapter.Holder>() {
-
-    private val list = mutableListOf<CalendarDate>()
+class MonthAdapter(val onDaySelect: (Int, Int) -> Unit) : ListAdapter<CalendarDate, MonthAdapter.Holder>(diffUtil) {
 
     var selectedPosition = -1
     var currentPagePosition = -1
@@ -21,10 +21,14 @@ class MonthAdapter(val onDaySelect: (Int, Int) -> Unit) : RecyclerView.Adapter<M
     var onDateSecondClickListener: OnDaySecondClickListener? = null
 
     fun setItems(list: List<CalendarDate>, currentPagePosition: Int) {
+        list.forEachIndexed { index, calendarDate ->
+            if (calendarDate.isSelected) {
+                selectedPosition = index
+                return@forEachIndexed
+            }
+        }
         this.currentPagePosition = currentPagePosition
-        this.list.clear()
-        this.list.addAll(list)
-        notifyDataSetChanged()
+        submitList(list)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
@@ -34,10 +38,8 @@ class MonthAdapter(val onDaySelect: (Int, Int) -> Unit) : RecyclerView.Adapter<M
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
-        holder.bind(list[position])
+        holder.bind(currentList[position])
     }
-
-    override fun getItemCount(): Int = list.size
 
     inner class Holder(private val binding: ItemMonthCellBinding, calculateHeight: Int) : RecyclerView.ViewHolder(binding.root) {
 
@@ -47,9 +49,9 @@ class MonthAdapter(val onDaySelect: (Int, Int) -> Unit) : RecyclerView.Adapter<M
 
         init {
             itemView.setOnClickListener {
-                if (adapterPosition != -1 && list[adapterPosition].dayType != DayType.PADDING) {
+                if (adapterPosition != -1 && currentList[adapterPosition].dayType != DayType.PADDING) {
                     notifyClickEventType()
-                    notifyChangedSelectPosition()
+                    notifyChangedSelectPosition(adapterPosition)
                     onDaySelect.invoke(currentPagePosition, selectedPosition)
                 }
             }
@@ -57,7 +59,7 @@ class MonthAdapter(val onDaySelect: (Int, Int) -> Unit) : RecyclerView.Adapter<M
         }
 
         fun bind(item: CalendarDate) {
-            binding.layoutMonthCell.isSelected = adapterPosition == selectedPosition
+            binding.layoutMonthCell.isSelected = item.isSelected
 
             binding.tvMonthDay.text = ""
             if (item.dayType != DayType.PADDING) {
@@ -71,23 +73,36 @@ class MonthAdapter(val onDaySelect: (Int, Int) -> Unit) : RecyclerView.Adapter<M
             binding.tvMonthDay.setTextColor(textColor)
         }
 
-        private fun notifyChangedSelectPosition() {
+        private fun notifyChangedSelectPosition(position: Int) {
             val selectedTemp = selectedPosition
-            selectedPosition = adapterPosition
-            notifyItemChanged(selectedPosition)
-            notifyItemChanged(selectedTemp)
+            selectedPosition = position
+
+            if (selectedTemp != -1) {
+                currentList[selectedTemp].isSelected = false
+                notifyItemChanged(selectedTemp)
+            }
+
+            currentList[position].isSelected = true
+            notifyItemChanged(position)
         }
 
         private fun notifyClickEventType() {
             if (selectedPosition == adapterPosition) {
-                onDateSecondClickListener?.onDayClick(list[adapterPosition].date, adapterPosition)
+                onDateSecondClickListener?.onDayClick(currentList[adapterPosition].date, adapterPosition)
             } else {
-                onDateClickListener?.onDayClick(list[adapterPosition].date, adapterPosition)
+                onDateClickListener?.onDayClick(currentList[adapterPosition].date, adapterPosition)
             }
         }
     }
 
     companion object {
+
+        private val diffUtil = object : DiffUtil.ItemCallback<CalendarDate>() {
+
+            override fun areItemsTheSame(oldItem: CalendarDate, newItem: CalendarDate) = oldItem.date == newItem.date
+
+            override fun areContentsTheSame(oldItem: CalendarDate, newItem: CalendarDate) = oldItem == newItem
+        }
 
         private const val CALENDAR_COLUMN_SIZE = 7
     }
