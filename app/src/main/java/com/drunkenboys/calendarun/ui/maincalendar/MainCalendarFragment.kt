@@ -85,7 +85,7 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
             menu.add(calendar.name)
                 .setIcon(R.drawable.ic_favorite_24)
         }
-        menu.add(ADD_CALENDAR_TITLE)
+        menu.add(getString(R.string.drawer_calendar_add))
             .setIcon(R.drawable.ic_add)
 
         binding.navView.setNavigationItemSelectedListener { item ->
@@ -119,9 +119,5 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
             val action = MainCalendarFragmentDirections.actionMainCalendarFragmentToSaveScheduleFragment(BehaviorType.INSERT)
             navController.navigate(action)
         }
-    }
-
-    companion object {
-        private const val ADD_CALENDAR_TITLE = "캘린더 추가"
     }
 }
