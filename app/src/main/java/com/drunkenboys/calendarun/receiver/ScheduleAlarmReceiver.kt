@@ -42,6 +42,7 @@ class ScheduleAlarmReceiver : BroadcastReceiver() {
 
         private const val KEY_SCHEDULE_ALARM_MODEL = "ScheduleAlarmModel"
         private const val NOTIFICATION_ID = 1000
-        private const val SCHEDULE_NOTIFICATION_CHANNEL_ID = "com.drunkenboys.calendarun.notification.schedule"
+        const val SCHEDULE_NOTIFICATION_CHANNEL_ID = "com.drunkenboys.calendarun.notification.schedule"
+        const val SCHEDULE_NOTIFICATION_CHANNEL_NAME = "일정 알림 채널"
     }
 }
