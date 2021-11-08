@@ -127,6 +127,7 @@ class SaveScheduleViewModel @Inject constructor(
     }
 
     private fun createScheduleInstance() = Schedule(
+        id = scheduleId,
         calendarId = calendarId,
         name = title.getOrThrow(),
         startDate = startDate.getOrThrow(),

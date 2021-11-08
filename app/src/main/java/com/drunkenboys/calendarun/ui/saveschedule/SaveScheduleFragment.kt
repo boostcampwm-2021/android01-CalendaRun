@@ -54,6 +54,7 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
         observeTagColor()
         observeIsPickTagColorPopupVisible()
         observeSaveScheduleEvent()
+        observeDeleteScheduleEvent()
 
         saveScheduleViewModel.init(args.behaviorType)
     }
@@ -224,5 +225,26 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
         }
 
         return calendar.timeInMillis
+    }
+
+    private fun observeDeleteScheduleEvent() {
+        saveScheduleViewModel.deleteScheduleEvent.observe(viewLifecycleOwner) {
+            deleteNotification()
+            navController.navigateUp()
+        }
+    }
+
+    private fun deleteNotification() {
+        val alarmManager = requireContext().getSystemService<AlarmManager>() ?: return
+
+        val intent = Intent(requireContext(), ScheduleAlarmReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(
+            requireContext(),
+            ScheduleAlarmReceiver.NOTIFICATION_ID,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+        alarmManager.cancel(pendingIntent)
     }
 }
