@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="androidx.core.content.ContextCompat" />
+
+        <import type="com.drunkenboys.ckscalendar.data.ScheduleColorType" />
+    </data>
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:background="@drawable/bg_white_radius_8dp"
+            android:elevation="4dp"
+            android:padding="16dp">
+
+            <View
+                android:id="@+id/view_pickTagColor_red"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="@drawable/bg_tag_color"
+                android:backgroundTint="@{ScheduleColorType.RED.color}" />
+
+            <View
+                android:id="@+id/view_pickTagColor_orange"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="@drawable/bg_tag_color"
+                android:backgroundTint="@{ScheduleColorType.ORANGE.color}"
+                tools:ignore="MissingConstraints" />
+
+            <View
+                android:id="@+id/view_pickTagColor_yellow"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="@drawable/bg_tag_color"
+                android:backgroundTint="@{ScheduleColorType.YELLOW.color}"
+                tools:ignore="MissingConstraints" />
+
+            <View
+                android:id="@+id/view_pickTagColor_green"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="@drawable/bg_tag_color"
+                android:backgroundTint="@{ScheduleColorType.GREEN.color}"
+                tools:ignore="MissingConstraints" />
+
+            <View
+                android:id="@+id/view_pickTagColor_blue"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="@drawable/bg_tag_color"
+                android:backgroundTint="@{ScheduleColorType.BLUE.color}"
+                tools:ignore="MissingConstraints" />
+
+            <View
+                android:id="@+id/view_pickTagColor_navy"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="@drawable/bg_tag_color"
+                android:backgroundTint="@{ScheduleColorType.NAVY.color}"
+                tools:ignore="MissingConstraints" />
+
+            <View
+                android:id="@+id/view_pickTagColor_purple"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="@drawable/bg_tag_color"
+                android:backgroundTint="@{ScheduleColorType.PURPLE.color}"
+                tools:ignore="MissingConstraints" />
+
+            <View
+                android:id="@+id/view_pickTagColor_grey"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="@drawable/bg_tag_color"
+                android:backgroundTint="@{ScheduleColorType.GRAY.color}"
+                tools:ignore="MissingConstraints" />
+
+            <View
+                android:id="@+id/view_pickTagColor_cyan"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="@drawable/bg_tag_color"
+                android:backgroundTint="@{ScheduleColorType.CYAN.color}"
+                tools:ignore="MissingConstraints" />
+
+            <View
+                android:id="@+id/view_tagColor_magenta"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="@drawable/bg_tag_color"
+                android:backgroundTint="@{ScheduleColorType.MAGENTA.color}"
+                tools:ignore="MissingConstraints" />
+
+            <androidx.constraintlayout.helper.widget.Flow
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:constraint_referenced_ids="view_pickTagColor_red, view_pickTagColor_orange, view_pickTagColor_yellow, view_pickTagColor_green, view_pickTagColor_blue, view_pickTagColor_navy, view_pickTagColor_purple, view_pickTagColor_grey, view_pickTagColor_cyan, view_tagColor_magenta"
+                app:flow_horizontalGap="8dp"
+                app:flow_maxElementsWrap="5"
+                app:flow_verticalGap="8dp"
+                app:flow_wrapMode="chain"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </FrameLayout>
+
+</layout>

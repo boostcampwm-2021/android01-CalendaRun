@@ -231,6 +231,14 @@
                     app:layout_constraintTop_toTopOf="@id/tv_saveSchedule_tagColor"
                     tools:backgroundTint="@color/black" />
 
+                <include
+                    layout="@layout/view_pick_tag_color"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/view_saveSchedule_tagColor" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </ScrollView>
