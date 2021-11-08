@@ -225,7 +225,7 @@
                     android:id="@+id/view_saveSchedule_tagColor"
                     android:layout_width="16dp"
                     android:layout_height="16dp"
-                    android:background="@drawable/bg_save_schedule_tag_color"
+                    android:background="@drawable/bg_tag_color"
                     app:layout_constraintBottom_toBottomOf="@id/tv_saveSchedule_tagColor"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@id/tv_saveSchedule_tagColor"
