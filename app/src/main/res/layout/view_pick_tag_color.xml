@@ -31,7 +31,8 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:background="@drawable/bg_tag_color"
-                android:backgroundTint="@{ScheduleColorType.RED.color}" />
+                android:backgroundTint="@{ScheduleColorType.RED.color}"
+                android:onClick="@{() -> viewModel.pickTagColor(ScheduleColorType.RED.color)}" />
 
             <View
                 android:id="@+id/view_pickTagColor_orange"
@@ -39,6 +40,7 @@
                 android:layout_height="24dp"
                 android:background="@drawable/bg_tag_color"
                 android:backgroundTint="@{ScheduleColorType.ORANGE.color}"
+                android:onClick="@{() -> viewModel.pickTagColor(ScheduleColorType.ORANGE.color)}"
                 tools:ignore="MissingConstraints" />
 
             <View
@@ -47,6 +49,7 @@
                 android:layout_height="24dp"
                 android:background="@drawable/bg_tag_color"
                 android:backgroundTint="@{ScheduleColorType.YELLOW.color}"
+                android:onClick="@{() -> viewModel.pickTagColor(ScheduleColorType.YELLOW.color)}"
                 tools:ignore="MissingConstraints" />
 
             <View
@@ -55,6 +58,7 @@
                 android:layout_height="24dp"
                 android:background="@drawable/bg_tag_color"
                 android:backgroundTint="@{ScheduleColorType.GREEN.color}"
+                android:onClick="@{() -> viewModel.pickTagColor(ScheduleColorType.GREEN.color)}"
                 tools:ignore="MissingConstraints" />
 
             <View
@@ -63,6 +67,7 @@
                 android:layout_height="24dp"
                 android:background="@drawable/bg_tag_color"
                 android:backgroundTint="@{ScheduleColorType.BLUE.color}"
+                android:onClick="@{() -> viewModel.pickTagColor(ScheduleColorType.BLUE.color)}"
                 tools:ignore="MissingConstraints" />
 
             <View
@@ -71,6 +76,7 @@
                 android:layout_height="24dp"
                 android:background="@drawable/bg_tag_color"
                 android:backgroundTint="@{ScheduleColorType.NAVY.color}"
+                android:onClick="@{() -> viewModel.pickTagColor(ScheduleColorType.NAVY.color)}"
                 tools:ignore="MissingConstraints" />
 
             <View
@@ -79,6 +85,7 @@
                 android:layout_height="24dp"
                 android:background="@drawable/bg_tag_color"
                 android:backgroundTint="@{ScheduleColorType.PURPLE.color}"
+                android:onClick="@{() -> viewModel.pickTagColor(ScheduleColorType.PURPLE.color)}"
                 tools:ignore="MissingConstraints" />
 
             <View
@@ -87,6 +94,7 @@
                 android:layout_height="24dp"
                 android:background="@drawable/bg_tag_color"
                 android:backgroundTint="@{ScheduleColorType.GRAY.color}"
+                android:onClick="@{() -> viewModel.pickTagColor(ScheduleColorType.GRAY.color)}"
                 tools:ignore="MissingConstraints" />
 
             <View
@@ -95,6 +103,7 @@
                 android:layout_height="24dp"
                 android:background="@drawable/bg_tag_color"
                 android:backgroundTint="@{ScheduleColorType.CYAN.color}"
+                android:onClick="@{() -> viewModel.pickTagColor(ScheduleColorType.CYAN.color)}"
                 tools:ignore="MissingConstraints" />
 
             <View
@@ -103,6 +112,7 @@
                 android:layout_height="24dp"
                 android:background="@drawable/bg_tag_color"
                 android:backgroundTint="@{ScheduleColorType.MAGENTA.color}"
+                android:onClick="@{() -> viewModel.pickTagColor(ScheduleColorType.MAGENTA.color)}"
                 tools:ignore="MissingConstraints" />
 
             <androidx.constraintlayout.helper.widget.Flow

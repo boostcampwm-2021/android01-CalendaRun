@@ -1,10 +1,10 @@
 package com.drunkenboys.calendarun.ui.saveschedule
 
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.ListPopupWindow
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -158,8 +158,9 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
     }
 
     private fun observeTagColor() {
-        saveScheduleViewModel.tagColor.observe(viewLifecycleOwner) { colorRes ->
-            binding.viewSaveScheduleTagColor.backgroundTintList = ContextCompat.getColorStateList(requireContext(), colorRes)
+        saveScheduleViewModel.tagColor.observe(viewLifecycleOwner) { color ->
+            color ?: return@observe
+            binding.viewSaveScheduleTagColor.backgroundTintList = ColorStateList.valueOf(color)
         }
     }
 }

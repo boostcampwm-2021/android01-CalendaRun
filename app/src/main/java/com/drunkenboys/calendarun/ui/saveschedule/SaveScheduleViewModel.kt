@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.data.calendar.local.CalendarLocalDataSource
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import com.drunkenboys.calendarun.data.schedule.local.ScheduleLocalDataSource
@@ -14,6 +13,7 @@ import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
 import com.drunkenboys.calendarun.ui.saveschedule.model.DateType
 import com.drunkenboys.calendarun.util.SingleLiveEvent
 import com.drunkenboys.calendarun.util.getOrThrow
+import com.drunkenboys.ckscalendar.data.ScheduleColorType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -43,7 +43,7 @@ class SaveScheduleViewModel @Inject constructor(
 
     val notificationType = MutableLiveData(Schedule.NotificationType.TEN_MINUTES_AGO)
 
-    private val _tagColor = MutableLiveData(R.color.black)
+    private val _tagColor = MutableLiveData(ScheduleColorType.RED.color)
     val tagColor: LiveData<Int> = _tagColor
 
     private val _saveScheduleEvent = SingleLiveEvent<Unit>()
@@ -163,5 +163,10 @@ class SaveScheduleViewModel @Inject constructor(
 
     fun togglePickTagColorPopup() {
         _isPickTagColorPopupVisible.value = !_isPickTagColorPopupVisible.getOrThrow()
+    }
+
+    fun pickTagColor(tagColor: Int) {
+        _tagColor.value = tagColor
+        _isPickTagColorPopupVisible.value = false
     }
 }

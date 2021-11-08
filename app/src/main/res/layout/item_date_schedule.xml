@@ -21,7 +21,7 @@
             android:layout_width="8dp"
             android:layout_height="8dp"
             android:background="@drawable/bg_tag_color"
-            android:backgroundTint="@color/black"
+            android:backgroundTint="@{item.schedule.color}"
             app:layout_constraintBottom_toBottomOf="@id/tv_dateSchedule_name"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/tv_dateSchedule_name" />
