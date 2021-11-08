@@ -46,8 +46,8 @@ class SaveScheduleViewModel @Inject constructor(
     private val _tagColor = MutableLiveData(ScheduleColorType.RED.color)
     val tagColor: LiveData<Int> = _tagColor
 
-    private val _saveScheduleEvent = SingleLiveEvent<Unit>()
-    val saveScheduleEvent: LiveData<Unit> = _saveScheduleEvent
+    private val _saveScheduleEvent = SingleLiveEvent<Schedule>()
+    val saveScheduleEvent: LiveData<Schedule> = _saveScheduleEvent
 
     private val _pickDateTimeEvent = SingleLiveEvent<DateType>()
     val pickDateTimeEvent: LiveData<DateType> = _pickDateTimeEvent
@@ -112,7 +112,7 @@ class SaveScheduleViewModel @Inject constructor(
                 BehaviorType.INSERT -> scheduleDataSource.insertSchedule(schedule)
                 BehaviorType.UPDATE -> scheduleDataSource.updateSchedule(schedule)
             }
-            _saveScheduleEvent.value = Unit
+            _saveScheduleEvent.value = schedule
         }
     }
 
@@ -136,20 +136,6 @@ class SaveScheduleViewModel @Inject constructor(
         color = tagColor.getOrThrow()
     )
 
-    private fun getNotificationDate(): Date? {
-        val calendar = Calendar.getInstance()
-        calendar.time = startDate.getOrThrow()
-
-        when (notificationType.value) {
-            Schedule.NotificationType.NONE -> return null
-            Schedule.NotificationType.TEN_MINUTES_AGO -> calendar.add(Calendar.MINUTE, -10)
-            Schedule.NotificationType.A_HOUR_AGO -> calendar.add(Calendar.HOUR_OF_DAY, -1)
-            Schedule.NotificationType.A_DAY_AGO -> calendar.add(Calendar.DAY_OF_YEAR, -1)
-        }
-
-        return calendar.time
-    }
-
     fun deleteSchedule() {
         if (scheduleId < 0) return
 
@@ -157,7 +143,7 @@ class SaveScheduleViewModel @Inject constructor(
             val deleteSchedule = scheduleDataSource.fetchSchedule(scheduleId)
             scheduleDataSource.deleteSchedule(deleteSchedule)
 
-            _saveScheduleEvent.value = Unit
+            // TODO: 2021-11-08 delete event 발행
         }
     }
 
