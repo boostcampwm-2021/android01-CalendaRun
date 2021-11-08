@@ -6,26 +6,20 @@
 
     <data>
 
+        <variable
+            name="mainCalendarViewModel"
+            type="com.drunkenboys.calendarun.ui.maincalendar.MainCalendarViewModel" />
     </data>
 
     <androidx.drawerlayout.widget.DrawerLayout
         android:id="@+id/layout_drawer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true">
-
-        <com.google.android.material.navigation.NavigationView
-            android:id="@+id/nav_view"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="start"
-            android:fitsSystemWindows="true" />
+        android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fitsSystemWindows="true">
-          
+            android:layout_height="match_parent">
+
             <com.google.android.material.appbar.AppBarLayout
                 android:id="@+id/layout_mainCalendar_toolbar"
                 android:layout_width="match_parent"
@@ -39,11 +33,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="?actionBarSize"
                     app:menu="@menu/menu_main_calendar_toolbar"
+                    app:title="@{mainCalendarViewModel.calendar.name}"
                     app:titleTextColor="@color/white"
                     tools:title="수능 캘린더" />
 
             </com.google.android.material.appbar.AppBarLayout>
-  
+
             <com.drunkenboys.ckscalendar.yearcalendar.YearCalendarView
                 android:id="@+id/calendar_year"
                 android:layout_width="0dp"
@@ -69,10 +64,21 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
                 android:contentDescription="@string/mainCalender_addScheduleDescription"
+                app:backgroundTint="?colorPrimaryVariant"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:srcCompat="@drawable/ic_add" />
+                app:srcCompat="@drawable/ic_add"
+                app:tint="@color/white" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.google.android.material.navigation.NavigationView
+            android:id="@+id/nav_view"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:fitsSystemWindows="true"
+            app:headerLayout="@layout/drawer_header" />
+
     </androidx.drawerlayout.widget.DrawerLayout>
 </layout>

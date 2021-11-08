@@ -4,13 +4,15 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.navigation.ui.setupWithNavController
 import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.databinding.FragmentSaveCalendarBinding
 import com.drunkenboys.calendarun.showDatePickerDialog
 import com.drunkenboys.calendarun.toStringDateFormat
 import com.drunkenboys.calendarun.ui.base.BaseFragment
-import com.drunkenboys.calendarun.ui.savecalendar.adapter.SaveCalendarRecyclerViewAdapter
+import com.drunkenboys.calendarun.ui.savecalendar.model.CheckPointItem
 import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -19,13 +21,14 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
 
     private val saveCalendarViewModel by viewModels<SaveCalendarViewModel>()
     private val saveCalendarAdapter by lazy { SaveCalendarRecyclerViewAdapter(viewLifecycleOwner) }
+    private val navController by lazy { findNavController() }
 
     private val args: SaveCalendarFragmentArgs by navArgs()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initToolbar()
+        setupToolbar()
         setDataBinding()
         setRecyclerViewAdapter()
         setAddCheckPointViewClickListener()
@@ -33,7 +36,8 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
         setPickDateTimeEventObserver()
     }
 
-    private fun initToolbar() = with(binding) {
+    private fun setupToolbar() = with(binding) {
+        toolbarSaveCalendar.setupWithNavController(navController)
         when (args.behaviorType) {
             BehaviorType.INSERT -> toolbarSaveCalendar.title = "달력 추가"
             BehaviorType.UPDATE -> toolbarSaveCalendar.title = "달력 수정"

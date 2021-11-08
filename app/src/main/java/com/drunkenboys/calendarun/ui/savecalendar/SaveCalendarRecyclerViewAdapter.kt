@@ -1,4 +1,4 @@
-package com.drunkenboys.calendarun.ui.savecalendar.adapter
+package com.drunkenboys.calendarun.ui.savecalendar
 
 import android.content.Context
 import android.view.ViewGroup
@@ -10,7 +10,7 @@ import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.databinding.ItemCheckPointBinding
 import com.drunkenboys.calendarun.showDatePickerDialog
 import com.drunkenboys.calendarun.ui.base.BaseViewHolder
-import com.drunkenboys.calendarun.ui.savecalendar.CheckPointItem
+import com.drunkenboys.calendarun.ui.savecalendar.model.CheckPointItem
 
 class SaveCalendarRecyclerViewAdapter(private val viewLifecycleOwner: LifecycleOwner) :
     ListAdapter<CheckPointItem, BaseViewHolder<ItemCheckPointBinding>>(diffUtil) {
