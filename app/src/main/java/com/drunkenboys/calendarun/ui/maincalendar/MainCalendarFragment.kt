@@ -66,15 +66,15 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
     }
 
     private fun setCalendarObserver() {
-        mainCalendarViewModel.calendar.observe(viewLifecycleOwner, { calendar ->
+        mainCalendarViewModel.calendar.observe(viewLifecycleOwner) { calendar ->
             binding.toolbarMainCalendar.title = calendar.name
-        })
+        }
     }
 
     private fun setCalendarListObserver() {
-        mainCalendarViewModel.calendarList.observe(viewLifecycleOwner, { calendarList ->
+        mainCalendarViewModel.calendarList.observe(viewLifecycleOwner) { calendarList ->
             setupNavigationView(calendarList)
-        })
+        }
     }
 
     private fun setupNavigationView(calendarList: List<Calendar>) {
