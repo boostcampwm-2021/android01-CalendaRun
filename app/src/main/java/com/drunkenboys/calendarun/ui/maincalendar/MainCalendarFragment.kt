@@ -3,6 +3,7 @@ package com.drunkenboys.calendarun.ui.maincalendar
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.GravityCompat
+import androidx.core.view.get
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
@@ -55,9 +56,24 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
     }
 
     private fun setupNavigationView() {
+        // TODO: 캘린더 목록 받아와서 아이템 추가하기 (ViewModel)
+        val calendarList = listOf("sample1", "sample2", "sample3")
+        val menu = binding.navView.menu
+
+        calendarList.forEach { title ->
+            menu.add(title)
+                .setIcon(R.drawable.ic_favorite_24)
+        }
+
+        menu.add(ADD_CALENDAR_TITLE)
+            .setIcon(R.drawable.ic_add)
+
         binding.navView.setNavigationItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.menu_drawer_addCalendar -> navigateToAddSchedule()
+            when (item) {
+                menu[calendarList.size] -> navigateToAddSchedule()
+                else -> {
+                    // TODO: item에 맞는 캘린더 뷰로 변경
+                }
             }
             true
         }
@@ -68,7 +84,7 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         navController.navigate(action)
         binding.layoutDrawer.closeDrawer(GravityCompat.START)
     }
-    
+
     private fun setupFab() {
         // TODO: 2021-11-04 뷰모델 추가 시 이벤트 방식으로 변경
         binding.fabMainCalenderAddSchedule.setOnClickListener {
@@ -81,4 +97,7 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         }
     }
 
+    companion object {
+        private const val ADD_CALENDAR_TITLE = "캘린더 추가"
+    }
 }
