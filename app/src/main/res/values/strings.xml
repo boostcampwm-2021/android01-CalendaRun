@@ -42,4 +42,5 @@
 
     <!--  fragment_search_schedule  -->
     <string name="searchSchedule_toolbarHint">일정 검색</string>
+    <string name="searchSchedule_noSearchResult">검색된 데이터가 없습니다.</string>
 </resources>
