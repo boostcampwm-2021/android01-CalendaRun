@@ -28,7 +28,6 @@ class MonthCalendarView @JvmOverloads constructor(
         calendarList = generateCalendarOfYear(today.year)
         pageAdapter.setItems(calendarList)
 
-        binding.vpMonthPage.offscreenPageLimit = calendarList.size
         binding.vpMonthPage.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
                 super.onPageScrolled(position, positionOffset, positionOffsetPixels)

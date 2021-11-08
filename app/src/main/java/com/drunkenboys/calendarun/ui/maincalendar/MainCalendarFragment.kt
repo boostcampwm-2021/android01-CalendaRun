@@ -18,9 +18,11 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
 
     private val navController by lazy { findNavController() }
 
+    private var isMonthCalendar = true
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        setupCalendarView()
         with(binding.toolbarMainCalendar) {
             setupWithNavController(navController, binding.layoutDrawer)
 
@@ -28,9 +30,8 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
                 when (item.itemId) {
                     R.id.menu_main_calendar_search -> navigateToSearchSchedule()
                     R.id.menu_main_calendar_calendar -> {
-                        // TODO: CalendarView 내부로 전환
-                        binding.calendarMonth.isVisible = binding.calendarMonth.isVisible.not()
-                        binding.calendarYear.isVisible = binding.calendarYear.isVisible.not()
+                        isMonthCalendar = !isMonthCalendar
+                        setupCalendarView()
                     }
                     else -> return@setOnMenuItemClickListener false
                 }
@@ -54,6 +55,12 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
             val action = MainCalendarFragmentDirections.actionMainCalendarFragmentToSaveScheduleFragment(BehaviorType.INSERT)
             navController.navigate(action)
         }
+    }
+
+    private fun setupCalendarView() {
+        // TODO: CalendarView 내부로 전환
+        binding.calendarMonth.isVisible = isMonthCalendar
+        binding.calendarYear.isVisible = !isMonthCalendar
     }
 
     private fun navigateToSearchSchedule() {
