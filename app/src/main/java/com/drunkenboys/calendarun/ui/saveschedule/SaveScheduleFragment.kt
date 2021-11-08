@@ -3,8 +3,6 @@ package com.drunkenboys.calendarun.ui.saveschedule
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.View
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import android.widget.ArrayAdapter
 import android.widget.ListPopupWindow
 import androidx.core.view.isVisible
@@ -20,6 +18,7 @@ import com.drunkenboys.calendarun.databinding.FragmentSaveScheduleBinding
 import com.drunkenboys.calendarun.ui.base.BaseFragment
 import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
 import com.drunkenboys.calendarun.ui.saveschedule.model.DateType
+import com.drunkenboys.calendarun.util.startAnimation
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
@@ -172,23 +171,14 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
         saveScheduleViewModel.isPickTagColorPopupVisible.observe(viewLifecycleOwner, ::togglePickTagColorPopup)
     }
 
-    private fun togglePickTagColorPopup(isVisible: Boolean) {
+    private fun togglePickTagColorPopup(isVisible: Boolean) = with(binding.layoutSaveSchedulePickTagColorPopup) {
         if (isVisible) {
-            binding.layoutSaveSchedulePickTagColorPopup.root.isVisible = true
-            val anim = AnimationUtils.loadAnimation(requireContext(), R.anim.show_scale_up)
-            binding.layoutSaveSchedulePickTagColorPopup.root.startAnimation(anim)
+            root.isVisible = true
+            root.startAnimation(R.anim.show_scale_up)
         } else {
-            val anim = AnimationUtils.loadAnimation(requireContext(), R.anim.hide_scale_down)
-            anim.setAnimationListener(object : Animation.AnimationListener {
-                override fun onAnimationStart(animation: Animation?) {}
-
-                override fun onAnimationEnd(animation: Animation?) {
-                    binding.layoutSaveSchedulePickTagColorPopup.root.isVisible = false
-                }
-
-                override fun onAnimationRepeat(animation: Animation?) {}
-            })
-            binding.layoutSaveSchedulePickTagColorPopup.root.startAnimation(anim)
+            root.startAnimation(R.anim.hide_scale_down) {
+                root.isVisible = false
+            }
         }
     }
 }
