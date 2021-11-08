@@ -36,7 +36,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:fillViewport="true"
-            app:layout_constraintBottom_toTopOf="@id/btn_saveCalendar_saveCalendar"
+            app:layout_constraintBottom_toTopOf="@id/tv_saveCalendar_saveCalendar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/layout_saveCalendar_toolbar">
@@ -148,15 +148,16 @@
                     app:reverseLayout="true"
                     app:stackFromEnd="true" />
 
-
-                <Button
-                    android:id="@+id/btn_saveCalendar_addCheckPointView"
-                    android:layout_width="0dp"
+                <TextView
+                    android:id="@+id/tv_saveCalendar_addCheckPointView"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="8dp"
+                    android:gravity="center"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="4dp"
                     android:text="@string/check_point_footer_save"
-                    app:icon="@drawable/ic_add_circle_24"
-                    app:iconGravity="textStart"
+                    app:drawableStartCompat="@drawable/ic_add_circle_24"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/r_saveCalendar_checkPointList" />
@@ -165,7 +166,7 @@
         </androidx.core.widget.NestedScrollView>
 
         <Button
-            android:id="@+id/btn_saveCalendar_saveCalendar"
+            android:id="@+id/tv_saveCalendar_saveCalendar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="8dp"
@@ -174,6 +175,5 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 </layout>

@@ -53,7 +53,7 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
     }
 
     private fun setAddCheckPointViewClickListener() {
-        binding.btnSaveCalendarAddCheckPointView.setOnClickListener {
+        binding.tvSaveCalendarAddCheckPointView.setOnClickListener {
             val newList = emptyList<CheckPointItem>().toMutableList()
             newList.add(CheckPointItem())
             newList.addAll(saveCalendarAdapter.currentList)
