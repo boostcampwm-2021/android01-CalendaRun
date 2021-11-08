@@ -13,20 +13,15 @@
         android:orientation="vertical">
 
         <androidx.compose.ui.platform.ComposeView
-            android:id="@+id/compose_yearCalendarView_yearCalendar"
+            android:id="@+id/compose_yearCalendarView_dayOfWeek"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
         </androidx.compose.ui.platform.ComposeView>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_yearCalendarView"
-            android:layout_height="wrap_content"
+        <androidx.compose.ui.platform.ComposeView
+            android:id="@+id/compose_yearCalendarView_yearCalendar"
             android:layout_width="match_parent"
-            android:overScrollMode="never"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/compose_yearCalendarView_yearCalendar"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager">
-        </androidx.recyclerview.widget.RecyclerView>
-
+            android:layout_height="wrap_content">
+        </androidx.compose.ui.platform.ComposeView>
     </LinearLayout>
 </layout>
