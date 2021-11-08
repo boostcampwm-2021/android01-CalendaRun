@@ -1,15 +1,17 @@
 package com.drunkenboys.ckscalendar.yearcalendar
 
+import android.graphics.Color
 import android.text.TextUtils
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.RecyclerView
+import com.drunkenboys.ckscalendar.FakeFactory
+import com.drunkenboys.ckscalendar.data.CalendarDate
 import com.drunkenboys.ckscalendar.databinding.ItemYearHeaderBinding
 import com.drunkenboys.ckscalendar.databinding.ItemYearPageBinding
-import com.drunkenboys.ckscalendar.data.CalendarDate
-import com.drunkenboys.ckscalendar.FakeFactory
 
 sealed class YearPageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
@@ -17,7 +19,7 @@ sealed class YearPageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         private val root = (binding.root) as ConstraintLayout
 
-        private val constraintSet =  ConstraintSet()
+        private val constraintSet = ConstraintSet()
 
         init {
             binding.design = FakeFactory.createFakeDesign()
@@ -44,6 +46,7 @@ sealed class YearPageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             ellipsize = TextUtils.TruncateAt.END
             maxLines = 1
             text = "멘토링토링"
+            setBackgroundColor(Color.YELLOW)
         }
 
         private fun addScheduleView(parentView: View, childView: View) = constraintSet.apply {
