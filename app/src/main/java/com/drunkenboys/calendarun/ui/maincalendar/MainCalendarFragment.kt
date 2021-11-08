@@ -2,6 +2,7 @@ package com.drunkenboys.calendarun.ui.maincalendar
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
@@ -27,14 +28,21 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
                 when (item.itemId) {
                     R.id.menu_main_calendar_search -> navigateToSearchSchedule()
                     R.id.menu_main_calendar_calendar -> {
-                    // TODO: CalendarView 내부로 전환
-                    binding.calendarMonth.isVisible = binding.calendarMonth.isVisible.not()
-                    binding.calendarYear.isVisible = binding.calendarYear.isVisible.not()
-                }
+                        // TODO: CalendarView 내부로 전환
+                        binding.calendarMonth.isVisible = binding.calendarMonth.isVisible.not()
+                        binding.calendarYear.isVisible = binding.calendarYear.isVisible.not()
+                    }
                     else -> return@setOnMenuItemClickListener false
                 }
                 true
             }
+        }
+
+        binding.navView.setNavigationItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.menu_drawer_addCalendar -> navigateToAddSchedule()
+            }
+            true
         }
 
         // TODO: 2021-11-04 뷰모델 추가 시 이벤트 방식으로 변경
@@ -51,5 +59,11 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
     private fun navigateToSearchSchedule() {
         val action = MainCalendarFragmentDirections.actionMainCalendarFragmentToSearchScheduleFragment()
         navController.navigate(action)
+    }
+
+    private fun navigateToAddSchedule() {
+        val action = MainCalendarFragmentDirections.actionMainCalendarFragmentToSaveCalendarFragment()
+        navController.navigate(action)
+        binding.layoutDrawer.closeDrawer(GravityCompat.START)
     }
 }
