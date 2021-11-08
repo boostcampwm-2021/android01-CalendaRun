@@ -3,8 +3,11 @@ package com.drunkenboys.calendarun.ui.saveschedule
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.ArrayAdapter
 import android.widget.ListPopupWindow
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -44,6 +47,7 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
         observePickNotificationTypeEvent()
         observeNotification()
         observeTagColor()
+        observeIsPickTagColorPopupVisible()
 
         saveScheduleViewModel.init(args.behaviorType)
     }
@@ -161,6 +165,30 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
         saveScheduleViewModel.tagColor.observe(viewLifecycleOwner) { color ->
             color ?: return@observe
             binding.viewSaveScheduleTagColor.backgroundTintList = ColorStateList.valueOf(color)
+        }
+    }
+
+    private fun observeIsPickTagColorPopupVisible() {
+        saveScheduleViewModel.isPickTagColorPopupVisible.observe(viewLifecycleOwner, ::togglePickTagColorPopup)
+    }
+
+    private fun togglePickTagColorPopup(isVisible: Boolean) {
+        if (isVisible) {
+            binding.layoutSaveSchedulePickTagColorPopup.root.isVisible = true
+            val anim = AnimationUtils.loadAnimation(requireContext(), R.anim.show_scale_up)
+            binding.layoutSaveSchedulePickTagColorPopup.root.startAnimation(anim)
+        } else {
+            val anim = AnimationUtils.loadAnimation(requireContext(), R.anim.hide_scale_down)
+            anim.setAnimationListener(object : Animation.AnimationListener {
+                override fun onAnimationStart(animation: Animation?) {}
+
+                override fun onAnimationEnd(animation: Animation?) {
+                    binding.layoutSaveSchedulePickTagColorPopup.root.isVisible = false
+                }
+
+                override fun onAnimationRepeat(animation: Animation?) {}
+            })
+            binding.layoutSaveSchedulePickTagColorPopup.root.startAnimation(anim)
         }
     }
 }

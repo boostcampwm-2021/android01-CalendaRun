@@ -243,11 +243,11 @@
                 </FrameLayout>
 
                 <include
+                    android:id="@+id/layout_saveSchedule_pickTagColorPopup"
                     layout="@layout/view_pick_tag_color"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:visibility="@{viewModel.isPickTagColorPopupVisible() ? View.VISIBLE : View.GONE}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/layout_saveSchedule_tagColor"
                     app:viewModel="@{viewModel}" />
