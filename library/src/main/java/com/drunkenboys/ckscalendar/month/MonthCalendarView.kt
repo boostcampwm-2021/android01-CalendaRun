@@ -9,6 +9,8 @@ import androidx.viewpager2.widget.ViewPager2
 import com.drunkenboys.ckscalendar.R
 import com.drunkenboys.ckscalendar.data.CalendarSet
 import com.drunkenboys.ckscalendar.databinding.LayoutMonthCalendarBinding
+import com.drunkenboys.ckscalendar.listener.OnDayClickListener
+import com.drunkenboys.ckscalendar.listener.OnDaySecondClickListener
 import java.time.LocalDate
 
 class MonthCalendarView @JvmOverloads constructor(
@@ -20,6 +22,7 @@ class MonthCalendarView @JvmOverloads constructor(
     private val binding: LayoutMonthCalendarBinding by lazy { LayoutMonthCalendarBinding.inflate(LayoutInflater.from(context), this, true) }
 
     private val pageAdapter = MonthPageAdapter()
+
     private var calendarList = listOf<CalendarSet>()
 
     init {
@@ -43,6 +46,14 @@ class MonthCalendarView @JvmOverloads constructor(
                 super.onPageScrollStateChanged(state)
             }
         })
+    }
+
+    fun setOnDateClickListener(onDateClickListener: OnDayClickListener) {
+        pageAdapter.onDateClickListener = onDateClickListener
+    }
+
+    fun setOnDaySecondClickListener(onDateSecondClickListener: OnDaySecondClickListener) {
+        pageAdapter.onDateSecondClickListener = onDateSecondClickListener
     }
 
     private fun generateCalendarOfYear(year: Int): List<CalendarSet> {
