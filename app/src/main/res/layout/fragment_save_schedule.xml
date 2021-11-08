@@ -8,6 +8,8 @@
 
         <import type="com.drunkenboys.calendarun.ui.saveschedule.model.DateType" />
 
+        <import type="android.view.View" />
+
         <variable
             name="viewModel"
             type="com.drunkenboys.calendarun.ui.saveschedule.SaveScheduleViewModel" />
@@ -221,15 +223,34 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/divider_saveSchedule_notificationBottom" />
 
-                <View
-                    android:id="@+id/view_saveSchedule_tagColor"
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:background="@drawable/bg_save_schedule_tag_color"
+                <FrameLayout
+                    android:id="@+id/layout_saveSchedule_tagColor"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:onClick="@{() -> viewModel.togglePickTagColorPopup()}"
                     app:layout_constraintBottom_toBottomOf="@id/tv_saveSchedule_tagColor"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/tv_saveSchedule_tagColor"
-                    tools:backgroundTint="@color/black" />
+                    app:layout_constraintTop_toTopOf="@id/tv_saveSchedule_tagColor">
+
+                    <View
+                        android:id="@+id/view_saveSchedule_tagColor"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/bg_tag_color"
+                        tools:backgroundTint="@color/black" />
+
+                </FrameLayout>
+
+                <include
+                    android:id="@+id/layout_saveSchedule_pickTagColorPopup"
+                    layout="@layout/view_pick_tag_color"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/layout_saveSchedule_tagColor"
+                    app:viewModel="@{viewModel}" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
