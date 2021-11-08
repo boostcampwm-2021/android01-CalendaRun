@@ -18,7 +18,9 @@
             android:layout_height="wrap_content"
             android:text="@{Integer.toString(header) + '월'}"
             android:textAlignment="textStart"
-            android:layout_margin="30dp"
+            android:textSize="18dp"
+            android:textColor="@color/black"
+            android:layout_margin="16dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

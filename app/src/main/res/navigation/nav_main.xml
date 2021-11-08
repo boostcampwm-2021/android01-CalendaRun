@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/mainCalendarFragment"
         android:name="com.drunkenboys.calendarun.ui.maincalendar.MainCalendarFragment"
-        android:label="@string/mainCalendar_navi_label"
+        android:label="@string/app_name"
         tools:layout="@layout/fragment_main_calendar">
         <action
             android:id="@+id/action_mainCalendarFragment_to_saveScheduleFragment"

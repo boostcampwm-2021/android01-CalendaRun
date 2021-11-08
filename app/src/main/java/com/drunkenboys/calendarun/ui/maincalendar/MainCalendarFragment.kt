@@ -2,6 +2,7 @@ package com.drunkenboys.calendarun.ui.maincalendar
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.drunkenboys.calendarun.R
@@ -23,6 +24,11 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
             setOnMenuItemClickListener { item ->
                 when (item.itemId) {
                     R.id.menu_main_calendar_search -> navigateToSearchSchedule()
+                    R.id.menu_main_calendar_calendar -> {
+                    // TODO: CalendarView 내부로 전환
+                    binding.calendarMonth.isVisible = binding.calendarMonth.isVisible.not()
+                    binding.calendarYear.isVisible = binding.calendarYear.isVisible.not()
+                }
                     else -> return@setOnMenuItemClickListener false
                 }
                 true
