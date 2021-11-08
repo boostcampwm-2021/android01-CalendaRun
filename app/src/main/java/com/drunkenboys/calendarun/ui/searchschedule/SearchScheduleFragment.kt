@@ -65,12 +65,8 @@ class SearchScheduleFragment : BaseFragment<FragmentSearchScheduleBinding>(R.lay
     }
 
     private fun observeScheduleClickEvent() {
-        // TODO: 2021-11-05 전달하는 파라미터 개수를 변경할 필요가 있는 듯?
-        searchScheduleViewModel.scheduleClickEvent.observe(viewLifecycleOwner) { scheduleId ->
-            val action = SearchScheduleFragmentDirections.actionSearchScheduleFragmentToSaveScheduleFragment(
-                scheduleId = scheduleId,
-                behaviorType = BehaviorType.UPDATE
-            )
+        searchScheduleViewModel.scheduleClickEvent.observe(viewLifecycleOwner) {
+            val action = SearchScheduleFragmentDirections.actionSearchScheduleFragmentToSaveScheduleFragment(BehaviorType.UPDATE)
             navController.navigate(action)
         }
     }

@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.Calendar.*
 
-data class DateScheduleItem(val schedule: Schedule, val onClick: (Int) -> Unit) {
+data class DateScheduleItem(val schedule: Schedule, val onClick: () -> Unit) {
 
     val duration: String = run {
         val startDateFormat = SimpleDateFormat("hh:mm", Locale.getDefault())

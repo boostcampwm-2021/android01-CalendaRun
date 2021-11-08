@@ -1,7 +1,9 @@
 package com.drunkenboys.calendarun.ui.saveschedule
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.drunkenboys.calendarun.data.calendar.local.CalendarLocalDataSource
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
+import com.drunkenboys.calendarun.data.schedule.local.FakeCalendarLocalDataSource
 import com.drunkenboys.calendarun.data.schedule.local.FakeScheduleLocalDataSource
 import com.drunkenboys.calendarun.data.schedule.local.ScheduleLocalDataSource
 import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
@@ -23,7 +25,8 @@ class SaveScheduleViewModelTest {
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
 
-    private lateinit var dataSource: ScheduleLocalDataSource
+    private lateinit var scheduleDataSource: ScheduleLocalDataSource
+    private lateinit var calendarDataSource: CalendarLocalDataSource
 
     private lateinit var viewModel: SaveScheduleViewModel
 
@@ -33,8 +36,9 @@ class SaveScheduleViewModelTest {
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
-        dataSource = FakeScheduleLocalDataSource()
-        viewModel = SaveScheduleViewModel(dataSource)
+        scheduleDataSource = FakeScheduleLocalDataSource()
+        calendarDataSource = FakeCalendarLocalDataSource()
+        viewModel = SaveScheduleViewModel(0, 0, calendarDataSource, scheduleDataSource)
     }
 
     @After
@@ -45,21 +49,20 @@ class SaveScheduleViewModelTest {
 
     @Test
     fun `뷰모델_초기화_테스트`() {
-        val calendarName = "내 캘린더"
+        val calendarName = "test calendar"
 
-        viewModel.init(SaveScheduleFragmentArgs(1, 2, calendarName, BehaviorType.INSERT))
+        viewModel.init(BehaviorType.INSERT)
 
         assertEquals(calendarName, viewModel.calendarName.value)
     }
 
     @Test
     fun `일정_수정_시_뷰모델_초기화_테스트`() = testScope.runBlockingTest {
-        val calendarName = "내 캘린더"
         val startDate = Date()
         val endDate = Date()
-        dataSource.insertSchedule(Schedule(0, 0, "test", startDate, endDate, Schedule.NotificationType.A_HOUR_AGO, "memo", 0))
+        scheduleDataSource.insertSchedule(Schedule(0, 0, "test", startDate, endDate, Schedule.NotificationType.A_HOUR_AGO, "memo", 0))
 
-        viewModel.init(SaveScheduleFragmentArgs(0, 0, calendarName, BehaviorType.UPDATE))
+        viewModel.init(BehaviorType.UPDATE)
 
         assertEquals("test", viewModel.title.value)
         assertEquals(startDate, viewModel.startDate.value)
@@ -71,9 +74,7 @@ class SaveScheduleViewModelTest {
 
     @Test
     fun `제목_미입력_시_저장_테스트`() = testScope.runBlockingTest {
-        val calendarName = "내 캘린더"
-
-        viewModel.init(SaveScheduleFragmentArgs(1, 2, calendarName, BehaviorType.INSERT))
+        viewModel.init(BehaviorType.INSERT)
         viewModel.saveSchedule()
 
         assertEquals(null, viewModel.saveScheduleEvent.value)
@@ -81,9 +82,7 @@ class SaveScheduleViewModelTest {
 
     @Test
     fun `정상_입력_시_저장_테스트`() {
-        val calendarName = "내 캘린더"
-
-        viewModel.init(SaveScheduleFragmentArgs(1, 2, calendarName, BehaviorType.INSERT))
+        viewModel.init(BehaviorType.INSERT)
         viewModel.title.value = "내 일정"
         viewModel.saveSchedule()
 
@@ -92,12 +91,11 @@ class SaveScheduleViewModelTest {
 
     @Test
     fun `일정_삭제_테스트`() = testScope.runBlockingTest {
-        val calendarName = "내 캘린더"
         val startDate = Date()
         val endDate = Date()
-        dataSource.insertSchedule(Schedule(0, 0, "test", startDate, endDate, Schedule.NotificationType.A_HOUR_AGO, "memo", 0))
-        viewModel.init(SaveScheduleFragmentArgs(0, 0, calendarName, BehaviorType.UPDATE))
-        
+        scheduleDataSource.insertSchedule(Schedule(0, 0, "test", startDate, endDate, Schedule.NotificationType.A_HOUR_AGO, "memo", 0))
+        viewModel.init(BehaviorType.UPDATE)
+
         viewModel.deleteSchedule()
 
         assertEquals(Unit, viewModel.saveScheduleEvent.value)

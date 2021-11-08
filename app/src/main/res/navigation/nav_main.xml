@@ -31,20 +31,7 @@
         android:name="com.drunkenboys.calendarun.ui.saveschedule.SaveScheduleFragment"
         tools:layout="@layout/fragment_save_schedule">
         <argument
-            android:name="scheduleId"
-            android:defaultValue="-1"
-            app:argType="integer" />
-        <argument
-            android:name="calendarId"
-            android:defaultValue="-1"
-            app:argType="integer" />
-        <argument
-            android:name="calendarName"
-            android:defaultValue="temp"
-            app:argType="string" />
-        <argument
             android:name="behaviorType"
-            android:defaultValue="INSERT"
             app:argType="com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType" />
         <action
             android:id="@+id/action_saveScheduleFragment_to_deleteScheduleDialog"
@@ -62,10 +49,6 @@
         android:label="fragment_save_calendar"
         tools:layout="@layout/fragment_save_calendar">
         <argument
-            android:name="calendarId"
-            android:defaultValue="-1"
-            app:argType="integer" />
-        <argument
             android:name="behaviorType"
             android:defaultValue="INSERT"
             app:argType="com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType" />
@@ -74,7 +57,6 @@
     <fragment
         android:id="@+id/searchScheduleFragment"
         android:name="com.drunkenboys.calendarun.ui.searchschedule.SearchScheduleFragment"
-        android:label="fragment_search_schedule"
         tools:layout="@layout/fragment_search_schedule">
         <action
             android:id="@+id/action_searchScheduleFragment_to_saveScheduleFragment"
