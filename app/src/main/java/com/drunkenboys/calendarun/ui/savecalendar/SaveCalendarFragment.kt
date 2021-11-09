@@ -4,18 +4,15 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.setupWithNavController
 import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.databinding.FragmentSaveCalendarBinding
 import com.drunkenboys.calendarun.ui.base.BaseFragment
-import com.drunkenboys.calendarun.ui.savecalendar.model.CheckPointItem
 import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
 import com.drunkenboys.calendarun.util.showDatePickerDialog
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.fragment_save_calendar) {
@@ -32,7 +29,7 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
         setupToolbar()
         setDataBinding()
         setRecyclerViewAdapter()
-        setAddCheckPointViewClickListener()
+        setCheckPointItemListObserver()
         setPickDateTimeEventObserver()
         setSaveCalendarEventObserver()
     }
@@ -53,12 +50,9 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
         binding.rSaveCalendarCheckPointList.adapter = saveCalendarAdapter
     }
 
-    private fun setAddCheckPointViewClickListener() {
-        binding.tvSaveCalendarAddCheckPointView.setOnClickListener {
-            val newList = emptyList<CheckPointItem>().toMutableList()
-            newList.add(CheckPointItem())
-            newList.addAll(saveCalendarAdapter.currentList)
-            saveCalendarAdapter.submitList(newList)
+    private fun setCheckPointItemListObserver() {
+        saveCalendarViewModel.checkPointItemList.observe(viewLifecycleOwner) { list ->
+            saveCalendarAdapter.submitList(list)
         }
     }
 
@@ -77,15 +71,11 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
     }
 
     private fun setSaveCalendarEventObserver() {
-        saveCalendarViewModel.saveCalendarEvent.observe(viewLifecycleOwner) {
-            val checkPointItemList = saveCalendarAdapter.currentList
-            saveCalendarViewModel.setCheckPointItemList(checkPointItemList)
-            lifecycleScope.launch {
-                if (saveCalendarViewModel.saveCalendar()) {
-                    navController.navigateUp()
-                } else {
-                    Toast.makeText(context, "입력 값이 이상해요", Toast.LENGTH_LONG).show()
-                }
+        saveCalendarViewModel.saveCalendarEvent.observe(viewLifecycleOwner) { isSaved ->
+            if (isSaved) {
+                navController.navigateUp()
+            } else {
+                Toast.makeText(context, "입력 값이 이상해요", Toast.LENGTH_LONG).show()
             }
         }
     }

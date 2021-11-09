@@ -154,6 +154,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="8dp"
                     android:gravity="center"
+                    android:onClick="@{() -> saveCalendarViewModel.addCheckPoint()}"
                     android:paddingHorizontal="16dp"
                     android:paddingVertical="4dp"
                     android:text="@string/check_point_footer_save"
