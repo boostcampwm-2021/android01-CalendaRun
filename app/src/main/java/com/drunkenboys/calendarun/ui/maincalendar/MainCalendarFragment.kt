@@ -31,6 +31,8 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         setDataBinding()
         setCalendarObserver()
         setCalendarListObserver()
+        setCheckPointListObserver()
+        setScheduleListObserver()
         setupToolbar()
         setupFab()
     }
@@ -77,6 +79,18 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         }
     }
 
+    private fun setCheckPointListObserver() {
+        mainCalendarViewModel.checkPointList.observe(viewLifecycleOwner) { checkPointList ->
+            // TODO: 2021-11-10 CheckPoint 날짜 읽어서 뷰 나누기
+        }
+    }
+
+    private fun setScheduleListObserver() {
+        mainCalendarViewModel.scheduleList.observe(viewLifecycleOwner) { scheduleList ->
+            // TODO: 2021-11-10 Schedule 캘린더에 띄워주기
+        }
+    }
+
     private fun setupNavigationView(calendarList: List<Calendar>) {
         // TODO: 캘린더 목록 받아와서 아이템 추가하기 (ViewModel)
         val menu = binding.navView.menu
@@ -94,7 +108,7 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
                 menu[calendarList.size] -> navigateToAddSchedule()
                 else -> {
                     val selectedCalendar = calendarList.find { calendar -> calendar.name == item.title } ?: throw IllegalStateException()
-                    mainCalendarViewModel.setMainCalendar(selectedCalendar)
+                    mainCalendarViewModel.setCalendar(selectedCalendar)
                     item.isChecked = true
                     binding.layoutDrawer.closeDrawer(GravityCompat.START)
                     // TODO: item에 맞는 캘린더 뷰로 변경
