@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.drunkenboys.calendarun">
 
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -10,6 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.달려달력">
+
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -24,7 +27,14 @@
             android:name=".receiver.ScheduleAlarmReceiver"
             android:enabled="true"
             android:exported="true" />
-
+        <receiver
+            android:name=".receiver.BootReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
