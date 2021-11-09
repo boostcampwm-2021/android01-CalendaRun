@@ -9,7 +9,7 @@ import com.drunkenboys.calendarun.data.checkpoint.entity.CheckPoint
 interface CheckPointDao {
 
     @Insert
-    suspend fun insertCheckPoint(checkPoint: CheckPoint)
+    suspend fun insertCheckPoint(checkPoint: CheckPoint): Long
 
     @Query("SELECT * FROM `checkpoint`")
     suspend fun fetchAllCheckPoint(): List<CheckPoint>

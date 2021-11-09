@@ -4,7 +4,7 @@ import com.drunkenboys.calendarun.data.checkpoint.entity.CheckPoint
 
 interface CheckPointLocalDataSource {
 
-    suspend fun insertCheckPoint(checkPoint: CheckPoint)
+    suspend fun insertCheckPoint(checkPoint: CheckPoint): Long
 
     suspend fun fetchAllCheckPoint(): List<CheckPoint>
 

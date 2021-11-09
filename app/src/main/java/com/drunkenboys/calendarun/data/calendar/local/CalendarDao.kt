@@ -9,12 +9,12 @@ import com.drunkenboys.calendarun.data.calendar.entity.Calendar
 interface CalendarDao {
 
     @Insert
-    suspend fun insertCalendar(calendar: Calendar)
+    suspend fun insertCalendar(calendar: Calendar): Long
 
     @Query("SELECT * FROM `calendar`")
     suspend fun fetchAllCalendar(): List<Calendar>
 
     @Query("SELECT * FROM `calendar` WHERE id == :id")
     suspend fun fetchCalendar(id: Int): Calendar
-    
+
 }

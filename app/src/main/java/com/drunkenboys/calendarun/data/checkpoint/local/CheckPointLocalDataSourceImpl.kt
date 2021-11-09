@@ -11,11 +11,10 @@ class CheckPointLocalDataSourceImpl @Inject constructor(
     private val checkPointDao: CheckPointDao
 ) : CheckPointLocalDataSource {
 
-    override suspend fun insertCheckPoint(checkPoint: CheckPoint) {
-        withContext(dispatcher) {
-            checkPointDao.insertCheckPoint(checkPoint)
-        }
+    override suspend fun insertCheckPoint(checkPoint: CheckPoint) = withContext(dispatcher) {
+        checkPointDao.insertCheckPoint(checkPoint)
     }
+
 
     override suspend fun fetchAllCheckPoint() = withContext(dispatcher) {
         checkPointDao.fetchAllCheckPoint()

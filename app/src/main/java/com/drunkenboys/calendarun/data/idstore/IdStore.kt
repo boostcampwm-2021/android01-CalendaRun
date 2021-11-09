@@ -4,7 +4,7 @@ object IdStore {
 
     private val idMap = mutableMapOf<String, Int>()
 
-    fun getId(key: String) = idMap[key] ?: -1
+    fun getId(key: String) = idMap[key] ?: 0
 
     fun putId(key: String, id: Int) {
         idMap[key] = id

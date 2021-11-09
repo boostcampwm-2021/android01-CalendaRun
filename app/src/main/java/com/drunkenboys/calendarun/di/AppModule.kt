@@ -16,5 +16,5 @@ object AppModule {
 
     @Provides
     @ScheduleId
-    fun provideScheduleId() = IdStore.getId(IdStore.KEY_SCHEDULE_ID)
+    fun provideScheduleId() = IdStore.getId(IdStore.KEY_SCHEDULE_ID).toLong()
 }
