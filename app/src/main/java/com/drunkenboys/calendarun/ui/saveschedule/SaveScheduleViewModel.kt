@@ -22,7 +22,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SaveScheduleViewModel @Inject constructor(
-    @CalendarId internal val calendarId: Long,
+    @CalendarId private val calendarId: Long,
     @ScheduleId private val scheduleId: Long,
     private val calendarDataSource: CalendarLocalDataSource,
     private val scheduleDataSource: ScheduleLocalDataSource
