@@ -18,6 +18,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.DataBindingUtil
@@ -106,10 +107,12 @@ class YearCalendarView
 
         // 뷰가 호출되면 오늘 날짜가 보이게 스크롤
         rememberCoroutineScope().launch {
+            listState.scrollToItem(index = LAST_YEAR - 1) // preload
             listState.scrollToItem(index = getTodayItemIndex())
         }
     }
 
+    // FIXME: 스케줄 추가하면서 패딩 조정
     @Composable
     private fun DayText(day: CalendarDate) {
         Text(
@@ -120,7 +123,7 @@ class YearCalendarView
                 DayType.SUNDAY -> Color.Red
                 else -> Color.Black
             },
-            modifier = Modifier.layoutId(day.date.toString()),
+            modifier = Modifier.layoutId(day.date.toString()).padding(top = 30.dp),
             textAlign = TextAlign.Center,
         )
     }
