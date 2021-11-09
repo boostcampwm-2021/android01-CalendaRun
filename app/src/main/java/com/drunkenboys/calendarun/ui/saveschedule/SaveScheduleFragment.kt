@@ -84,6 +84,7 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
         notificationPopupWidow = ListPopupWindow(requireContext(), null, R.attr.listPopupWindowStyle).apply {
             anchorView = binding.tvSaveScheduleNotification
             setAdapter(dropDownAdapter)
+            isModal = true
             setOnItemClickListener { _, _, position, _ ->
                 saveScheduleViewModel.notificationType.value = Schedule.NotificationType.values()[position]
                 dismiss()
@@ -140,8 +141,10 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
     private fun togglePickTagColorPopup(isVisible: Boolean) = with(binding.layoutSaveSchedulePickTagColorPopup) {
         if (isVisible) {
             root.isVisible = true
+            root.isFocusable = true
             root.startAnimation(R.anim.show_scale_up)
         } else {
+            root.isFocusable = false
             root.startAnimation(R.anim.hide_scale_down) {
                 root.isVisible = false
             }
