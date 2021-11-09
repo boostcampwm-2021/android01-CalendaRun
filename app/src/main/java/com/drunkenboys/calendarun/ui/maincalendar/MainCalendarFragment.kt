@@ -1,7 +1,9 @@
 package com.drunkenboys.calendarun.ui.maincalendar
 
+import android.os.Build
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.RequiresApi
 import androidx.core.view.GravityCompat
 import androidx.core.view.get
 import androidx.core.view.isVisible
@@ -14,7 +16,10 @@ import com.drunkenboys.calendarun.data.idstore.IdStore
 import com.drunkenboys.calendarun.databinding.FragmentMainCalendarBinding
 import com.drunkenboys.calendarun.ui.base.BaseFragment
 import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
+import com.drunkenboys.ckscalendar.data.CalendarScheduleObject
+import com.drunkenboys.ckscalendar.data.ScheduleColorType
 import dagger.hilt.android.AndroidEntryPoint
+import java.time.LocalDate
 
 @AndroidEntryPoint
 class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.fragment_main_calendar) {
@@ -41,8 +46,54 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         binding.calendarYear.isVisible = !isMonthCalendar
     }
 
+    // TODO: 임시 데이터
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun createFakeSchedule(): List<CalendarScheduleObject> {
+        val today = LocalDate.now()
+
+        return listOf(
+            CalendarScheduleObject(
+                id = 0,
+                color = ScheduleColorType.YELLOW.color,
+                text = "옛스케줄옛옛",
+                startDate = today.minusDays(20),
+                endDate = today.minusDays(5)
+            ),
+            CalendarScheduleObject(
+                id = 1,
+                color = ScheduleColorType.YELLOW.color,
+                text = "뒷스케줄뒷뒷",
+                startDate = today.plusDays(2),
+                endDate = today.plusDays(7)
+            ),
+            CalendarScheduleObject(
+                id = 2,
+                color = ScheduleColorType.BLUE.color,
+                text = "앞스케줄앞앞",
+                startDate = today.minusDays(7),
+                endDate = today.minusDays(2)
+            ),
+            CalendarScheduleObject(
+                id = 3,
+                color = ScheduleColorType.MAGENTA.color,
+                text = "깍두기깍두기",
+                startDate = today.minusDays(5),
+                endDate = today.plusDays(5)
+            ),
+            CalendarScheduleObject(
+                id = 4,
+                color = ScheduleColorType.CYAN.color,
+                text = "긴스케줄긴긴",
+                startDate = today.minusDays(9),
+                endDate = today.plusDays(9)
+            ),
+        )
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun setDataBinding() {
         binding.mainCalendarViewModel = mainCalendarViewModel
+        binding.calendarMonth.setSchedules(createFakeSchedule())
     }
 
     private fun setupToolbar() {
