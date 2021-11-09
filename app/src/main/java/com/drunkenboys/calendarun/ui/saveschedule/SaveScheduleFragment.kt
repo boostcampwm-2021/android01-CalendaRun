@@ -1,8 +1,6 @@
 package com.drunkenboys.calendarun.ui.saveschedule
 
 import android.app.AlarmManager
-import android.app.PendingIntent
-import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.View
@@ -203,23 +201,10 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
         val today = Calendar.getInstance()
         if (today.timeInMillis > triggerAtMillis) return
 
-        val intent = Intent(requireContext(), ScheduleAlarmReceiver::class.java).apply {
-            putExtra(ScheduleAlarmReceiver.KEY_SCHEDULE_NOTIFICATION_TEXT, schedule.name)
-            putExtra(ScheduleAlarmReceiver.KEY_SCHEDULE_NOTIFICATION_TITLE, schedule.memo)
-            putExtra(ScheduleAlarmReceiver.KEY_SCHEDULE_NOTIFICATION_CALENDAR_ID, schedule.calendarId)
-            putExtra(ScheduleAlarmReceiver.KEY_SCHEDULE_NOTIFICATION_SCHEDULE_ID, schedule.id)
-        }
-        val pendingIntent = PendingIntent.getBroadcast(
-            requireContext(),
-            ScheduleAlarmReceiver.NOTIFICATION_ID,
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT
-        )
-
         alarmManager.set(
             AlarmManager.RTC_WAKEUP,
             triggerAtMillis,
-            pendingIntent
+            ScheduleAlarmReceiver.createPendingIntent(requireContext(), schedule)
         )
     }
 
@@ -238,23 +223,15 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
     }
 
     private fun observeDeleteScheduleEvent() {
-        saveScheduleViewModel.deleteScheduleEvent.observe(viewLifecycleOwner) {
-            deleteNotification()
+        saveScheduleViewModel.deleteScheduleEvent.observe(viewLifecycleOwner) { schedule ->
+            deleteNotification(schedule)
             navController.navigateUp()
         }
     }
 
-    private fun deleteNotification() {
+    private fun deleteNotification(schedule: Schedule) {
         val alarmManager = requireContext().getSystemService<AlarmManager>() ?: return
 
-        val intent = Intent(requireContext(), ScheduleAlarmReceiver::class.java)
-        val pendingIntent = PendingIntent.getBroadcast(
-            requireContext(),
-            ScheduleAlarmReceiver.NOTIFICATION_ID,
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT
-        )
-
-        alarmManager.cancel(pendingIntent)
+        alarmManager.cancel(ScheduleAlarmReceiver.createPendingIntent(requireContext(), schedule))
     }
 }

@@ -5,10 +5,12 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService
 import com.drunkenboys.calendarun.MainActivity
 import com.drunkenboys.calendarun.R
+import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 
 class ScheduleAlarmReceiver : BroadcastReceiver() {
 
@@ -21,17 +23,8 @@ class ScheduleAlarmReceiver : BroadcastReceiver() {
         val calendarId = intent.getIntExtra(KEY_SCHEDULE_NOTIFICATION_CALENDAR_ID, 0)
         val scheduleId = intent.getIntExtra(KEY_SCHEDULE_NOTIFICATION_SCHEDULE_ID, 0)
 
-        // fragment navigation은 어떻게?
-        val contentIntent = Intent(context, MainActivity::class.java).apply {
-            putExtra(KEY_SCHEDULE_NOTIFICATION_CALENDAR_ID, calendarId)
-            putExtra(KEY_SCHEDULE_NOTIFICATION_SCHEDULE_ID, scheduleId)
-        }
-        val contentPendingIntent = PendingIntent.getActivity(
-            context,
-            NOTIFICATION_ID,
-            contentIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT
-        )
+        val contentPendingIntent = MainActivity.createNavigationPendingIntent(context, calendarId, scheduleId)
+
         val builder = NotificationCompat.Builder(context, SCHEDULE_NOTIFICATION_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_calendar_today)
             .setContentTitle(title)
@@ -52,5 +45,25 @@ class ScheduleAlarmReceiver : BroadcastReceiver() {
         const val NOTIFICATION_ID = 1000
         const val SCHEDULE_NOTIFICATION_CHANNEL_ID = "com.drunkenboys.calendarun.notification.schedule"
         const val SCHEDULE_NOTIFICATION_CHANNEL_NAME = "일정 알림 채널"
+
+        fun createPendingIntent(context: Context, schedule: Schedule): PendingIntent {
+            val intent = Intent(context, ScheduleAlarmReceiver::class.java).apply {
+                putExtra(KEY_SCHEDULE_NOTIFICATION_TEXT, schedule.name)
+                putExtra(KEY_SCHEDULE_NOTIFICATION_TITLE, schedule.memo)
+                putExtra(KEY_SCHEDULE_NOTIFICATION_CALENDAR_ID, schedule.calendarId)
+                putExtra(KEY_SCHEDULE_NOTIFICATION_SCHEDULE_ID, schedule.id)
+            }
+
+            val pendingIntentFlags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+            else
+                PendingIntent.FLAG_UPDATE_CURRENT
+            return PendingIntent.getBroadcast(
+                context,
+                NOTIFICATION_ID,
+                intent,
+                pendingIntentFlags
+            )
+        }
     }
 }
