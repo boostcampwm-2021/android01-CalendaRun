@@ -132,7 +132,7 @@ class YearCalendarView
     private fun DayText(day: CalendarDate) {
         Text(
             text = "${day.date.dayOfMonth}",
-            color = when (day.dayType) {
+            color = when (day.dayType) { // FIXME: month 와 통합
                 DayType.HOLIDAY -> Color.Red
                 DayType.SATURDAY -> Color.Blue
                 DayType.SUNDAY -> Color.Red
@@ -175,6 +175,7 @@ class YearCalendarView
     fun setOnDaySecondClickListener(onDateSecondClickListener: OnDaySecondClickListener) {
         this.onDateSecondClickListener = onDateSecondClickListener
     }
+
     companion object {
         const val TAG = "YEAR_CALENDAR"
         const val INIT_YEAR = 0
