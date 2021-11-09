@@ -96,7 +96,7 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
                     val selectedCalendar = calendarList.find { calendar -> calendar.name == item.title } ?: throw IllegalStateException()
                     mainCalendarViewModel.setMainCalendar(selectedCalendar)
                     item.isChecked = true
-                    // binding.layoutDrawer.closeDrawer(GravityCompat.START)
+                    binding.layoutDrawer.closeDrawer(GravityCompat.START)
                     // TODO: item에 맞는 캘린더 뷰로 변경
                 }
             }

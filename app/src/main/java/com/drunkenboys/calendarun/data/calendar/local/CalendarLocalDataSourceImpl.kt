@@ -11,11 +11,10 @@ class CalendarLocalDataSourceImpl @Inject constructor(
     private val calendarDao: CalendarDao
 ) : CalendarLocalDataSource {
 
-    override suspend fun insertCalendar(calendar: Calendar) {
-        withContext(dispatcher) {
-            calendarDao.insertCalendar(calendar)
-        }
+    override suspend fun insertCalendar(calendar: Calendar) = withContext(dispatcher) {
+        calendarDao.insertCalendar(calendar)
     }
+
 
     override suspend fun fetchAllCalendar() = withContext(dispatcher) {
         calendarDao.fetchAllCalendar()
