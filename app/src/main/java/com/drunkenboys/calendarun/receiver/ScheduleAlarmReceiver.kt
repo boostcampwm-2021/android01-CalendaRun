@@ -33,7 +33,7 @@ class ScheduleAlarmReceiver : BroadcastReceiver() {
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
 
-        notificationManager.notify(NOTIFICATION_ID, builder.build())
+        notificationManager.notify(getNotificationId(calendarId, scheduleId), builder.build())
     }
 
     companion object {
@@ -42,7 +42,6 @@ class ScheduleAlarmReceiver : BroadcastReceiver() {
         const val KEY_SCHEDULE_NOTIFICATION_TEXT = "text"
         const val KEY_SCHEDULE_NOTIFICATION_CALENDAR_ID = "calendarId"
         const val KEY_SCHEDULE_NOTIFICATION_SCHEDULE_ID = "scheduleId"
-        const val NOTIFICATION_ID = 1000
         const val SCHEDULE_NOTIFICATION_CHANNEL_ID = "com.drunkenboys.calendarun.notification.schedule"
         const val SCHEDULE_NOTIFICATION_CHANNEL_NAME = "일정 알림 채널"
 
@@ -60,10 +59,12 @@ class ScheduleAlarmReceiver : BroadcastReceiver() {
                 PendingIntent.FLAG_UPDATE_CURRENT
             return PendingIntent.getBroadcast(
                 context,
-                NOTIFICATION_ID,
+                getNotificationId(schedule.calendarId, schedule.id),
                 intent,
                 pendingIntentFlags
             )
         }
+
+        fun getNotificationId(calendarId: Int, scheduleId: Int) = calendarId * 1000000 + scheduleId
     }
 }

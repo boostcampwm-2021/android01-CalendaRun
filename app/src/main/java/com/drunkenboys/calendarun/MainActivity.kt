@@ -21,6 +21,8 @@ class MainActivity : BaseViewActivity<ActivityMainBinding>(ActivityMainBinding::
 
     companion object {
 
+        private const val CODE_SCHEDULE_NOTIFICATION = 1000
+
         fun createNavigationPendingIntent(context: Context, calendarId: Int, scheduleId: Int): PendingIntent {
             val contentIntent = Intent(context, MainActivity::class.java).apply {
                 putExtra(ScheduleAlarmReceiver.KEY_SCHEDULE_NOTIFICATION_CALENDAR_ID, calendarId)
@@ -33,7 +35,7 @@ class MainActivity : BaseViewActivity<ActivityMainBinding>(ActivityMainBinding::
                 PendingIntent.FLAG_UPDATE_CURRENT
             return PendingIntent.getActivity(
                 context,
-                ScheduleAlarmReceiver.NOTIFICATION_ID,
+                CODE_SCHEDULE_NOTIFICATION,
                 contentIntent,
                 pendingIntentFlags
             )
