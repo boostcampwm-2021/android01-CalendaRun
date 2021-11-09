@@ -22,15 +22,12 @@ import com.drunkenboys.calendarun.ui.base.BaseFragment
 import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
 import com.drunkenboys.calendarun.ui.saveschedule.model.DateType
 import com.drunkenboys.calendarun.util.notificationDate
+import com.drunkenboys.calendarun.util.pickDateInMillis
+import com.drunkenboys.calendarun.util.pickTime
 import com.drunkenboys.calendarun.util.startAnimation
-import com.google.android.material.datepicker.MaterialDatePicker
-import com.google.android.material.timepicker.MaterialTimePicker
-import com.google.android.material.timepicker.TimeFormat
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
 import java.util.*
-import kotlin.coroutines.resume
 
 @AndroidEntryPoint
 class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.fragment_save_schedule) {
@@ -115,40 +112,6 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
                 }
             }
         }
-    }
-
-    private suspend fun pickDateInMillis() = suspendCancellableCoroutine<Long?> { cont ->
-        // TODO: 2021-11-03 picker 생성을 util 패키지로 분리 고려
-        val datePicker = MaterialDatePicker.Builder.datePicker()
-            .setTitleText(getString(R.string.saveSchedule_pickDate))
-            .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
-            .build()
-        datePicker.apply {
-            addOnPositiveButtonClickListener { timeInMillis -> cont.resume(timeInMillis) }
-            addOnCancelListener { if (cont.isActive) cont.resume(null) }
-            addOnDismissListener { if (cont.isActive) cont.resume(null) }
-            addOnNegativeButtonClickListener { if (cont.isActive) cont.resume(null) }
-        }
-
-        datePicker.show(parentFragmentManager, this@SaveScheduleFragment::class.simpleName)
-    }
-
-    private suspend fun pickTime() = suspendCancellableCoroutine<Pair<Int, Int>?> { cont ->
-        // TODO: 2021-11-03 picker 생성을 util 패키지로 분리 고려
-        val timePicker = MaterialTimePicker.Builder()
-            .setTimeFormat(TimeFormat.CLOCK_12H)
-            .setHour(12)
-            .setMinute(0)
-            .setTitleText(R.string.saveSchedule_pickTime)
-            .build()
-        timePicker.apply {
-            addOnPositiveButtonClickListener { cont.resume(timePicker.hour to timePicker.minute) }
-            addOnCancelListener { if (cont.isActive) cont.resume(null) }
-            addOnDismissListener { if (cont.isActive) cont.resume(null) }
-            addOnNegativeButtonClickListener { if (cont.isActive) cont.resume(null) }
-        }
-
-        timePicker.show(parentFragmentManager, this@SaveScheduleFragment::class.simpleName)
     }
 
     private fun observePickNotificationTypeEvent() {
