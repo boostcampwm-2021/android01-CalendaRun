@@ -25,7 +25,7 @@ class SearchScheduleFragment : BaseFragment<FragmentSearchScheduleBinding>(R.lay
         super.onViewCreated(view, savedInstanceState)
         binding.viewModel = searchScheduleViewModel
 
-        setupToolbar()
+        initToolbar()
         initRvSearchSchedule()
         observeListItem()
         observeScheduleClickEvent()
@@ -33,7 +33,7 @@ class SearchScheduleFragment : BaseFragment<FragmentSearchScheduleBinding>(R.lay
         searchScheduleViewModel.fetchScheduleList()
     }
 
-    private fun setupToolbar() {
+    private fun initToolbar() {
         binding.toolbarSearchSchedule.setupWithNavController(navController)
     }
 
