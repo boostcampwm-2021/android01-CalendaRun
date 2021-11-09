@@ -1,10 +1,12 @@
 package com.drunkenboys.calendarun.ui.saveschedule
 
+import android.app.AlarmManager
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.ListPopupWindow
+import androidx.core.content.getSystemService
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -15,9 +17,11 @@ import androidx.navigation.ui.setupWithNavController
 import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import com.drunkenboys.calendarun.databinding.FragmentSaveScheduleBinding
+import com.drunkenboys.calendarun.receiver.ScheduleAlarmReceiver
 import com.drunkenboys.calendarun.ui.base.BaseFragment
 import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
 import com.drunkenboys.calendarun.ui.saveschedule.model.DateType
+import com.drunkenboys.calendarun.util.notificationDate
 import com.drunkenboys.calendarun.util.startAnimation
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
@@ -47,6 +51,8 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
         observeNotification()
         observeTagColor()
         observeIsPickTagColorPopupVisible()
+        observeSaveScheduleEvent()
+        observeDeleteScheduleEvent()
 
         saveScheduleViewModel.init(args.behaviorType)
     }
@@ -180,5 +186,39 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
                 root.isVisible = false
             }
         }
+    }
+
+    private fun observeSaveScheduleEvent() {
+        saveScheduleViewModel.saveScheduleEvent.observe(viewLifecycleOwner) { schedule ->
+            saveNotification(schedule)
+            navController.navigateUp()
+        }
+    }
+
+    private fun saveNotification(schedule: Schedule) {
+        val alarmManager = requireContext().getSystemService<AlarmManager>() ?: return
+
+        val triggerAtMillis = schedule.notificationDate()
+        val today = Calendar.getInstance()
+        if (today.timeInMillis > triggerAtMillis) return
+
+        alarmManager.set(
+            AlarmManager.RTC_WAKEUP,
+            triggerAtMillis,
+            ScheduleAlarmReceiver.createPendingIntent(requireContext(), schedule)
+        )
+    }
+
+    private fun observeDeleteScheduleEvent() {
+        saveScheduleViewModel.deleteScheduleEvent.observe(viewLifecycleOwner) { schedule ->
+            deleteNotification(schedule)
+            navController.navigateUp()
+        }
+    }
+
+    private fun deleteNotification(schedule: Schedule) {
+        val alarmManager = requireContext().getSystemService<AlarmManager>() ?: return
+
+        alarmManager.cancel(ScheduleAlarmReceiver.createPendingIntent(requireContext(), schedule))
     }
 }

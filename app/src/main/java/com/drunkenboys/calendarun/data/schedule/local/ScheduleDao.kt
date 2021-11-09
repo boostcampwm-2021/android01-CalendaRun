@@ -7,13 +7,13 @@ import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 interface ScheduleDao {
 
     @Insert
-    suspend fun insertSchedule(schedule: Schedule)
+    suspend fun insertSchedule(schedule: Schedule): Long
 
     @Query("SELECT * FROM `schedule`")
     suspend fun fetchAllSchedule(): List<Schedule>
 
     @Query("SELECT * FROM `schedule` WHERE id == :id")
-    suspend fun fetchSchedule(id: Int): Schedule
+    suspend fun fetchSchedule(id: Long): Schedule
 
     @Update
     suspend fun updateSchedule(schedule: Schedule)

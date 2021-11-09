@@ -4,11 +4,11 @@ import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 
 interface ScheduleLocalDataSource {
 
-    suspend fun insertSchedule(schedule: Schedule)
+    suspend fun insertSchedule(schedule: Schedule): Long
 
     suspend fun fetchAllSchedule(): List<Schedule>
 
-    suspend fun fetchSchedule(id: Int): Schedule
+    suspend fun fetchSchedule(id: Long): Schedule
 
     suspend fun updateSchedule(schedule: Schedule)
 
