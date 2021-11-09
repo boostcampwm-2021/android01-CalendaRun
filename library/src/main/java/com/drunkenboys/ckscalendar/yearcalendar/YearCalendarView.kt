@@ -59,8 +59,9 @@ class YearCalendarView
     private var onDateClickListener: OnDayClickListener? = null
     private var onDateSecondClickListener: OnDaySecondClickListener? = null
 
+    private var schedules = mutableListOf<CalendarScheduleObject>()
+
     init {
-        val scheduleList = FakeFactory.createFakeSchedule()
         val yearList =  mutableListOf<List<CalendarSet>>()
 
         (INIT_YEAR..LAST_YEAR).forEach { year ->
@@ -72,16 +73,13 @@ class YearCalendarView
         }
 
         binding.composeYearCalendarViewYearCalendar.setContent {
-            CalendarLazyColumn(yearList, scheduleList)
+            CalendarLazyColumn(yearList)
         }
     }
 
     @ExperimentalFoundationApi
     @Composable
-    private fun CalendarLazyColumn(
-        yearList: List<List<CalendarSet>>,
-        scheduleList: List<CalendarScheduleObject>
-    ) {
+    private fun CalendarLazyColumn(yearList: List<List<CalendarSet>>) {
         // RecyclerView의 상태를 관찰
         val listState = rememberLazyListState()
 
@@ -124,7 +122,7 @@ class YearCalendarView
                                         horizontalAlignment = Alignment.CenterHorizontally
                                     ) {
                                         DayText(day = day)
-                                        ScheduleText(day = day, scheduleList, thisWeekScheduleList)
+                                        ScheduleText(day = day, schedules, thisWeekScheduleList)
                                     }
                                 }
                             }
@@ -225,6 +223,14 @@ class YearCalendarView
 
     fun setOnDaySecondClickListener(onDateSecondClickListener: OnDaySecondClickListener) {
         this.onDateSecondClickListener = onDateSecondClickListener
+    }
+
+    fun setSchedule(schedule: CalendarScheduleObject) {
+        schedules.add(schedule)
+    }
+
+    fun setSchedules(schedules: List<CalendarScheduleObject>) {
+        this.schedules.addAll(schedules)
     }
 
     companion object {
