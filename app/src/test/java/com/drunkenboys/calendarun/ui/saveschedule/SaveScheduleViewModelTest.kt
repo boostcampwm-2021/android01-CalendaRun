@@ -83,21 +83,28 @@ class SaveScheduleViewModelTest {
     @Test
     fun `정상_입력_시_저장_테스트`() {
         viewModel.init(BehaviorType.INSERT)
-        viewModel.title.value = "내 일정"
-        viewModel.saveSchedule()
+        val title = "test title"
+        val memo = "test memo"
+        viewModel.title.value = title
+        viewModel.memo.value = memo
 
-        assertEquals(Unit, viewModel.saveScheduleEvent.value)
+        viewModel.saveSchedule()
+        val result = viewModel.saveScheduleEvent.value
+
+        assertEquals(title, result?.name)
+        assertEquals(memo, result?.memo)
     }
 
     @Test
     fun `일정_삭제_테스트`() = testScope.runBlockingTest {
         val startDate = Date()
         val endDate = Date()
-        scheduleDataSource.insertSchedule(Schedule(0, 0, "test", startDate, endDate, Schedule.NotificationType.A_HOUR_AGO, "memo", 0))
+        val schedule = Schedule(0, 0, "test", startDate, endDate, Schedule.NotificationType.A_HOUR_AGO, "memo", 0)
+        scheduleDataSource.insertSchedule(schedule)
         viewModel.init(BehaviorType.UPDATE)
 
         viewModel.deleteSchedule()
 
-        assertEquals(Unit, viewModel.saveScheduleEvent.value)
+        assertEquals(schedule, viewModel.deleteScheduleEvent.value)
     }
 }

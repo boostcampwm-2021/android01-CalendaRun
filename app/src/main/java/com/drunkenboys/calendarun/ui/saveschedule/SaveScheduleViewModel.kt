@@ -19,11 +19,12 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
+import com.drunkenboys.calendarun.data.calendar.entity.Calendar as CalendarEntity
 
 @HiltViewModel
 class SaveScheduleViewModel @Inject constructor(
     @CalendarId private val calendarId: Int,
-    @ScheduleId private val scheduleId: Int,
+    @ScheduleId private val scheduleId: Long,
     private val calendarDataSource: CalendarLocalDataSource,
     private val scheduleDataSource: ScheduleLocalDataSource
 ) : ViewModel() {
@@ -46,8 +47,11 @@ class SaveScheduleViewModel @Inject constructor(
     private val _tagColor = MutableLiveData(ScheduleColorType.RED.color)
     val tagColor: LiveData<Int> = _tagColor
 
-    private val _saveScheduleEvent = SingleLiveEvent<Unit>()
-    val saveScheduleEvent: LiveData<Unit> = _saveScheduleEvent
+    private val _saveScheduleEvent = SingleLiveEvent<Schedule>()
+    val saveScheduleEvent: LiveData<Schedule> = _saveScheduleEvent
+
+    private val _deleteScheduleEvent = MutableLiveData<Schedule>()
+    val deleteScheduleEvent: LiveData<Schedule> = _deleteScheduleEvent
 
     private val _pickDateTimeEvent = SingleLiveEvent<DateType>()
     val pickDateTimeEvent: LiveData<DateType> = _pickDateTimeEvent
@@ -67,6 +71,11 @@ class SaveScheduleViewModel @Inject constructor(
 
     private fun initCalendarName() {
         viewModelScope.launch {
+            // 테스트용 캘린더 생성
+            val calendar = calendarDataSource.fetchCalendar(1)
+            if (calendar == null) {
+                calendarDataSource.insertCalendar(CalendarEntity(0, "test", Date(), Date()))
+            }
             _calendarName.value = calendarDataSource.fetchCalendar(calendarId).name
         }
     }
@@ -109,10 +118,15 @@ class SaveScheduleViewModel @Inject constructor(
             val schedule = createScheduleInstance()
 
             when (behaviorType) {
-                BehaviorType.INSERT -> scheduleDataSource.insertSchedule(schedule)
-                BehaviorType.UPDATE -> scheduleDataSource.updateSchedule(schedule)
+                BehaviorType.INSERT -> {
+                    val rowId = scheduleDataSource.insertSchedule(schedule)
+                    _saveScheduleEvent.value = schedule.copy(id = rowId)
+                }
+                BehaviorType.UPDATE -> {
+                    scheduleDataSource.updateSchedule(schedule)
+                    _saveScheduleEvent.value = schedule
+                }
             }
-            _saveScheduleEvent.value = Unit
         }
     }
 
@@ -127,6 +141,7 @@ class SaveScheduleViewModel @Inject constructor(
     }
 
     private fun createScheduleInstance() = Schedule(
+        id = scheduleId,
         calendarId = calendarId,
         name = title.getOrThrow(),
         startDate = startDate.getOrThrow(),
@@ -136,20 +151,6 @@ class SaveScheduleViewModel @Inject constructor(
         color = tagColor.getOrThrow()
     )
 
-    private fun getNotificationDate(): Date? {
-        val calendar = Calendar.getInstance()
-        calendar.time = startDate.getOrThrow()
-
-        when (notificationType.value) {
-            Schedule.NotificationType.NONE -> return null
-            Schedule.NotificationType.TEN_MINUTES_AGO -> calendar.add(Calendar.MINUTE, -10)
-            Schedule.NotificationType.A_HOUR_AGO -> calendar.add(Calendar.HOUR_OF_DAY, -1)
-            Schedule.NotificationType.A_DAY_AGO -> calendar.add(Calendar.DAY_OF_YEAR, -1)
-        }
-
-        return calendar.time
-    }
-
     fun deleteSchedule() {
         if (scheduleId < 0) return
 
@@ -157,7 +158,7 @@ class SaveScheduleViewModel @Inject constructor(
             val deleteSchedule = scheduleDataSource.fetchSchedule(scheduleId)
             scheduleDataSource.deleteSchedule(deleteSchedule)
 
-            _saveScheduleEvent.value = Unit
+            _deleteScheduleEvent.value = deleteSchedule
         }
     }
 
