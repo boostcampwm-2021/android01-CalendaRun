@@ -6,15 +6,16 @@ class FakeScheduleLocalDataSource : ScheduleLocalDataSource {
 
     private val database = mutableListOf<Schedule>()
 
-    override suspend fun insertSchedule(schedule: Schedule) {
+    override suspend fun insertSchedule(schedule: Schedule): Long {
         database.add(schedule)
+        return database.size.toLong()
     }
 
     override suspend fun fetchAllSchedule(): List<Schedule> {
         return database
     }
 
-    override suspend fun fetchSchedule(id: Int): Schedule {
+    override suspend fun fetchSchedule(id: Long): Schedule {
         return database.find { it.id == id } ?: throw IllegalArgumentException()
     }
 
