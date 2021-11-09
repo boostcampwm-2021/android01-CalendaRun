@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_month_cell"
     android:layout_width="match_parent"
-    android:layout_height="80dp">
+    android:layout_height="80dp"
+    android:background="@drawable/bg_month_date_selected">
 
     <TextView
         android:id="@+id/tv_month_day"
