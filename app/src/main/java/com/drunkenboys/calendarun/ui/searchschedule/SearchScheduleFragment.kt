@@ -2,8 +2,6 @@ package com.drunkenboys.calendarun.ui.searchschedule
 
 import android.os.Bundle
 import android.view.View
-import android.view.inputmethod.InputMethodManager
-import androidx.core.content.getSystemService
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
@@ -37,13 +35,6 @@ class SearchScheduleFragment : BaseFragment<FragmentSearchScheduleBinding>(R.lay
 
     private fun setupToolbar() {
         binding.toolbarSearchSchedule.setupWithNavController(navController)
-        showIMM()
-    }
-
-    private fun showIMM() {
-        binding.etSearchScheduleToolbar.requestFocus()
-        val imm = requireContext().getSystemService<InputMethodManager>()
-        imm?.showSoftInput(binding.etSearchScheduleToolbar, InputMethodManager.SHOW_IMPLICIT)
     }
 
     private fun initRvSearchSchedule() {
