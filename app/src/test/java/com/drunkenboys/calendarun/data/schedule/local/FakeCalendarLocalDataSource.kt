@@ -6,7 +6,7 @@ import java.util.*
 
 class FakeCalendarLocalDataSource : CalendarLocalDataSource {
 
-    override suspend fun insertCalendar(calendar: Calendar) {
+    override suspend fun insertCalendar(calendar: Calendar): Long {
         TODO("Not yet implemented")
     }
 
