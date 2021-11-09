@@ -8,6 +8,6 @@ interface CalendarLocalDataSource {
 
     suspend fun fetchAllCalendar(): List<Calendar>
 
-    suspend fun fetchCalendar(id: Int): Calendar
+    suspend fun fetchCalendar(id: Long): Calendar
 
 }
