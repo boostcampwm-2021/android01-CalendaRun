@@ -21,9 +21,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.DataBindingUtil
@@ -104,6 +102,7 @@ class YearCalendarView
 
                         ConstraintLayout(controller.dayOfWeekConstraints(weekIds), Modifier.fillMaxWidth()) {
                             if (controller.isFirstWeek(week, month.id)) Text(text = "${month.id}월")
+                            val thisWeekScheduleList = Array(7) { Array<CalendarScheduleObject?>(3) { null } }
                             week.forEach { day ->
 
                                 // TODO: 디자인 설정
@@ -125,7 +124,7 @@ class YearCalendarView
                                         horizontalAlignment = Alignment.CenterHorizontally
                                     ) {
                                         DayText(day = day)
-                                        ScheduleText(day = day, scheduleList)
+                                        ScheduleText(day = day, scheduleList, thisWeekScheduleList)
                                     }
                                 }
                             }
@@ -175,35 +174,40 @@ class YearCalendarView
     }
 
     @Composable
-    private fun ScheduleText(day: CalendarDate, scheduleList: List<CalendarScheduleObject>) {
+    private fun ScheduleText(
+        day: CalendarDate,
+        scheduleList: List<CalendarScheduleObject>,
+        weekScheduleList: Array<Array<CalendarScheduleObject?>>
+    ) {
+        val today = day.date
+        val weekNum = (today.dayOfWeek.value % 7)
 
-        // TODO: 보여지는 일정의 정렬
-        val thumbnailList = scheduleList.filter { schedule ->
-            day.date in schedule.startDate..schedule.endDate
-        }.toMutableList()
+        with(controller) { setWeekSchedule(getStartScheduleList(today, scheduleList), weekScheduleList, today) }
 
-        while (thumbnailList.size < 3) {
-            thumbnailList.add(CalendarScheduleObject(
-                -1, Color.Transparent.value.toInt(), "", day.date, day.date
-            ))
-        }
-
-        while (thumbnailList.size > 3) {
-            thumbnailList.removeLast()
-        }
-
-        thumbnailList.forEachIndexed { index, schedule ->
-            Box(modifier = Modifier
-                .fillMaxWidth()
-                .background(color = Color(schedule.color))) {
-                Text(
-                    text = if (schedule.startDate == day.date || day.date.dayOfWeek == DayOfWeek.SUNDAY) schedule.text else "",
-                    modifier = Modifier.padding(2.dp),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    fontSize = calendarDesignObject.textSize.dp()
-                )
-                Spacer(modifier = Modifier.height(2.dp))
+        weekScheduleList[weekNum].forEach { schedule ->
+            if (schedule == null) {
+                // padding
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = " ",
+                        modifier = Modifier.padding(2.dp),
+                        fontSize = calendarDesignObject.textSize.dp()
+                    )
+                    Spacer(modifier = Modifier.height(2.dp))
+                }
+            } else {
+                Box(modifier = Modifier
+                    .fillMaxWidth()
+                    .background(color = Color(schedule.color))) {
+                    Text(
+                        text = if (schedule.startDate == day.date || day.date.dayOfWeek == DayOfWeek.SUNDAY) schedule.text else "",
+                        modifier = Modifier.padding(2.dp),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        fontSize = calendarDesignObject.textSize.dp()
+                    )
+                    Spacer(modifier = Modifier.height(2.dp))
+                }
             }
         }
     }
