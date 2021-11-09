@@ -172,6 +172,7 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
     private fun observeDeleteScheduleEvent() {
         saveScheduleViewModel.deleteScheduleEvent.observe(viewLifecycleOwner) { schedule ->
             deleteNotification(schedule)
+            showToast(getString(R.string.toast_schedule_deleted))
             navController.navigateUp()
         }
     }
@@ -180,8 +181,5 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
         val alarmManager = requireContext().getSystemService<AlarmManager>() ?: return
 
         alarmManager.cancel(ScheduleAlarmReceiver.createPendingIntent(requireContext(), schedule))
-
-        showToast(getString(R.string.toast_schedule_deleted))
-        navController.navigateUp()
     }
 }
