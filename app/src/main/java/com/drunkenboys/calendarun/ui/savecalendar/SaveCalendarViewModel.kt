@@ -11,9 +11,9 @@ import com.drunkenboys.calendarun.data.checkpoint.local.CheckPointLocalDataSourc
 import com.drunkenboys.calendarun.ui.savecalendar.model.CheckPointItem
 import com.drunkenboys.calendarun.util.SingleLiveEvent
 import com.drunkenboys.calendarun.util.dateToString
-import com.drunkenboys.calendarun.util.getOrThrow
 import com.drunkenboys.calendarun.util.stringToDate
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -89,35 +89,45 @@ class SaveCalendarViewModel @Inject constructor(
         }
     }
 
-    fun saveCalendar() {
-        viewModelScope.launch {
-            val name = calendarName.getOrThrow()
-            val startDate = _calendarStartDate.getOrThrow()
-            val endDate = _calendarEndDate.getOrThrow()
-            val id = calendarLocalDataSource.insertCalendar(
-                Calendar(
-                    id = 0,
-                    name = name,
-                    startDate = stringToDate(startDate),
-                    endDate = stringToDate(endDate),
-                )
-            )
-            saveCheckPoint(id)
-        }
-    }
+    suspend fun saveCalendar() = viewModelScope.async {
+        val calendarName = calendarName.value ?: return@async false
+        val startDate = _calendarStartDate.value ?: return@async false
+        val endDate = _calendarEndDate.value ?: return@async false
 
-    private fun saveCheckPoint(calendarId: Long) {
-        viewModelScope.launch {
+        if (!isValidateCalendarDate(startDate, endDate)) return@async false
+        val newCalender = Calendar(
+            id = 0,
+            name = calendarName,
+            startDate = stringToDate(startDate),
+            endDate = stringToDate(endDate),
+        )
+
+        if (!_checkPointItemList.value.isNullOrEmpty()) {
             _checkPointItemList.value?.forEach { item ->
-                checkPointLocalDataSource.insertCheckPoint(
-                    CheckPoint(
-                        id = 0,
-                        calendarId = calendarId,
-                        name = item.name.getOrThrow(),
-                        date = stringToDate(item.date.getOrThrow())
-                    )
-                )
+                item.name.value ?: return@async false
+                val date = item.date.value ?: return@async false
+                if (!isValidateCheckPointDate(date, startDate, endDate)) return@async false
             }
         }
-    }
+
+        val calendarId = calendarLocalDataSource.insertCalendar(newCalender)
+        _checkPointItemList.value?.forEach { item ->
+            val checkPointName = item.name.value ?: return@async false
+            val date = item.date.value ?: return@async false
+            checkPointLocalDataSource.insertCheckPoint(
+                CheckPoint(
+                    id = 0,
+                    calendarId = calendarId,
+                    name = checkPointName,
+                    date = stringToDate(date)
+                )
+            )
+        }
+        true
+    }.await()
+
+    private fun isValidateCalendarDate(startDate: String, endDate: String) = stringToDate(startDate) < stringToDate(endDate)
+
+    private fun isValidateCheckPointDate(checkPointDate: String, startDate: String, endDate: String) =
+        stringToDate(startDate) < stringToDate(checkPointDate) && stringToDate(checkPointDate) < stringToDate(endDate)
 }

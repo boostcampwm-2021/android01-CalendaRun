@@ -2,7 +2,9 @@ package com.drunkenboys.calendarun.ui.savecalendar
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.setupWithNavController
@@ -13,6 +15,7 @@ import com.drunkenboys.calendarun.ui.savecalendar.model.CheckPointItem
 import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
 import com.drunkenboys.calendarun.util.showDatePickerDialog
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.fragment_save_calendar) {
@@ -77,8 +80,13 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
         saveCalendarViewModel.saveCalendarEvent.observe(viewLifecycleOwner) {
             val checkPointItemList = saveCalendarAdapter.currentList
             saveCalendarViewModel.setCheckPointItemList(checkPointItemList)
-            saveCalendarViewModel.saveCalendar()
-            navController.navigateUp()
+            lifecycleScope.launch {
+                if (saveCalendarViewModel.saveCalendar()) {
+                    navController.navigateUp()
+                } else {
+                    Toast.makeText(context, "입력 값이 이상해요", Toast.LENGTH_LONG).show()
+                }
+            }
         }
     }
 }
