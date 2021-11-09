@@ -24,7 +24,7 @@ import com.drunkenboys.calendarun.data.calendar.entity.Calendar as CalendarEntit
 @HiltViewModel
 class SaveScheduleViewModel @Inject constructor(
     @CalendarId private val calendarId: Int,
-    @ScheduleId private val scheduleId: Int,
+    @ScheduleId private val scheduleId: Long,
     private val calendarDataSource: CalendarLocalDataSource,
     private val scheduleDataSource: ScheduleLocalDataSource
 ) : ViewModel() {

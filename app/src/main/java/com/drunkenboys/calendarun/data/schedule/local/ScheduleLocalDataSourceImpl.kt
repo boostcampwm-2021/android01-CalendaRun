@@ -11,17 +11,15 @@ class ScheduleLocalDataSourceImpl @Inject constructor(
     private val scheduleDao: ScheduleDao
 ) : ScheduleLocalDataSource {
 
-    override suspend fun insertSchedule(schedule: Schedule) {
-        withContext(dispatcher) {
-            scheduleDao.insertSchedule(schedule)
-        }
+    override suspend fun insertSchedule(schedule: Schedule) = withContext(dispatcher) {
+        scheduleDao.insertSchedule(schedule)
     }
 
     override suspend fun fetchAllSchedule() = withContext(dispatcher) {
         scheduleDao.fetchAllSchedule()
     }
 
-    override suspend fun fetchSchedule(id: Int) = withContext(dispatcher) {
+    override suspend fun fetchSchedule(id: Long) = withContext(dispatcher) {
         scheduleDao.fetchSchedule(id)
     }
 
