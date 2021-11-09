@@ -51,7 +51,7 @@ class SaveScheduleViewModel @Inject constructor(
     private val _saveScheduleEvent = SingleLiveEvent<Schedule>()
     val saveScheduleEvent: LiveData<Schedule> = _saveScheduleEvent
 
-    private val _deleteScheduleEvent = MutableLiveData<Schedule>()
+    private val _deleteScheduleEvent = SingleLiveEvent<Schedule>()
     val deleteScheduleEvent: LiveData<Schedule> = _deleteScheduleEvent
 
     private val _pickDateTimeEvent = SingleLiveEvent<DateType>()
