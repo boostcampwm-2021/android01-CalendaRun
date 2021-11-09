@@ -21,6 +21,7 @@ import com.drunkenboys.calendarun.receiver.ScheduleAlarmReceiver
 import com.drunkenboys.calendarun.ui.base.BaseFragment
 import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
 import com.drunkenboys.calendarun.ui.saveschedule.model.DateType
+import com.drunkenboys.calendarun.util.notificationDate
 import com.drunkenboys.calendarun.util.startAnimation
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
@@ -197,7 +198,7 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
     private fun saveNotification(schedule: Schedule) {
         val alarmManager = requireContext().getSystemService<AlarmManager>() ?: return
 
-        val triggerAtMillis = getNotificationDate(schedule.startDate, schedule.notificationType)
+        val triggerAtMillis = schedule.notificationDate()
         val today = Calendar.getInstance()
         if (today.timeInMillis > triggerAtMillis) return
 
@@ -206,20 +207,6 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
             triggerAtMillis,
             ScheduleAlarmReceiver.createPendingIntent(requireContext(), schedule)
         )
-    }
-
-    private fun getNotificationDate(startDate: Date, notificationType: Schedule.NotificationType): Long {
-        val calendar = Calendar.getInstance()
-        calendar.time = startDate
-
-        when (notificationType) {
-            Schedule.NotificationType.NONE -> return 0
-            Schedule.NotificationType.TEN_MINUTES_AGO -> calendar.add(Calendar.MINUTE, -10)
-            Schedule.NotificationType.A_HOUR_AGO -> calendar.add(Calendar.HOUR_OF_DAY, -1)
-            Schedule.NotificationType.A_DAY_AGO -> calendar.add(Calendar.DAY_OF_YEAR, -1)
-        }
-
-        return calendar.timeInMillis
     }
 
     private fun observeDeleteScheduleEvent() {
