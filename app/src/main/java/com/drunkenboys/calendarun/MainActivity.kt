@@ -3,11 +3,11 @@ package com.drunkenboys.calendarun
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import com.drunkenboys.calendarun.databinding.ActivityMainBinding
 import com.drunkenboys.calendarun.receiver.ScheduleAlarmReceiver
 import com.drunkenboys.calendarun.ui.base.BaseViewActivity
+import com.drunkenboys.calendarun.util.PendingIntentExt
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -29,15 +29,11 @@ class MainActivity : BaseViewActivity<ActivityMainBinding>(ActivityMainBinding::
                 putExtra(ScheduleAlarmReceiver.KEY_SCHEDULE_NOTIFICATION_SCHEDULE_ID, scheduleId)
             }
 
-            val pendingIntentFlags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
-            else
-                PendingIntent.FLAG_UPDATE_CURRENT
             return PendingIntent.getActivity(
                 context,
                 CODE_SCHEDULE_NOTIFICATION,
                 contentIntent,
-                pendingIntentFlags
+                PendingIntentExt.FLAG_UPDATE_CURRENT
             )
         }
     }

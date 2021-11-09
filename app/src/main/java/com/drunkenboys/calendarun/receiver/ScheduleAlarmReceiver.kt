@@ -5,12 +5,12 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService
 import com.drunkenboys.calendarun.MainActivity
 import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
+import com.drunkenboys.calendarun.util.PendingIntentExt
 
 class ScheduleAlarmReceiver : BroadcastReceiver() {
 
@@ -53,15 +53,11 @@ class ScheduleAlarmReceiver : BroadcastReceiver() {
                 putExtra(KEY_SCHEDULE_NOTIFICATION_SCHEDULE_ID, schedule.id)
             }
 
-            val pendingIntentFlags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
-            else
-                PendingIntent.FLAG_UPDATE_CURRENT
             return PendingIntent.getBroadcast(
                 context,
                 getNotificationId(schedule.calendarId, schedule.id),
                 intent,
-                pendingIntentFlags
+                PendingIntentExt.FLAG_UPDATE_CURRENT
             )
         }
 
