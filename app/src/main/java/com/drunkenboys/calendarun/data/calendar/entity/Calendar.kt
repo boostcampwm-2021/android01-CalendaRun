@@ -6,7 +6,7 @@ import java.util.*
 
 @Entity(tableName = "calendar")
 data class Calendar(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val name: String,
     val startDate: Date,
     val endDate: Date
