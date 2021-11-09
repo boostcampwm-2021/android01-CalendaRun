@@ -5,7 +5,7 @@ import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
-import android.widget.ListPopupWindow
+import androidx.appcompat.widget.ListPopupWindow
 import androidx.core.content.getSystemService
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
@@ -41,11 +41,14 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
     private val navController by lazy { findNavController() }
     private val args: SaveScheduleFragmentArgs by navArgs()
 
+    private var notificationPopupWidow: ListPopupWindow? = null
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.viewModel = saveScheduleViewModel
 
         initToolbar()
+        initNotificationPopupWindow()
         observePickDateTimeEvent()
         observePickNotificationTypeEvent()
         observeNotification()
@@ -78,6 +81,22 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
         toolbarSaveSchedule.setupWithNavController(navController, appBarConfig)
     }
 
+    private fun initNotificationPopupWindow() {
+        val dropDownAdapter = ArrayAdapter.createFromResource(
+            requireContext(),
+            R.array.saveSchedule_notificationType,
+            R.layout.item_drop_down_list
+        )
+        notificationPopupWidow = ListPopupWindow(requireContext(), null, R.attr.listPopupWindowStyle).apply {
+            anchorView = binding.tvSaveScheduleNotification
+            setAdapter(dropDownAdapter)
+            setOnItemClickListener { _, _, position, _ ->
+                saveScheduleViewModel.notificationType.value = Schedule.NotificationType.values()[position]
+                dismiss()
+            }
+        }
+    }
+
     private fun observePickDateTimeEvent() {
         saveScheduleViewModel.pickDateTimeEvent.observe(viewLifecycleOwner) { dateType ->
             dateType ?: return@observe
@@ -94,28 +113,6 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
                     DateType.START -> saveScheduleViewModel.startDate.value = calendar.time
                     DateType.END -> saveScheduleViewModel.endDate.value = calendar.time
                 }
-            }
-        }
-    }
-
-    private fun observePickNotificationTypeEvent() {
-        saveScheduleViewModel.pickNotificationTypeEvent.observe(viewLifecycleOwner) {
-            val dropDownAdapter = ArrayAdapter.createFromResource(
-                requireContext(),
-                R.array.saveSchedule_notificationType,
-                R.layout.item_drop_down_list
-            )
-            val listPopupWindow = ListPopupWindow(requireContext(), null, R.attr.listPopupWindowStyle).apply {
-                anchorView = binding.tvSaveScheduleNotification
-                setAdapter(dropDownAdapter)
-                setOnItemClickListener { _, _, position, _ ->
-                    saveScheduleViewModel.notificationType.value = Schedule.NotificationType.values()[position]
-                    dismiss()
-                }
-            }
-
-            binding.tvSaveScheduleNotification.setOnClickListener {
-                listPopupWindow.show()
             }
         }
     }
@@ -152,6 +149,12 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
         }
 
         timePicker.show(parentFragmentManager, this@SaveScheduleFragment::class.simpleName)
+    }
+
+    private fun observePickNotificationTypeEvent() {
+        saveScheduleViewModel.pickNotificationTypeEvent.observe(viewLifecycleOwner) {
+            notificationPopupWidow?.show()
+        }
     }
 
     private fun observeNotification() {
