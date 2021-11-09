@@ -16,20 +16,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.DataBindingUtil
 import com.drunkenboys.ckscalendar.R
 import com.drunkenboys.ckscalendar.databinding.LayoutYearCalendarBinding
 import com.drunkenboys.ckscalendar.FakeFactory
-import com.drunkenboys.ckscalendar.data.CalendarDate
-import com.drunkenboys.ckscalendar.data.CalendarScheduleObject
-import com.drunkenboys.ckscalendar.data.CalendarSet
-import com.drunkenboys.ckscalendar.data.DayType
+import com.drunkenboys.ckscalendar.data.*
 import com.drunkenboys.ckscalendar.listener.OnDayClickListener
 import com.drunkenboys.ckscalendar.listener.OnDaySecondClickListener
 import java.time.DayOfWeek
@@ -55,12 +56,15 @@ class YearCalendarView
 
     private val header by lazy { YearCalendarHeader() }
 
+    private val calendarDesignObject = FakeFactory.createFakeDesign()
+
     private var onDateClickListener: OnDayClickListener? = null
     private var onDateSecondClickListener: OnDaySecondClickListener? = null
 
     init {
         val scheduleList = FakeFactory.createFakeSchedule()
         val yearList =  mutableListOf<List<CalendarSet>>()
+
         (INIT_YEAR..LAST_YEAR).forEach { year ->
             yearList.add(FakeFactory.createFakeCalendarSetList(year))
         }
@@ -76,7 +80,10 @@ class YearCalendarView
 
     @ExperimentalFoundationApi
     @Composable
-    private fun CalendarLazyColumn(yearList: List<List<CalendarSet>>, scheduleList: List<CalendarScheduleObject>) {
+    private fun CalendarLazyColumn(
+        yearList: List<List<CalendarSet>>,
+        scheduleList: List<CalendarScheduleObject>
+    ) {
         // RecyclerView의 상태를 관찰
         val listState = rememberLazyListState()
 
@@ -118,7 +125,7 @@ class YearCalendarView
                                         horizontalAlignment = Alignment.CenterHorizontally
                                     ) {
                                         DayText(day = day)
-                                        ScheduleText(day = day ,scheduleList)
+                                        ScheduleText(day = day, scheduleList)
                                     }
                                 }
                             }
@@ -135,7 +142,6 @@ class YearCalendarView
         }
     }
 
-    // FIXME: 스케줄 추가하면서 패딩 조정
     @Composable
     private fun DayText(day: CalendarDate) {
         Text(
@@ -149,8 +155,12 @@ class YearCalendarView
             modifier = Modifier
                 .layoutId(day.date.toString()),
             textAlign = TextAlign.Center,
+            fontSize = calendarDesignObject.textSize.dp()
         )
     }
+
+    @Composable
+    private fun Int.dp() = with(LocalDensity.current) {  Dp(this@dp.toFloat()).toSp()  }
 
     @Composable
     private fun PaddingText(day: CalendarDate) {
@@ -160,6 +170,7 @@ class YearCalendarView
                 .layoutId(day.date.toString())
                 .alpha(0f),
             textAlign = TextAlign.Center,
+            fontSize = calendarDesignObject.textSize.dp()
         )
     }
 
@@ -190,7 +201,7 @@ class YearCalendarView
                     modifier = Modifier.padding(2.dp),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    // TODO: font size
+                    fontSize = calendarDesignObject.textSize.dp()
                 )
                 Spacer(modifier = Modifier.height(2.dp))
             }
