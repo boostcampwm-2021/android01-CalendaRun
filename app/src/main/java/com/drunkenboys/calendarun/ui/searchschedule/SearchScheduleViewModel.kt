@@ -60,7 +60,7 @@ class SearchScheduleViewModel @Inject constructor(
 
     private fun emitScheduleClickEvent(schedule: Schedule) {
         IdStore.putId(IdStore.KEY_CALENDAR_ID, schedule.calendarId)
-        IdStore.putId(IdStore.KEY_SCHEDULE_ID, schedule.id.toInt())
+        IdStore.putId(IdStore.KEY_SCHEDULE_ID, schedule.id)
         _scheduleClickEvent.value = Unit
     }
 

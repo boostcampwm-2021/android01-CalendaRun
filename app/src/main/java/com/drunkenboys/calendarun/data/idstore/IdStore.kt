@@ -2,11 +2,11 @@ package com.drunkenboys.calendarun.data.idstore
 
 object IdStore {
 
-    private val idMap = mutableMapOf<String, Int>()
+    private val idMap: MutableMap<String, Long> = mutableMapOf()
 
     fun getId(key: String) = idMap[key] ?: 0
 
-    fun putId(key: String, id: Int) {
+    fun putId(key: String, id: Long) {
         idMap[key] = id
     }
 

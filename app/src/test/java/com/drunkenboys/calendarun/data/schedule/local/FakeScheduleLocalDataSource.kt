@@ -19,6 +19,10 @@ class FakeScheduleLocalDataSource : ScheduleLocalDataSource {
         return database.find { it.id == id } ?: throw IllegalArgumentException()
     }
 
+    override suspend fun fetchCalendarSchedules(calendarId: Long): List<Schedule> {
+        return database.filter { it.calendarId == calendarId }
+    }
+
     override suspend fun updateSchedule(schedule: Schedule) {
         val targetIndex = database.indexOfFirst { it.id == schedule.id }
         database.removeAt(targetIndex)

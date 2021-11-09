@@ -20,7 +20,7 @@ class ScheduleAlarmReceiver : BroadcastReceiver() {
         notificationManager = context.getSystemService() ?: return
         val title = intent.getStringExtra(KEY_SCHEDULE_NOTIFICATION_TITLE) ?: return
         val text = intent.getStringExtra(KEY_SCHEDULE_NOTIFICATION_TEXT) ?: return
-        val calendarId = intent.getIntExtra(KEY_SCHEDULE_NOTIFICATION_CALENDAR_ID, 0)
+        val calendarId = intent.getLongExtra(KEY_SCHEDULE_NOTIFICATION_CALENDAR_ID, 0)
         val scheduleId = intent.getLongExtra(KEY_SCHEDULE_NOTIFICATION_SCHEDULE_ID, 0)
 
         val contentPendingIntent = MainActivity.createNavigationPendingIntent(context, calendarId, scheduleId)
@@ -61,6 +61,6 @@ class ScheduleAlarmReceiver : BroadcastReceiver() {
             )
         }
 
-        fun getNotificationId(calendarId: Int, scheduleId: Long): Int = calendarId * 1000000 + scheduleId.toInt()
+        fun getNotificationId(calendarId: Long, scheduleId: Long) = (calendarId * 1000000 + scheduleId).toInt()
     }
 }

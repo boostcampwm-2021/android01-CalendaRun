@@ -15,6 +15,9 @@ interface ScheduleDao {
     @Query("SELECT * FROM `schedule` WHERE id == :id")
     suspend fun fetchSchedule(id: Long): Schedule
 
+    @Query("SELECT * FROM `schedule` WHERE calendarId == :calendarId")
+    suspend fun fetchCalendarSchedules(calendarId: Long): List<Schedule>
+
     @Update
     suspend fun updateSchedule(schedule: Schedule)
 

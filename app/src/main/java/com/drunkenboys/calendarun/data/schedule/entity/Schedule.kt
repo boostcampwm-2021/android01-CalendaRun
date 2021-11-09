@@ -19,7 +19,7 @@ import java.util.*
 )
 data class Schedule(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
-    val calendarId: Int,
+    val calendarId: Long,
     val name: String,
     val startDate: Date,
     val endDate: Date,

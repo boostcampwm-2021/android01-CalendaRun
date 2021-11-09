@@ -31,6 +31,8 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         setDataBinding()
         setCalendarObserver()
         setCalendarListObserver()
+        setCheckPointListObserver()
+        setScheduleListObserver()
         setupToolbar()
         setupFab()
     }
@@ -77,8 +79,19 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         }
     }
 
+    private fun setCheckPointListObserver() {
+        mainCalendarViewModel.checkPointList.observe(viewLifecycleOwner) { checkPointList ->
+            // TODO: 2021-11-10 CheckPoint 날짜 읽어서 뷰 나누기
+        }
+    }
+
+    private fun setScheduleListObserver() {
+        mainCalendarViewModel.scheduleList.observe(viewLifecycleOwner) { scheduleList ->
+            // TODO: 2021-11-10 Schedule 캘린더에 띄워주기
+        }
+    }
+
     private fun setupNavigationView(calendarList: List<Calendar>) {
-        // TODO: 캘린더 목록 받아와서 아이템 추가하기 (ViewModel)
         val menu = binding.navView.menu
         menu.clear()
 
@@ -94,7 +107,7 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
                 menu[calendarList.size] -> navigateToAddSchedule()
                 else -> {
                     val selectedCalendar = calendarList.find { calendar -> calendar.name == item.title } ?: throw IllegalStateException()
-                    mainCalendarViewModel.setMainCalendar(selectedCalendar)
+                    mainCalendarViewModel.setCalendar(selectedCalendar)
                     item.isChecked = true
                     binding.layoutDrawer.closeDrawer(GravityCompat.START)
                     // TODO: item에 맞는 캘린더 뷰로 변경
@@ -116,8 +129,9 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
             // TODO: 2021-11-07 ID를 초기화하는 코드를 뷰모델로 이동해야 함
             // TODO: 2021-11-07 메인 페이지가 준비되면 현재 선택된 캘린더의 ID로 초기화해야 함
             // IdStore.putId(IdStore.KEY_CALENDAR_ID, <현재 선택된 캘린더의 ID>)
-//            IdStore.putId(IdStore.KEY_CALENDAR_ID, <현재 선택된 캘린더의 ID>)
-            IdStore.putId(IdStore.KEY_CALENDAR_ID, 1)
+            // IdStore.putId(IdStore.KEY_CALENDAR_ID, <현재 선택된 캘린더의 ID>)
+            val id = mainCalendarViewModel.calendar.value?.id ?: return@setOnClickListener
+            IdStore.putId(IdStore.KEY_CALENDAR_ID, id)
             IdStore.clearId(IdStore.KEY_SCHEDULE_ID)
             val action = MainCalendarFragmentDirections.actionMainCalendarFragmentToSaveScheduleFragment(BehaviorType.INSERT)
             navController.navigate(action)

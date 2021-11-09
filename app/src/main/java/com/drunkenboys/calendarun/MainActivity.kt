@@ -23,7 +23,7 @@ class MainActivity : BaseViewActivity<ActivityMainBinding>(ActivityMainBinding::
 
         private const val CODE_SCHEDULE_NOTIFICATION = 1000
 
-        fun createNavigationPendingIntent(context: Context, calendarId: Int, scheduleId: Long): PendingIntent {
+        fun createNavigationPendingIntent(context: Context, calendarId: Long, scheduleId: Long): PendingIntent {
             val contentIntent = Intent(context, MainActivity::class.java).apply {
                 putExtra(ScheduleAlarmReceiver.KEY_SCHEDULE_NOTIFICATION_CALENDAR_ID, calendarId)
                 putExtra(ScheduleAlarmReceiver.KEY_SCHEDULE_NOTIFICATION_SCHEDULE_ID, scheduleId)
