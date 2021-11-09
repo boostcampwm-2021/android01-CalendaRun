@@ -3,14 +3,12 @@ package com.drunkenboys.calendarun.ui.savecalendar
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.setupWithNavController
 import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.databinding.FragmentSaveCalendarBinding
 import com.drunkenboys.calendarun.showDatePickerDialog
-import com.drunkenboys.calendarun.toStringDateFormat
 import com.drunkenboys.calendarun.ui.base.BaseFragment
 import com.drunkenboys.calendarun.ui.savecalendar.model.CheckPointItem
 import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
@@ -32,8 +30,8 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
         setDataBinding()
         setRecyclerViewAdapter()
         setAddCheckPointViewClickListener()
-        setCheckPointListObserver()
         setPickDateTimeEventObserver()
+        setSaveCalendarEventObserver()
     }
 
     private fun setupToolbar() = with(binding) {
@@ -75,17 +73,12 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
 
     }
 
-    private fun setCheckPointListObserver() {
-        saveCalendarViewModel.checkPointList.observe(viewLifecycleOwner, { checkPointList ->
-            val checkPointModelList = mutableListOf<CheckPointItem>()
-            checkPointList.forEach { checkPoint ->
-                val checkPointModel = CheckPointItem(
-                    MutableLiveData(checkPoint.name),
-                    MutableLiveData(toStringDateFormat(checkPoint.endDate))
-                )
-                checkPointModelList.add(checkPointModel)
-            }
-            saveCalendarAdapter.submitList(checkPointModelList)
-        })
+    private fun setSaveCalendarEventObserver() {
+        saveCalendarViewModel.saveCalendarEvent.observe(viewLifecycleOwner) {
+            val checkPointItemList = saveCalendarAdapter.currentList
+            saveCalendarViewModel.setCheckPointItemList(checkPointItemList)
+            saveCalendarViewModel.saveCalendar()
+            navController.navigateUp()
+        }
     }
 }

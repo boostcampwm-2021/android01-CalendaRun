@@ -8,8 +8,11 @@ import com.drunkenboys.calendarun.data.calendar.entity.Calendar
 import com.drunkenboys.calendarun.data.calendar.local.CalendarLocalDataSource
 import com.drunkenboys.calendarun.data.checkpoint.entity.CheckPoint
 import com.drunkenboys.calendarun.data.checkpoint.local.CheckPointLocalDataSource
-import com.drunkenboys.calendarun.toStringDateFormat
+import com.drunkenboys.calendarun.ui.savecalendar.model.CheckPointItem
 import com.drunkenboys.calendarun.util.SingleLiveEvent
+import com.drunkenboys.calendarun.util.dateToString
+import com.drunkenboys.calendarun.util.getOrThrow
+import com.drunkenboys.calendarun.util.stringToDate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -23,8 +26,11 @@ class SaveCalendarViewModel @Inject constructor(
     private val _calendar = MutableLiveData<Calendar>()
     val calendar: LiveData<Calendar> = _calendar
 
-    private val _checkPointList = MutableLiveData<List<CheckPoint>>()
-    val checkPointList: LiveData<List<CheckPoint>> = _checkPointList
+    /*private val _checkPointList = MutableLiveData<List<CheckPoint>>()
+    val checkPointList: LiveData<List<CheckPoint>> = _checkPointList*/
+
+    private val _checkPointItemList = MutableLiveData<List<CheckPointItem>>()
+    val checkPointItemList: LiveData<List<CheckPointItem>> = _checkPointItemList
 
     val calendarName = MutableLiveData<String>()
 
@@ -39,6 +45,17 @@ class SaveCalendarViewModel @Inject constructor(
 
     private val _pickEndDateEvent = SingleLiveEvent<Unit>()
     val pickEndDateEvent: LiveData<Unit> = _pickEndDateEvent
+
+    private val _saveCalendarEvent = SingleLiveEvent<Unit>()
+    val saveCalendarEvent: LiveData<Unit> = _saveCalendarEvent
+
+    fun setCalendar(calendar: Calendar) {
+        _calendar.value = calendar
+    }
+
+    fun setCheckPointItemList(checkPointItemList: List<CheckPointItem>) {
+        _checkPointItemList.value = checkPointItemList
+    }
 
     fun setCalendarStartDate(date: String) {
         _calendarStartDate.value = date
@@ -56,6 +73,10 @@ class SaveCalendarViewModel @Inject constructor(
         _pickEndDateEvent.value = Unit
     }
 
+    fun emitSaveCalendar() {
+        _saveCalendarEvent.value = Unit
+    }
+
     fun fetchCalendar(id: Int) {
         viewModelScope.launch {
             val selectedCalendar = calendarLocalDataSource.fetchCalendar(id)
@@ -63,18 +84,39 @@ class SaveCalendarViewModel @Inject constructor(
 
             _calendar.value = selectedCalendar
             calendarName.value = selectedCalendar.name
-            _calendarStartDate.value = toStringDateFormat(selectedCalendar.startDate)
-            _calendarEndDate.value = toStringDateFormat(selectedCalendar.endDate)
-
-            _checkPointList.value = selectedCheckPointList
+            _calendarStartDate.value = dateToString(selectedCalendar.startDate)
+            _calendarEndDate.value = dateToString(selectedCalendar.endDate)
         }
     }
 
     fun saveCalendar() {
         viewModelScope.launch {
-            calendarLocalDataSource.insertCalendar(_calendar.value ?: return@launch)
-            _checkPointList.value?.forEach { checkPoint ->
-                checkPointLocalDataSource.insertCheckPoint(checkPoint)
+            val name = calendarName.getOrThrow()
+            val startDate = _calendarStartDate.getOrThrow()
+            val endDate = _calendarEndDate.getOrThrow()
+            val id = calendarLocalDataSource.insertCalendar(
+                Calendar(
+                    id = 0,
+                    name = name,
+                    startDate = stringToDate(startDate),
+                    endDate = stringToDate(endDate),
+                )
+            )
+            saveCheckPoint(id)
+        }
+    }
+
+    private fun saveCheckPoint(calendarId: Long) {
+        viewModelScope.launch {
+            _checkPointItemList.value?.forEach { item ->
+                checkPointLocalDataSource.insertCheckPoint(
+                    CheckPoint(
+                        id = 0,
+                        calendarId = calendarId,
+                        name = item.name.getOrThrow(),
+                        date = stringToDate(item.date.getOrThrow())
+                    )
+                )
             }
         }
     }

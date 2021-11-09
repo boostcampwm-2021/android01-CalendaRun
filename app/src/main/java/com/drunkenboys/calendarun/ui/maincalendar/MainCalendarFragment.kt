@@ -80,6 +80,7 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
     private fun setupNavigationView(calendarList: List<Calendar>) {
         // TODO: 캘린더 목록 받아와서 아이템 추가하기 (ViewModel)
         val menu = binding.navView.menu
+        menu.clear()
 
         calendarList.forEach { calendar ->
             menu.add(calendar.name)
@@ -95,7 +96,7 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
                     val selectedCalendar = calendarList.find { calendar -> calendar.name == item.title } ?: throw IllegalStateException()
                     mainCalendarViewModel.setMainCalendar(selectedCalendar)
                     item.isChecked = true
-                    // binding.layoutDrawer.closeDrawer(GravityCompat.START)
+                    binding.layoutDrawer.closeDrawer(GravityCompat.START)
                     // TODO: item에 맞는 캘린더 뷰로 변경
                 }
             }
