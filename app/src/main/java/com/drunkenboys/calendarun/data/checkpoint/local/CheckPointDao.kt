@@ -15,9 +15,9 @@ interface CheckPointDao {
     suspend fun fetchAllCheckPoint(): List<CheckPoint>
 
     @Query("SELECT * FROM `checkpoint` WHERE id == :id")
-    suspend fun fetchCheckPoint(id: Int): CheckPoint
+    suspend fun fetchCheckPoint(id: Long): CheckPoint
 
     @Query("SELECT * FROM `checkpoint` WHERE calendarId == :calendarId")
-    suspend fun fetchCalendarCheckPoints(calendarId: Int): List<CheckPoint>
+    suspend fun fetchCalendarCheckPoints(calendarId: Long): List<CheckPoint>
 
 }
