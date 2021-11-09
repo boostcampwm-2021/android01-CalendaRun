@@ -1,6 +1,5 @@
 package com.drunkenboys.ckscalendar.yearcalendar
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -11,12 +10,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -28,7 +28,8 @@ import com.drunkenboys.ckscalendar.FakeFactory
 import com.drunkenboys.ckscalendar.data.CalendarDate
 import com.drunkenboys.ckscalendar.data.CalendarSet
 import com.drunkenboys.ckscalendar.data.DayType
-import kotlinx.coroutines.launch
+import com.drunkenboys.ckscalendar.listener.OnDayClickListener
+import com.drunkenboys.ckscalendar.listener.OnDaySecondClickListener
 import java.time.LocalDate
 
 @ExperimentalAnimationApi
@@ -51,6 +52,9 @@ class YearCalendarView
 
     private val header by lazy { YearCalendarHeader() }
 
+    private var onDateClickListener: OnDayClickListener? = null
+    private var onDateSecondClickListener: OnDaySecondClickListener? = null
+
     init {
         val yearList =  mutableListOf<List<CalendarSet>>()
         (INIT_YEAR..LAST_YEAR).forEach { year ->
@@ -66,13 +70,14 @@ class YearCalendarView
         }
     }
 
-    //FIXME: 네이밍 수정해야할지도
-    @SuppressLint("CoroutineCreationDuringComposition")
     @ExperimentalFoundationApi
     @Composable
     private fun CalendarLazyColumn(yearList: List<List<CalendarSet>>) {
         // RecyclerView의 상태를 관찰
         val listState = rememberLazyListState()
+
+        val today = CalendarDate(LocalDate.now(), DayType.PADDING, true) // 초기화를 위한 dummy
+        var clickedDay by remember { mutableStateOf<CalendarDate?>(today) }
 
         // RecyclerView와 유사
         LazyColumn(state = listState) {
@@ -88,17 +93,27 @@ class YearCalendarView
 
                         ConstraintLayout(controller.dayOfWeekConstraints(weekIds), Modifier.fillMaxWidth()) {
                             if (controller.isFirstWeek(week, month.id)) Text(text = "${month.id}월")
-                                week.forEach { day ->
+                            week.forEach { day ->
 
                                 // TODO: 디자인 설정
                                 if (day.dayType == DayType.PADDING) {
                                     PaddingText(day = day)
                                 } else {
-                                    DayText(day = day)
+                                    Box(modifier = Modifier
+                                        .layoutId(day.date.toString())
+                                        .border(BorderStroke(width = 2.dp, color = if (clickedDay?.date == day.date) colorResource(id = R.color.primary_color) else Color.White))
+                                        .clickable(onClick = {
+                                            clickedDay = day
+                                            if (clickedDay?.date != day.date) onDateClickListener
+                                            else onDateSecondClickListener
+                                        }),
+                                        contentAlignment = Alignment.TopCenter
+                                    ) {
+                                        DayText(day = day)
+                                        ScheduleText(day = day)
+                                    }
                                 }
                             }
-
-                            // TODO: 스케줄 탐색
                         }
                     }
                 }
@@ -106,7 +121,7 @@ class YearCalendarView
         }
 
         // 뷰가 호출되면 오늘 날짜가 보이게 스크롤
-        rememberCoroutineScope().launch {
+        LaunchedEffect(listState) {
             listState.scrollToItem(index = LAST_YEAR - 1) // preload
             listState.scrollToItem(index = getTodayItemIndex())
         }
@@ -117,13 +132,14 @@ class YearCalendarView
     private fun DayText(day: CalendarDate) {
         Text(
             text = "${day.date.dayOfMonth}",
-            color = when (day.dayType) {
+            color = when (day.dayType) { // FIXME: month 와 통합
                 DayType.HOLIDAY -> Color.Red
                 DayType.SATURDAY -> Color.Blue
                 DayType.SUNDAY -> Color.Red
                 else -> Color.Black
             },
-            modifier = Modifier.layoutId(day.date.toString()).padding(top = 30.dp),
+            modifier = Modifier
+                .padding(bottom = 30.dp),
             textAlign = TextAlign.Center,
         )
     }
@@ -132,9 +148,17 @@ class YearCalendarView
     private fun PaddingText(day: CalendarDate) {
         Text(
             text = "${day.date.dayOfMonth}",
-            modifier = Modifier.layoutId(day.date.toString()).alpha(0f),
+            modifier = Modifier
+                .layoutId(day.date.toString())
+                .alpha(0f),
             textAlign = TextAlign.Center,
         )
+    }
+
+    @Composable
+    private fun ScheduleText(day: CalendarDate) {
+        // TODO: schedule 탐색
+
     }
 
     private fun getTodayItemIndex(): Int {
@@ -142,6 +166,14 @@ class YearCalendarView
 
         // 월 달력 12개 + 년 헤더 1개
         return (today.year - INIT_YEAR) * 13 + today.monthValue - 1
+    }
+
+    fun setOnDateClickListener(onDateClickListener: OnDayClickListener) {
+        this.onDateClickListener = onDateClickListener
+    }
+
+    fun setOnDaySecondClickListener(onDateSecondClickListener: OnDaySecondClickListener) {
+        this.onDateSecondClickListener = onDateSecondClickListener
     }
 
     companion object {
