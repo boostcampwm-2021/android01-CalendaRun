@@ -15,7 +15,7 @@ import androidx.core.view.GestureDetectorCompat
 import com.drunkenboys.calendarun.databinding.ActivityMainBinding
 import com.drunkenboys.calendarun.receiver.ScheduleAlarmReceiver
 import com.drunkenboys.calendarun.ui.base.BaseViewActivity
-import com.drunkenboys.calendarun.util.PendingIntentExt
+import com.drunkenboys.calendarun.util.extensions.PendingIntentExt
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

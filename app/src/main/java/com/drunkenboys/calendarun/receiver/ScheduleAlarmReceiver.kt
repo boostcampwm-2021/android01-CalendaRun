@@ -10,7 +10,7 @@ import androidx.core.content.getSystemService
 import com.drunkenboys.calendarun.MainActivity
 import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
-import com.drunkenboys.calendarun.util.PendingIntentExt
+import com.drunkenboys.calendarun.util.extensions.PendingIntentExt
 
 class ScheduleAlarmReceiver : BroadcastReceiver() {
 

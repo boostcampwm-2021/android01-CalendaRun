@@ -12,7 +12,7 @@ import com.drunkenboys.calendarun.di.ScheduleId
 import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
 import com.drunkenboys.calendarun.ui.saveschedule.model.DateType
 import com.drunkenboys.calendarun.util.SingleLiveEvent
-import com.drunkenboys.calendarun.util.getOrThrow
+import com.drunkenboys.calendarun.util.extensions.getOrThrow
 import com.drunkenboys.ckscalendar.data.ScheduleColorType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch

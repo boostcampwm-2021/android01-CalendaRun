@@ -10,7 +10,7 @@ import com.drunkenboys.calendarun.data.schedule.local.ScheduleLocalDataSource
 import com.drunkenboys.calendarun.ui.searchschedule.model.DateItem
 import com.drunkenboys.calendarun.ui.searchschedule.model.DateScheduleItem
 import com.drunkenboys.calendarun.util.SingleLiveEvent
-import com.drunkenboys.calendarun.util.getOrThrow
+import com.drunkenboys.calendarun.util.extensions.getOrThrow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
