@@ -18,11 +18,9 @@ import java.util.*
     ]
 )
 data class CheckPoint(
-    @PrimaryKey(autoGenerate = true) val id: Int = 1,
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val calendarId: Int,
     val name: String,
-    val startDate: Date,
-    val endDate: Date,
-    val color: Int
+    val date: Date
 )
 
