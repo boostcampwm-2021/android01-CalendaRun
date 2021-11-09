@@ -75,7 +75,7 @@ class SaveCalendarViewModel @Inject constructor(
         _checkPointItemList.value = newList
     }
 
-    fun fetchCalendar(id: Int) {
+    fun fetchCalendar(id: Long) {
         viewModelScope.launch {
             val selectedCalendar = calendarLocalDataSource.fetchCalendar(id)
 
