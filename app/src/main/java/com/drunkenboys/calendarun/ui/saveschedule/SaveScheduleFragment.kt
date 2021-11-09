@@ -20,7 +20,6 @@ import com.drunkenboys.calendarun.databinding.FragmentSaveScheduleBinding
 import com.drunkenboys.calendarun.receiver.ScheduleAlarmReceiver
 import com.drunkenboys.calendarun.ui.base.BaseFragment
 import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
-import com.drunkenboys.calendarun.ui.saveschedule.model.DateType
 import com.drunkenboys.calendarun.util.notificationDate
 import com.drunkenboys.calendarun.util.pickDateInMillis
 import com.drunkenboys.calendarun.util.pickTime
@@ -106,10 +105,7 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
                 calendar.set(Calendar.HOUR_OF_DAY, hour)
                 calendar.set(Calendar.MINUTE, minute)
 
-                when (dateType) {
-                    DateType.START -> saveScheduleViewModel.startDate.value = calendar.time
-                    DateType.END -> saveScheduleViewModel.endDate.value = calendar.time
-                }
+                saveScheduleViewModel.updateDate(calendar.time, dateType)
             }
         }
     }
