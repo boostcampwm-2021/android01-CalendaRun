@@ -20,10 +20,7 @@ import com.drunkenboys.calendarun.databinding.FragmentSaveScheduleBinding
 import com.drunkenboys.calendarun.receiver.ScheduleAlarmReceiver
 import com.drunkenboys.calendarun.ui.base.BaseFragment
 import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
-import com.drunkenboys.calendarun.util.notificationDate
-import com.drunkenboys.calendarun.util.pickDateInMillis
-import com.drunkenboys.calendarun.util.pickTime
-import com.drunkenboys.calendarun.util.startAnimation
+import com.drunkenboys.calendarun.util.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.util.*
@@ -153,6 +150,7 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
     private fun observeSaveScheduleEvent() {
         saveScheduleViewModel.saveScheduleEvent.observe(viewLifecycleOwner) { schedule ->
             saveNotification(schedule)
+            showToast(getString(R.string.toast_schedule_saved))
             navController.navigateUp()
         }
     }
@@ -182,5 +180,8 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
         val alarmManager = requireContext().getSystemService<AlarmManager>() ?: return
 
         alarmManager.cancel(ScheduleAlarmReceiver.createPendingIntent(requireContext(), schedule))
+
+        showToast(getString(R.string.toast_schedule_deleted))
+        navController.navigateUp()
     }
 }
