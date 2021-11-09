@@ -13,6 +13,7 @@ fun dateToString(date: Date): String {
 
 @SuppressLint("SimpleDateFormat")
 fun stringToDate(date: String): Date {
-    val df = SimpleDateFormat("yyyy.MM.dd")
-    return df.parse(date)
+    val dateFormat = SimpleDateFormat("yyyy.MM.dd")
+
+    return dateFormat.parse(date)
 }
