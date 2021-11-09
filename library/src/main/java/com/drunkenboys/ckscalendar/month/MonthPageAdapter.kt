@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.drunkenboys.ckscalendar.data.CalendarDate
+import com.drunkenboys.ckscalendar.data.CalendarScheduleObject
 import com.drunkenboys.ckscalendar.data.CalendarSet
 import com.drunkenboys.ckscalendar.data.DayType
 import com.drunkenboys.ckscalendar.databinding.ItemMonthPageBinding
@@ -18,6 +19,8 @@ import java.time.LocalDate
 class MonthPageAdapter : RecyclerView.Adapter<MonthPageAdapter.Holder>() {
 
     private val list = mutableListOf<CalendarSet>()
+
+    private val schedules = mutableListOf<CalendarScheduleObject>()
 
     private val cachedCalendar = HashMap<Int, List<CalendarDate>>()
 
@@ -46,6 +49,12 @@ class MonthPageAdapter : RecyclerView.Adapter<MonthPageAdapter.Holder>() {
     }
 
     override fun getItemCount(): Int = list.size
+
+    fun setSchedule(schedules: List<CalendarScheduleObject>) {
+        this.schedules.clear()
+        this.schedules.addAll(schedules)
+        notifyDataSetChanged()
+    }
 
     inner class Holder(private val binding: ItemMonthPageBinding) : RecyclerView.ViewHolder(binding.root) {
 
@@ -127,7 +136,7 @@ class MonthPageAdapter : RecyclerView.Adapter<MonthPageAdapter.Holder>() {
                 }
             }
 
-            monthAdapter.setItems(dates, adapterPosition)
+            monthAdapter.setItems(dates, schedules, adapterPosition)
             monthAdapter.onDateClickListener = onDayClick
             monthAdapter.onDateSecondClickListener = onDaySecondClick
         }
