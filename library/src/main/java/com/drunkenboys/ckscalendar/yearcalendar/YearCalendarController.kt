@@ -3,10 +3,13 @@ package com.drunkenboys.ckscalendar.yearcalendar
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
 import com.drunkenboys.ckscalendar.data.CalendarDate
+import com.drunkenboys.ckscalendar.data.CalendarScheduleObject
 import com.drunkenboys.ckscalendar.data.CalendarSet
 import com.drunkenboys.ckscalendar.data.DayType
 import com.drunkenboys.ckscalendar.utils.TimeUtils
 import java.time.DayOfWeek
+import java.time.LocalDate
+import java.time.Period
 
 class YearCalendarController {
 
@@ -105,5 +108,42 @@ class YearCalendarController {
 
     fun isFirstWeek(week: List<CalendarDate>, monthId: Int) = week.any { day ->
         day.date.dayOfMonth == 1 && monthId == day.date.monthValue
+    }
+
+    fun getStartScheduleList(today: LocalDate, scheduleList: List<CalendarScheduleObject>) = scheduleList.filter { schedule ->
+        val isStart = schedule.startDate == today
+        val isSunday = today.dayOfWeek == DayOfWeek.SUNDAY
+        val isFirstOfMonth = today.dayOfMonth == 1
+        val isDateInScheduleRange = today in schedule.startDate..schedule.endDate
+        isStart || ((isSunday || isFirstOfMonth) && (isDateInScheduleRange))
+    }
+
+    fun setWeekSchedule(
+        todayScheduleList: List<CalendarScheduleObject>,
+        weekScheduleList: Array<Array<CalendarScheduleObject?>>,
+        today: LocalDate
+    ) {
+        val todayOfWeek = today.dayOfWeek.value % 7
+
+        todayScheduleList.forEach { todaySchedule ->
+            weekScheduleList[todayOfWeek].forEachIndexed { index, schedule ->
+                if (schedule == null) {
+                    (todayOfWeek..getEndDateOfWeek(today, todaySchedule.endDate)).forEach { dayOfWeek ->
+                        weekScheduleList[dayOfWeek][index] = todaySchedule
+                    }
+                    return@forEach
+                }
+            }
+        }
+    }
+
+    fun getEndDateOfWeek(today: LocalDate, scheduleEndDate: LocalDate): Int =
+        if (!isSameWeek(today, scheduleEndDate)) DayOfWeek.SATURDAY.value
+        else scheduleEndDate.dayOfWeek.value % 7
+
+    fun isSameWeek(startDate: LocalDate, endDate: LocalDate): Boolean {
+        val weekDuration = (endDate.dayOfWeek.value % 7) - (startDate.dayOfWeek.value % 7)
+        val dayDuration = Period.between(startDate, endDate).days
+        return  weekDuration == dayDuration
     }
 }
