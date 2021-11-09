@@ -90,10 +90,11 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         )
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun setDataBinding() {
         binding.mainCalendarViewModel = mainCalendarViewModel
-        binding.calendarMonth.setSchedules(createFakeSchedule())
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            binding.calendarMonth.setSchedules(createFakeSchedule())
+        }
     }
 
     private fun setupToolbar() {
