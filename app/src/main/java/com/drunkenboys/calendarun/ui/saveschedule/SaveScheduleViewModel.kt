@@ -118,10 +118,15 @@ class SaveScheduleViewModel @Inject constructor(
             val schedule = createScheduleInstance()
 
             when (behaviorType) {
-                BehaviorType.INSERT -> scheduleDataSource.insertSchedule(schedule)
-                BehaviorType.UPDATE -> scheduleDataSource.updateSchedule(schedule)
+                BehaviorType.INSERT -> {
+                    val rowId = scheduleDataSource.insertSchedule(schedule)
+                    _saveScheduleEvent.value = schedule.copy(id = rowId)
+                }
+                BehaviorType.UPDATE -> {
+                    scheduleDataSource.updateSchedule(schedule)
+                    _saveScheduleEvent.value = schedule
+                }
             }
-            _saveScheduleEvent.value = schedule
         }
     }
 
