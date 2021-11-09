@@ -19,7 +19,6 @@ import androidx.navigation.ui.setupWithNavController
 import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import com.drunkenboys.calendarun.databinding.FragmentSaveScheduleBinding
-import com.drunkenboys.calendarun.receiver.ScheduleAlarmModel
 import com.drunkenboys.calendarun.receiver.ScheduleAlarmReceiver
 import com.drunkenboys.calendarun.ui.base.BaseFragment
 import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
@@ -200,9 +199,16 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
     private fun saveNotification(schedule: Schedule) {
         val alarmManager = requireContext().getSystemService<AlarmManager>() ?: return
 
-        val intent = Intent(requireContext(), ScheduleAlarmReceiver::class.java)
-        intent.putExtra(ScheduleAlarmReceiver.KEY_SCHEDULE_ALARM_MODEL, ScheduleAlarmModel(schedule.name, schedule.memo))
         val triggerAtMillis = getNotificationDate(schedule.startDate, schedule.notificationType)
+        val today = Calendar.getInstance()
+        if (today.timeInMillis > triggerAtMillis) return
+
+        val intent = Intent(requireContext(), ScheduleAlarmReceiver::class.java).apply {
+            putExtra(ScheduleAlarmReceiver.KEY_SCHEDULE_NOTIFICATION_TEXT, schedule.name)
+            putExtra(ScheduleAlarmReceiver.KEY_SCHEDULE_NOTIFICATION_TITLE, schedule.memo)
+            putExtra(ScheduleAlarmReceiver.KEY_SCHEDULE_NOTIFICATION_CALENDAR_ID, schedule.calendarId)
+            putExtra(ScheduleAlarmReceiver.KEY_SCHEDULE_NOTIFICATION_SCHEDULE_ID, schedule.id)
+        }
         val pendingIntent = PendingIntent.getBroadcast(
             requireContext(),
             ScheduleAlarmReceiver.NOTIFICATION_ID,
@@ -210,7 +216,11 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
             PendingIntent.FLAG_UPDATE_CURRENT
         )
 
-        alarmManager.set(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent)
+        alarmManager.set(
+            AlarmManager.RTC_WAKEUP,
+            triggerAtMillis,
+            pendingIntent
+        )
     }
 
     private fun getNotificationDate(startDate: Date, notificationType: Schedule.NotificationType): Long {

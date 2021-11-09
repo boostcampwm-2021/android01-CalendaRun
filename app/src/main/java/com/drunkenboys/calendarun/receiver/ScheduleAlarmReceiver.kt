@@ -16,11 +16,16 @@ class ScheduleAlarmReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         notificationManager = context.getSystemService() ?: return
-
-        val scheduleAlarmModel = intent.getParcelableExtra<ScheduleAlarmModel>(KEY_SCHEDULE_ALARM_MODEL) ?: return
+        val title = intent.getStringExtra(KEY_SCHEDULE_NOTIFICATION_TITLE) ?: return
+        val text = intent.getStringExtra(KEY_SCHEDULE_NOTIFICATION_TEXT) ?: return
+        val calendarId = intent.getIntExtra(KEY_SCHEDULE_NOTIFICATION_CALENDAR_ID, 0)
+        val scheduleId = intent.getIntExtra(KEY_SCHEDULE_NOTIFICATION_SCHEDULE_ID, 0)
 
         // fragment navigation은 어떻게?
-        val contentIntent = Intent(context, MainActivity::class.java)
+        val contentIntent = Intent(context, MainActivity::class.java).apply {
+            putExtra(KEY_SCHEDULE_NOTIFICATION_CALENDAR_ID, calendarId)
+            putExtra(KEY_SCHEDULE_NOTIFICATION_SCHEDULE_ID, scheduleId)
+        }
         val contentPendingIntent = PendingIntent.getActivity(
             context,
             NOTIFICATION_ID,
@@ -29,8 +34,8 @@ class ScheduleAlarmReceiver : BroadcastReceiver() {
         )
         val builder = NotificationCompat.Builder(context, SCHEDULE_NOTIFICATION_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_calendar_today)
-            .setContentTitle(scheduleAlarmModel.title)
-            .setContentText(scheduleAlarmModel.content)
+            .setContentTitle(title)
+            .setContentText(text)
             .setContentIntent(contentPendingIntent)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
@@ -40,7 +45,10 @@ class ScheduleAlarmReceiver : BroadcastReceiver() {
 
     companion object {
 
-        const val KEY_SCHEDULE_ALARM_MODEL = "ScheduleAlarmModel"
+        const val KEY_SCHEDULE_NOTIFICATION_TITLE = "title"
+        const val KEY_SCHEDULE_NOTIFICATION_TEXT = "text"
+        const val KEY_SCHEDULE_NOTIFICATION_CALENDAR_ID = "calendarId"
+        const val KEY_SCHEDULE_NOTIFICATION_SCHEDULE_ID = "scheduleId"
         const val NOTIFICATION_ID = 1000
         const val SCHEDULE_NOTIFICATION_CHANNEL_ID = "com.drunkenboys.calendarun.notification.schedule"
         const val SCHEDULE_NOTIFICATION_CHANNEL_NAME = "일정 알림 채널"
