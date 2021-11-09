@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -67,7 +68,6 @@ class YearCalendarView
     }
 
     //FIXME: 네이밍 수정해야할지도
-    @SuppressLint("CoroutineCreationDuringComposition")
     @ExperimentalFoundationApi
     @Composable
     private fun CalendarLazyColumn(yearList: List<List<CalendarSet>>) {
@@ -106,7 +106,7 @@ class YearCalendarView
         }
 
         // 뷰가 호출되면 오늘 날짜가 보이게 스크롤
-        rememberCoroutineScope().launch {
+        LaunchedEffect(listState) {
             listState.scrollToItem(index = LAST_YEAR - 1) // preload
             listState.scrollToItem(index = getTodayItemIndex())
         }
@@ -123,7 +123,9 @@ class YearCalendarView
                 DayType.SUNDAY -> Color.Red
                 else -> Color.Black
             },
-            modifier = Modifier.layoutId(day.date.toString()).padding(top = 30.dp),
+            modifier = Modifier
+                .layoutId(day.date.toString())
+                .padding(top = 30.dp),
             textAlign = TextAlign.Center,
         )
     }
@@ -132,7 +134,9 @@ class YearCalendarView
     private fun PaddingText(day: CalendarDate) {
         Text(
             text = "${day.date.dayOfMonth}",
-            modifier = Modifier.layoutId(day.date.toString()).alpha(0f),
+            modifier = Modifier
+                .layoutId(day.date.toString())
+                .alpha(0f),
             textAlign = TextAlign.Center,
         )
     }
