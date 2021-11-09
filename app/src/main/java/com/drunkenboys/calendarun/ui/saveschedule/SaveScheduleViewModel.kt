@@ -19,11 +19,10 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
-import com.drunkenboys.calendarun.data.calendar.entity.Calendar as CalendarEntity
 
 @HiltViewModel
 class SaveScheduleViewModel @Inject constructor(
-    @CalendarId private val calendarId: Int,
+    @CalendarId internal val calendarId: Long,
     @ScheduleId private val scheduleId: Long,
     private val calendarDataSource: CalendarLocalDataSource,
     private val scheduleDataSource: ScheduleLocalDataSource
@@ -71,11 +70,6 @@ class SaveScheduleViewModel @Inject constructor(
 
     private fun initCalendarName() {
         viewModelScope.launch {
-            // 테스트용 캘린더 생성
-            val calendar = calendarDataSource.fetchCalendar(1)
-            if (calendar == null) {
-                calendarDataSource.insertCalendar(CalendarEntity(0, "test", Date(), Date()))
-            }
             _calendarName.value = calendarDataSource.fetchCalendar(calendarId).name
         }
     }
