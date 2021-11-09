@@ -9,6 +9,8 @@ import androidx.viewpager2.widget.ViewPager2
 import com.drunkenboys.ckscalendar.R
 import com.drunkenboys.ckscalendar.data.CalendarSet
 import com.drunkenboys.ckscalendar.databinding.LayoutMonthCalendarBinding
+import com.drunkenboys.ckscalendar.listener.OnDayClickListener
+import com.drunkenboys.ckscalendar.listener.OnDaySecondClickListener
 import java.time.LocalDate
 
 class MonthCalendarView @JvmOverloads constructor(
@@ -20,12 +22,14 @@ class MonthCalendarView @JvmOverloads constructor(
     private val binding: LayoutMonthCalendarBinding by lazy { LayoutMonthCalendarBinding.inflate(LayoutInflater.from(context), this, true) }
 
     private val pageAdapter = MonthPageAdapter()
+
     private var calendarList = listOf<CalendarSet>()
 
     init {
         binding.vpMonthPage.adapter = pageAdapter
         val today = LocalDate.now()
         calendarList = generateCalendarOfYear(today.year)
+
         pageAdapter.setItems(calendarList)
 
         binding.vpMonthPage.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
@@ -43,6 +47,21 @@ class MonthCalendarView @JvmOverloads constructor(
                 super.onPageScrollStateChanged(state)
             }
         })
+
+        calendarList.forEachIndexed { index, calendarSet ->
+            if (calendarSet.startDate.monthValue == today.monthValue) {
+                binding.vpMonthPage.setCurrentItem(index,false)
+                return@forEachIndexed
+            }
+        }
+    }
+
+    fun setOnDateClickListener(onDateClickListener: OnDayClickListener) {
+        pageAdapter.onDateClickListener = onDateClickListener
+    }
+
+    fun setOnDaySecondClickListener(onDateSecondClickListener: OnDaySecondClickListener) {
+        pageAdapter.onDateSecondClickListener = onDateSecondClickListener
     }
 
     private fun generateCalendarOfYear(year: Int): List<CalendarSet> {

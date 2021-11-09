@@ -100,7 +100,7 @@ class SearchScheduleViewModelTest {
         dateList.forEachIndexed { index, date ->
             dataSource.insertSchedule(
                 Schedule(
-                    id = index,
+                    id = index.toLong(),
                     calendarId = 1,
                     name = "$name$index",
                     startDate = date,
