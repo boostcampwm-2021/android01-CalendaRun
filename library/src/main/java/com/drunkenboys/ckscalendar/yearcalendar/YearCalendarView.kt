@@ -19,8 +19,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.text.style.TextAlign
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.ConstraintSet
-import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.DataBindingUtil
 import com.drunkenboys.ckscalendar.R
@@ -29,9 +27,7 @@ import com.drunkenboys.ckscalendar.FakeFactory
 import com.drunkenboys.ckscalendar.data.CalendarDate
 import com.drunkenboys.ckscalendar.data.CalendarSet
 import com.drunkenboys.ckscalendar.data.DayType
-import com.drunkenboys.ckscalendar.utils.TimeUtils
 import kotlinx.coroutines.launch
-import java.time.DayOfWeek
 import java.time.LocalDate
 
 @ExperimentalAnimationApi
@@ -50,6 +46,10 @@ class YearCalendarView
         true
     )
 
+    private val controller = YearCalendarController()
+
+    private val header by lazy { YearCalendarHeader() }
+
     init {
         val yearList =  mutableListOf<List<CalendarSet>>()
         (INIT_YEAR..LAST_YEAR).forEach { year ->
@@ -57,121 +57,36 @@ class YearCalendarView
         }
 
         binding.composeYearCalendarViewDayOfWeek.setContent {
-            YearCalendar()
+            header.WeekHeader()
         }
 
         binding.composeYearCalendarViewYearCalendar.setContent {
-            YearCalendarRecyclerView(yearList)
-        }
-    }
-
-    @Composable
-    private fun YearCalendar() {
-        val weekIds = listOf(
-            context.getString(R.string.sunday),
-            context.getString(R.string.monday),
-            context.getString(R.string.tuesday),
-            context.getString(R.string.wednesday),
-            context.getString(R.string.thursday),
-            context.getString(R.string.friday),
-            context.getString(R.string.saturday)
-        )
-
-        ConstraintLayout(dayOfWeekConstraints(weekIds)) {
-            weekIds.forEach { dayId ->
-                DayOfWeekTextView(dayOfWeek = dayId)
-            }
-        }
-    }
-
-    @Composable
-    private fun DayOfWeekTextView(dayOfWeek: String) {
-        Text(
-            text = dayOfWeek,
-            modifier = Modifier.layoutId(dayOfWeek),
-            textAlign = TextAlign.Center
-        )
-    }
-
-    private fun dayOfWeekConstraints(weekIds: List<String>) = ConstraintSet {
-        val sunday = createRefFor(weekIds[0])
-        val monday = createRefFor(weekIds[1])
-        val tuesday = createRefFor(weekIds[2])
-        val wednesday = createRefFor(weekIds[3])
-        val thursday = createRefFor(weekIds[4])
-        val friday = createRefFor(weekIds[5])
-        val saturday = createRefFor(weekIds[6])
-
-        constrain(sunday) {
-            top.linkTo(parent.top)
-            start.linkTo(parent.start)
-            end.linkTo(monday.start)
-            width = Dimension.fillToConstraints
-        }
-
-        constrain(monday) {
-            top.linkTo(parent.top)
-            start.linkTo(sunday.end)
-            end.linkTo(tuesday.start)
-            width = Dimension.fillToConstraints
-        }
-
-        constrain(tuesday) {
-            top.linkTo(parent.top)
-            start.linkTo(monday.end)
-            end.linkTo(wednesday.start)
-            width = Dimension.fillToConstraints
-        }
-
-        constrain(wednesday) {
-            top.linkTo(parent.top)
-            start.linkTo(tuesday.end)
-            end.linkTo(thursday.start)
-            width = Dimension.fillToConstraints
-        }
-
-        constrain(thursday) {
-            top.linkTo(parent.top)
-            start.linkTo(wednesday.end)
-            end.linkTo(friday.start)
-            width = Dimension.fillToConstraints
-        }
-
-        constrain(friday) {
-            top.linkTo(parent.top)
-            start.linkTo(thursday.end)
-            end.linkTo(saturday.start)
-            width = Dimension.fillToConstraints
-        }
-
-        constrain(saturday) {
-            top.linkTo(parent.top)
-            start.linkTo(friday.end)
-            end.linkTo(parent.end)
-            width = Dimension.fillToConstraints
+            CalendarLazyColumn(yearList)
         }
     }
 
     //FIXME: 네이밍 수정해야할지도
     @SuppressLint("CoroutineCreationDuringComposition")
-    @ExperimentalAnimationApi
     @ExperimentalFoundationApi
     @Composable
-    private fun YearCalendarRecyclerView(yearList: List<List<CalendarSet>>) {
+    private fun CalendarLazyColumn(yearList: List<List<CalendarSet>>) {
+        // RecyclerView의 상태를 관찰
         val listState = rememberLazyListState()
 
+        // RecyclerView와 유사
         LazyColumn(state = listState) {
             yearList.forEach { year ->
+                // 항상 떠있는 헤더
                 stickyHeader {
-                    YearHeader(year)
+                    header.YearHeader(year)
                 }
 
                 items(year) { month ->
-                    calendarSetToCalendarDates(month).forEach { week ->
+                    controller.calendarSetToCalendarDates(month).forEach { week ->
                         val weekIds = week.map { day -> day.date.toString() }
 
-                        ConstraintLayout(dayOfWeekConstraints(weekIds), Modifier.fillMaxWidth()) {
-                            if (isFirstWeek(week, month.id)) Text(text = "${month.id}월")
+                        ConstraintLayout(controller.dayOfWeekConstraints(weekIds), Modifier.fillMaxWidth()) {
+                            if (controller.isFirstWeek(week, month.id)) Text(text = "${month.id}월")
                                 week.forEach { day ->
 
                                 // TODO: 디자인 설정
@@ -191,16 +106,8 @@ class YearCalendarView
 
         // 뷰가 호출되면 오늘 날짜가 보이게 스크롤
         rememberCoroutineScope().launch {
-            listState.scrollToItem(index = initItemIndex())
+            listState.scrollToItem(index = getTodayItemIndex())
         }
-    }
-    @Composable
-    private fun YearHeader(year: List<CalendarSet>) {
-        Text( //FIXME: background 투명하지 않게 설정
-            text = "${year[0].startDate.year}년",
-            modifier = Modifier.background(color = Color.White).fillMaxWidth(),
-            textAlign = TextAlign.Center
-        )
     }
 
     @Composable
@@ -227,49 +134,11 @@ class YearCalendarView
         )
     }
 
-    private fun initItemIndex(): Int {
+    private fun getTodayItemIndex(): Int {
         val today = LocalDate.now()
 
         // 월 달력 12개 + 년 헤더 1개
         return (today.year - INIT_YEAR) * 13 + today.monthValue - 1
-    }
-
-    private fun calendarSetToCalendarDates(month: CalendarSet): List<List<CalendarDate>> {
-        // n주
-        val weekList = mutableListOf<MutableList<CalendarDate>>()
-        var oneDay = month.startDate
-        var paddingPrev = month.startDate
-        var paddingNext = month.endDate
-
-        // 앞쪽 패딩
-        if (paddingPrev.dayOfWeek != DayOfWeek.SUNDAY) weekList.add(mutableListOf())
-        while (paddingPrev.dayOfWeek != DayOfWeek.SUNDAY) {
-            paddingPrev = paddingPrev.minusDays(1)
-            weekList.last().add(CalendarDate(paddingPrev, DayType.PADDING))
-        }
-
-        // n주일 추가
-        repeat(month.startDate.lengthOfMonth()) {
-            // 일요일에는 1주일 갱신
-            if (oneDay.dayOfWeek == DayOfWeek.SUNDAY) weekList.add(mutableListOf())
-
-            // 1주일 추가
-            weekList.last().add(CalendarDate(oneDay, TimeUtils.parseDayWeekToDayType(oneDay.dayOfWeek)))
-
-            oneDay = oneDay.plusDays(1L)
-        }
-
-        // 뒤쪽 패딩
-        while (paddingNext.dayOfWeek != DayOfWeek.SATURDAY) {
-            paddingNext = paddingNext.plusDays(1)
-            weekList.last().add(CalendarDate(paddingNext, DayType.PADDING))
-        }
-
-        return weekList
-    }
-
-    private fun isFirstWeek(week: List<CalendarDate>, monthId: Int) = week.any { day ->
-        day.date.dayOfMonth == 1 && monthId == day.date.monthValue
     }
 
     companion object {
