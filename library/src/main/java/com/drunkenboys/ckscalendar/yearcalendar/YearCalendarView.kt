@@ -53,9 +53,9 @@ class YearCalendarView
 
     private val controller = YearCalendarController()
 
-    private val header by lazy { YearCalendarHeader() }
+    private val header by lazy { YearCalendarHeader(design) }
 
-    private val calendarDesignObject = FakeFactory.createFakeDesign()
+    private val design = FakeFactory.createFakeDesign()
 
     private var onDateClickListener: OnDayClickListener? = null
     private var onDateSecondClickListener: OnDaySecondClickListener? = null
@@ -113,7 +113,7 @@ class YearCalendarView
                                         .border(
                                             BorderStroke(
                                                 width = 2.dp,
-                                                color = if (clickedDay?.date == day.date) colorResource(id = R.color.primary_color)
+                                                color = if (clickedDay?.date == day.date) Color(design.selectedFrameColor)
                                                 else Color.Transparent))
                                         .clickable(onClick = {
                                             clickedDay = day
@@ -142,18 +142,27 @@ class YearCalendarView
 
     @Composable
     private fun DayText(day: CalendarDate) {
+        val color = when (day.dayType) { // FIXME: month 와 통합
+            DayType.HOLIDAY -> Color(design.holidayTextColor)
+            DayType.SATURDAY -> Color(design.saturdayTextColor)
+            DayType.SUNDAY -> Color(design.sundayTextColor)
+            else -> Color(design.weekDayTextColor)
+        }
+
+        // FIXME: mapper 추가
+        val align = when (design.textAlign) {
+            -1 -> TextAlign.Start
+            0 -> TextAlign.Center
+            1 -> TextAlign.End
+            else -> TextAlign.Center
+        }
+
         Text(
             text = "${day.date.dayOfMonth}",
-            color = when (day.dayType) { // FIXME: month 와 통합
-                DayType.HOLIDAY -> Color.Red
-                DayType.SATURDAY -> Color.Blue
-                DayType.SUNDAY -> Color.Red
-                else -> Color.Black
-            },
-            modifier = Modifier
-                .layoutId(day.date.toString()),
-            textAlign = TextAlign.Center,
-            fontSize = calendarDesignObject.textSize.dp()
+            color = color,
+            modifier = Modifier.layoutId(day.date.toString()),
+            textAlign = align,
+            fontSize = design.textSize.dp()
         )
     }
 
@@ -168,7 +177,7 @@ class YearCalendarView
                 .layoutId(day.date.toString())
                 .alpha(0f),
             textAlign = TextAlign.Center,
-            fontSize = calendarDesignObject.textSize.dp()
+            fontSize = design.textSize.dp()
         )
     }
 
@@ -190,7 +199,7 @@ class YearCalendarView
                     Text(
                         text = " ",
                         modifier = Modifier.padding(2.dp),
-                        fontSize = calendarDesignObject.textSize.dp()
+                        fontSize = design.textSize.dp()
                     )
                     Spacer(modifier = Modifier.height(2.dp))
                 }
@@ -203,7 +212,7 @@ class YearCalendarView
                         modifier = Modifier.padding(2.dp),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
-                        fontSize = calendarDesignObject.textSize.dp()
+                        fontSize = design.textSize.dp()
                     )
                     Spacer(modifier = Modifier.height(2.dp))
                 }
