@@ -1,9 +1,10 @@
 package com.drunkenboys.calendarun.data.room
 
 import androidx.room.TypeConverter
+import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.ZoneOffset
+import java.time.ZoneId
 
 class Converters {
 
@@ -17,12 +18,12 @@ class Converters {
     fun dateToTimestamp(date: LocalDate): Long = date.toEpochDay()
 
     @TypeConverter
-    fun fromDateTimestamp(value: Long): LocalDateTime = LocalDateTime.ofEpochSecond(value, 0, UTC)
+    fun fromDateTimestamp(value: Long): LocalDateTime = LocalDateTime.ofEpochSecond(value, 0, zoneOffset)
 
     @TypeConverter
-    fun dateToDateTimestamp(time: LocalDateTime): Long = time.toEpochSecond(UTC)
+    fun dateToDateTimestamp(time: LocalDateTime): Long = time.toEpochSecond(zoneOffset)
 
     companion object {
-        private val KST = ZoneOffset.of("+09:00")
+        private val zoneOffset = ZoneId.systemDefault().rules.getOffset(Instant.now())
     }
 }
