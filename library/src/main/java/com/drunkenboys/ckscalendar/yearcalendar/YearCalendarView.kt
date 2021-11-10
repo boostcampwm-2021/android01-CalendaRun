@@ -29,6 +29,7 @@ import com.drunkenboys.ckscalendar.listener.OnDayClickListener
 import com.drunkenboys.ckscalendar.listener.OnDaySecondClickListener
 import com.drunkenboys.ckscalendar.utils.TimeUtils.dayValue
 import com.drunkenboys.ckscalendar.utils.dp
+import com.drunkenboys.ckscalendar.utils.toCalendarDatesList
 import java.time.DayOfWeek
 import java.time.LocalDate
 
@@ -113,7 +114,7 @@ class YearCalendarView
 
                 // 달력
                 items(year) { month ->
-                    val weeks = controller.calendarSetToCalendarDates(month)
+                    val weeks = month.toCalendarDatesList()
 
                     weeks.forEach { week ->
                         // 1주일
@@ -230,7 +231,7 @@ class YearCalendarView
         return (today.year - INIT_YEAR) * 13 + today.monthValue
     }
 
-    fun dayOfWeekConstraints(weekIds: List<String>) = ConstraintSet {
+    private fun dayOfWeekConstraints(weekIds: List<String>) = ConstraintSet {
         val week = weekIds.map { id ->
             createRefFor(id)
         }
