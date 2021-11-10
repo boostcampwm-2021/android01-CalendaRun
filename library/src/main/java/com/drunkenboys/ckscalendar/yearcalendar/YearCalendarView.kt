@@ -3,7 +3,7 @@ package com.drunkenboys.ckscalendar.yearcalendar
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import androidx.compose.animation.ExperimentalAnimationApi
+import android.widget.LinearLayout
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -22,7 +22,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintLayout
 import com.drunkenboys.ckscalendar.databinding.LayoutYearCalendarBinding
 import com.drunkenboys.ckscalendar.FakeFactory
 import com.drunkenboys.ckscalendar.data.*
@@ -32,14 +31,13 @@ import com.drunkenboys.ckscalendar.utils.TimeUtils.dayValue
 import java.time.DayOfWeek
 import java.time.LocalDate
 
-@ExperimentalAnimationApi
 @ExperimentalFoundationApi
 class YearCalendarView
 @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0,
-) : ConstraintLayout(context, attrs, defStyleAttr) {
+) : LinearLayout(context, attrs, defStyleAttr) {
 
     private val binding: LayoutYearCalendarBinding by lazy { LayoutYearCalendarBinding.inflate(LayoutInflater.from(context), this, true) }
 
@@ -54,15 +52,11 @@ class YearCalendarView
 
     private var schedules = mutableListOf<CalendarScheduleObject>()
 
-    init {
-        val yearList = (INIT_YEAR..LAST_YEAR).map { year ->
+    private val yearList = (INIT_YEAR..LAST_YEAR).map { year ->
             FakeFactory.createFakeCalendarSetList(year)
         }
 
-        binding.composeYearCalendarViewDayOfWeek.setContent {
-            header.WeekHeader()
-        }
-
+    init {
         binding.composeYearCalendarViewYearCalendar.setContent {
             CalendarLazyColumn(yearList)
         }
@@ -78,6 +72,10 @@ class YearCalendarView
 
         // RecyclerView와 유사
         LazyColumn(state = listState) {
+            item {
+                header.WeekHeader()
+            }
+
             yearList.forEach { year ->
                 // 항상 떠있는 헤더
                 stickyHeader {
