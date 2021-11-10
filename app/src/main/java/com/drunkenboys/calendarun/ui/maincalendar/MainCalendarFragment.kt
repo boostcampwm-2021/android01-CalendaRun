@@ -1,11 +1,10 @@
 package com.drunkenboys.calendarun.ui.maincalendar
 
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
-import androidx.annotation.RequiresApi
 import androidx.core.view.GravityCompat
+import androidx.core.view.forEachIndexed
 import androidx.core.view.get
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
@@ -17,11 +16,7 @@ import com.drunkenboys.calendarun.data.idstore.IdStore
 import com.drunkenboys.calendarun.databinding.FragmentMainCalendarBinding
 import com.drunkenboys.calendarun.ui.base.BaseFragment
 import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
-import com.drunkenboys.ckscalendar.data.CalendarDesignObject
-import com.drunkenboys.ckscalendar.data.CalendarScheduleObject
-import com.drunkenboys.ckscalendar.data.ScheduleColorType
 import dagger.hilt.android.AndroidEntryPoint
-import java.time.LocalDate
 
 @AndroidEntryPoint
 class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.fragment_main_calendar) {
@@ -37,6 +32,7 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         setupCalendarView()
         setDataBinding()
         setupToolbar()
+        setupFab()
         setNavigationOnClickListener()
         setOnMenuItemClickListener()
         setCalendarObserver()
@@ -58,6 +54,16 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
 
     private fun setupToolbar() {
         binding.toolbarMainCalendar.setupWithNavController(navController, binding.layoutDrawer)
+    }
+
+    private fun setupFab() {
+        // TODO: 2021-11-04 뷰모델 추가 시 이벤트 방식으로 변경
+        binding.fabMainCalenderAddSchedule.setOnClickListener {
+            // TODO: 2021-11-07 ID를 초기화하는 코드를 뷰모델로 이동해야 함
+            IdStore.clearId(IdStore.KEY_SCHEDULE_ID)
+            val action = MainCalendarFragmentDirections.actionMainCalendarFragmentToSaveScheduleFragment(BehaviorType.INSERT)
+            navController.navigate(action)
+        }
     }
 
     private fun setNavigationOnClickListener() = with(binding) {
@@ -85,16 +91,6 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
     private fun navigateToSearchSchedule() {
         val action = MainCalendarFragmentDirections.actionMainCalendarFragmentToSearchScheduleFragment()
         navController.navigate(action)
-    }
-
-    private fun setupFab() {
-        // TODO: 2021-11-04 뷰모델 추가 시 이벤트 방식으로 변경
-        binding.fabMainCalenderAddSchedule.setOnClickListener {
-            // TODO: 2021-11-07 ID를 초기화하는 코드를 뷰모델로 이동해야 함
-            IdStore.clearId(IdStore.KEY_SCHEDULE_ID)
-            val action = MainCalendarFragmentDirections.actionMainCalendarFragmentToSaveScheduleFragment(BehaviorType.INSERT)
-            navController.navigate(action)
-        }
     }
 
     private fun setCalendarObserver() {
@@ -134,14 +130,18 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
             .setIcon(R.drawable.ic_add)
 
         binding.navView.setNavigationItemSelectedListener { item ->
-            when (item) {
-                menu[calendarList.size] -> navigateToSaveSchedule()
-                else -> {
-                    mainCalendarViewModel.setCalendar(calendarList[item.order])
-                    binding.layoutDrawer.closeDrawer(GravityCompat.START)
-                    // TODO: item에 맞는 캘린더 뷰로 변경
+            menu.forEachIndexed { index, menuItem ->
+                if (menuItem == item) {
+                    // TODO: 2021-11-11 item에 맞는 캘린더 뷰로 변경
+                    item.isChecked = true
+                    mainCalendarViewModel.setCalendar(calendarList[index])
+                    return@forEachIndexed
                 }
             }
+            if (item == menu[calendarList.size]) {
+                navigateToSaveSchedule()
+            }
+            binding.layoutDrawer.closeDrawer(GravityCompat.START)
             true
         }
     }
