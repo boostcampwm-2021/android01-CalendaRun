@@ -211,16 +211,14 @@ class YearCalendarView
                 if (schedule != null) Modifier.fillMaxWidth().background(color = Color(schedule.color))
                 else Modifier.fillMaxWidth()
 
-            Box(modifier = modifier) {
-                Text(
-                    text = if (schedule?.startDate == today || today.dayOfWeek == DayOfWeek.SUNDAY) schedule?.text ?: " " else " ",
-                    modifier = Modifier.padding(2.dp),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    fontSize = design.textSize.dp()
-                )
-                Spacer(modifier = Modifier.height(2.dp))
-            }
+            Text(
+                text = if (schedule?.startDate == today || today.dayOfWeek == DayOfWeek.SUNDAY) schedule?.text ?: " " else " ",
+                maxLines = 1,
+                modifier = modifier,
+                overflow = TextOverflow.Ellipsis,
+                fontSize = design.textSize.dp()
+            )
+            Spacer(modifier = Modifier.height(2.dp))
         }
     }
 
