@@ -42,8 +42,6 @@ class YearCalendarView
 
     private val controller = YearCalendarController()
 
-    private val header by lazy { YearCalendarHeader(design) }
-
     private var design = FakeFactory.createFakeDesign()
 
     private var onDateClickListener: OnDayClickListener? = null
@@ -71,7 +69,7 @@ class YearCalendarView
 
         var clickedDay by remember { mutableStateOf<CalendarDate?>(today) }
         val clickedEdge = { day: CalendarDate ->
-            BorderStroke(width = 2.dp, color = if (clickedDay == day) Color(design.selectedFrameColor) else Color.Transparent)
+            BorderStroke(width = 2.dp, color = if (clickedDay?.date == day.date) Color(design.selectedFrameColor) else Color.Transparent)
         }
 
         val dayColumnModifier = { day: CalendarDate ->
@@ -87,14 +85,27 @@ class YearCalendarView
 
         // RecyclerView와 유사
         LazyColumn(state = listState) {
-            item {
-                header.WeekHeader()
-            }
-
             yearList.forEach { year ->
                 // 연 표시
                 stickyHeader {
-                    header.YearHeader(year)
+                    Text(
+                        text = "${year[0].startDate.year}년",
+                        modifier = Modifier
+                            .background(color = Color(design.backgroundColor))
+                            .fillMaxWidth(),
+                        textAlign = TextAlign.Center
+                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth().background(Color.White),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        design.weekSimpleStringSet.forEach { dayId ->
+                            Text(
+                                text = dayId,
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    }
                 }
 
                 // 달력
