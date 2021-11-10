@@ -3,6 +3,7 @@ package com.drunkenboys.calendarun.ui.maincalendar
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.view.GravityCompat
 import androidx.core.view.get
@@ -34,11 +35,13 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         mainCalendarViewModel.fetchCalendarList()
         setupCalendarView()
         setDataBinding()
+        setupToolbar()
+        setNavigationOnClickListener()
+        setOnMenuItemClickListener()
         setCalendarObserver()
         setCalendarListObserver()
         setCheckPointListObserver()
         setScheduleListObserver()
-        setupToolbar()
         setupFab()
     }
 
@@ -101,6 +104,17 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
 
     private fun setupToolbar() {
         binding.toolbarMainCalendar.setupWithNavController(navController, binding.layoutDrawer)
+    }
+
+    private fun setNavigationOnClickListener() = with(binding) {
+        toolbarMainCalendar.setNavigationOnClickListener {
+            layoutDrawer.openDrawer(GravityCompat.START)
+            root.findViewById<TextView>(R.id.tv_drawerHeader_title).text =
+                this@MainCalendarFragment.mainCalendarViewModel.calendar.value?.name
+        }
+    }
+
+    private fun setOnMenuItemClickListener() {
         binding.toolbarMainCalendar.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.menu_main_calendar_search -> navigateToSearchSchedule()
@@ -108,7 +122,6 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
                     isMonthCalendar = !isMonthCalendar
                     setupCalendarView()
                 }
-                else -> return@setOnMenuItemClickListener false
             }
             true
         }
@@ -158,10 +171,9 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
             when (item) {
                 menu[calendarList.size] -> navigateToAddSchedule()
                 else -> {
-                    val selectedCalendar = calendarList.find { calendar -> calendar.name == item.title } ?: throw IllegalStateException()
-                    mainCalendarViewModel.setCalendar(selectedCalendar)
-                    item.isChecked = true
+                    mainCalendarViewModel.setCalendar(calendarList[item.order])
                     binding.layoutDrawer.closeDrawer(GravityCompat.START)
+                    item.isChecked = true
                     // TODO: item에 맞는 캘린더 뷰로 변경
                 }
             }
