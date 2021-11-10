@@ -12,7 +12,7 @@ import com.drunkenboys.calendarun.di.ScheduleId
 import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
 import com.drunkenboys.calendarun.ui.saveschedule.model.DateType
 import com.drunkenboys.calendarun.util.SingleLiveEvent
-import com.drunkenboys.calendarun.util.getOrThrow
+import com.drunkenboys.calendarun.util.extensions.getOrThrow
 import com.drunkenboys.ckscalendar.data.ScheduleColorType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -32,9 +32,11 @@ class SaveScheduleViewModel @Inject constructor(
 
     val title = MutableLiveData("")
 
-    val startDate = MutableLiveData(Date())
+    private val _startDate = MutableLiveData(Date())
+    val startDate: LiveData<Date> = _startDate
 
-    val endDate = MutableLiveData(Date())
+    private val _endDate = MutableLiveData(Date())
+    val endDate: LiveData<Date> = _endDate
 
     val memo = MutableLiveData("")
 
@@ -49,7 +51,7 @@ class SaveScheduleViewModel @Inject constructor(
     private val _saveScheduleEvent = SingleLiveEvent<Schedule>()
     val saveScheduleEvent: LiveData<Schedule> = _saveScheduleEvent
 
-    private val _deleteScheduleEvent = MutableLiveData<Schedule>()
+    private val _deleteScheduleEvent = SingleLiveEvent<Schedule>()
     val deleteScheduleEvent: LiveData<Schedule> = _deleteScheduleEvent
 
     private val _pickDateTimeEvent = SingleLiveEvent<DateType>()
@@ -79,8 +81,8 @@ class SaveScheduleViewModel @Inject constructor(
             val schedule = scheduleDataSource.fetchSchedule(scheduleId)
 
             title.value = schedule.name
-            startDate.value = schedule.startDate
-            endDate.value = schedule.endDate
+            _startDate.value = schedule.startDate
+            _endDate.value = schedule.endDate
             memo.value = schedule.memo
             notificationType.value = schedule.notificationType
             _tagColor.value = schedule.color
@@ -93,6 +95,19 @@ class SaveScheduleViewModel @Inject constructor(
 
     fun emitPickNotificationTypeEvent() {
         _pickNotificationTypeEvent.value = Unit
+    }
+
+    fun updateDate(date: Date, dateType: DateType) {
+        when (dateType) {
+            DateType.START -> {
+                if (date > endDate.getOrThrow()) _endDate.value = date
+                _startDate.value = date
+            }
+            DateType.END -> {
+                if (date < startDate.getOrThrow()) _startDate.value = date
+                _endDate.value = date
+            }
+        }
     }
 
     fun Date.toFormatString(): String {

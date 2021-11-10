@@ -10,6 +10,7 @@ import com.drunkenboys.calendarun.data.schedule.local.ScheduleLocalDataSource
 import com.drunkenboys.calendarun.ui.searchschedule.model.DateItem
 import com.drunkenboys.calendarun.ui.searchschedule.model.DateScheduleItem
 import com.drunkenboys.calendarun.util.SingleLiveEvent
+import com.drunkenboys.calendarun.util.extensions.getOrThrow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -36,16 +37,20 @@ class SearchScheduleViewModel @Inject constructor(
     private var debounceJob: Job = Job()
 
     fun fetchScheduleList() {
-        _isSearching.value = true
+        if (word.value.isNullOrEmpty()) {
+            _isSearching.value = true
 
-        viewModelScope.launch {
-            val today = Date()
+            viewModelScope.launch {
+                val today = Date()
 
-            _listItem.value = scheduleDataSource.fetchAllSchedule()
-                .filter { schedule -> schedule.startDate >= today }
-                .mapToDateItem()
+                _listItem.value = scheduleDataSource.fetchAllSchedule()
+                    .filter { schedule -> schedule.startDate >= today }
+                    .mapToDateItem()
 
-            _isSearching.value = false
+                _isSearching.value = false
+            }
+        } else {
+            searchSchedule(word.getOrThrow())
         }
     }
 
@@ -69,6 +74,7 @@ class SearchScheduleViewModel @Inject constructor(
         set(Calendar.HOUR_OF_DAY, 0)
         set(Calendar.MINUTE, 0)
         set(Calendar.SECOND, 0)
+        set(Calendar.MILLISECOND, 0)
     }.timeInMillis
 
     fun searchSchedule(word: String) {

@@ -179,9 +179,6 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         // TODO: 2021-11-04 뷰모델 추가 시 이벤트 방식으로 변경
         binding.fabMainCalenderAddSchedule.setOnClickListener {
             // TODO: 2021-11-07 ID를 초기화하는 코드를 뷰모델로 이동해야 함
-            // TODO: 2021-11-07 메인 페이지가 준비되면 현재 선택된 캘린더의 ID로 초기화해야 함
-            // IdStore.putId(IdStore.KEY_CALENDAR_ID, <현재 선택된 캘린더의 ID>)
-            // IdStore.putId(IdStore.KEY_CALENDAR_ID, <현재 선택된 캘린더의 ID>)
             val id = mainCalendarViewModel.calendar.value?.id ?: return@setOnClickListener
             IdStore.putId(IdStore.KEY_CALENDAR_ID, id)
             IdStore.clearId(IdStore.KEY_SCHEDULE_ID)

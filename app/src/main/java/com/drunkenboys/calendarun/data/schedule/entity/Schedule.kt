@@ -25,7 +25,6 @@ data class Schedule(
     val endDate: Date,
     val notificationType: NotificationType,
     val memo: String,
-    // TODO <Library>.ScheduleColorType
     val color: Int
 ) {
 

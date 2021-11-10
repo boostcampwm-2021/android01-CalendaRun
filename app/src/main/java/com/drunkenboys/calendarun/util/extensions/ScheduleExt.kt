@@ -1,4 +1,4 @@
-package com.drunkenboys.calendarun.util
+package com.drunkenboys.calendarun.util.extensions
 
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import java.util.*

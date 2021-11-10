@@ -7,7 +7,7 @@ import android.content.Intent
 import androidx.core.content.getSystemService
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import com.drunkenboys.calendarun.data.schedule.local.ScheduleLocalDataSource
-import com.drunkenboys.calendarun.util.notificationDate
+import com.drunkenboys.calendarun.util.extensions.notificationDate
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
