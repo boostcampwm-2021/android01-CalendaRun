@@ -17,15 +17,12 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.databinding.DataBindingUtil
-import com.drunkenboys.ckscalendar.R
 import com.drunkenboys.ckscalendar.databinding.LayoutYearCalendarBinding
 import com.drunkenboys.ckscalendar.FakeFactory
 import com.drunkenboys.ckscalendar.data.*
@@ -44,12 +41,7 @@ class YearCalendarView
     defStyleAttr: Int = 0,
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
 
-    private var binding: LayoutYearCalendarBinding = DataBindingUtil.inflate(
-        LayoutInflater.from(context),
-        R.layout.layout_year_calendar,
-        this,
-        true
-    )
+    private val binding: LayoutYearCalendarBinding by lazy { LayoutYearCalendarBinding.inflate(LayoutInflater.from(context), this, true) }
 
     private val controller = YearCalendarController()
 
@@ -63,10 +55,8 @@ class YearCalendarView
     private var schedules = mutableListOf<CalendarScheduleObject>()
 
     init {
-        val yearList =  mutableListOf<List<CalendarSet>>()
-
-        (INIT_YEAR..LAST_YEAR).forEach { year ->
-            yearList.add(FakeFactory.createFakeCalendarSetList(year))
+        val yearList = (INIT_YEAR..LAST_YEAR).map { year ->
+            FakeFactory.createFakeCalendarSetList(year)
         }
 
         binding.composeYearCalendarViewDayOfWeek.setContent {
@@ -83,7 +73,6 @@ class YearCalendarView
     private fun CalendarLazyColumn(yearList: List<List<CalendarSet>>) {
         // RecyclerView의 상태를 관찰
         val listState = rememberLazyListState()
-
         val today = CalendarDate(LocalDate.now(), DayType.PADDING, true) // 초기화를 위한 dummy
         var clickedDay by remember { mutableStateOf<CalendarDate?>(today) }
 
@@ -110,11 +99,9 @@ class YearCalendarView
                                 } else {
                                     Column(modifier = Modifier
                                         .layoutId(day.date.toString())
-                                        .border(
-                                            BorderStroke(
-                                                width = 2.dp,
-                                                color = if (clickedDay?.date == day.date) Color(design.selectedFrameColor)
-                                                else Color.Transparent))
+                                        .border(BorderStroke(
+                                            width = 2.dp,
+                                            color = if (clickedDay?.date == day.date) Color(design.selectedFrameColor) else Color.Transparent))
                                         .clickable(onClick = {
                                             clickedDay = day
                                             if (clickedDay?.date != day.date) onDateClickListener
