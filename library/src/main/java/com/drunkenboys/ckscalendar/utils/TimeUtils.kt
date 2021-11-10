@@ -1,6 +1,7 @@
 package com.drunkenboys.ckscalendar.utils
 
 import com.drunkenboys.ckscalendar.data.DayType
+import com.drunkenboys.ckscalendar.yearcalendar.YearCalendarController
 import java.time.DayOfWeek
 
 object TimeUtils {
@@ -15,4 +16,7 @@ object TimeUtils {
             else -> DayType.WEEKDAY
         }
     }
+
+    // 일요일 시작 기준 요일값
+    fun DayOfWeek.dayValue() = this.value % 7
 }

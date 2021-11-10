@@ -16,8 +16,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -25,11 +28,11 @@ import androidx.databinding.DataBindingUtil
 import com.drunkenboys.ckscalendar.R
 import com.drunkenboys.ckscalendar.databinding.LayoutYearCalendarBinding
 import com.drunkenboys.ckscalendar.FakeFactory
-import com.drunkenboys.ckscalendar.data.CalendarDate
-import com.drunkenboys.ckscalendar.data.CalendarSet
-import com.drunkenboys.ckscalendar.data.DayType
+import com.drunkenboys.ckscalendar.data.*
 import com.drunkenboys.ckscalendar.listener.OnDayClickListener
 import com.drunkenboys.ckscalendar.listener.OnDaySecondClickListener
+import com.drunkenboys.ckscalendar.utils.TimeUtils.dayValue
+import java.time.DayOfWeek
 import java.time.LocalDate
 
 @ExperimentalAnimationApi
@@ -52,11 +55,16 @@ class YearCalendarView
 
     private val header by lazy { YearCalendarHeader() }
 
+    private val calendarDesignObject = FakeFactory.createFakeDesign()
+
     private var onDateClickListener: OnDayClickListener? = null
     private var onDateSecondClickListener: OnDaySecondClickListener? = null
 
+    private var schedules = mutableListOf<CalendarScheduleObject>()
+
     init {
         val yearList =  mutableListOf<List<CalendarSet>>()
+
         (INIT_YEAR..LAST_YEAR).forEach { year ->
             yearList.add(FakeFactory.createFakeCalendarSetList(year))
         }
@@ -93,24 +101,29 @@ class YearCalendarView
 
                         ConstraintLayout(controller.dayOfWeekConstraints(weekIds), Modifier.fillMaxWidth()) {
                             if (controller.isFirstWeek(week, month.id)) Text(text = "${month.id}월")
+                            val thisWeekScheduleList = Array(7) { Array<CalendarScheduleObject?>(3) { null } }
                             week.forEach { day ->
 
                                 // TODO: 디자인 설정
                                 if (day.dayType == DayType.PADDING) {
                                     PaddingText(day = day)
                                 } else {
-                                    Box(modifier = Modifier
+                                    Column(modifier = Modifier
                                         .layoutId(day.date.toString())
-                                        .border(BorderStroke(width = 2.dp, color = if (clickedDay?.date == day.date) colorResource(id = R.color.primary_color) else Color.White))
+                                        .border(
+                                            BorderStroke(
+                                                width = 2.dp,
+                                                color = if (clickedDay?.date == day.date) colorResource(id = R.color.primary_color)
+                                                else Color.Transparent))
                                         .clickable(onClick = {
                                             clickedDay = day
                                             if (clickedDay?.date != day.date) onDateClickListener
                                             else onDateSecondClickListener
                                         }),
-                                        contentAlignment = Alignment.TopCenter
+                                        horizontalAlignment = Alignment.CenterHorizontally
                                     ) {
                                         DayText(day = day)
-                                        ScheduleText(day = day)
+                                        ScheduleText(day = day, schedules, thisWeekScheduleList)
                                     }
                                 }
                             }
@@ -127,7 +140,6 @@ class YearCalendarView
         }
     }
 
-    // FIXME: 스케줄 추가하면서 패딩 조정
     @Composable
     private fun DayText(day: CalendarDate) {
         Text(
@@ -139,10 +151,14 @@ class YearCalendarView
                 else -> Color.Black
             },
             modifier = Modifier
-                .padding(bottom = 30.dp),
+                .layoutId(day.date.toString()),
             textAlign = TextAlign.Center,
+            fontSize = calendarDesignObject.textSize.dp()
         )
     }
+
+    @Composable
+    private fun Int.dp() = with(LocalDensity.current) {  Dp(this@dp.toFloat()).toSp()  }
 
     @Composable
     private fun PaddingText(day: CalendarDate) {
@@ -152,13 +168,47 @@ class YearCalendarView
                 .layoutId(day.date.toString())
                 .alpha(0f),
             textAlign = TextAlign.Center,
+            fontSize = calendarDesignObject.textSize.dp()
         )
     }
 
     @Composable
-    private fun ScheduleText(day: CalendarDate) {
-        // TODO: schedule 탐색
+    private fun ScheduleText(
+        day: CalendarDate,
+        scheduleList: List<CalendarScheduleObject>,
+        weekScheduleList: Array<Array<CalendarScheduleObject?>>
+    ) {
+        val today = day.date
+        val weekNum = (today.dayOfWeek.dayValue())
 
+        with(controller) { setWeekSchedule(getStartScheduleList(today, scheduleList), weekScheduleList, today) }
+
+        weekScheduleList[weekNum].forEach { schedule ->
+            if (schedule == null) {
+                // padding
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = " ",
+                        modifier = Modifier.padding(2.dp),
+                        fontSize = calendarDesignObject.textSize.dp()
+                    )
+                    Spacer(modifier = Modifier.height(2.dp))
+                }
+            } else {
+                Box(modifier = Modifier
+                    .fillMaxWidth()
+                    .background(color = Color(schedule.color))) {
+                    Text(
+                        text = if (schedule.startDate == day.date || day.date.dayOfWeek == DayOfWeek.SUNDAY) schedule.text else "",
+                        modifier = Modifier.padding(2.dp),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        fontSize = calendarDesignObject.textSize.dp()
+                    )
+                    Spacer(modifier = Modifier.height(2.dp))
+                }
+            }
+        }
     }
 
     private fun getTodayItemIndex(): Int {
@@ -174,6 +224,14 @@ class YearCalendarView
 
     fun setOnDaySecondClickListener(onDateSecondClickListener: OnDaySecondClickListener) {
         this.onDateSecondClickListener = onDateSecondClickListener
+    }
+
+    fun setSchedule(schedule: CalendarScheduleObject) {
+        schedules.add(schedule)
+    }
+
+    fun setSchedules(schedules: List<CalendarScheduleObject>) {
+        this.schedules.addAll(schedules)
     }
 
     companion object {
