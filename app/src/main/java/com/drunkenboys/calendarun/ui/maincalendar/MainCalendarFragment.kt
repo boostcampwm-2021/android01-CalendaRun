@@ -40,6 +40,7 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         setScheduleListObserver()
         setupToolbar()
         setupFab()
+        setOnDaySecondClickListener()
     }
 
     private fun setupCalendarView() {
@@ -183,6 +184,13 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
             IdStore.putId(IdStore.KEY_CALENDAR_ID, id)
             IdStore.clearId(IdStore.KEY_SCHEDULE_ID)
             val action = MainCalendarFragmentDirections.actionMainCalendarFragmentToSaveScheduleFragment(BehaviorType.INSERT)
+            navController.navigate(action)
+        }
+    }
+
+    private fun setOnDaySecondClickListener() {
+        binding.calendarMonth.setOnDaySecondClickListener { date, _ ->
+            val action = MainCalendarFragmentDirections.actionMainCalendarFragmentToDayScheduleDialog(date.toString())
             navController.navigate(action)
         }
     }
