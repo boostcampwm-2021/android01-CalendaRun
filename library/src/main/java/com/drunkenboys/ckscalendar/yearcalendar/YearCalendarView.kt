@@ -55,7 +55,7 @@ class YearCalendarView
 
     private val header by lazy { YearCalendarHeader(design) }
 
-    private val design = FakeFactory.createFakeDesign()
+    private var design = FakeFactory.createFakeDesign()
 
     private var onDateClickListener: OnDayClickListener? = null
     private var onDateSecondClickListener: OnDaySecondClickListener? = null
@@ -241,6 +241,15 @@ class YearCalendarView
 
     fun setSchedules(schedules: List<CalendarScheduleObject>) {
         this.schedules.addAll(schedules)
+    }
+
+    fun setTheme(designObject: CalendarDesignObject) {
+        design = designObject
+    }
+
+    fun resetTheme() {
+        // FIXME
+        design = FakeFactory.createFakeDesign()
     }
 
     companion object {
