@@ -27,6 +27,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_month_day" />
 
     <View
+        android:id="@+id/view_month_selectFrame"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@drawable/bg_month_date_selected"

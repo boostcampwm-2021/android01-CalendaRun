@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.viewpager2.widget.ViewPager2
 import com.drunkenboys.ckscalendar.R
+import com.drunkenboys.ckscalendar.data.CalendarDesignObject
 import com.drunkenboys.ckscalendar.data.CalendarScheduleObject
 import com.drunkenboys.ckscalendar.data.CalendarSet
 import com.drunkenboys.ckscalendar.databinding.LayoutMonthCalendarBinding
@@ -33,7 +34,7 @@ class MonthCalendarView @JvmOverloads constructor(
 
         pageAdapter.setItems(calendarList)
 
-        binding.vpMonthPage.offscreenPageLimit =3
+        binding.vpMonthPage.offscreenPageLimit = 3
         binding.vpMonthPage.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
                 super.onPageScrolled(position, positionOffset, positionOffsetPixels)
@@ -68,6 +69,21 @@ class MonthCalendarView @JvmOverloads constructor(
 
     fun setSchedules(schedules: List<CalendarScheduleObject>) {
         pageAdapter.setSchedule(schedules.sortedBy { it.startDate })
+    }
+
+    fun setDesign(calendarDesign: CalendarDesignObject) {
+        calendarDesign.weekDayTextColor.let {
+            binding.tvMonthCalendarViewCurrentMonth.setTextColor(it)
+            binding.tvMonthCalendarViewSunday.setTextColor(it)
+            binding.tvMonthCalendarViewMonday.setTextColor(it)
+            binding.tvMonthCalendarViewThursday.setTextColor(it)
+            binding.tvMonthCalendarViewWednesday.setTextColor(it)
+            binding.tvMonthCalendarViewTuesday.setTextColor(it)
+            binding.tvMonthCalendarViewFriday.setTextColor(it)
+            binding.tvMonthCalendarViewSaturday.setTextColor(it)
+        }
+        binding.root.setBackgroundColor(calendarDesign.backgroundColor)
+        pageAdapter.setDesign(calendarDesign)
     }
 
     private fun generateCalendarOfYear(year: Int): List<CalendarSet> {
