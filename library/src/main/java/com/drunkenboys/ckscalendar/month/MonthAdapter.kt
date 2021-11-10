@@ -2,6 +2,7 @@ package com.drunkenboys.ckscalendar.month
 
 import android.graphics.Color
 import android.text.TextUtils
+import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -9,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.drunkenboys.ckscalendar.data.CalendarDate
 import com.drunkenboys.ckscalendar.data.CalendarDesignObject
@@ -21,10 +21,18 @@ import com.drunkenboys.ckscalendar.listener.OnDaySecondClickListener
 import com.drunkenboys.ckscalendar.utils.context
 import com.drunkenboys.ckscalendar.utils.dp2px
 import com.drunkenboys.ckscalendar.utils.tintStroke
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : ListAdapter<CalendarDate, MonthAdapter.Holder>(diffUtil) {
+class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : RecyclerView.Adapter<MonthAdapter.Holder>() {
+
+    private var timeTest = 0L
 
     private val schedules = mutableListOf<CalendarScheduleObject>()
+
+    private val currentList = mutableListOf<CalendarDate>()
 
     private lateinit var calendarDesign: CalendarDesignObject
 
@@ -54,7 +62,11 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Lis
         this.currentPagePosition = currentPagePosition
         this.schedules.clear()
         this.schedules.addAll(schedules)
-        submitList(list)
+        this.currentList.clear()
+        this.currentList.addAll(list)
+        timeTest = System.currentTimeMillis()
+        Log.e(this::class.simpleName, "setItems")
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
@@ -100,14 +112,18 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Lis
             }
             binding.tvMonthDay.setTextColor(textColor)
 
-            binding.layoutMonthSchedule.removeAllViews()
-            val scheduleContainer = makePaddingScheduleList(item, schedules)
-            val hasAnySchedule = scheduleContainer.any { it != null }
-            if (hasAnySchedule) {
-                scheduleContainer.map { it ?: makeDefaultScheduleTextView() }
-                    .forEach {
-                        binding.layoutMonthSchedule.addView(it)
+            CoroutineScope(Dispatchers.IO).launch {
+                val scheduleContainer = makePaddingScheduleList(item, schedules)
+                val hasAnySchedule = scheduleContainer.any { it != null }
+                if (hasAnySchedule) {
+                    withContext(Dispatchers.Main) {
+                        binding.layoutMonthSchedule.removeAllViews()
+                        scheduleContainer.map { it ?: makeDefaultScheduleTextView() }
+                            .forEach {
+                                binding.layoutMonthSchedule.addView(it)
+                            }
                     }
+                }
             }
         }
 
@@ -206,5 +222,9 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Lis
         private const val SCHEDULE_CONTAINER_SIZE = 10
 
         private const val MAX_VISIBLE_SCHEDULE_SIZE = 3
+    }
+
+    override fun getItemCount(): Int {
+        return currentList.size
     }
 }
