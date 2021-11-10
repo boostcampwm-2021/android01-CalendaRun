@@ -12,18 +12,17 @@ import com.drunkenboys.calendarun.di.ScheduleId
 import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
 import com.drunkenboys.calendarun.ui.saveschedule.model.DateType
 import com.drunkenboys.calendarun.util.SingleLiveEvent
-import com.drunkenboys.calendarun.util.getOrThrow
+import com.drunkenboys.calendarun.util.extensions.getOrThrow
 import com.drunkenboys.ckscalendar.data.ScheduleColorType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.*
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
-import com.drunkenboys.calendarun.data.calendar.entity.Calendar as CalendarEntity
 
 @HiltViewModel
 class SaveScheduleViewModel @Inject constructor(
-    @CalendarId private val calendarId: Int,
+    @CalendarId private val calendarId: Long,
     @ScheduleId private val scheduleId: Long,
     private val calendarDataSource: CalendarLocalDataSource,
     private val scheduleDataSource: ScheduleLocalDataSource
@@ -33,9 +32,11 @@ class SaveScheduleViewModel @Inject constructor(
 
     val title = MutableLiveData("")
 
-    val startDate = MutableLiveData(Date())
+    private val _startDate: MutableLiveData<LocalDateTime> = MutableLiveData(LocalDateTime.now())
+    val startDate: LiveData<LocalDateTime> = _startDate
 
-    val endDate = MutableLiveData(Date())
+    private val _endDate = MutableLiveData(LocalDateTime.now())
+    val endDate: LiveData<LocalDateTime> = _endDate
 
     val memo = MutableLiveData("")
 
@@ -50,7 +51,7 @@ class SaveScheduleViewModel @Inject constructor(
     private val _saveScheduleEvent = SingleLiveEvent<Schedule>()
     val saveScheduleEvent: LiveData<Schedule> = _saveScheduleEvent
 
-    private val _deleteScheduleEvent = MutableLiveData<Schedule>()
+    private val _deleteScheduleEvent = SingleLiveEvent<Schedule>()
     val deleteScheduleEvent: LiveData<Schedule> = _deleteScheduleEvent
 
     private val _pickDateTimeEvent = SingleLiveEvent<DateType>()
@@ -71,11 +72,6 @@ class SaveScheduleViewModel @Inject constructor(
 
     private fun initCalendarName() {
         viewModelScope.launch {
-            // 테스트용 캘린더 생성
-            val calendar = calendarDataSource.fetchCalendar(1)
-            if (calendar == null) {
-                calendarDataSource.insertCalendar(CalendarEntity(0, "test", Date(), Date()))
-            }
             _calendarName.value = calendarDataSource.fetchCalendar(calendarId).name
         }
     }
@@ -85,8 +81,8 @@ class SaveScheduleViewModel @Inject constructor(
             val schedule = scheduleDataSource.fetchSchedule(scheduleId)
 
             title.value = schedule.name
-            startDate.value = schedule.startDate
-            endDate.value = schedule.endDate
+            _startDate.value = schedule.startDate
+            _endDate.value = schedule.endDate
             memo.value = schedule.memo
             notificationType.value = schedule.notificationType
             _tagColor.value = schedule.color
@@ -101,14 +97,24 @@ class SaveScheduleViewModel @Inject constructor(
         _pickNotificationTypeEvent.value = Unit
     }
 
-    fun Date.toFormatString(): String {
-        val calendar = Calendar.getInstance()
-        calendar.time = this
+    fun updateDate(date: LocalDateTime, dateType: DateType) {
+        when (dateType) {
+            DateType.START -> {
+                if (date.isAfter(endDate.getOrThrow())) _endDate.value = date
+                _startDate.value = date
+            }
+            DateType.END -> {
+                if (date.isBefore(startDate.getOrThrow())) _startDate.value = date
+                _endDate.value = date
+            }
+        }
+    }
 
-        val amPm = if (calendar.get(Calendar.AM_PM) == Calendar.AM) "오전" else "오후"
-        val dateFormat = SimpleDateFormat("MM월 dd일 $amPm hh:mm", Locale.getDefault())
+    fun LocalDateTime.toFormatString(): String {
+        val amPm = if (hour < 12) "오전" else "오후"
+        val dateFormat = DateTimeFormatter.ofPattern("MM월 dd일 $amPm hh:mm")
 
-        return dateFormat.format(this)
+        return format(dateFormat)
     }
 
     fun saveSchedule() {

@@ -1,4 +1,4 @@
-package com.drunkenboys.calendarun.util
+package com.drunkenboys.calendarun.util.extensions
 
 import android.app.PendingIntent
 import android.os.Build

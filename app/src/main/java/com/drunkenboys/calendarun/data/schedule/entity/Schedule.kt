@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.drunkenboys.calendarun.data.calendar.entity.Calendar
-import java.util.*
+import java.time.LocalDateTime
 
 @Entity(
     tableName = "Schedule",
@@ -19,13 +19,12 @@ import java.util.*
 )
 data class Schedule(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
-    val calendarId: Int,
+    val calendarId: Long,
     val name: String,
-    val startDate: Date,
-    val endDate: Date,
+    val startDate: LocalDateTime,
+    val endDate: LocalDateTime,
     val notificationType: NotificationType,
     val memo: String,
-    // TODO <Library>.ScheduleColorType
     val color: Int
 ) {
 
