@@ -31,7 +31,7 @@ class DayScheduleViewModel @Inject constructor(
     fun fetchScheduleList(localDate: LocalDate) {
         viewModelScope.launch {
             _listItem.value = scheduleDataSource.fetchCalendarSchedules(calendarId)
-                .filter { it.startDate.toLocalDate() == localDate }
+                .filter { localDate in it.startDate.toLocalDate()..it.endDate.toLocalDate() }
                 .mapToDateItem()
         }
     }
