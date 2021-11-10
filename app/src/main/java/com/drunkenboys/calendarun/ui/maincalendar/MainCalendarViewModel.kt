@@ -8,8 +8,10 @@ import com.drunkenboys.calendarun.data.calendar.entity.Calendar
 import com.drunkenboys.calendarun.data.calendar.local.CalendarLocalDataSource
 import com.drunkenboys.calendarun.data.checkpoint.entity.CheckPoint
 import com.drunkenboys.calendarun.data.checkpoint.local.CheckPointLocalDataSource
+import com.drunkenboys.calendarun.data.idstore.IdStore
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import com.drunkenboys.calendarun.data.schedule.local.ScheduleLocalDataSource
+import com.drunkenboys.ckscalendar.data.CalendarScheduleObject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -30,11 +32,12 @@ class MainCalendarViewModel @Inject constructor(
     private val _checkPointList = MutableLiveData<List<CheckPoint>>()
     val checkPointList: LiveData<List<CheckPoint>> = _checkPointList
 
-    private val _scheduleList = MutableLiveData<List<Schedule>>()
-    val scheduleList: LiveData<List<Schedule>> = _scheduleList
+    private val _scheduleList = MutableLiveData<List<CalendarScheduleObject>>()
+    val scheduleList: LiveData<List<CalendarScheduleObject>> = _scheduleList
 
     fun setCalendar(calendar: Calendar) {
         _calendar.value = calendar
+        IdStore.putId(IdStore.KEY_CALENDAR_ID, calendar.id)
         fetchCheckPointList(calendar.id)
         fetchScheduleList(calendar.id)
     }
@@ -45,15 +48,24 @@ class MainCalendarViewModel @Inject constructor(
         }
     }
 
-    fun fetchCheckPointList(calendarId: Long) {
+    private fun fetchCheckPointList(calendarId: Long) {
         viewModelScope.launch {
             _checkPointList.value = checkPointLocalDataSource.fetchCalendarCheckPoints(calendarId)
         }
     }
 
-    fun fetchScheduleList(calendarId: Long) {
+    private fun fetchScheduleList(calendarId: Long) {
         viewModelScope.launch {
             _scheduleList.value = scheduleLocalDataSource.fetchCalendarSchedules(calendarId)
+                .map { schedule -> schedule.mapToCalendarScheduleObject() }
         }
     }
+
+    private fun Schedule.mapToCalendarScheduleObject() = CalendarScheduleObject(
+        id = id.toInt(),
+        color = color,
+        text = name,
+        startDate = startDate.toLocalDate(),
+        endDate = endDate.toLocalDate()
+    )
 }

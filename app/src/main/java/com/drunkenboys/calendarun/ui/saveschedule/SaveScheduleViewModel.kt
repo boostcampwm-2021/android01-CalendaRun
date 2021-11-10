@@ -13,13 +13,11 @@ import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
 import com.drunkenboys.calendarun.ui.saveschedule.model.DateType
 import com.drunkenboys.calendarun.util.SingleLiveEvent
 import com.drunkenboys.calendarun.util.extensions.getOrThrow
-import com.drunkenboys.calendarun.util.localDateTimeToDate
 import com.drunkenboys.ckscalendar.data.ScheduleColorType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
 import java.time.LocalDateTime
-import java.util.*
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
@@ -112,24 +110,11 @@ class SaveScheduleViewModel @Inject constructor(
         }
     }
 
-    /*fun Date.toFormatString(): String {
-        val calendar = Calendar.getInstance()
-        calendar.time = this
-
-        val amPm = if (calendar.get(Calendar.AM_PM) == Calendar.AM) "오전" else "오후"
-        val dateFormat = SimpleDateFormat("MM월 dd일 $amPm hh:mm", Locale.getDefault())
-
-        return dateFormat.format(this)
-    }*/
-
     fun LocalDateTime.toFormatString(): String {
-        val calendar = Calendar.getInstance()
-        calendar.time = localDateTimeToDate(this)
+        val amPm = if (hour < 12) "오전" else "오후"
+        val dateFormat = DateTimeFormatter.ofPattern("MM월 dd일 $amPm hh:mm")
 
-        val amPm = if (calendar.get(Calendar.AM_PM) == Calendar.AM) "오전" else "오후"
-        val dateFormat = SimpleDateFormat("MM월 dd일 $amPm hh:mm", Locale.getDefault())
-
-        return dateFormat.format(calendar.time)
+        return format(dateFormat)
     }
 
     fun saveSchedule() {

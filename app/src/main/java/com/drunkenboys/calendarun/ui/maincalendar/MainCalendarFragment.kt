@@ -3,7 +3,6 @@ package com.drunkenboys.calendarun.ui.maincalendar
 import android.os.Build
 import android.os.Bundle
 import android.view.View
-import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.view.GravityCompat
 import androidx.core.view.get
@@ -42,7 +41,7 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         setCalendarListObserver()
         setCheckPointListObserver()
         setScheduleListObserver()
-        setupFab()
+        setOnDaySecondClickListener()
     }
 
     private fun setupCalendarView() {
@@ -117,11 +116,12 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
     private fun setOnMenuItemClickListener() {
         binding.toolbarMainCalendar.setOnMenuItemClickListener { item ->
             when (item.itemId) {
-                R.id.menu_main_calendar_search -> navigateToSearchSchedule()
                 R.id.menu_main_calendar_calendar -> {
                     isMonthCalendar = !isMonthCalendar
                     setupCalendarView()
                 }
+                R.id.menu_main_calendar_search -> navigateToSearchSchedule()
+                else -> return@setOnMenuItemClickListener false
             }
             true
         }
@@ -130,6 +130,16 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
     private fun navigateToSearchSchedule() {
         val action = MainCalendarFragmentDirections.actionMainCalendarFragmentToSearchScheduleFragment()
         navController.navigate(action)
+    }
+
+    private fun setupFab() {
+        // TODO: 2021-11-04 뷰모델 추가 시 이벤트 방식으로 변경
+        binding.fabMainCalenderAddSchedule.setOnClickListener {
+            // TODO: 2021-11-07 ID를 초기화하는 코드를 뷰모델로 이동해야 함
+            IdStore.clearId(IdStore.KEY_SCHEDULE_ID)
+            val action = MainCalendarFragmentDirections.actionMainCalendarFragmentToSaveScheduleFragment(BehaviorType.INSERT)
+            navController.navigate(action)
+        }
     }
 
     private fun setCalendarObserver() {
@@ -152,7 +162,8 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
 
     private fun setScheduleListObserver() {
         mainCalendarViewModel.scheduleList.observe(viewLifecycleOwner) { scheduleList ->
-            // TODO: 2021-11-10 Schedule 캘린더에 띄워주기
+            binding.calendarMonth.setSchedules(scheduleList)
+            binding.calendarYear.setSchedules(scheduleList)
         }
     }
 
@@ -169,11 +180,10 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
 
         binding.navView.setNavigationItemSelectedListener { item ->
             when (item) {
-                menu[calendarList.size] -> navigateToAddSchedule()
+                menu[calendarList.size] -> navigateToSaveCalendar()
                 else -> {
                     mainCalendarViewModel.setCalendar(calendarList[item.order])
                     binding.layoutDrawer.closeDrawer(GravityCompat.START)
-                    item.isChecked = true
                     // TODO: item에 맞는 캘린더 뷰로 변경
                 }
             }
@@ -187,14 +197,9 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         binding.layoutDrawer.closeDrawer(GravityCompat.START)
     }
 
-    private fun setupFab() {
-        // TODO: 2021-11-04 뷰모델 추가 시 이벤트 방식으로 변경
-        binding.fabMainCalenderAddSchedule.setOnClickListener {
-            // TODO: 2021-11-07 ID를 초기화하는 코드를 뷰모델로 이동해야 함
-            val id = mainCalendarViewModel.calendar.value?.id ?: return@setOnClickListener
-            IdStore.putId(IdStore.KEY_CALENDAR_ID, id)
-            IdStore.clearId(IdStore.KEY_SCHEDULE_ID)
-            val action = MainCalendarFragmentDirections.actionMainCalendarFragmentToSaveScheduleFragment(BehaviorType.INSERT)
+    private fun setOnDaySecondClickListener() {
+        binding.calendarMonth.setOnDaySecondClickListener { date, _ ->
+            val action = MainCalendarFragmentDirections.actionMainCalendarFragmentToDayScheduleDialog(date.toString())
             navController.navigate(action)
         }
     }

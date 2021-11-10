@@ -13,6 +13,7 @@ import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.time.LocalDateTime
 import java.util.*
 
 @ObsoleteCoroutinesApi
@@ -44,11 +45,8 @@ class SearchScheduleViewModelTest {
 
     @Test
     fun `이후_일정이_있을_때_초기_검색_테스트`() = testScope.runBlockingTest {
-        val tomorrowCalendar = Calendar.getInstance()
-        tomorrowCalendar.add(Calendar.DAY_OF_YEAR, 1)
-        val yesterdayCalendar = Calendar.getInstance()
-        yesterdayCalendar.add(Calendar.DAY_OF_YEAR, -1)
-        initDataSource(dateList = arrayOf(yesterdayCalendar.time, tomorrowCalendar.time))
+        val localDateTime = LocalDateTime.now()
+        initDataSource(dateList = arrayOf(localDateTime.minusDays(1), localDateTime.plusDays(1)))
 
         viewModel.fetchScheduleList()
         val result = viewModel.listItem.value
@@ -62,9 +60,8 @@ class SearchScheduleViewModelTest {
 
     @Test
     fun `이후_일정이_없을_때_초기_검색_테스트`() = testScope.runBlockingTest {
-        val yesterdayCalendar = Calendar.getInstance()
-        yesterdayCalendar.add(Calendar.DAY_OF_YEAR, -1)
-        initDataSource(dateList = arrayOf(yesterdayCalendar.time, yesterdayCalendar.time))
+        val localDateTime = LocalDateTime.now()
+        initDataSource(dateList = arrayOf(localDateTime.minusDays(1), localDateTime.minusDays(1)))
 
         viewModel.fetchScheduleList()
         val result = viewModel.listItem.value
@@ -78,7 +75,7 @@ class SearchScheduleViewModelTest {
 
     @Test
     fun `검색_기능_테스트`() = testScope.runBlockingTest {
-        val date = Date()
+        val date = LocalDateTime.now()
         initDataSource(name = "foo", dateList = arrayOf(date, date, date))
         initDataSource(name = "bar", dateList = arrayOf(date, date, date, date))
         initDataSource(name = "quz", dateList = arrayOf(date, date))
@@ -96,7 +93,7 @@ class SearchScheduleViewModelTest {
         assertTrue(result[0].scheduleList.all { it.schedule.name.startsWith("bar") })
     }
 
-    private suspend fun initDataSource(name: String = "name", vararg dateList: Date) {
+    private suspend fun initDataSource(name: String = "name", vararg dateList: LocalDateTime) {
         dateList.forEachIndexed { index, date ->
             dataSource.insertSchedule(
                 Schedule(
@@ -104,7 +101,7 @@ class SearchScheduleViewModelTest {
                     calendarId = 1,
                     name = "$name$index",
                     startDate = date,
-                    endDate = Date(),
+                    endDate = LocalDateTime.now(),
                     notificationType = Schedule.NotificationType.NONE,
                     memo = "memo$index",
                     color = 0

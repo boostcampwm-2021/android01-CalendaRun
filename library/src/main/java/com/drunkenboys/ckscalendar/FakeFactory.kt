@@ -7,26 +7,19 @@ import java.time.LocalDate
 object FakeFactory {
 
     // TODO: 나중에 디자인 요소 결정하기
-    fun createFakeDesign(): CalendarDesignObject {
-        val weekDayTextColor = TimeUtils.getColorInt(0, 0, 0)
-        val holidayTextColor = ScheduleColorType.RED.color
-        val saturdayTextColor = ScheduleColorType.BLUE.color
-        val sundayTextColor = ScheduleColorType.RED.color
-
-        return CalendarDesignObject(
-            weekDayTextColor = weekDayTextColor,
-            holidayTextColor = holidayTextColor,
-            saturdayTextColor = saturdayTextColor,
-            sundayTextColor = sundayTextColor,
+    fun createFakeDesign() = CalendarDesignObject(
+            weekDayTextColor = TimeUtils.getColorInt(0, 0, 0),
+            holidayTextColor = ScheduleColorType.RED.color,
+            saturdayTextColor = ScheduleColorType.BLUE.color,
+            sundayTextColor = ScheduleColorType.RED.color,
             textSize = 10,
             textAlign = 1,
-            selectedFrameColor = 0,
-            backgroundColor = 0,
-            weekSimpleStringSet = listOf(""),
-            weekFullStringSet = listOf(""),
+            selectedFrameColor = ScheduleColorType.MAGENTA.color,
+            backgroundColor = TimeUtils.getColorInt(255, 255, 255),
+            weekSimpleStringSet = listOf("일", "월", "화", "수", "목", "금", "토"),
+            weekFullStringSet = listOf("일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"),
             visibleScheduleCount = 3
-        )
-    }
+    )
 
     fun createFakeCalendarSetList(year: Int): List<CalendarSet> {
         val calendarMonth = mutableListOf<CalendarSet>()
