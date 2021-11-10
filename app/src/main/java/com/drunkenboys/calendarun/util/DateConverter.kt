@@ -1,19 +1,24 @@
 package com.drunkenboys.calendarun.util
 
-import android.annotation.SuppressLint
-import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 import java.util.*
 
-@SuppressLint("SimpleDateFormat")
-fun dateToString(date: Date): String {
-    val dateFormat = SimpleDateFormat("yyyy.MM.dd")
+fun localDateToString(date: LocalDate): String = date.format(DateTimeFormatter.ofPattern("yyyy.MM.dd"));
 
-    return dateFormat.format(date)
-}
+fun stringToLocalDate(date: String): LocalDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy.MM.dd"))
 
-@SuppressLint("SimpleDateFormat")
-fun stringToDate(date: String): Date {
-    val dateFormat = SimpleDateFormat("yyyy.MM.dd")
+fun dateToLocalDateTime(date: Date): LocalDateTime = date.toInstant()
+    .atZone(ZoneId.systemDefault())
+    .toLocalDateTime()
 
-    return dateFormat.parse(date)
-}
+fun localDateTimeToDate(localDateTime: LocalDateTime): Date = Date.from(localDateTime.toInstant(ZoneOffset.UTC))
+
+fun dateToLocalDate(date: Date): LocalDate = date.toInstant()
+    .atZone(ZoneId.systemDefault())
+    .toLocalDate()
+
+fun localDateToDate(localDate: LocalDate): Date = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant())

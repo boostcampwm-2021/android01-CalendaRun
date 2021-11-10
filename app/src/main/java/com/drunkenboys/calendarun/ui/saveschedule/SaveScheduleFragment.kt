@@ -104,7 +104,7 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
                 calendar.set(Calendar.HOUR_OF_DAY, hour)
                 calendar.set(Calendar.MINUTE, minute)
 
-                saveScheduleViewModel.updateDate(calendar.time, dateType)
+                saveScheduleViewModel.updateDate(dateToLocalDateTime(calendar.time), dateType)
             }
         }
     }

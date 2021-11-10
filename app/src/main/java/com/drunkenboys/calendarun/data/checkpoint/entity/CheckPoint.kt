@@ -4,10 +4,10 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.drunkenboys.calendarun.data.calendar.entity.Calendar
-import java.util.*
+import java.time.LocalDate
 
 @Entity(
-    tableName = "checkpoint",
+    tableName = "Checkpoint",
     foreignKeys = [
         ForeignKey(
             entity = Calendar::class,
@@ -21,6 +21,6 @@ data class CheckPoint(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val calendarId: Long,
     val name: String,
-    val date: Date
+    val date: LocalDate
 )
 
