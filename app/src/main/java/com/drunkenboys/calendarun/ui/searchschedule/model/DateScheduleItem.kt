@@ -1,28 +1,24 @@
 package com.drunkenboys.calendarun.ui.searchschedule.model
 
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
-import java.text.SimpleDateFormat
-import java.util.*
-import java.util.Calendar.*
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 data class DateScheduleItem(val schedule: Schedule, val onClick: () -> Unit) {
 
     val duration: String = run {
-        val startDateFormat = SimpleDateFormat("hh:mm", Locale.getDefault())
+        val startDateFormat = DateTimeFormatter.ofPattern("hh:mm")
         val endDateFormat = getEndDateFormat(schedule.startDate, schedule.endDate)
 
-        "${startDateFormat.format(schedule.startDate)} ~ ${endDateFormat.format(schedule.endDate)}"
+        "${schedule.startDate.format(startDateFormat)} ~ ${schedule.endDate.format(endDateFormat)}"
     }
 
-    private fun getEndDateFormat(startDate: Date, endDate: Date): SimpleDateFormat {
-        val startDateCal = getInstance().apply { time = startDate }
-        val endDateCal = getInstance().apply { time = endDate }
-
+    private fun getEndDateFormat(startDate: LocalDateTime, endDate: LocalDateTime): DateTimeFormatter {
         return when {
-            startDateCal.get(YEAR) < endDateCal.get(YEAR) -> SimpleDateFormat("yyyy년 M월 d일 hh:mm", Locale.getDefault())
-            startDateCal.get(MONTH) < endDateCal.get(MONTH) -> SimpleDateFormat("M월 d일 hh:mm", Locale.getDefault())
-            startDateCal.get(DAY_OF_YEAR) < endDateCal.get(DAY_OF_YEAR) -> SimpleDateFormat("d일 hh:mm", Locale.getDefault())
-            else -> SimpleDateFormat("hh:mm", Locale.getDefault())
+            startDate.year < endDate.year -> DateTimeFormatter.ofPattern("yyyy년 M월 d일 hh:mm")
+            startDate.month < endDate.month -> DateTimeFormatter.ofPattern("M월 d일 hh:mm")
+            startDate.dayOfYear < endDate.dayOfYear -> DateTimeFormatter.ofPattern("d일 hh:mm")
+            else -> DateTimeFormatter.ofPattern("hh:mm")
         }
     }
 }

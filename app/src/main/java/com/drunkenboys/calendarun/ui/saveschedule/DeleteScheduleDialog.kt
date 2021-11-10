@@ -3,6 +3,7 @@ package com.drunkenboys.calendarun.ui.saveschedule
 import android.app.AlertDialog
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
 import com.drunkenboys.calendarun.R
 import dagger.hilt.android.AndroidEntryPoint
@@ -18,6 +19,7 @@ class DeleteScheduleDialog : DialogFragment() {
         .setMessage(R.string.deleteScheduleDialog_message)
         .setPositiveButton(R.string.menuSaveScheduleToolbar_delete) { _, _ ->
             saveScheduleViewModel.deleteSchedule()
+            findNavController().navigateUp()
         }
         .setNegativeButton(R.string.deleteScheduleDialog_cancel) { _, _ -> }
         .create()

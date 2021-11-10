@@ -8,8 +8,8 @@ interface CheckPointLocalDataSource {
 
     suspend fun fetchAllCheckPoint(): List<CheckPoint>
 
-    suspend fun fetchCheckPoint(id: Int): CheckPoint
+    suspend fun fetchCheckPoint(id: Long): CheckPoint
 
-    suspend fun fetchCalendarCheckPoints(calendarId: Int): List<CheckPoint>
+    suspend fun fetchCalendarCheckPoints(calendarId: Long): List<CheckPoint>
 
 }

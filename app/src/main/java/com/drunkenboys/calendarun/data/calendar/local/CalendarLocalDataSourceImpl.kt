@@ -15,12 +15,11 @@ class CalendarLocalDataSourceImpl @Inject constructor(
         calendarDao.insertCalendar(calendar)
     }
 
-
     override suspend fun fetchAllCalendar() = withContext(dispatcher) {
         calendarDao.fetchAllCalendar()
     }
 
-    override suspend fun fetchCalendar(id: Int) = withContext(dispatcher) {
+    override suspend fun fetchCalendar(id: Long) = withContext(dispatcher) {
         calendarDao.fetchCalendar(id)
     }
 }

@@ -19,9 +19,9 @@ data class CalendarDesignObject(
     @DrawableRes var selectedFrameDrawable: Int = R.drawable.bg_month_date_selected,
     var textSize: Int = 10,
     var textAlign: Int = Gravity.CENTER_VERTICAL,
-    var weekSimpleStringSet: List<String> = listOf(),
-    var weekFullStringSet: List<String> = listOf(),
-    var visibleScheduleCount: Int = 3,
+    val weekSimpleStringSet: List<String> = listOf("일", "월", "화", "수", "목", "금", "토"),
+    val weekFullStringSet: List<String> = listOf("일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"),
+    var visibleScheduleCount: Int = 3
 ) {
     companion object {
 

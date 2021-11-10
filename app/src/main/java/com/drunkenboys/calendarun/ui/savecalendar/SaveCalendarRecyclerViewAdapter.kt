@@ -20,7 +20,7 @@ class SaveCalendarRecyclerViewAdapter(private val viewLifecycleOwner: LifecycleO
 
     fun setCheckPointDate(context: Context, item: CheckPointItem) {
         showDatePickerDialog(context) { _, year, month, dayOfMonth ->
-            val date = context.getString(R.string.ui_date_format, year, month, dayOfMonth)
+            val date = context.getString(R.string.ui_date_format, year, month + 1, dayOfMonth)
             item.date.value = date
         }
     }

@@ -49,4 +49,9 @@
 
     <!-- drawer -->
     <string name="drawer_calendar_add">캘린더 추가</string>
+
+    <string name="toast_schedule_saved">일정이 저장되었습니다</string>
+    <string name="toast_schedule_deleted">일정이 삭제되었습니다</string>
+
+    <string name="contentDescription_ivAddSchedule">일정 추가 버튼</string>
 </resources>

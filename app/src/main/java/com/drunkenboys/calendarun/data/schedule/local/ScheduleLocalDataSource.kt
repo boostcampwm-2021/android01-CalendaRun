@@ -10,6 +10,8 @@ interface ScheduleLocalDataSource {
 
     suspend fun fetchSchedule(id: Long): Schedule
 
+    suspend fun fetchCalendarSchedules(calendarId: Long): List<Schedule>
+
     suspend fun updateSchedule(schedule: Schedule)
 
     suspend fun deleteSchedule(schedule: Schedule)

@@ -1,15 +1,12 @@
 package com.drunkenboys.calendarun.ui.searchschedule.model
 
-import java.text.SimpleDateFormat
-import java.util.*
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 data class DateItem(
-    val date: Date,
+    val date: LocalDate,
     val scheduleList: List<DateScheduleItem>
 ) {
 
-    val dateName: String = run {
-        val df = SimpleDateFormat("M월 d일", Locale.getDefault())
-        df.format(date)
-    }
+    val dateName: String = date.format(DateTimeFormatter.ofPattern("M월 d일"))
 }

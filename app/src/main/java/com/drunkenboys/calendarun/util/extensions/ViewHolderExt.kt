@@ -1,4 +1,4 @@
-package com.drunkenboys.calendarun.util
+package com.drunkenboys.calendarun.util.extensions
 
 import android.content.Context
 import androidx.recyclerview.widget.RecyclerView

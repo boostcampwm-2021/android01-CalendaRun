@@ -5,7 +5,7 @@ import android.graphics.Canvas
 import android.graphics.Rect
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
-import com.drunkenboys.calendarun.util.dp2px
+import com.drunkenboys.calendarun.util.extensions.dp2px
 import kotlin.math.roundToInt
 
 class HorizontalInsetDividerDecoration(
