@@ -1,7 +1,6 @@
 package com.drunkenboys.ckscalendar.month
 
 import android.graphics.Color
-import android.text.Layout
 import android.text.TextUtils
 import android.util.TypedValue
 import android.view.Gravity
@@ -9,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.compose.ui.text.style.TextAlign
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -108,13 +106,13 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Lis
         private fun makePaddingScheduleList(item: CalendarDate, schedules: List<CalendarScheduleObject>): Array<TextView?> {
             val filteredScheduleList = schedules.filter {
                 item.dayType != DayType.PADDING &&
-                        it.startDate <= item.date &&
-                        item.date <= it.endDate
+                        it.startDate.toLocalDate() <= item.date &&
+                        item.date <= it.endDate.toLocalDate()
             }
 
             val scheduleListContainer = arrayOfNulls<TextView>(SCHEDULE_CONTAINER_SIZE)
             filteredScheduleList.forEach {
-                val isFirstShowSchedule = item.date == it.startDate || item.dayType == DayType.SUNDAY
+                val isFirstShowSchedule = item.date == it.startDate.toLocalDate() || item.dayType == DayType.SUNDAY
                 val paddingKey = "${adapterPosition / CALENDAR_COLUMN_SIZE}:${it.id}"
                 val paddingLineIndex = lineIndex[paddingKey]
 
@@ -198,6 +196,6 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Lis
         //TODO : 10개넘어가는 일정이 있으면 오류 가능성 있음
         private const val SCHEDULE_CONTAINER_SIZE = 10
 
-        private const val MAX_VISIBLE_SCHEDULE_SIZE = 4
+        private const val MAX_VISIBLE_SCHEDULE_SIZE = 3
     }
 }
