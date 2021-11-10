@@ -65,7 +65,7 @@ class MainCalendarViewModel @Inject constructor(
         id = id.toInt(),
         color = color,
         text = name,
-        startDate = startDate.toLocalDate(),
-        endDate = endDate.toLocalDate()
+        startDate = startDate,
+        endDate = endDate
     )
 }
