@@ -3,6 +3,7 @@ package com.drunkenboys.calendarun.ui.maincalendar
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.view.GravityCompat
 import androidx.core.view.get
@@ -20,7 +21,7 @@ import com.drunkenboys.ckscalendar.data.CalendarDesignObject
 import com.drunkenboys.ckscalendar.data.CalendarScheduleObject
 import com.drunkenboys.ckscalendar.data.ScheduleColorType
 import dagger.hilt.android.AndroidEntryPoint
-import java.time.LocalDateTime
+import java.time.LocalDate
 
 @AndroidEntryPoint
 class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.fragment_main_calendar) {
@@ -36,7 +37,8 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         setupCalendarView()
         setDataBinding()
         setupToolbar()
-        setupFab()
+        setNavigationOnClickListener()
+        setOnMenuItemClickListener()
         setCalendarObserver()
         setCalendarListObserver()
         setCheckPointListObserver()
@@ -56,6 +58,17 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
 
     private fun setupToolbar() {
         binding.toolbarMainCalendar.setupWithNavController(navController, binding.layoutDrawer)
+    }
+
+    private fun setNavigationOnClickListener() = with(binding) {
+        toolbarMainCalendar.setNavigationOnClickListener {
+            layoutDrawer.openDrawer(GravityCompat.START)
+            root.findViewById<TextView>(R.id.tv_drawerHeader_title).text =
+                this@MainCalendarFragment.mainCalendarViewModel.calendar.value?.name
+        }
+    }
+
+    private fun setOnMenuItemClickListener() {
         binding.toolbarMainCalendar.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.menu_main_calendar_calendar -> {
@@ -122,11 +135,9 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
 
         binding.navView.setNavigationItemSelectedListener { item ->
             when (item) {
-                menu[calendarList.size] -> navigateToSaveCalendar()
+                menu[calendarList.size] -> navigateToSaveSchedule()
                 else -> {
-                    val selectedCalendar = calendarList.find { calendar -> calendar.name == item.title } ?: throw IllegalStateException()
-                    mainCalendarViewModel.setCalendar(selectedCalendar)
-                    item.isChecked = true
+                    mainCalendarViewModel.setCalendar(calendarList[item.order])
                     binding.layoutDrawer.closeDrawer(GravityCompat.START)
                     // TODO: item에 맞는 캘린더 뷰로 변경
                 }
@@ -135,7 +146,7 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         }
     }
 
-    private fun navigateToSaveCalendar() {
+    private fun navigateToSaveSchedule() {
         val action = MainCalendarFragmentDirections.actionMainCalendarFragmentToSaveCalendarFragment()
         navController.navigate(action)
         binding.layoutDrawer.closeDrawer(GravityCompat.START)
