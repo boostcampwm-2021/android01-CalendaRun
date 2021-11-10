@@ -10,10 +10,11 @@ import java.util.Calendar.*
 data class DateScheduleItem(val schedule: Schedule, val onClick: () -> Unit) {
 
     val duration: String = run {
-        val startDateFormat = SimpleDateFormat("hh:mm", Locale.getDefault())
-        val endDateFormat = getEndDateFormat(schedule.startDate, schedule.endDate)
-
-        "${startDateFormat.format(schedule.startDate)} ~ ${endDateFormat.format(schedule.endDate)}"
+//        val startDateFormat = SimpleDateFormat("hh:mm", Locale.getDefault())
+//        val endDateFormat = getEndDateFormat(schedule.startDate, schedule.endDate)
+//
+//        "${startDateFormat.format(schedule.startDate)} ~ ${endDateFormat.format(schedule.endDate)}"
+        "1dnjf 1dlf"
     }
 
     private fun getEndDateFormat(startDate: LocalDateTime, endDate: LocalDateTime): SimpleDateFormat {

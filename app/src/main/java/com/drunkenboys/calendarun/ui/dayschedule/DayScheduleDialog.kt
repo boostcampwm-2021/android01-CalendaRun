@@ -28,9 +28,22 @@ class DayScheduleDialog : DialogFragment() {
         _binding = DialogDayScheduleBinding.inflate(layoutInflater)
         dayScheduleViewModel.fetchScheduleList(LocalDate.parse(args.localDate))
 
+        initRvDaySchedule()
+        observeListItem()
+
         return AlertDialog.Builder(requireContext())
             .setView(binding.root)
             .create()
+    }
+
+    private fun initRvDaySchedule() {
+        binding.rvDaySchedule.adapter = dayScheduleAdapter
+    }
+
+    private fun observeListItem() {
+        dayScheduleViewModel.listItem.observe(this) { listItem ->
+            dayScheduleAdapter.submitList(listItem)
+        }
     }
 
     override fun onDestroyView() {
