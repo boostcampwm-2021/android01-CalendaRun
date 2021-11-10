@@ -1,5 +1,6 @@
 package com.drunkenboys.ckscalendar.yearcalendar
 
+import androidx.constraintlayout.compose.ConstrainedLayoutReference
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
 import com.drunkenboys.ckscalendar.data.CalendarDate
@@ -11,68 +12,10 @@ import com.drunkenboys.ckscalendar.utils.TimeUtils.dayValue
 import com.drunkenboys.ckscalendar.utils.TimeUtils.isSameWeek
 import java.time.DayOfWeek
 import java.time.LocalDate
-import java.time.Period
 
 class YearCalendarController {
 
-    fun dayOfWeekConstraints(weekIds: List<String>) = ConstraintSet {
-        val sunday = createRefFor(weekIds[0])
-        val monday = createRefFor(weekIds[1])
-        val tuesday = createRefFor(weekIds[2])
-        val wednesday = createRefFor(weekIds[3])
-        val thursday = createRefFor(weekIds[4])
-        val friday = createRefFor(weekIds[5])
-        val saturday = createRefFor(weekIds[6])
 
-        constrain(sunday) {
-            top.linkTo(parent.top)
-            start.linkTo(parent.start)
-            end.linkTo(monday.start)
-            width = Dimension.fillToConstraints
-        }
-
-        constrain(monday) {
-            top.linkTo(parent.top)
-            start.linkTo(sunday.end)
-            end.linkTo(tuesday.start)
-            width = Dimension.fillToConstraints
-        }
-
-        constrain(tuesday) {
-            top.linkTo(parent.top)
-            start.linkTo(monday.end)
-            end.linkTo(wednesday.start)
-            width = Dimension.fillToConstraints
-        }
-
-        constrain(wednesday) {
-            top.linkTo(parent.top)
-            start.linkTo(tuesday.end)
-            end.linkTo(thursday.start)
-            width = Dimension.fillToConstraints
-        }
-
-        constrain(thursday) {
-            top.linkTo(parent.top)
-            start.linkTo(wednesday.end)
-            end.linkTo(friday.start)
-            width = Dimension.fillToConstraints
-        }
-
-        constrain(friday) {
-            top.linkTo(parent.top)
-            start.linkTo(thursday.end)
-            end.linkTo(saturday.start)
-            width = Dimension.fillToConstraints
-        }
-
-        constrain(saturday) {
-            top.linkTo(parent.top)
-            start.linkTo(friday.end)
-            end.linkTo(parent.end)
-            width = Dimension.fillToConstraints
-        }
-    }
 
     fun calendarSetToCalendarDates(month: CalendarSet): List<List<CalendarDate>> {
         // n주
@@ -130,7 +73,7 @@ class YearCalendarController {
         todayScheduleList.forEach { todaySchedule ->
             weekScheduleList[todayOfWeek].forEachIndexed { index, schedule ->
                 if (schedule == null) {
-                    (todayOfWeek..getEndDateOfWeek(today, todaySchedule.endDate)).forEach { dayOfWeek ->
+                    (todayOfWeek..getScheduleEndDateOfWeek(today, todaySchedule.endDate)).forEach { dayOfWeek ->
                         weekScheduleList[dayOfWeek][index] = todaySchedule
                     }
                     return@forEach
@@ -139,7 +82,7 @@ class YearCalendarController {
         }
     }
 
-    fun getEndDateOfWeek(today: LocalDate, scheduleEndDate: LocalDate): Int =
+    fun getScheduleEndDateOfWeek(today: LocalDate, scheduleEndDate: LocalDate): Int =
         if (!today.isSameWeek(scheduleEndDate)) DayOfWeek.SATURDAY.value
         else scheduleEndDate.dayOfWeek.dayValue()
 }
