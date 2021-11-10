@@ -34,19 +34,13 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         mainCalendarViewModel.fetchCalendarList()
         setupCalendarView()
         setDataBinding()
+        setupToolbar()
+        setupFab()
         setCalendarObserver()
         setCalendarListObserver()
         setCheckPointListObserver()
         setScheduleListObserver()
-        setupToolbar()
-        setupFab()
         setOnDaySecondClickListener()
-    }
-
-    private fun setupCalendarView() {
-        // TODO: CalendarView 내부로 전환
-        binding.calendarMonth.isVisible = isMonthCalendar
-        binding.calendarYear.isVisible = !isMonthCalendar
     }
 
     // TODO: 임시 데이터
@@ -93,6 +87,12 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         )
     }
 
+    private fun setupCalendarView() {
+        // TODO: CalendarView 내부로 전환
+        binding.calendarMonth.isVisible = isMonthCalendar
+        binding.calendarYear.isVisible = !isMonthCalendar
+    }
+
     private fun setDataBinding() {
         binding.mainCalendarViewModel = mainCalendarViewModel
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -104,11 +104,11 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         binding.toolbarMainCalendar.setupWithNavController(navController, binding.layoutDrawer)
         binding.toolbarMainCalendar.setOnMenuItemClickListener { item ->
             when (item.itemId) {
-                R.id.menu_main_calendar_search -> navigateToSearchSchedule()
                 R.id.menu_main_calendar_calendar -> {
                     isMonthCalendar = !isMonthCalendar
                     setupCalendarView()
                 }
+                R.id.menu_main_calendar_search -> navigateToSearchSchedule()
                 else -> return@setOnMenuItemClickListener false
             }
             true
@@ -118,6 +118,18 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
     private fun navigateToSearchSchedule() {
         val action = MainCalendarFragmentDirections.actionMainCalendarFragmentToSearchScheduleFragment()
         navController.navigate(action)
+    }
+
+    private fun setupFab() {
+        // TODO: 2021-11-04 뷰모델 추가 시 이벤트 방식으로 변경
+        binding.fabMainCalenderAddSchedule.setOnClickListener {
+            // TODO: 2021-11-07 ID를 초기화하는 코드를 뷰모델로 이동해야 함
+            val id = mainCalendarViewModel.calendar.value?.id ?: return@setOnClickListener
+            IdStore.putId(IdStore.KEY_CALENDAR_ID, id)
+            IdStore.clearId(IdStore.KEY_SCHEDULE_ID)
+            val action = MainCalendarFragmentDirections.actionMainCalendarFragmentToSaveScheduleFragment(BehaviorType.INSERT)
+            navController.navigate(action)
+        }
     }
 
     private fun setCalendarObserver() {
@@ -157,7 +169,7 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
 
         binding.navView.setNavigationItemSelectedListener { item ->
             when (item) {
-                menu[calendarList.size] -> navigateToAddSchedule()
+                menu[calendarList.size] -> navigateToSaveCalendar()
                 else -> {
                     val selectedCalendar = calendarList.find { calendar -> calendar.name == item.title } ?: throw IllegalStateException()
                     mainCalendarViewModel.setCalendar(selectedCalendar)
@@ -170,22 +182,10 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         }
     }
 
-    private fun navigateToAddSchedule() {
+    private fun navigateToSaveCalendar() {
         val action = MainCalendarFragmentDirections.actionMainCalendarFragmentToSaveCalendarFragment()
         navController.navigate(action)
         binding.layoutDrawer.closeDrawer(GravityCompat.START)
-    }
-
-    private fun setupFab() {
-        // TODO: 2021-11-04 뷰모델 추가 시 이벤트 방식으로 변경
-        binding.fabMainCalenderAddSchedule.setOnClickListener {
-            // TODO: 2021-11-07 ID를 초기화하는 코드를 뷰모델로 이동해야 함
-            val id = mainCalendarViewModel.calendar.value?.id ?: return@setOnClickListener
-            IdStore.putId(IdStore.KEY_CALENDAR_ID, id)
-            IdStore.clearId(IdStore.KEY_SCHEDULE_ID)
-            val action = MainCalendarFragmentDirections.actionMainCalendarFragmentToSaveScheduleFragment(BehaviorType.INSERT)
-            navController.navigate(action)
-        }
     }
 
     private fun setOnDaySecondClickListener() {
