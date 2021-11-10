@@ -6,6 +6,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.databinding.DialogDayScheduleBinding
 import com.drunkenboys.calendarun.ui.searchschedule.SearchScheduleAdapter
 import dagger.hilt.android.AndroidEntryPoint
@@ -34,6 +35,14 @@ class DayScheduleDialog : DialogFragment() {
         return AlertDialog.Builder(requireContext())
             .setView(binding.root)
             .create()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        val displayMetrics = resources.displayMetrics
+        dialog?.window?.setBackgroundDrawableResource(R.drawable.bg_white_radius_24dp)
+        dialog?.window?.setLayout((displayMetrics.widthPixels * 0.9).toInt(), (displayMetrics.heightPixels * 0.7).toInt())
     }
 
     private fun initRvDaySchedule() {
