@@ -1,6 +1,7 @@
 package com.drunkenboys.ckscalendar.month
 
 import android.graphics.Color
+import android.text.Layout
 import android.text.TextUtils
 import android.util.TypedValue
 import android.view.Gravity
@@ -8,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.compose.ui.text.style.TextAlign
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -80,7 +82,6 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Lis
 
         fun bind(item: CalendarDate) {
             binding.layoutMonthCell.isSelected = item.isSelected
-
             binding.tvMonthDay.text = ""
             if (item.dayType != DayType.PADDING) {
                 binding.tvMonthDay.text = item.date.dayOfMonth.toString()
@@ -111,7 +112,7 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Lis
                         item.date <= it.endDate
             }
 
-            val scheduleListContainer = arrayOfNulls<TextView>(MAX_VISIBLE_SCHEDULE_SIZE)
+            val scheduleListContainer = arrayOfNulls<TextView>(SCHEDULE_CONTAINER_SIZE)
             filteredScheduleList.forEach {
                 val isFirstShowSchedule = item.date == it.startDate || item.dayType == DayType.SUNDAY
                 val paddingKey = "${adapterPosition / CALENDAR_COLUMN_SIZE}:${it.id}"
@@ -120,7 +121,7 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Lis
                 if (paddingLineIndex != null) {
                     scheduleListContainer[paddingLineIndex] = mappingScheduleTextView(it, isFirstShowSchedule)
                 } else {
-                    for (i in 0 until MAX_VISIBLE_SCHEDULE_SIZE) {
+                    for (i in scheduleListContainer.indices) {
                         if (scheduleListContainer[i] == null) {
                             scheduleListContainer[i] = mappingScheduleTextView(it, isFirstShowSchedule)
                             lineIndex[paddingKey] = i
@@ -129,7 +130,8 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Lis
                     }
                 }
             }
-            return scheduleListContainer
+            // 보여줄 갯수만 뽑아서 반환 SCHEDULE_CONTAINER_SIZE 보다 크면 안됨
+            return scheduleListContainer.sliceArray(0 until MAX_VISIBLE_SCHEDULE_SIZE)
         }
 
         private fun mappingScheduleTextView(it: CalendarScheduleObject, isFirstShowSchedule: Boolean): TextView {
@@ -193,6 +195,9 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Lis
 
         private const val SCHEDULE_HEIGHT_DIVIDE_RATIO = 6
 
-        private const val MAX_VISIBLE_SCHEDULE_SIZE = 3
+        //TODO : 10개넘어가는 일정이 있으면 오류 가능성 있음
+        private const val SCHEDULE_CONTAINER_SIZE = 10
+
+        private const val MAX_VISIBLE_SCHEDULE_SIZE = 4
     }
 }
