@@ -74,14 +74,11 @@ class YearCalendarView
         // RecyclerView의 상태를 관찰
         val listState = rememberLazyListState()
         val today = CalendarDate(LocalDate.now(), DayType.PADDING, true) // 초기화를 위한 dummy
-        var weekSchedules: Array<Array<CalendarScheduleObject?>> // 1주 스케줄
 
         var clickedDay by remember { mutableStateOf<CalendarDate?>(today) }
         val clickedEdge = { day: CalendarDate ->
             BorderStroke(width = 2.dp, color = if (clickedDay?.date == day.date) Color(design.selectedFrameColor) else Color.Transparent)
         }
-
-        val density = LocalDensity.current
 
         val dayColumnModifier = { day: CalendarDate ->
             Modifier
@@ -124,36 +121,7 @@ class YearCalendarView
 
                 // 달력
                 items(year) { month ->
-                    val weeks = month.toCalendarDatesList()
-
-                    weeks.forEach { week ->
-                        // 1주일
-                        ConstraintLayout(
-                            constraintSet = dayOfWeekConstraints(week.map { day -> day.date.toString() }),
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            weekSchedules = Array(7) { Array(design.visibleScheduleCount) { null } }
-                            // 월 표시
-                            if (controller.isFirstWeek(week, month.id))
-                                AnimatedMonthHeader(density = density, listState = listState, month.id)
-
-                            week.forEach { day ->
-                                when (day.dayType) {
-                                    // 빈 날짜
-                                    DayType.PADDING -> {
-                                        PaddingText(day = day)
-                                    }
-                                    // 1일
-                                    else -> {
-                                        Column(modifier = dayColumnModifier(day), horizontalAlignment = Alignment.CenterHorizontally) {
-                                            DayText(day = day)
-                                            ScheduleText(today = day.date, schedules, weekSchedules)
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    MonthCalendar(month, listState = listState, dayColumnModifier = dayColumnModifier)
                 }
             }
         }
@@ -162,6 +130,46 @@ class YearCalendarView
         LaunchedEffect(listState) {
             listState.scrollToItem(index = LAST_YEAR - 1) // preload
             listState.scrollToItem(index = getTodayItemIndex())
+        }
+    }
+
+    @Composable
+    private fun MonthCalendar(
+        month: CalendarSet,
+        listState: LazyListState,
+        dayColumnModifier: (CalendarDate) -> Modifier
+    ) {
+        val weeks = month.toCalendarDatesList()
+        var weekSchedules: Array<Array<CalendarScheduleObject?>> // 1주 스케줄
+        val density = LocalDensity.current // FIXME
+
+        weeks.forEach { week ->
+            // 1주일
+            ConstraintLayout(
+                constraintSet = dayOfWeekConstraints(week.map { day -> day.date.toString() }),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                weekSchedules = Array(7) { Array(design.visibleScheduleCount) { null } }
+                // 월 표시
+                if (controller.isFirstWeek(week, month.id))
+                    AnimatedMonthHeader(density = density, listState = listState, month.id)
+
+                week.forEach { day ->
+                    when (day.dayType) {
+                        // 빈 날짜
+                        DayType.PADDING -> {
+                            PaddingText(day = day)
+                        }
+                        // 1일
+                        else -> {
+                            Column(modifier = dayColumnModifier(day), horizontalAlignment = Alignment.CenterHorizontally) {
+                                DayText(day = day)
+                                ScheduleText(today = day.date, schedules, weekSchedules)
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
