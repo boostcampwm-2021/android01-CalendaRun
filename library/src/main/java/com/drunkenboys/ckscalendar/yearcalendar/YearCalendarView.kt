@@ -31,6 +31,7 @@ import com.drunkenboys.ckscalendar.FakeFactory
 import com.drunkenboys.ckscalendar.data.*
 import com.drunkenboys.ckscalendar.listener.OnDayClickListener
 import com.drunkenboys.ckscalendar.listener.OnDaySecondClickListener
+import com.drunkenboys.ckscalendar.utils.TimeUtils.dayValue
 import java.time.DayOfWeek
 import java.time.LocalDate
 
@@ -178,7 +179,7 @@ class YearCalendarView
         weekScheduleList: Array<Array<CalendarScheduleObject?>>
     ) {
         val today = day.date
-        val weekNum = (today.dayOfWeek.value % 7)
+        val weekNum = (today.dayOfWeek.dayValue())
 
         with(controller) { setWeekSchedule(getStartScheduleList(today, scheduleList), weekScheduleList, today) }
 
