@@ -14,10 +14,10 @@ class YearCalendarController {
     }
 
     fun getStartScheduleList(today: LocalDate, scheduleList: List<CalendarScheduleObject>) = scheduleList.filter { schedule ->
-        val isStart = schedule.startDate == today
+        val isStart = schedule.startDate.toLocalDate() == today
         val isSunday = today.dayOfWeek == DayOfWeek.SUNDAY
         val isFirstOfMonth = today.dayOfMonth == 1
-        val isDateInScheduleRange = today in schedule.startDate..schedule.endDate
+        val isDateInScheduleRange = today in schedule.startDate.toLocalDate()..schedule.endDate.toLocalDate()
         isStart || ((isSunday || isFirstOfMonth) && (isDateInScheduleRange))
     }
 
@@ -30,7 +30,7 @@ class YearCalendarController {
 
         todaySchedules.forEach { todaySchedule ->
             val weekEndDate =
-                if (!today.isSameWeek(todaySchedule.endDate)) DayOfWeek.SATURDAY.value
+                if (!today.isSameWeek(todaySchedule.endDate.toLocalDate())) DayOfWeek.SATURDAY.value
                 else todaySchedule.endDate.dayOfWeek.dayValue()
 
             weekSchedules[todayOfWeek].forEachIndexed { index, space ->

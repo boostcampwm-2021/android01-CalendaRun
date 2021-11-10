@@ -45,7 +45,7 @@ class YearCalendarView
 
     private val controller = YearCalendarController()
 
-    private var design = FakeFactory.createFakeDesign()
+    private var design = CalendarDesignObject()
 
     private var onDateClickListener: OnDayClickListener? = null
     private var onDateSecondClickListener: OnDaySecondClickListener? = null
@@ -202,6 +202,14 @@ class YearCalendarView
     ) {
         val weekNum = (today.dayOfWeek.dayValue())
 
+        val scheduleText = { schedule: CalendarScheduleObject? ->
+            when {
+                schedule == null -> " "
+                schedule.startDate.toLocalDate() == today || today.dayOfWeek == DayOfWeek.SUNDAY -> schedule.text
+                else -> " "
+            }
+        }
+
         with(controller) {
             setWeekSchedule(getStartScheduleList(today, scheduleList), weekScheduleList, today)
         }
@@ -212,7 +220,7 @@ class YearCalendarView
                 else Modifier.fillMaxWidth()
 
             Text(
-                text = if (schedule?.startDate == today || today.dayOfWeek == DayOfWeek.SUNDAY) schedule?.text ?: " " else " ",
+                text = scheduleText(schedule),
                 maxLines = 1,
                 modifier = modifier,
                 overflow = TextOverflow.Ellipsis,
@@ -269,8 +277,7 @@ class YearCalendarView
     }
 
     fun resetTheme() {
-        // FIXME
-        design = FakeFactory.createFakeDesign()
+        design = CalendarDesignObject()
     }
 
     companion object {

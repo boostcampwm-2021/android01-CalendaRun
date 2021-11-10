@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.drunkenboys.ckscalendar.data.CalendarDate
+import com.drunkenboys.ckscalendar.data.CalendarDesignObject
 import com.drunkenboys.ckscalendar.data.CalendarScheduleObject
 import com.drunkenboys.ckscalendar.data.DayType
 import com.drunkenboys.ckscalendar.databinding.ItemMonthCellBinding
@@ -19,10 +20,13 @@ import com.drunkenboys.ckscalendar.listener.OnDayClickListener
 import com.drunkenboys.ckscalendar.listener.OnDaySecondClickListener
 import com.drunkenboys.ckscalendar.utils.context
 import com.drunkenboys.ckscalendar.utils.dp2px
+import com.drunkenboys.ckscalendar.utils.tintStroke
 
 class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : ListAdapter<CalendarDate, MonthAdapter.Holder>(diffUtil) {
 
     private val schedules = mutableListOf<CalendarScheduleObject>()
+
+    private lateinit var calendarDesign: CalendarDesignObject
 
     var selectedPosition = -1
     var currentPagePosition = -1
@@ -35,6 +39,7 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Lis
     fun setItems(
         list: List<CalendarDate>,
         schedules: List<CalendarScheduleObject>,
+        calendarDesign: CalendarDesignObject,
         currentPagePosition: Int
     ) {
         list.forEachIndexed { index, calendarDate ->
@@ -43,7 +48,9 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Lis
                 return@forEachIndexed
             }
         }
+
         this.lineIndex.clear()
+        this.calendarDesign = calendarDesign
         this.currentPagePosition = currentPagePosition
         this.schedules.clear()
         this.schedules.addAll(schedules)
@@ -63,9 +70,9 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Lis
     inner class Holder(private val binding: ItemMonthCellBinding, private val calculateHeight: Int) :
         RecyclerView.ViewHolder(binding.root) {
 
-        private val weekDayColor = Color.BLACK
-        private val holidayColor = Color.RED
-        private val saturdayColor = Color.BLUE
+        private val weekDayColor = calendarDesign.weekDayTextColor
+        private val holidayColor = calendarDesign.holidayTextColor
+        private val saturdayColor = calendarDesign.saturdayTextColor
 
         init {
             itemView.setOnClickListener {
@@ -76,6 +83,8 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Lis
                 }
             }
             binding.layoutMonthCell.layoutParams.height = calculateHeight
+            binding.viewMonthSelectFrame.setBackgroundResource(calendarDesign.selectedFrameDrawable)
+            binding.viewMonthSelectFrame.tintStroke(calendarDesign.selectedFrameColor, 2.0f)
         }
 
         fun bind(item: CalendarDate) {
