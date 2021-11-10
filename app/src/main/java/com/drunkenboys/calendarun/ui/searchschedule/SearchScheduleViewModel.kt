@@ -11,10 +11,12 @@ import com.drunkenboys.calendarun.ui.searchschedule.model.DateItem
 import com.drunkenboys.calendarun.ui.searchschedule.model.DateScheduleItem
 import com.drunkenboys.calendarun.util.SingleLiveEvent
 import com.drunkenboys.calendarun.util.extensions.getOrThrow
+import com.drunkenboys.calendarun.util.localDateTimeToDate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 import java.util.*
 import javax.inject.Inject
 
@@ -41,7 +43,7 @@ class SearchScheduleViewModel @Inject constructor(
             _isSearching.value = true
 
             viewModelScope.launch {
-                val today = Date()
+                val today = LocalDateTime.now()
 
                 _listItem.value = scheduleDataSource.fetchAllSchedule()
                     .filter { schedule -> schedule.startDate >= today }
@@ -70,7 +72,7 @@ class SearchScheduleViewModel @Inject constructor(
     }
 
     private fun Schedule.dayMillis() = Calendar.getInstance().apply {
-        time = this@dayMillis.startDate
+        time = localDateTimeToDate(this@dayMillis.startDate)
         set(Calendar.HOUR_OF_DAY, 0)
         set(Calendar.MINUTE, 0)
         set(Calendar.SECOND, 0)

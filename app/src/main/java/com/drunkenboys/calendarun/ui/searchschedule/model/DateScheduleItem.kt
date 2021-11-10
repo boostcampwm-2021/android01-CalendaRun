@@ -1,7 +1,9 @@
 package com.drunkenboys.calendarun.ui.searchschedule.model
 
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
+import com.drunkenboys.calendarun.util.localDateTimeToDate
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
 import java.util.*
 import java.util.Calendar.*
 
@@ -14,9 +16,9 @@ data class DateScheduleItem(val schedule: Schedule, val onClick: () -> Unit) {
         "${startDateFormat.format(schedule.startDate)} ~ ${endDateFormat.format(schedule.endDate)}"
     }
 
-    private fun getEndDateFormat(startDate: Date, endDate: Date): SimpleDateFormat {
-        val startDateCal = getInstance().apply { time = startDate }
-        val endDateCal = getInstance().apply { time = endDate }
+    private fun getEndDateFormat(startDate: LocalDateTime, endDate: LocalDateTime): SimpleDateFormat {
+        val startDateCal = getInstance().apply { time = localDateTimeToDate(startDate) }
+        val endDateCal = getInstance().apply { time = localDateTimeToDate(endDate) }
 
         return when {
             startDateCal.get(YEAR) < endDateCal.get(YEAR) -> SimpleDateFormat("yyyy년 M월 d일 hh:mm", Locale.getDefault())

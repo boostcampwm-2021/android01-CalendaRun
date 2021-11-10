@@ -1,11 +1,12 @@
 package com.drunkenboys.calendarun.util.extensions
 
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
+import com.drunkenboys.calendarun.util.localDateTimeToDate
 import java.util.*
 
 fun Schedule.notificationDate(): Long {
     val calendar = Calendar.getInstance()
-    calendar.time = startDate
+    calendar.time = localDateTimeToDate(startDate)
 
     when (notificationType) {
         Schedule.NotificationType.NONE -> return 0
