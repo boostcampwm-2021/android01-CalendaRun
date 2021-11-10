@@ -55,13 +55,13 @@ class YearCalendarView
 
     init {
         binding.composeYearCalendarViewYearCalendar.setContent {
-            CalendarLazyColumn(yearList)
+            CalendarLazyColumn()
         }
     }
 
     @ExperimentalFoundationApi
     @Composable
-    private fun CalendarLazyColumn(yearList: List<List<CalendarSet>>) {
+    private fun CalendarLazyColumn() {
         // RecyclerView의 상태를 관찰
         val listState = rememberLazyListState()
         val today = CalendarDate(LocalDate.now(), DayType.PADDING, true) // 초기화를 위한 dummy
@@ -137,7 +137,7 @@ class YearCalendarView
                                     else -> {
                                         Column(modifier = dayColumnModifier(day), horizontalAlignment = Alignment.CenterHorizontally) {
                                             DayText(day = day)
-                                            ScheduleText(day = day, schedules, weekSchedules)
+                                            ScheduleText(today = day.date, schedules, weekSchedules)
                                         }
                                     }
                                 }
@@ -195,11 +195,10 @@ class YearCalendarView
 
     @Composable
     private fun ScheduleText(
-        day: CalendarDate,
+        today: LocalDate,
         scheduleList: List<CalendarScheduleObject>,
         weekScheduleList: Array<Array<CalendarScheduleObject?>>
     ) {
-        val today = day.date
         val weekNum = (today.dayOfWeek.dayValue())
 
         with(controller) {
@@ -207,10 +206,13 @@ class YearCalendarView
         }
 
         weekScheduleList[weekNum].forEach { schedule ->
-            Box(modifier = if (schedule != null) Modifier.fillMaxWidth().background(color = Color(schedule.color))
-            else Modifier.fillMaxWidth()) {
+            val modifier =
+                if (schedule != null) Modifier.fillMaxWidth().background(color = Color(schedule.color))
+                else Modifier.fillMaxWidth()
+
+            Box(modifier = modifier) {
                 Text(
-                    text = if (schedule?.startDate == day.date || day.date.dayOfWeek == DayOfWeek.SUNDAY) schedule?.text ?: " " else "",
+                    text = if (schedule?.startDate == today || today.dayOfWeek == DayOfWeek.SUNDAY) schedule?.text ?: " " else " ",
                     modifier = Modifier.padding(2.dp),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
