@@ -20,6 +20,7 @@ import com.drunkenboys.ckscalendar.data.CalendarScheduleObject
 import com.drunkenboys.ckscalendar.data.ScheduleColorType
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 @AndroidEntryPoint
 class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.fragment_main_calendar) {
@@ -49,7 +50,7 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
     // TODO: 임시 데이터
     @RequiresApi(Build.VERSION_CODES.O)
     fun createFakeSchedule(): List<CalendarScheduleObject> {
-        val today = LocalDate.now()
+        val today = LocalDateTime.now()
 
         return listOf(
             CalendarScheduleObject(
@@ -86,7 +87,7 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
                 text = "긴스케줄긴긴",
                 startDate = today.minusDays(9),
                 endDate = today.plusDays(9)
-            ),
+            )
         )
     }
 
