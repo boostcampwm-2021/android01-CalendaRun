@@ -8,6 +8,7 @@ import androidx.core.content.getSystemService
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import com.drunkenboys.calendarun.data.schedule.local.ScheduleLocalDataSource
 import com.drunkenboys.calendarun.util.extensions.notificationDate
+import com.drunkenboys.calendarun.util.localDateTimeToDate
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -18,7 +19,8 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class BootReceiver : BroadcastReceiver() {
 
-    @Inject lateinit var scheduleDataSource: ScheduleLocalDataSource
+    @Inject
+    lateinit var scheduleDataSource: ScheduleLocalDataSource
 
     private val job = Job()
     private val coroutineScope = CoroutineScope(job)
@@ -44,7 +46,7 @@ class BootReceiver : BroadcastReceiver() {
     }
 
     private fun setAlarmIfScheduleInFuture(schedule: Schedule, context: Context) {
-        if (schedule.startDate.time > today.timeInMillis) {
+        if (localDateTimeToDate(schedule.startDate).time > today.timeInMillis) {
             val triggerAtMillis = schedule.notificationDate()
             alarmManager.set(
                 AlarmManager.RTC_WAKEUP,
