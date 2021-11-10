@@ -1,17 +1,18 @@
 package com.drunkenboys.ckscalendar.data
 
-// CalendarView의 디자인을 위한 설정
+import androidx.annotation.ColorInt
+
 data class CalendarDesignObject(
-    val weekDayTextColor: Int,
-    val holidayTextColor: Int,
-    val saturdayTextColor: Int,
-    val sundayTextColor: Int,
+    @ColorInt val weekDayTextColor: Int,
+    @ColorInt val holidayTextColor: Int,
+    @ColorInt val saturdayTextColor: Int,
+    @ColorInt val sundayTextColor: Int,
     val textSize: Int,
-    val textAlign: Int, // FIXME: -1, 0, 1
-    val selectedFrameColor: Int,
-    val backgroundColor: Int,
+    val textAlign: Int, // TODO: gravity 매퍼
+    @ColorInt val selectedFrameColor: Int,
+    @ColorInt val backgroundColor: Int,
     val weekSimpleStringSet: List<String>,
     val weekFullStringSet: List<String>,
-    val visibleScheduleCount: Int // 조절이 가능할까...?
+    val visibleScheduleCount: Int
     // TODO: frame shape
 )
