@@ -70,7 +70,8 @@ class SaveCalendarViewModel @Inject constructor(
     }
 
     fun addCheckPoint() {
-        val newList = _checkPointItemList.value ?: mutableListOf()
+        val newList = mutableListOf<CheckPointItem>()
+        newList.addAll(checkPointItemList.value ?: mutableListOf())
         newList.add(CheckPointItem())
         _checkPointItemList.value = newList
     }
@@ -130,5 +131,5 @@ class SaveCalendarViewModel @Inject constructor(
     private fun isValidateCalendarDate(startDate: String, endDate: String) = stringToDate(startDate) < stringToDate(endDate)
 
     private fun isValidateCheckPointDate(checkPointDate: String, startDate: String, endDate: String) =
-        stringToDate(startDate) < stringToDate(checkPointDate) && stringToDate(checkPointDate) < stringToDate(endDate)
+        stringToDate(checkPointDate).after(stringToDate(startDate)) && stringToDate(checkPointDate).before(stringToDate(endDate))
 }
