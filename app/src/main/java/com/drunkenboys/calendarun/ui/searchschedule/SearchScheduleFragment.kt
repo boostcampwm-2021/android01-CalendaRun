@@ -3,7 +3,6 @@ package com.drunkenboys.calendarun.ui.searchschedule
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.drunkenboys.calendarun.R
@@ -18,8 +17,6 @@ class SearchScheduleFragment : BaseFragment<FragmentSearchScheduleBinding>(R.lay
     private val searchScheduleViewModel: SearchScheduleViewModel by viewModels()
 
     private val searchScheduleAdapter = SearchScheduleAdapter()
-
-    private val navController by lazy { findNavController() }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

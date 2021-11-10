@@ -9,7 +9,6 @@ import androidx.appcompat.widget.ListPopupWindow
 import androidx.core.content.getSystemService
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
 import androidx.navigation.ui.AppBarConfiguration
@@ -34,7 +33,6 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
     private val saveScheduleViewModel: SaveScheduleViewModel
             by navGraphViewModels(R.id.saveScheduleFragment) { defaultViewModelProviderFactory }
 
-    private val navController by lazy { findNavController() }
     private val args: SaveScheduleFragmentArgs by navArgs()
 
     private var notificationPopupWidow: ListPopupWindow? = null

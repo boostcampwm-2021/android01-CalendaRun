@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.setupWithNavController
 import com.drunkenboys.calendarun.R
@@ -19,7 +18,6 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
 
     private val saveCalendarViewModel by viewModels<SaveCalendarViewModel>()
     private val saveCalendarAdapter by lazy { SaveCalendarRecyclerViewAdapter(viewLifecycleOwner) }
-    private val navController by lazy { findNavController() }
 
     private val args: SaveCalendarFragmentArgs by navArgs()
 
