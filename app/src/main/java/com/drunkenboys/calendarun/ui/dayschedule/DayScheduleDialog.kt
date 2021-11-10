@@ -1,4 +1,4 @@
-package com.drunkenboys.calendarun.ui.maincalendar
+package com.drunkenboys.calendarun.ui.dayschedule
 
 import android.app.AlertDialog
 import android.os.Bundle

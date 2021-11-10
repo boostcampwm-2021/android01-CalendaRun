@@ -79,7 +79,7 @@
 
     <dialog
         android:id="@+id/dayScheduleDialog"
-        android:name="com.drunkenboys.calendarun.ui.maincalendar.DayScheduleDialog"
+        android:name="com.drunkenboys.calendarun.ui.dayschedule.DayScheduleDialog"
         android:label="DayScheduleDialog"
         tools:layout="@layout/dialog_day_schedule">
         <argument
