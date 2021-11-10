@@ -24,6 +24,8 @@ import com.drunkenboys.calendarun.util.*
 import com.drunkenboys.calendarun.util.extensions.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 import java.util.*
 
 @AndroidEntryPoint
@@ -100,9 +102,9 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
                 val dateInMillis = pickDateInMillis() ?: return@launch
                 val (hour, minute) = pickTime() ?: return@launch
 
-                val dateTime = dateInMillis.toDefaultLocalDateTime()
-                    .plusHours(hour.toLong())
-                    .plusMinutes(minute.toLong())
+                val dateTime = LocalDateTime.ofEpochSecond(dateInMillis / 1000, 0, ZoneOffset.UTC)
+                    .withHour(hour)
+                    .withMinute(minute)
 
                 saveScheduleViewModel.updateDate(dateTime, dateType)
             }
