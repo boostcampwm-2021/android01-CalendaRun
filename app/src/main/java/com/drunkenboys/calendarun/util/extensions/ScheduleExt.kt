@@ -1,19 +1,13 @@
 package com.drunkenboys.calendarun.util.extensions
 
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
-import com.drunkenboys.calendarun.util.localDateTimeToDate
-import java.util.*
+import com.drunkenboys.calendarun.util.defaultZoneOffset
 
-fun Schedule.notificationDate(): Long {
-    val calendar = Calendar.getInstance()
-    calendar.time = localDateTimeToDate(startDate)
-
-    when (notificationType) {
+fun Schedule.notificationDateTimeMillis(): Long {
+    return when (notificationType) {
         Schedule.NotificationType.NONE -> return 0
-        Schedule.NotificationType.TEN_MINUTES_AGO -> calendar.add(Calendar.MINUTE, -10)
-        Schedule.NotificationType.A_HOUR_AGO -> calendar.add(Calendar.HOUR_OF_DAY, -1)
-        Schedule.NotificationType.A_DAY_AGO -> calendar.add(Calendar.DAY_OF_YEAR, -1)
-    }
-
-    return calendar.timeInMillis
+        Schedule.NotificationType.TEN_MINUTES_AGO -> startDate.minusMinutes(10).toEpochSecond(defaultZoneOffset)
+        Schedule.NotificationType.A_HOUR_AGO -> startDate.minusHours(1).toEpochSecond(defaultZoneOffset)
+        Schedule.NotificationType.A_DAY_AGO -> startDate.minusDays(1).toEpochSecond(defaultZoneOffset)
+    } * 1000
 }

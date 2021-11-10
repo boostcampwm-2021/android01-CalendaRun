@@ -97,14 +97,14 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
             dateType ?: return@observe
 
             lifecycleScope.launch {
-                val calendar = Calendar.getInstance()
-
-                calendar.timeInMillis = pickDateInMillis() ?: return@launch
+                val dateInMillis = pickDateInMillis() ?: return@launch
                 val (hour, minute) = pickTime() ?: return@launch
-                calendar.set(Calendar.HOUR_OF_DAY, hour)
-                calendar.set(Calendar.MINUTE, minute)
 
-                saveScheduleViewModel.updateDate(dateToLocalDateTime(calendar.time), dateType)
+                val dateTime = dateInMillis.toDefaultLocalDateTime()
+                    .plusHours(hour.toLong())
+                    .plusMinutes(minute.toLong())
+
+                saveScheduleViewModel.updateDate(dateTime, dateType)
             }
         }
     }
@@ -162,7 +162,7 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
     private fun saveNotification(schedule: Schedule) {
         val alarmManager = requireContext().getSystemService<AlarmManager>() ?: return
 
-        val triggerAtMillis = schedule.notificationDate()
+        val triggerAtMillis = schedule.notificationDateTimeMillis()
         val today = Calendar.getInstance()
         if (today.timeInMillis > triggerAtMillis) return
 
