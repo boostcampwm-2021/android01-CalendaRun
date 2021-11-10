@@ -1,27 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".ui.dayschedule.DayScheduleDialog">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <ImageView
-        android:id="@+id/iv_daySchedule_addSchedule"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_gravity="end"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:contentDescription="@string/contentDescription_ivAddSchedule"
-        android:src="@drawable/ic_add" />
+    <data>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_daySchedule"
+        <variable
+            name="viewModel"
+            type="com.drunkenboys.calendarun.ui.dayschedule.DayScheduleViewModel" />
+    </data>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/item_date" />
+        android:orientation="vertical"
+        android:padding="16dp"
+        tools:context=".ui.dayschedule.DayScheduleDialog">
 
-</LinearLayout>
+        <ImageView
+            android:id="@+id/iv_daySchedule_addSchedule"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="end"
+            android:contentDescription="@string/contentDescription_ivAddSchedule"
+            android:src="@drawable/ic_add" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{viewModel.dateString}"
+            android:textColor="@color/black"
+            android:textSize="24sp"
+            tools:text="1월 27일" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_daySchedule"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_date_schedule" />
+
+    </LinearLayout>
+
+</layout>
