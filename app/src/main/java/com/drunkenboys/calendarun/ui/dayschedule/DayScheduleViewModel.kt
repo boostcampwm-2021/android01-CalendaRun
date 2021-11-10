@@ -1,4 +1,4 @@
-package com.drunkenboys.calendarun.ui.searchschedule
+package com.drunkenboys.calendarun.ui.dayschedule
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,23 +7,20 @@ import androidx.lifecycle.viewModelScope
 import com.drunkenboys.calendarun.data.idstore.IdStore
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import com.drunkenboys.calendarun.data.schedule.local.ScheduleLocalDataSource
+import com.drunkenboys.calendarun.di.CalendarId
 import com.drunkenboys.calendarun.ui.searchschedule.model.DateItem
 import com.drunkenboys.calendarun.ui.searchschedule.model.DateScheduleItem
 import com.drunkenboys.calendarun.util.SingleLiveEvent
-import com.drunkenboys.calendarun.util.extensions.getOrThrow
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.time.LocalDateTime
+import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
-class SearchScheduleViewModel @Inject constructor(
+class DayScheduleViewModel @Inject constructor(
+    @CalendarId private val calendarId: Long,
     private val scheduleDataSource: ScheduleLocalDataSource
 ) : ViewModel() {
-
-    val word = MutableLiveData("")
 
     private val _listItem = MutableLiveData<List<DateItem>>()
     val listItem: LiveData<List<DateItem>> = _listItem
@@ -31,26 +28,11 @@ class SearchScheduleViewModel @Inject constructor(
     private val _scheduleClickEvent = SingleLiveEvent<Unit>()
     val scheduleClickEvent: LiveData<Unit> = _scheduleClickEvent
 
-    private val _isSearching = MutableLiveData(false)
-    val isSearching: LiveData<Boolean> = _isSearching
-
-    private var debounceJob: Job = Job()
-
-    fun fetchScheduleList() {
-        if (word.value.isNullOrEmpty()) {
-            _isSearching.value = true
-
-            viewModelScope.launch {
-                val today = LocalDateTime.now()
-
-                _listItem.value = scheduleDataSource.fetchAllSchedule()
-                    .filter { schedule -> schedule.startDate >= today }
-                    .mapToDateItem()
-
-                _isSearching.value = false
-            }
-        } else {
-            searchSchedule(word.getOrThrow())
+    fun fetchScheduleList(localDate: LocalDate) {
+        viewModelScope.launch {
+            _listItem.value = scheduleDataSource.fetchCalendarSchedules(calendarId)
+                .filter { localDate in it.startDate.toLocalDate()..it.endDate.toLocalDate() }
+                .mapToDateItem()
         }
     }
 
@@ -67,29 +49,5 @@ class SearchScheduleViewModel @Inject constructor(
         IdStore.putId(IdStore.KEY_CALENDAR_ID, schedule.calendarId)
         IdStore.putId(IdStore.KEY_SCHEDULE_ID, schedule.id)
         _scheduleClickEvent.value = Unit
-    }
-
-    fun searchSchedule(word: String) {
-        debounceJob.cancel()
-        debounceJob = Job()
-        if (word.isEmpty()) {
-            fetchScheduleList()
-            return
-        }
-        _isSearching.value = true
-
-        viewModelScope.launch(debounceJob) {
-            delay(DEBOUNCE_DURATION)
-            _listItem.value = scheduleDataSource.fetchAllSchedule()
-                .filter { schedule -> word in schedule.name }
-                .mapToDateItem()
-
-            _isSearching.value = false
-        }
-    }
-
-    companion object {
-
-        private const val DEBOUNCE_DURATION = 500L
     }
 }

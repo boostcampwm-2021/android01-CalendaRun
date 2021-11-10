@@ -16,7 +16,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.util.*
+import java.time.LocalDateTime
 
 @ObsoleteCoroutinesApi
 @ExperimentalCoroutinesApi
@@ -58,8 +58,8 @@ class SaveScheduleViewModelTest {
 
     @Test
     fun `일정_수정_시_뷰모델_초기화_테스트`() = testScope.runBlockingTest {
-        val startDate = Date()
-        val endDate = Date()
+        val startDate = LocalDateTime.now()
+        val endDate = LocalDateTime.now()
         scheduleDataSource.insertSchedule(Schedule(0, 0, "test", startDate, endDate, Schedule.NotificationType.A_HOUR_AGO, "memo", 0))
 
         viewModel.init(BehaviorType.UPDATE)
@@ -97,8 +97,8 @@ class SaveScheduleViewModelTest {
 
     @Test
     fun `일정_삭제_테스트`() = testScope.runBlockingTest {
-        val startDate = Date()
-        val endDate = Date()
+        val startDate = LocalDateTime.now()
+        val endDate = LocalDateTime.now()
         val schedule = Schedule(0, 0, "test", startDate, endDate, Schedule.NotificationType.A_HOUR_AGO, "memo", 0)
         scheduleDataSource.insertSchedule(schedule)
         viewModel.init(BehaviorType.UPDATE)
