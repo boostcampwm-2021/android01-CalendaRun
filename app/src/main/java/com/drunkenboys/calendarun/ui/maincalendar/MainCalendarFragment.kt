@@ -3,6 +3,7 @@ package com.drunkenboys.calendarun.ui.maincalendar
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.view.GravityCompat
 import androidx.core.view.get
@@ -180,7 +181,7 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
 
         binding.navView.setNavigationItemSelectedListener { item ->
             when (item) {
-                menu[calendarList.size] -> navigateToSaveCalendar()
+                menu[calendarList.size] -> navigateToSaveSchedule()
                 else -> {
                     mainCalendarViewModel.setCalendar(calendarList[item.order])
                     binding.layoutDrawer.closeDrawer(GravityCompat.START)
@@ -191,7 +192,7 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         }
     }
 
-    private fun navigateToAddSchedule() {
+    private fun navigateToSaveSchedule() {
         val action = MainCalendarFragmentDirections.actionMainCalendarFragmentToSaveCalendarFragment()
         navController.navigate(action)
         binding.layoutDrawer.closeDrawer(GravityCompat.START)
