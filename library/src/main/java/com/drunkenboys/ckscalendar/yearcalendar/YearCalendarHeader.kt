@@ -1,8 +1,8 @@
 package com.drunkenboys.ckscalendar.yearcalendar
 
-import android.view.Gravity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -21,7 +21,10 @@ class YearCalendarHeader(private val design: CalendarDesignObject) {
     fun WeekHeader() {
         val weekIds = design.weekSimpleStringSet
 
-        ConstraintLayout(controller.dayOfWeekConstraints(weekIds)) {
+        ConstraintLayout(
+            constraintSet = controller.dayOfWeekConstraints(weekIds),
+            modifier = Modifier.fillMaxWidth().wrapContentHeight()
+        ) {
             weekIds.forEach { dayId ->
                 DayOfWeekTextView(dayOfWeek = dayId)
             }
