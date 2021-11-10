@@ -99,6 +99,7 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
     private fun setScheduleListObserver() {
         mainCalendarViewModel.scheduleList.observe(viewLifecycleOwner) { scheduleList ->
             binding.calendarMonth.setSchedules(scheduleList)
+            binding.calendarYear.setSchedules(scheduleList)
         }
     }
 
