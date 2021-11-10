@@ -86,8 +86,8 @@ class YearCalendarView
         // RecyclerView와 유사
         LazyColumn(state = listState) {
             yearList.forEach { year ->
-                // 연 표시
                 stickyHeader {
+                    // 연 표시
                     Text(
                         text = "${year[0].startDate.year}년",
                         modifier = Modifier
@@ -95,6 +95,7 @@ class YearCalendarView
                             .fillMaxWidth(),
                         textAlign = TextAlign.Center
                     )
+                    // 요일 표시
                     Row(
                         modifier = Modifier.fillMaxWidth().background(Color.White),
                         horizontalArrangement = Arrangement.SpaceEvenly
@@ -201,32 +202,21 @@ class YearCalendarView
         val today = day.date
         val weekNum = (today.dayOfWeek.dayValue())
 
-        with(controller) { setWeekSchedule(getStartScheduleList(today, scheduleList), weekScheduleList, today) }
+        with(controller) {
+            setWeekSchedule(getStartScheduleList(today, scheduleList), weekScheduleList, today)
+        }
 
         weekScheduleList[weekNum].forEach { schedule ->
-            if (schedule == null) {
-                // padding
-                Box(modifier = Modifier.fillMaxWidth()) {
-                    Text(
-                        text = " ",
-                        modifier = Modifier.padding(2.dp),
-                        fontSize = design.textSize.dp()
-                    )
-                    Spacer(modifier = Modifier.height(2.dp))
-                }
-            } else {
-                Box(modifier = Modifier
-                    .fillMaxWidth()
-                    .background(color = Color(schedule.color))) {
-                    Text(
-                        text = if (schedule.startDate == day.date || day.date.dayOfWeek == DayOfWeek.SUNDAY) schedule.text else "",
-                        modifier = Modifier.padding(2.dp),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        fontSize = design.textSize.dp()
-                    )
-                    Spacer(modifier = Modifier.height(2.dp))
-                }
+            Box(modifier = if (schedule != null) Modifier.fillMaxWidth().background(color = Color(schedule.color))
+            else Modifier.fillMaxWidth()) {
+                Text(
+                    text = if (schedule?.startDate == day.date || day.date.dayOfWeek == DayOfWeek.SUNDAY) schedule?.text ?: " " else "",
+                    modifier = Modifier.padding(2.dp),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    fontSize = design.textSize.dp()
+                )
+                Spacer(modifier = Modifier.height(2.dp))
             }
         }
     }
