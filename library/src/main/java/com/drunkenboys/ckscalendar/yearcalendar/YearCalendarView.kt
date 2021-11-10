@@ -75,6 +75,8 @@ class YearCalendarView
         val listState = rememberLazyListState()
         val today = CalendarDate(LocalDate.now(), DayType.PADDING, true) // 초기화를 위한 dummy
 
+        var currentYear by remember { mutableStateOf(0) }
+
         var clickedDay by remember { mutableStateOf<CalendarDate?>(today) }
         val clickedEdge = { day: CalendarDate ->
             BorderStroke(width = 2.dp, color = if (clickedDay?.date == day.date) Color(design.selectedFrameColor) else Color.Transparent)
@@ -93,34 +95,35 @@ class YearCalendarView
 
         // RecyclerView와 유사
         LazyColumn(state = listState) {
-            yearList.forEach { year ->
-                stickyHeader {
-                    // 연 표시
-                    Text(
-                        text = "${year[0].startDate.year}년",
-                        modifier = Modifier
-                            .background(color = Color(design.backgroundColor))
-                            .fillMaxWidth(),
-                        textAlign = TextAlign.Center
-                    )
-                    // 요일 표시
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(Color.White),
-                        horizontalArrangement = Arrangement.SpaceEvenly
-                    ) {
-                        design.weekSimpleStringSet.forEach { dayId ->
-                            Text(
-                                text = dayId,
-                                textAlign = TextAlign.Center
-                            )
-                        }
+            stickyHeader {
+                // 연 표시
+                Text(
+                    text = "${currentYear}년",
+                    modifier = Modifier
+                        .background(color = Color(design.backgroundColor))
+                        .fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
+                // 요일 표시
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color.White),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    design.weekSimpleStringSet.forEach { dayId ->
+                        Text(
+                            text = dayId,
+                            textAlign = TextAlign.Center
+                        )
                     }
                 }
+            }
 
+            yearList.forEach { year ->
                 // 달력
                 items(year) { month ->
+                    currentYear = year[0].startDate.year
                     MonthCalendar(month, listState = listState, dayColumnModifier = dayColumnModifier)
                 }
             }
@@ -275,7 +278,7 @@ class YearCalendarView
         val today = LocalDate.now()
 
         // (월 달력 12개 + 년 헤더 1개) + 이번달
-        return (today.year - INIT_YEAR) * 13 + today.monthValue
+        return (today.year - INIT_YEAR) * 12 + today.monthValue
     }
 
     private fun dayOfWeekConstraints(weekIds: List<String>) = ConstraintSet {
