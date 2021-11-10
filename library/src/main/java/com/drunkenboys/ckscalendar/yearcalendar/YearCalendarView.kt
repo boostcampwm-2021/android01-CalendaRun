@@ -4,9 +4,11 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
+import androidx.compose.animation.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Text
@@ -16,8 +18,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
@@ -33,6 +37,7 @@ import com.drunkenboys.ckscalendar.utils.toCalendarDatesList
 import java.time.DayOfWeek
 import java.time.LocalDate
 
+@ExperimentalAnimationApi
 @ExperimentalFoundationApi
 class YearCalendarView
 @JvmOverloads constructor(
@@ -62,6 +67,7 @@ class YearCalendarView
         }
     }
 
+    @ExperimentalAnimationApi
     @ExperimentalFoundationApi
     @Composable
     private fun CalendarLazyColumn() {
@@ -74,6 +80,8 @@ class YearCalendarView
         val clickedEdge = { day: CalendarDate ->
             BorderStroke(width = 2.dp, color = if (clickedDay?.date == day.date) Color(design.selectedFrameColor) else Color.Transparent)
         }
+
+        val density = LocalDensity.current
 
         val dayColumnModifier = { day: CalendarDate ->
             Modifier
@@ -100,7 +108,9 @@ class YearCalendarView
                     )
                     // 요일 표시
                     Row(
-                        modifier = Modifier.fillMaxWidth().background(Color.White),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color.White),
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
                         design.weekSimpleStringSet.forEach { dayId ->
@@ -123,10 +133,9 @@ class YearCalendarView
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             weekSchedules = Array(7) { Array(design.visibleScheduleCount) { null } }
-
                             // 월 표시
                             if (controller.isFirstWeek(week, month.id))
-                                Text(text = "${month.id}월")
+                                AnimatedMonthHeader(density = density, listState = listState, month.id)
 
                             week.forEach { day ->
                                 when (day.dayType) {
@@ -153,6 +162,28 @@ class YearCalendarView
         LaunchedEffect(listState) {
             listState.scrollToItem(index = LAST_YEAR - 1) // preload
             listState.scrollToItem(index = getTodayItemIndex())
+        }
+    }
+
+    @Composable
+    private fun AnimatedMonthHeader(
+        density: Density,
+        listState: LazyListState,
+        month: Int
+    ) {
+        AnimatedVisibility(visible = listState.isScrollInProgress,
+            enter = slideInVertically(
+                // Slide in from 40 dp from the top.
+                initialOffsetY = { with(density) { -40.dp.roundToPx() } }
+            ) + expandVertically(
+                // Expand from the top.
+                expandFrom = Alignment.Top
+            ) + fadeIn(
+                // Fade in with the initial alpha of 0.3f.
+                initialAlpha = 0.3f
+            ),
+            exit = slideOutVertically() + shrinkVertically() + fadeOut()) {
+            Text(text = "${month}월")
         }
     }
 
@@ -216,7 +247,9 @@ class YearCalendarView
 
         weekScheduleList[weekNum].forEach { schedule ->
             val modifier =
-                if (schedule != null) Modifier.fillMaxWidth().background(color = Color(schedule.color))
+                if (schedule != null) Modifier
+                    .fillMaxWidth()
+                    .background(color = Color(schedule.color))
                 else Modifier.fillMaxWidth()
 
             Text(
