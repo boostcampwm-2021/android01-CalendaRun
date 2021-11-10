@@ -65,7 +65,7 @@ class SaveScheduleViewModel @Inject constructor(
     private val _isPickTagColorPopupVisible = MutableLiveData(false)
     val isPickTagColorPopupVisible: LiveData<Boolean> = _isPickTagColorPopupVisible
 
-    fun init(behaviorType: BehaviorType, localDate: String?) {
+    fun init(behaviorType: BehaviorType, localDate: String? = null) {
         initCalendarName()
         initScheduleDateTime(localDate)
         this.behaviorType = behaviorType
