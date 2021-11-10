@@ -16,7 +16,9 @@ import com.drunkenboys.calendarun.util.extensions.getOrThrow
 import com.drunkenboys.ckscalendar.data.ScheduleColorType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
@@ -32,10 +34,10 @@ class SaveScheduleViewModel @Inject constructor(
 
     val title = MutableLiveData("")
 
-    private val _startDate: MutableLiveData<LocalDateTime> = MutableLiveData(LocalDateTime.now())
+    private val _startDate = MutableLiveData<LocalDateTime>()
     val startDate: LiveData<LocalDateTime> = _startDate
 
-    private val _endDate = MutableLiveData(LocalDateTime.now())
+    private val _endDate = MutableLiveData<LocalDateTime>()
     val endDate: LiveData<LocalDateTime> = _endDate
 
     val memo = MutableLiveData("")
@@ -63,8 +65,9 @@ class SaveScheduleViewModel @Inject constructor(
     private val _isPickTagColorPopupVisible = MutableLiveData(false)
     val isPickTagColorPopupVisible: LiveData<Boolean> = _isPickTagColorPopupVisible
 
-    fun init(behaviorType: BehaviorType) {
+    fun init(behaviorType: BehaviorType, localDate: String?) {
         initCalendarName()
+        initScheduleDateTime(localDate)
         this.behaviorType = behaviorType
 
         if (behaviorType == BehaviorType.UPDATE) initData()
@@ -74,6 +77,18 @@ class SaveScheduleViewModel @Inject constructor(
         viewModelScope.launch {
             _calendarName.value = calendarDataSource.fetchCalendar(calendarId).name
         }
+    }
+
+    private fun initScheduleDateTime(localDate: String?) {
+        val localDateTime = if (localDate == null) {
+            LocalDateTime.now()
+                .withMinute(0)
+                .withSecond(0)
+        } else {
+            LocalDateTime.of(LocalDate.parse(localDate), LocalTime.of(12, 0))
+        }
+        _startDate.value = localDateTime
+        _endDate.value = localDateTime
     }
 
     private fun initData() {

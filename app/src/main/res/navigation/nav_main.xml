@@ -46,6 +46,11 @@
         <action
             android:id="@+id/action_saveScheduleFragment_to_deleteScheduleDialog"
             app:destination="@id/deleteScheduleDialog" />
+        <argument
+            android:name="localDate"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
 
     <dialog

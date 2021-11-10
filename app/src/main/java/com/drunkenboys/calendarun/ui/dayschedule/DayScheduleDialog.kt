@@ -54,7 +54,7 @@ class DayScheduleDialog : DialogFragment() {
 
     private fun initIvAddSchedule() {
         binding.ivDayScheduleAddSchedule.setOnClickListener {
-            val action = DayScheduleDialogDirections.actionDayScheduleDialogToSaveScheduleFragment(BehaviorType.INSERT)
+            val action = DayScheduleDialogDirections.actionDayScheduleDialogToSaveScheduleFragment(BehaviorType.INSERT, args.localDate)
             navController.navigate(action)
         }
     }

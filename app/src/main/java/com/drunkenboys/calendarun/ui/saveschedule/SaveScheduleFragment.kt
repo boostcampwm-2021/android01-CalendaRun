@@ -51,7 +51,7 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
         observeSaveScheduleEvent()
         observeDeleteScheduleEvent()
 
-        saveScheduleViewModel.init(args.behaviorType)
+        saveScheduleViewModel.init(args.behaviorType, args.localDate)
     }
 
     private fun initToolbar() = with(binding) {
