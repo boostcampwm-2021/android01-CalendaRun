@@ -3,7 +3,7 @@ package com.drunkenboys.ckscalendar.yearcalendar
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import androidx.compose.animation.ExperimentalAnimationApi
+import android.widget.LinearLayout
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -16,44 +16,34 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.databinding.DataBindingUtil
-import com.drunkenboys.ckscalendar.R
+import androidx.constraintlayout.compose.ConstraintSet
+import androidx.constraintlayout.compose.Dimension
 import com.drunkenboys.ckscalendar.databinding.LayoutYearCalendarBinding
 import com.drunkenboys.ckscalendar.FakeFactory
 import com.drunkenboys.ckscalendar.data.*
 import com.drunkenboys.ckscalendar.listener.OnDayClickListener
 import com.drunkenboys.ckscalendar.listener.OnDaySecondClickListener
 import com.drunkenboys.ckscalendar.utils.TimeUtils.dayValue
+import com.drunkenboys.ckscalendar.utils.dp
+import com.drunkenboys.ckscalendar.utils.toCalendarDatesList
 import java.time.DayOfWeek
 import java.time.LocalDate
 
-@ExperimentalAnimationApi
 @ExperimentalFoundationApi
 class YearCalendarView
 @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0,
-) : ConstraintLayout(context, attrs, defStyleAttr) {
+) : LinearLayout(context, attrs, defStyleAttr) {
 
-    private var binding: LayoutYearCalendarBinding = DataBindingUtil.inflate(
-        LayoutInflater.from(context),
-        R.layout.layout_year_calendar,
-        this,
-        true
-    )
+    private val binding: LayoutYearCalendarBinding by lazy { LayoutYearCalendarBinding.inflate(LayoutInflater.from(context), this, true) }
 
     private val controller = YearCalendarController()
-
-    private val header by lazy { YearCalendarHeader(design) }
 
     private var design = FakeFactory.createFakeDesign()
 
@@ -62,68 +52,94 @@ class YearCalendarView
 
     private var schedules = mutableListOf<CalendarScheduleObject>()
 
+    private val yearList = (INIT_YEAR..LAST_YEAR).map { year ->
+            FakeFactory.createFakeCalendarSetList(year)
+        }
+
     init {
-        val yearList =  mutableListOf<List<CalendarSet>>()
-
-        (INIT_YEAR..LAST_YEAR).forEach { year ->
-            yearList.add(FakeFactory.createFakeCalendarSetList(year))
-        }
-
-        binding.composeYearCalendarViewDayOfWeek.setContent {
-            header.WeekHeader()
-        }
-
         binding.composeYearCalendarViewYearCalendar.setContent {
-            CalendarLazyColumn(yearList)
+            CalendarLazyColumn()
         }
     }
 
     @ExperimentalFoundationApi
     @Composable
-    private fun CalendarLazyColumn(yearList: List<List<CalendarSet>>) {
+    private fun CalendarLazyColumn() {
         // RecyclerView의 상태를 관찰
         val listState = rememberLazyListState()
-
         val today = CalendarDate(LocalDate.now(), DayType.PADDING, true) // 초기화를 위한 dummy
+        var weekSchedules: Array<Array<CalendarScheduleObject?>> // 1주 스케줄
+
         var clickedDay by remember { mutableStateOf<CalendarDate?>(today) }
+        val clickedEdge = { day: CalendarDate ->
+            BorderStroke(width = 2.dp, color = if (clickedDay?.date == day.date) Color(design.selectedFrameColor) else Color.Transparent)
+        }
+
+        val dayColumnModifier = { day: CalendarDate ->
+            Modifier
+                .layoutId(day.date.toString())
+                .border(clickedEdge(day))
+                .clickable(onClick = {
+                    if (clickedDay != day) onDateClickListener
+                    else onDateSecondClickListener
+                    clickedDay = day
+                })
+        }
 
         // RecyclerView와 유사
         LazyColumn(state = listState) {
             yearList.forEach { year ->
-                // 항상 떠있는 헤더
                 stickyHeader {
-                    header.YearHeader(year)
+                    // 연 표시
+                    Text(
+                        text = "${year[0].startDate.year}년",
+                        modifier = Modifier
+                            .background(color = Color(design.backgroundColor))
+                            .fillMaxWidth(),
+                        textAlign = TextAlign.Center
+                    )
+                    // 요일 표시
+                    Row(
+                        modifier = Modifier.fillMaxWidth().background(Color.White),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        design.weekSimpleStringSet.forEach { dayId ->
+                            Text(
+                                text = dayId,
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    }
                 }
 
+                // 달력
                 items(year) { month ->
-                    controller.calendarSetToCalendarDates(month).forEach { week ->
-                        val weekIds = week.map { day -> day.date.toString() }
+                    val weeks = month.toCalendarDatesList()
 
-                        ConstraintLayout(controller.dayOfWeekConstraints(weekIds), Modifier.fillMaxWidth()) {
-                            if (controller.isFirstWeek(week, month.id)) Text(text = "${month.id}월")
-                            val thisWeekScheduleList = Array(7) { Array<CalendarScheduleObject?>(design.visibleScheduleCount) { null } }
+                    weeks.forEach { week ->
+                        // 1주일
+                        ConstraintLayout(
+                            constraintSet = dayOfWeekConstraints(week.map { day -> day.date.toString() }),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            weekSchedules = Array(7) { Array(design.visibleScheduleCount) { null } }
+
+                            // 월 표시
+                            if (controller.isFirstWeek(week, month.id))
+                                Text(text = "${month.id}월")
+
                             week.forEach { day ->
-
-                                // TODO: 디자인 설정
-                                if (day.dayType == DayType.PADDING) {
-                                    PaddingText(day = day)
-                                } else {
-                                    Column(modifier = Modifier
-                                        .layoutId(day.date.toString())
-                                        .border(
-                                            BorderStroke(
-                                                width = 2.dp,
-                                                color = if (clickedDay?.date == day.date) Color(design.selectedFrameColor)
-                                                else Color.Transparent))
-                                        .clickable(onClick = {
-                                            clickedDay = day
-                                            if (clickedDay?.date != day.date) onDateClickListener
-                                            else onDateSecondClickListener
-                                        }),
-                                        horizontalAlignment = Alignment.CenterHorizontally
-                                    ) {
-                                        DayText(day = day)
-                                        ScheduleText(day = day, schedules, thisWeekScheduleList)
+                                when (day.dayType) {
+                                    // 빈 날짜
+                                    DayType.PADDING -> {
+                                        PaddingText(day = day)
+                                    }
+                                    // 1일
+                                    else -> {
+                                        Column(modifier = dayColumnModifier(day), horizontalAlignment = Alignment.CenterHorizontally) {
+                                            DayText(day = day)
+                                            ScheduleText(today = day.date, schedules, weekSchedules)
+                                        }
                                     }
                                 }
                             }
@@ -167,9 +183,6 @@ class YearCalendarView
     }
 
     @Composable
-    private fun Int.dp() = with(LocalDensity.current) {  Dp(this@dp.toFloat()).toSp()  }
-
-    @Composable
     private fun PaddingText(day: CalendarDate) {
         Text(
             text = "${day.date.dayOfMonth}",
@@ -183,48 +196,56 @@ class YearCalendarView
 
     @Composable
     private fun ScheduleText(
-        day: CalendarDate,
+        today: LocalDate,
         scheduleList: List<CalendarScheduleObject>,
         weekScheduleList: Array<Array<CalendarScheduleObject?>>
     ) {
-        val today = day.date
         val weekNum = (today.dayOfWeek.dayValue())
 
-        with(controller) { setWeekSchedule(getStartScheduleList(today, scheduleList), weekScheduleList, today) }
+        with(controller) {
+            setWeekSchedule(getStartScheduleList(today, scheduleList), weekScheduleList, today)
+        }
 
         weekScheduleList[weekNum].forEach { schedule ->
-            if (schedule == null) {
-                // padding
-                Box(modifier = Modifier.fillMaxWidth()) {
-                    Text(
-                        text = " ",
-                        modifier = Modifier.padding(2.dp),
-                        fontSize = design.textSize.dp()
-                    )
-                    Spacer(modifier = Modifier.height(2.dp))
-                }
-            } else {
-                Box(modifier = Modifier
-                    .fillMaxWidth()
-                    .background(color = Color(schedule.color))) {
-                    Text(
-                        text = if (schedule.startDate == day.date || day.date.dayOfWeek == DayOfWeek.SUNDAY) schedule.text else "",
-                        modifier = Modifier.padding(2.dp),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        fontSize = design.textSize.dp()
-                    )
-                    Spacer(modifier = Modifier.height(2.dp))
-                }
-            }
+            val modifier =
+                if (schedule != null) Modifier.fillMaxWidth().background(color = Color(schedule.color))
+                else Modifier.fillMaxWidth()
+
+            Text(
+                text = if (schedule?.startDate == today || today.dayOfWeek == DayOfWeek.SUNDAY) schedule?.text ?: " " else " ",
+                maxLines = 1,
+                modifier = modifier,
+                overflow = TextOverflow.Ellipsis,
+                fontSize = design.textSize.dp()
+            )
+            Spacer(modifier = Modifier.height(2.dp))
         }
     }
 
     private fun getTodayItemIndex(): Int {
         val today = LocalDate.now()
 
-        // 월 달력 12개 + 년 헤더 1개
-        return (today.year - INIT_YEAR) * 13 + today.monthValue - 1
+        // (월 달력 12개 + 년 헤더 1개) + 이번달
+        return (today.year - INIT_YEAR) * 13 + today.monthValue
+    }
+
+    private fun dayOfWeekConstraints(weekIds: List<String>) = ConstraintSet {
+        val week = weekIds.map { id ->
+            createRefFor(id)
+        }
+
+        week.forEachIndexed { i, ref ->
+            constrain(ref) {
+                width = Dimension.fillToConstraints
+                top.linkTo(parent.top)
+
+                if (i != 0) start.linkTo(week[i - 1].end)
+                else start.linkTo(parent.start)
+
+                if (i != week.size - 1) end.linkTo(week[i + 1].start)
+                else end.linkTo(parent.end)
+            }
+        }
     }
 
     fun setOnDateClickListener(onDateClickListener: OnDayClickListener) {
