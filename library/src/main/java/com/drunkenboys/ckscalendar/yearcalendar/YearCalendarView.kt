@@ -45,7 +45,7 @@ class YearCalendarView
 
     private val controller = YearCalendarController()
 
-    private var design = FakeFactory.createFakeDesign()
+    private var design = CalendarDesignObject()
 
     private var onDateClickListener: OnDayClickListener? = null
     private var onDateSecondClickListener: OnDaySecondClickListener? = null
@@ -277,8 +277,7 @@ class YearCalendarView
     }
 
     fun resetTheme() {
-        // FIXME
-        design = FakeFactory.createFakeDesign()
+        design = CalendarDesignObject()
     }
 
     companion object {
