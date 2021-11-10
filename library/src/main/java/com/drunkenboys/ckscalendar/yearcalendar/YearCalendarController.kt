@@ -8,6 +8,7 @@ import com.drunkenboys.ckscalendar.data.CalendarSet
 import com.drunkenboys.ckscalendar.data.DayType
 import com.drunkenboys.ckscalendar.utils.TimeUtils
 import com.drunkenboys.ckscalendar.utils.TimeUtils.dayValue
+import com.drunkenboys.ckscalendar.utils.TimeUtils.isSameWeek
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.Period
@@ -139,16 +140,6 @@ class YearCalendarController {
     }
 
     fun getEndDateOfWeek(today: LocalDate, scheduleEndDate: LocalDate): Int =
-        if (!isSameWeek(today, scheduleEndDate)) DayOfWeek.SATURDAY.value
+        if (!today.isSameWeek(scheduleEndDate)) DayOfWeek.SATURDAY.value
         else scheduleEndDate.dayOfWeek.dayValue()
-
-    fun isSameWeek(startDate: LocalDate, endDate: LocalDate): Boolean {
-        val weekDuration = (endDate.dayOfWeek.dayValue()) - (startDate.dayOfWeek.dayValue())
-        val dayDuration = Period.between(startDate, endDate).days
-        return  weekDuration == dayDuration
-    }
-
-    companion object {
-        const val WEEK_COUNT = 7
-    }
 }

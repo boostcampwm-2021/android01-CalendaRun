@@ -1,5 +1,6 @@
 package com.drunkenboys.ckscalendar.yearcalendar
 
+import com.drunkenboys.ckscalendar.utils.TimeUtils.isSameWeek
 import org.junit.Assert.*
 
 import org.junit.After
@@ -28,7 +29,7 @@ class YearCalendarControllerTest {
         val next = LocalDate.of(2021, 11, 9) //화
 
         // Then 다른 주
-        assertEquals(false, controller.isSameWeek(prev, next))
+        assertEquals(false, prev.isSameWeek(next))
     }
 
     @Test
@@ -38,7 +39,7 @@ class YearCalendarControllerTest {
         val next = LocalDate.of(2021, 11, 13) //토
 
         // Then 같은 주
-        assertEquals(true, controller.isSameWeek(prev, next))
+        assertEquals(true, prev.isSameWeek(next))
     }
 
     @Test
@@ -48,6 +49,6 @@ class YearCalendarControllerTest {
         val next = LocalDate.of(2021, 11, 7)
 
         // Then 같은 주
-        assertEquals(true, controller.isSameWeek(prev, next))
+        assertEquals(true, prev.isSameWeek(next))
     }
 }
