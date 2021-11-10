@@ -165,8 +165,7 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
         val alarmManager = requireContext().getSystemService<AlarmManager>() ?: return
 
         val triggerAtMillis = schedule.notificationDateTimeMillis()
-        val today = Calendar.getInstance()
-        if (today.timeInMillis > triggerAtMillis) return
+        if (System.currentTimeMillis() > triggerAtMillis) return
 
         alarmManager.set(
             AlarmManager.RTC_WAKEUP,
