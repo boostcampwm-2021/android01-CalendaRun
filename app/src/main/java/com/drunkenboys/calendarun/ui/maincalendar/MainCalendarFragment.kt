@@ -16,10 +16,10 @@ import com.drunkenboys.calendarun.data.idstore.IdStore
 import com.drunkenboys.calendarun.databinding.FragmentMainCalendarBinding
 import com.drunkenboys.calendarun.ui.base.BaseFragment
 import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
+import com.drunkenboys.ckscalendar.data.CalendarDesignObject
 import com.drunkenboys.ckscalendar.data.CalendarScheduleObject
 import com.drunkenboys.ckscalendar.data.ScheduleColorType
 import dagger.hilt.android.AndroidEntryPoint
-import java.time.LocalDate
 import java.time.LocalDateTime
 
 @AndroidEntryPoint
@@ -94,6 +94,8 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
     private fun setDataBinding() {
         binding.mainCalendarViewModel = mainCalendarViewModel
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val calendarDesign = CalendarDesignObject.getDefaultDesign()
+            binding.calendarMonth.setDesign(calendarDesign)
             binding.calendarMonth.setSchedules(createFakeSchedule())
         }
     }
