@@ -4,10 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.drunkenboys.ckscalendar.data.CalendarDate
-import com.drunkenboys.ckscalendar.data.CalendarScheduleObject
-import com.drunkenboys.ckscalendar.data.CalendarSet
-import com.drunkenboys.ckscalendar.data.DayType
+import com.drunkenboys.ckscalendar.data.*
 import com.drunkenboys.ckscalendar.databinding.ItemMonthPageBinding
 import com.drunkenboys.ckscalendar.listener.OnDayClickListener
 import com.drunkenboys.ckscalendar.listener.OnDaySecondClickListener
@@ -23,6 +20,8 @@ class MonthPageAdapter : RecyclerView.Adapter<MonthPageAdapter.Holder>() {
     private val schedules = mutableListOf<CalendarScheduleObject>()
 
     private val cachedCalendar = HashMap<Int, List<CalendarDate>>()
+
+    private var calendarDesign = CalendarDesignObject.getDefaultDesign()
 
     private var lastSelectPagePosition = -1
     private var lastSelectDayPosition = -1
@@ -56,6 +55,11 @@ class MonthPageAdapter : RecyclerView.Adapter<MonthPageAdapter.Holder>() {
         notifyDataSetChanged()
     }
 
+    fun setDesign(calendarDesign: CalendarDesignObject) {
+        this.calendarDesign = calendarDesign
+        notifyDataSetChanged()
+    }
+
     inner class Holder(private val binding: ItemMonthPageBinding) : RecyclerView.ViewHolder(binding.root) {
 
         private val weekSize = 7
@@ -75,6 +79,7 @@ class MonthPageAdapter : RecyclerView.Adapter<MonthPageAdapter.Holder>() {
             binding.rvMonthCalendar.adapter = monthAdapter
             binding.rvMonthCalendar.itemAnimator = null
             binding.rvMonthCalendar.layoutManager = GridLayoutManager(itemView.context, 7)
+            binding.rvMonthCalendar.setBackgroundColor(calendarDesign.backgroundColor)
         }
 
         fun bind(
@@ -136,7 +141,7 @@ class MonthPageAdapter : RecyclerView.Adapter<MonthPageAdapter.Holder>() {
                 }
             }
 
-            monthAdapter.setItems(dates, schedules, adapterPosition)
+            monthAdapter.setItems(dates, schedules, calendarDesign, adapterPosition)
             monthAdapter.onDateClickListener = onDayClick
             monthAdapter.onDateSecondClickListener = onDaySecondClick
         }
