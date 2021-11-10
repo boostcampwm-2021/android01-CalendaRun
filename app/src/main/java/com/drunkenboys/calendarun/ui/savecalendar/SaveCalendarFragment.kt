@@ -59,12 +59,12 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
     private fun setPickDateTimeEventObserver() {
         saveCalendarViewModel.pickStartDateEvent.observe(viewLifecycleOwner) {
             showDatePickerDialog(requireContext()) { _, year, month, dayOfMonth ->
-                saveCalendarViewModel.setCalendarStartDate(getString(R.string.ui_date_format, year, month, dayOfMonth))
+                saveCalendarViewModel.setCalendarStartDate(getString(R.string.ui_date_format, year, month + 1, dayOfMonth))
             }
         }
         saveCalendarViewModel.pickEndDateEvent.observe(viewLifecycleOwner) {
             showDatePickerDialog(requireContext()) { _, year, month, dayOfMonth ->
-                saveCalendarViewModel.setCalendarEndDate(getString(R.string.ui_date_format, year, month, dayOfMonth))
+                saveCalendarViewModel.setCalendarEndDate(getString(R.string.ui_date_format, year, month + 1, dayOfMonth))
             }
         }
 
