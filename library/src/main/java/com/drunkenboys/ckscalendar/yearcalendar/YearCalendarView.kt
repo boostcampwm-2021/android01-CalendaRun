@@ -101,7 +101,7 @@ class YearCalendarView
 
                         ConstraintLayout(controller.dayOfWeekConstraints(weekIds), Modifier.fillMaxWidth()) {
                             if (controller.isFirstWeek(week, month.id)) Text(text = "${month.id}월")
-                            val thisWeekScheduleList = Array(7) { Array<CalendarScheduleObject?>(3) { null } }
+                            val thisWeekScheduleList = Array(7) { Array<CalendarScheduleObject?>(design.visibleScheduleCount) { null } }
                             week.forEach { day ->
 
                                 // TODO: 디자인 설정
