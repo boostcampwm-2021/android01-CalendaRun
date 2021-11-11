@@ -17,8 +17,6 @@ import java.time.LocalDate
 
 class MonthPageAdapter : RecyclerView.Adapter<MonthPageAdapter.Holder>() {
 
-    private var timeTest = 0L
-
     private val list = mutableListOf<CalendarSet>()
 
     private val schedules = mutableListOf<CalendarScheduleObject>()
@@ -40,9 +38,6 @@ class MonthPageAdapter : RecyclerView.Adapter<MonthPageAdapter.Holder>() {
         cachedCalendar.clear()
         this.list.clear()
         this.list.addAll(list)
-
-        timeTest = System.currentTimeMillis()
-        Log.e(this::class.simpleName, "setItems")
         notifyDataSetChanged()
     }
 
@@ -94,7 +89,7 @@ class MonthPageAdapter : RecyclerView.Adapter<MonthPageAdapter.Holder>() {
             onDayClick: OnDayClickListener?,
             onDaySecondClick: OnDaySecondClickListener?
         ) {
-            CoroutineScope(Dispatchers.IO).launch {
+            CoroutineScope(Dispatchers.Default).launch {
                 val dates = mutableListOf<CalendarDate>()
                 val startMonth = item.startDate.monthValue
                 val startDay = item.startDate.dayOfWeek
@@ -154,9 +149,6 @@ class MonthPageAdapter : RecyclerView.Adapter<MonthPageAdapter.Holder>() {
                     monthAdapter.onDateSecondClickListener = onDaySecondClick
                 }
             }
-
-
-            Log.e("monthPage", "bind end $adapterPosition ${System.currentTimeMillis() - timeTest}")
         }
 
         private fun makeDates(date: LocalDate, month: Int): List<CalendarDate> {

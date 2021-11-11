@@ -28,8 +28,6 @@ import kotlinx.coroutines.withContext
 
 class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : RecyclerView.Adapter<MonthAdapter.Holder>() {
 
-    private var timeTest = 0L
-
     private val schedules = mutableListOf<CalendarScheduleObject>()
 
     private val currentList = mutableListOf<CalendarDate>()
@@ -64,8 +62,6 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
         this.schedules.addAll(schedules)
         this.currentList.clear()
         this.currentList.addAll(list)
-        timeTest = System.currentTimeMillis()
-        Log.e(this::class.simpleName, "setItems")
         notifyDataSetChanged()
     }
 
@@ -112,7 +108,7 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
             }
             binding.tvMonthDay.setTextColor(textColor)
 
-            CoroutineScope(Dispatchers.IO).launch {
+            CoroutineScope(Dispatchers.Default).launch {
                 val scheduleContainer = makePaddingScheduleList(item, schedules)
                 val hasAnySchedule = scheduleContainer.any { it != null }
                 if (hasAnySchedule) {
