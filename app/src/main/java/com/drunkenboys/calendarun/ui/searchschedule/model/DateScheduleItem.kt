@@ -25,11 +25,13 @@ data class DateScheduleItem(val schedule: Schedule, val onClick: () -> Unit) {
 
     companion object {
 
-        val diffUtil = object : DiffUtil.ItemCallback<DateScheduleItem>() {
-            override fun areItemsTheSame(oldItem: DateScheduleItem, newItem: DateScheduleItem) =
-                oldItem.schedule.id == newItem.schedule.id
+        val diffUtil by lazy {
+            object : DiffUtil.ItemCallback<DateScheduleItem>() {
+                override fun areItemsTheSame(oldItem: DateScheduleItem, newItem: DateScheduleItem) =
+                    oldItem.schedule.id == newItem.schedule.id
 
-            override fun areContentsTheSame(oldItem: DateScheduleItem, newItem: DateScheduleItem) = oldItem == newItem
+                override fun areContentsTheSame(oldItem: DateScheduleItem, newItem: DateScheduleItem) = oldItem == newItem
+            }
         }
     }
 }

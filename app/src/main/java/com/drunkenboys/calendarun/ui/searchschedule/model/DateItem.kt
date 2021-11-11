@@ -13,11 +13,13 @@ data class DateItem(
 
     companion object {
 
-        val diffUtil = object : DiffUtil.ItemCallback<DateItem>() {
+        val diffUtil by lazy {
+            object : DiffUtil.ItemCallback<DateItem>() {
 
-            override fun areItemsTheSame(oldItem: DateItem, newItem: DateItem) = oldItem.hashCode() == newItem.hashCode()
+                override fun areItemsTheSame(oldItem: DateItem, newItem: DateItem) = oldItem.hashCode() == newItem.hashCode()
 
-            override fun areContentsTheSame(oldItem: DateItem, newItem: DateItem) = oldItem == newItem
+                override fun areContentsTheSame(oldItem: DateItem, newItem: DateItem) = oldItem == newItem
+            }
         }
     }
 }

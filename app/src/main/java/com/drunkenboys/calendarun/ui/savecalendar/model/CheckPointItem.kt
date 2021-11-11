@@ -11,12 +11,14 @@ data class CheckPointItem(
 
     companion object {
 
-        val diffUtil = object : DiffUtil.ItemCallback<CheckPointItem>() {
-            override fun areItemsTheSame(oldItem: CheckPointItem, newItem: CheckPointItem) =
-                oldItem.date == newItem.date
+        val diffUtil by lazy {
+            object : DiffUtil.ItemCallback<CheckPointItem>() {
+                override fun areItemsTheSame(oldItem: CheckPointItem, newItem: CheckPointItem) =
+                    oldItem.date == newItem.date
 
-            override fun areContentsTheSame(oldItem: CheckPointItem, newItem: CheckPointItem) =
-                oldItem == newItem
+                override fun areContentsTheSame(oldItem: CheckPointItem, newItem: CheckPointItem) =
+                    oldItem == newItem
+            }
         }
     }
 }
