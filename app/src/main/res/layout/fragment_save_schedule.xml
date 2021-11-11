@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".ui.saveschedule.SaveScheduleFragment">
+
+    <data>
+
+        <import type="com.drunkenboys.calendarun.ui.saveschedule.model.DateType" />
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="com.drunkenboys.calendarun.ui.saveschedule.SaveScheduleViewModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/layout_saveSchedule_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar_saveSchedule"
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize"
+                app:titleTextColor="@color/white"
+                tools:title="일정 추가" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="16dp">
+
+                <EditText
+                    android:id="@+id/et_saveSchedule_titleInput"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:hint="@string/saveSchedule_title"
+                    android:importantForAutofill="no"
+                    android:inputType="text"
+                    android:paddingVertical="16dp"
+                    android:text="@={viewModel.title}"
+                    android:textColor="@color/black"
+                    android:textSize="24sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="해커톤" />
+
+                <View
+                    android:id="@+id/divider_saveSchedule_titleBottom"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:background="#CCCCCC"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/et_saveSchedule_titleInput" />
+
+                <TextView
+                    android:id="@+id/tv_saveSchedule_scheduleStart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:text="@string/saveSchedule_start"
+                    app:layout_constraintBottom_toTopOf="@id/tv_saveSchedule_scheduleEnd"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/divider_saveSchedule_titleBottom" />
+
+                <TextView
+                    android:id="@+id/tv_saveSchedule_scheduleEnd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:text="@string/saveSchedule_end"
+                    app:layout_constraintBottom_toTopOf="@id/divider_saveSchedule_timeBottom"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_saveSchedule_scheduleStart" />
+
+                <TextView
+                    android:id="@+id/tv_saveSchedule_scheduleStartInput"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:onClick="@{() -> viewModel.emitPickDateTimeEvent(DateType.START) }"
+                    android:paddingVertical="8dp"
+                    android:text="@{viewModel.toFormatString(viewModel.startDate)}"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toTopOf="@id/tv_saveSchedule_scheduleEndInput"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/tv_saveSchedule_scheduleStart"
+                    app:layout_constraintTop_toBottomOf="@id/divider_saveSchedule_titleBottom"
+                    tools:text="11월 1일 오후 14:00" />
+
+                <TextView
+                    android:id="@+id/tv_saveSchedule_scheduleEndInput"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:onClick="@{() -> viewModel.emitPickDateTimeEvent(DateType.END) }"
+                    android:paddingVertical="8dp"
+                    android:text="@{viewModel.toFormatString(viewModel.endDate)}"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toTopOf="@id/divider_saveSchedule_timeBottom"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/tv_saveSchedule_scheduleEnd"
+                    app:layout_constraintTop_toBottomOf="@id/tv_saveSchedule_scheduleStartInput"
+                    tools:text="11월 30일 오후 16:00" />
+
+                <View
+                    android:id="@+id/divider_saveSchedule_timeBottom"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="100dp"
+                    android:background="@color/divider"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/divider_saveSchedule_titleBottom" />
+
+                <EditText
+                    android:id="@+id/et_saveSchedule_memo"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:drawablePadding="8dp"
+                    android:gravity="center_vertical"
+                    android:hint="@string/saveSchedule_memo"
+                    android:importantForAutofill="no"
+                    android:inputType="text"
+                    android:paddingVertical="16dp"
+                    android:text="@={viewModel.memo}"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    app:drawableStartCompat="@drawable/ic_assignment"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/divider_saveSchedule_timeBottom"
+                    tools:text="부스트캠프 해커톤" />
+
+                <View
+                    android:id="@+id/divider_saveSchedule_memoBottom"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:background="@color/divider"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/et_saveSchedule_memo" />
+
+                <TextView
+                    android:id="@+id/tv_saveSchedule_calendarName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="8dp"
+                    android:gravity="center_vertical"
+                    android:paddingVertical="16dp"
+                    android:text="@{viewModel.calendarName}"
+                    android:textColor="@color/black"
+                    app:drawableStartCompat="@drawable/ic_calendar_today"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/divider_saveSchedule_memoBottom"
+                    tools:text="@string/saveSchedule_calendarName" />
+
+                <View
+                    android:id="@+id/divider_saveSchedule_calendarNameBottom"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:background="@color/divider"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_saveSchedule_calendarName" />
+
+                <TextView
+                    android:id="@+id/tv_saveSchedule_notification"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="8dp"
+                    android:gravity="center_vertical"
+                    android:onClick="@{() -> viewModel.emitPickNotificationTypeEvent()}"
+                    android:paddingVertical="16dp"
+                    android:textColor="@color/black"
+                    app:drawableStartCompat="@drawable/ic_notifications"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/divider_saveSchedule_calendarNameBottom"
+                    tools:text="@string/saveSchedule_notificationTenMinutesAgo" />
+
+                <View
+                    android:id="@+id/divider_saveSchedule_notificationBottom"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:background="@color/divider"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_saveSchedule_notification" />
+
+                <TextView
+                    android:id="@+id/tv_saveSchedule_tagColor"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="8dp"
+                    android:gravity="center_vertical"
+                    android:paddingVertical="16dp"
+                    android:text="@string/saveSchedule_tagColor"
+                    android:textColor="@color/black"
+                    app:drawableStartCompat="@drawable/ic_palette"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/divider_saveSchedule_notificationBottom" />
+
+                <FrameLayout
+                    android:id="@+id/layout_saveSchedule_tagColor"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:onClick="@{() -> viewModel.togglePickTagColorPopup()}"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_saveSchedule_tagColor"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/tv_saveSchedule_tagColor">
+
+                    <View
+                        android:id="@+id/view_saveSchedule_tagColor"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/bg_tag_color"
+                        tools:backgroundTint="@color/black" />
+
+                </FrameLayout>
+
+                <include
+                    android:id="@+id/layout_saveSchedule_pickTagColorPopup"
+                    layout="@layout/view_pick_tag_color"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/layout_saveSchedule_tagColor"
+                    app:viewModel="@{viewModel}" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </ScrollView>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginHorizontal="4dp"
+            android:onClick="@{() -> viewModel.saveSchedule()}"
+            android:text="@string/saveSchedule_save"
+            app:backgroundTint="@color/black" />
+
+    </LinearLayout>
+
+</layout>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_temp"
+    app:startDestination="@id/mainCalendarFragment">
+
+    <fragment
+        android:id="@+id/mainCalendarFragment"
+        android:name="com.drunkenboys.calendarun.ui.maincalendar.MainCalendarFragment"
+        tools:layout="@layout/fragment_main_calendar">
+        <action
+            android:id="@+id/action_mainCalendarFragment_to_saveScheduleFragment"
+            app:destination="@id/saveScheduleFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_mainCalendarFragment_to_searchScheduleFragment"
+            app:destination="@id/searchScheduleFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_mainCalendarFragment_to_saveCalendarFragment"
+            app:destination="@+id/saveCalendarFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_mainCalendarFragment_to_dayScheduleDialog"
+            app:destination="@id/dayScheduleDialog" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/saveScheduleFragment"
+        android:name="com.drunkenboys.calendarun.ui.saveschedule.SaveScheduleFragment"
+        tools:layout="@layout/fragment_save_schedule">
+        <argument
+            android:name="behaviorType"
+            app:argType="com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType" />
+        <action
+            android:id="@+id/action_saveScheduleFragment_to_deleteScheduleDialog"
+            app:destination="@id/deleteScheduleDialog" />
+        <argument
+            android:name="localDate"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
+    </fragment>
+
+    <dialog
+        android:id="@+id/deleteScheduleDialog"
+        android:name="com.drunkenboys.calendarun.ui.saveschedule.DeleteScheduleDialog" />
+
+    <fragment
+        android:id="@+id/saveCalendarFragment"
+        android:name="com.drunkenboys.calendarun.ui.savecalendar.SaveCalendarFragment"
+        tools:layout="@layout/fragment_save_calendar">
+        <argument
+            android:name="behaviorType"
+            android:defaultValue="INSERT"
+            app:argType="com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/searchScheduleFragment"
+        android:name="com.drunkenboys.calendarun.ui.searchschedule.SearchScheduleFragment"
+        tools:layout="@layout/fragment_search_schedule">
+        <action
+            android:id="@+id/action_searchScheduleFragment_to_saveScheduleFragment"
+            app:destination="@id/saveScheduleFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+
+    <dialog
+        android:id="@+id/dayScheduleDialog"
+        android:name="com.drunkenboys.calendarun.ui.dayschedule.DayScheduleDialog"
+        tools:layout="@layout/dialog_day_schedule">
+        <argument
+            android:name="localDate"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_dayScheduleDialog_to_saveScheduleFragment"
+            app:destination="@id/saveScheduleFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </dialog>
+
+</navigation>

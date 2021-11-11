@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="com.drunkenboys.calendarun.ui.saveschedule.model.DateType" />
+
+        <import type="com.drunkenboys.calendarun.util.DateConverterKt" />
+
+        <variable
+            name="saveCalendarViewModel"
+            type="com.drunkenboys.calendarun.ui.savecalendar.SaveCalendarViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/layout_saveCalendar_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar_saveCalendar"
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize"
+                app:menu="@menu/menu_save_calendar_toolbar"
+                app:titleTextColor="@color/white"
+                tools:title="달력 추가" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:fillViewport="true"
+            app:layout_constraintBottom_toTopOf="@id/tv_saveCalendar_saveCalendar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layout_saveCalendar_toolbar">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/tv_saveCalendar_calendarName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="32dp"
+                    android:text="@string/calendar_title"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <EditText
+                    android:id="@+id/et_saveCalendar_calendarName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:ems="10"
+                    android:inputType="text"
+                    android:text="@={saveCalendarViewModel.calendarName}"
+                    app:layout_constraintEnd_toEndOf="@+id/tv_saveCalendar_calendarName"
+                    app:layout_constraintStart_toStartOf="@id/tv_saveCalendar_calendarName"
+                    app:layout_constraintTop_toBottomOf="@id/tv_saveCalendar_calendarName"
+                    tools:text="수능 캘린더" />
+
+                <TextView
+                    android:id="@+id/tv_saveCalendar_startDate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:text="@string/calendar_start_date"
+                    app:layout_constraintEnd_toStartOf="@+id/tv_saveCalendar_endDate"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="@+id/et_saveCalendar_calendarName"
+                    app:layout_constraintTop_toBottomOf="@id/et_saveCalendar_calendarName" />
+
+                <TextView
+                    android:id="@+id/tv_saveCalendar_endDate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/calendar_end_date"
+                    app:layout_constraintEnd_toEndOf="@+id/et_saveCalendar_calendarName"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/tv_saveCalendar_startDate"
+                    app:layout_constraintTop_toBottomOf="@id/et_saveCalendar_calendarName" />
+
+                <TextView
+                    android:id="@+id/tv_saveCalendar_startDatePicker"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:onClick="@{() -> saveCalendarViewModel.emitPickDate(DateType.START)}"
+                    android:text="@{DateConverterKt.localDateToString(saveCalendarViewModel.calendarStartDate)}"
+                    app:layout_constraintEnd_toEndOf="@id/tv_saveCalendar_startDate"
+                    app:layout_constraintStart_toStartOf="@+id/tv_saveCalendar_startDate"
+                    app:layout_constraintTop_toBottomOf="@id/tv_saveCalendar_startDate"
+                    tools:text="2021.03.06" />
+
+                <TextView
+                    android:id="@+id/tv_saveCalendar_endDatePicker"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:onClick="@{() -> saveCalendarViewModel.emitPickDate(DateType.END)}"
+                    android:text="@{DateConverterKt.localDateToString(saveCalendarViewModel.calendarEndDate)}"
+                    app:layout_constraintEnd_toEndOf="@id/tv_saveCalendar_endDate"
+                    app:layout_constraintStart_toStartOf="@id/tv_saveCalendar_endDate"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_saveCalendar_endDate"
+                    tools:text="2021.11.05" />
+
+                <View
+                    android:id="@+id/divider_saveCalendar_startDatePickerBottom"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:background="@color/black"
+                    app:layout_constraintEnd_toEndOf="@id/tv_saveCalendar_startDatePicker"
+                    app:layout_constraintStart_toStartOf="@id/tv_saveCalendar_startDatePicker"
+                    app:layout_constraintTop_toBottomOf="@id/tv_saveCalendar_startDatePicker" />
+
+                <View
+                    android:id="@+id/divider_saveCalendar_endDatePickerBottom"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:background="@color/black"
+                    app:layout_constraintEnd_toEndOf="@id/tv_saveCalendar_endDatePicker"
+                    app:layout_constraintStart_toStartOf="@id/tv_saveCalendar_endDatePicker"
+                    app:layout_constraintTop_toBottomOf="@id/tv_saveCalendar_endDatePicker" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_save_calendar_check_point_list"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:nestedScrollingEnabled="false"
+                    android:overScrollMode="never"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintEnd_toEndOf="@id/tv_saveCalendar_calendarName"
+                    app:layout_constraintStart_toStartOf="@id/tv_saveCalendar_calendarName"
+                    app:layout_constraintTop_toBottomOf="@id/divider_saveCalendar_startDatePickerBottom"
+                    app:reverseLayout="true"
+                    app:stackFromEnd="true" />
+
+                <TextView
+                    android:id="@+id/tv_saveCalendar_addCheckPointView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:gravity="center"
+                    android:onClick="@{() -> saveCalendarViewModel.addCheckPoint()}"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="4dp"
+                    android:text="@string/check_point_footer_save"
+                    app:drawableStartCompat="@drawable/ic_add_circle_24"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/rv_save_calendar_check_point_list" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
+
+        <Button
+            android:id="@+id/tv_saveCalendar_saveCalendar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            android:onClick="@{() -> saveCalendarViewModel.emitSaveCalendar()}"
+            android:text="@string/calendar_save"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>
