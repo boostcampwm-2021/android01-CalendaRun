@@ -1,9 +1,9 @@
 library:
-   - library/**/*
+  - library/**/*
 
- test:
-   - src/test/**/*
+test:
+  - src/test/**/*
 
- chore:
-   - app/*.gradle
-   - library/*.gradle
+chore:
+  - app/*.gradle
+  - library/*.gradle
