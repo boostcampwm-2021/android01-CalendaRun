@@ -1,9 +1,9 @@
 package com.drunkenboys.calendarun.ui.savecalendar.model
 
-import androidx.lifecycle.MutableLiveData
+import kotlinx.coroutines.flow.MutableStateFlow
 
 data class CheckPointItem(
-    val name: MutableLiveData<String> = MutableLiveData(),
-    val date: MutableLiveData<String> = MutableLiveData(),
+    val name: MutableStateFlow<String> = MutableStateFlow(""),
+    val date: MutableStateFlow<String> = MutableStateFlow(""),
     var check: Boolean = false
 )
