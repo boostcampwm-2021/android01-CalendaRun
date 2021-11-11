@@ -40,34 +40,34 @@ class DayScheduleDialog : DialogFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        initRvDaySchedule()
-        initIvAddSchedule()
-        observeListItem()
-        observeScheduleClickEvent()
+        setupRvDaySchedule()
+        setupIvAddSchedule()
+        collectListItem()
+        collectScheduleClickEvent()
 
         dayScheduleViewModel.fetchScheduleList(LocalDate.parse(args.localDate))
 
         return binding.root
     }
 
-    private fun initRvDaySchedule() {
+    private fun setupRvDaySchedule() {
         binding.rvDaySchedule.adapter = dayScheduleAdapter
     }
 
-    private fun initIvAddSchedule() {
+    private fun setupIvAddSchedule() {
         binding.imgDayScheduleAddSchedule.setOnClickListener {
             val action = DayScheduleDialogDirections.actionDayScheduleDialogToSaveScheduleFragment(BehaviorType.INSERT, args.localDate)
             navController.navigate(action)
         }
     }
 
-    private fun observeListItem() {
+    private fun collectListItem() {
         stateCollect(dayScheduleViewModel.listItem) { listItem ->
             dayScheduleAdapter.submitList(listItem)
         }
     }
 
-    private fun observeScheduleClickEvent() {
+    private fun collectScheduleClickEvent() {
         sharedCollect(dayScheduleViewModel.scheduleClickEvent) {
             val action = DayScheduleDialogDirections.actionDayScheduleDialogToSaveScheduleFragment(BehaviorType.UPDATE)
             navController.navigate(action)

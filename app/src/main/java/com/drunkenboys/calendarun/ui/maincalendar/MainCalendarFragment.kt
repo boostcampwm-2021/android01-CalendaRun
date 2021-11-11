@@ -32,12 +32,10 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         setupDataBinding()
         setupToolbar()
         setupFab()
-        setupNavigationOnClickListener()
-        setupOnMenuItemClickListener()
-        setupCalendarListObserver()
-        setupCheckPointListObserver()
-        setupScheduleListObserver()
-        setupOnDaySecondClickListener()
+        setupMonthCalendar()
+        collectCalendarList()
+        collectCheckPointList()
+        collectScheduleList()
     }
 
     private fun setupCalendarView() {
@@ -52,16 +50,8 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
 
     private fun setupToolbar() {
         binding.toolbarMainCalendar.setupWithNavController(navController, binding.layoutDrawer)
-    }
-
-    private fun setupFab() {
-        // TODO: 2021-11-04 뷰모델 추가 시 이벤트 방식으로 변경
-        binding.fabMainCalenderAddSchedule.setOnClickListener {
-            // TODO: 2021-11-07 ID를 초기화하는 코드를 뷰모델로 이동해야 함
-            IdStore.clearId(IdStore.KEY_SCHEDULE_ID)
-            val action = MainCalendarFragmentDirections.actionMainCalendarFragmentToSaveScheduleFragment(BehaviorType.INSERT)
-            navController.navigate(action)
-        }
+        setupNavigationOnClickListener()
+        setupOnMenuItemClickListener()
     }
 
     private fun setupNavigationOnClickListener() = with(binding) {
@@ -92,7 +82,22 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         navController.navigate(action)
     }
 
-    private fun setupCalendarListObserver() {
+    private fun setupFab() {
+        binding.fabMainCalenderAddSchedule.setOnClickListener {
+            IdStore.clearId(IdStore.KEY_SCHEDULE_ID)
+            val action = MainCalendarFragmentDirections.actionMainCalendarFragmentToSaveScheduleFragment(BehaviorType.INSERT)
+            navController.navigate(action)
+        }
+    }
+
+    private fun setupMonthCalendar() {
+        binding.calendarMonth.setOnDaySecondClickListener { date, _ ->
+            val action = MainCalendarFragmentDirections.actionMainCalendarFragmentToDayScheduleDialog(date.toString())
+            navController.navigate(action)
+        }
+    }
+
+    private fun collectCalendarList() {
         stateCollect(mainCalendarViewModel.calendarList) { calendarList ->
             if (calendarList.isEmpty()) return@stateCollect
 
@@ -118,7 +123,7 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
             menu.forEachIndexed { index, menuItem ->
                 if (menuItem == item) {
                     if (item == menu[calendarList.size]) {
-                        navigateToSaveSchedule()
+                        navigateToSaveCalendar()
                         return@forEachIndexed
                     }
                     mainCalendarViewModel.setMenuItemOrder(index)
@@ -132,34 +137,22 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         }
     }
 
-    private fun setupCheckPointListObserver() {
-        stateCollect(mainCalendarViewModel.checkPointList) { checkPointList ->
-            // TODO: 2021-11-10 CheckPoint 날짜 읽어서 뷰 나누기
-        }
-    }
-
-    private fun setupScheduleListObserver() {
-        stateCollect(mainCalendarViewModel.scheduleList) { scheduleList ->
-            binding.calendarMonth.setSchedules(scheduleList)
-            binding.calendarYear.setSchedules(scheduleList)
-        }
-    }
-
-    private fun navigateToSaveSchedule() {
+    private fun navigateToSaveCalendar() {
         val action = MainCalendarFragmentDirections.actionMainCalendarFragmentToSaveCalendarFragment()
         navController.navigate(action)
         binding.layoutDrawer.closeDrawer(GravityCompat.START)
     }
 
-    private fun setupOnDaySecondClickListener() {
-        binding.calendarMonth.setOnDaySecondClickListener { date, _ ->
-            val action = MainCalendarFragmentDirections.actionMainCalendarFragmentToDayScheduleDialog(date.toString())
-            navController.navigate(action)
+    private fun collectCheckPointList() {
+        stateCollect(mainCalendarViewModel.checkPointList) { checkPointList ->
+            // TODO: 2021-11-10 CheckPoint 날짜 읽어서 뷰 나누기
         }
     }
 
-    companion object {
-
-        private const val DEFAULT_ORDER = 0
+    private fun collectScheduleList() {
+        stateCollect(mainCalendarViewModel.scheduleList) { scheduleList ->
+            binding.calendarMonth.setSchedules(scheduleList)
+            binding.calendarYear.setSchedules(scheduleList)
+        }
     }
 }

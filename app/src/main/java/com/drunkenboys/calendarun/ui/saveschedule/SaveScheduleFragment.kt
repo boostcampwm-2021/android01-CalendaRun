@@ -39,20 +39,20 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
         super.onViewCreated(view, savedInstanceState)
         binding.viewModel = saveScheduleViewModel
 
-        initToolbar()
-        initNotificationPopupWindow()
-        observePickDateTimeEvent()
-        observePickNotificationTypeEvent()
-        observeNotification()
-        observeTagColor()
-        observeIsPickTagColorPopupVisible()
-        observeSaveScheduleEvent()
-        observeDeleteScheduleEvent()
+        setupToolbar()
+        setupNotificationPopupWindow()
+        collectPickDateTimeEvent()
+        collectPickNotificationTypeEvent()
+        collectNotificationType()
+        collectTagColor()
+        collectIsPickTagColorPopupVisible()
+        collectSaveScheduleEvent()
+        collectDeleteScheduleEvent()
 
         saveScheduleViewModel.init(args.behaviorType, args.localDate)
     }
 
-    private fun initToolbar() = with(binding) {
+    private fun setupToolbar() = with(binding) {
         when (args.behaviorType) {
             BehaviorType.INSERT -> toolbarSaveSchedule.title = "일정 추가"
             BehaviorType.UPDATE -> {
@@ -73,7 +73,7 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
         toolbarSaveSchedule.setupWithNavController(navController, appBarConfig)
     }
 
-    private fun initNotificationPopupWindow() {
+    private fun setupNotificationPopupWindow() {
         val dropDownAdapter = ArrayAdapter.createFromResource(
             requireContext(),
             R.array.saveSchedule_notificationType,
@@ -90,7 +90,7 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
         }
     }
 
-    private fun observePickDateTimeEvent() {
+    private fun collectPickDateTimeEvent() {
         sharedCollect(saveScheduleViewModel.pickDateTimeEvent) { dateType ->
             val dateInMillis = pickDateInMillis() ?: return@sharedCollect
             val (hour, minute) = pickTime() ?: return@sharedCollect
@@ -103,13 +103,13 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
         }
     }
 
-    private fun observePickNotificationTypeEvent() {
+    private fun collectPickNotificationTypeEvent() {
         sharedCollect(saveScheduleViewModel.pickNotificationTypeEvent) {
             notificationPopupWidow?.show()
         }
     }
 
-    private fun observeNotification() {
+    private fun collectNotificationType() {
         stateCollect(saveScheduleViewModel.notificationType) { type ->
             binding.tvSaveScheduleNotification.text = when (type) {
                 Schedule.NotificationType.NONE -> getString(R.string.saveSchedule_notificationNone)
@@ -120,14 +120,16 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
         }
     }
 
-    private fun observeTagColor() {
+    private fun collectTagColor() {
         stateCollect(saveScheduleViewModel.tagColor) { color ->
             binding.viewSaveScheduleTagColor.backgroundTintList = ColorStateList.valueOf(color)
         }
     }
 
-    private fun observeIsPickTagColorPopupVisible() {
-        stateCollect(saveScheduleViewModel.isPickTagColorPopupVisible, ::togglePickTagColorPopup)
+    private fun collectIsPickTagColorPopupVisible() {
+        stateCollect(saveScheduleViewModel.isPickTagColorPopupVisible) { isVisible ->
+            togglePickTagColorPopup(isVisible)
+        }
     }
 
     private fun togglePickTagColorPopup(isVisible: Boolean) = with(binding.layoutSaveSchedulePickTagColorPopup) {
@@ -143,7 +145,7 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
         }
     }
 
-    private fun observeSaveScheduleEvent() {
+    private fun collectSaveScheduleEvent() {
         sharedCollect(saveScheduleViewModel.saveScheduleEvent) { schedule ->
             saveNotification(schedule)
             showToast(getString(R.string.toast_schedule_saved))
@@ -164,7 +166,7 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
         )
     }
 
-    private fun observeDeleteScheduleEvent() {
+    private fun collectDeleteScheduleEvent() {
         sharedCollect(saveScheduleViewModel.deleteScheduleEvent) { schedule ->
             deleteNotification(schedule)
             showToast(getString(R.string.toast_schedule_deleted))

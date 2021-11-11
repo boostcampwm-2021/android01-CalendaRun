@@ -19,7 +19,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.fragment_save_calendar) {
 
     private val saveCalendarViewModel by viewModels<SaveCalendarViewModel>()
-    private val saveCalendarAdapter by lazy { SaveCalendarRecyclerViewAdapter(viewLifecycleOwner) }
+    private val saveCalendarAdapter by lazy { SaveCalendarAdapter(viewLifecycleOwner) }
 
     private val args: SaveCalendarFragmentArgs by navArgs()
 
@@ -27,11 +27,11 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
         super.onViewCreated(view, savedInstanceState)
 
         setupToolbar()
-        setDataBinding()
-        setRecyclerViewAdapter()
-        setCheckPointItemListObserver()
-        setPickDateTimeEventObserver()
-        setSaveCalendarEventObserver()
+        setupDataBinding()
+        setupRecyclerView()
+        collectCheckPointItemList()
+        collectPickDateTimeEvent()
+        collectSaveCalendarEvent()
     }
 
     private fun setupToolbar() = with(binding) {
@@ -42,21 +42,21 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
         }
     }
 
-    private fun setDataBinding() {
+    private fun setupDataBinding() {
         binding.saveCalendarViewModel = saveCalendarViewModel
     }
 
-    private fun setRecyclerViewAdapter() {
-        binding.rSaveCalendarCheckPointList.adapter = saveCalendarAdapter
+    private fun setupRecyclerView() {
+        binding.rvSaveCalendarCheckPointList.adapter = saveCalendarAdapter
     }
 
-    private fun setCheckPointItemListObserver() {
+    private fun collectCheckPointItemList() {
         stateCollect(saveCalendarViewModel.checkPointItemList) { list ->
             saveCalendarAdapter.submitList(list)
         }
     }
 
-    private fun setPickDateTimeEventObserver() {
+    private fun collectPickDateTimeEvent() {
         sharedCollect(saveCalendarViewModel.pickStartDateEvent) {
             showDatePickerDialog(requireContext()) { _, year, month, dayOfMonth ->
                 saveCalendarViewModel.setCalendarStartDate(getString(R.string.ui_date_format, year, month + 1, dayOfMonth))
@@ -69,7 +69,7 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
         }
     }
 
-    private fun setSaveCalendarEventObserver() {
+    private fun collectSaveCalendarEvent() {
         sharedCollect(saveCalendarViewModel.saveCalendarEvent) { isSaved ->
             if (isSaved) {
                 navController.navigateUp()

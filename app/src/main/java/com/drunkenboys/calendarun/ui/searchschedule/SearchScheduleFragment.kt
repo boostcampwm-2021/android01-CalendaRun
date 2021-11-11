@@ -24,19 +24,19 @@ class SearchScheduleFragment : BaseFragment<FragmentSearchScheduleBinding>(R.lay
         super.onViewCreated(view, savedInstanceState)
         binding.viewModel = searchScheduleViewModel
 
-        initToolbar()
-        initRvSearchSchedule()
-        observeListItem()
-        observeScheduleClickEvent()
+        setupToolbar()
+        setupRecyclerView()
+        collectListItem()
+        collectScheduleClickEvent()
 
         searchScheduleViewModel.fetchScheduleList()
     }
 
-    private fun initToolbar() {
+    private fun setupToolbar() {
         binding.toolbarSearchSchedule.setupWithNavController(navController)
     }
 
-    private fun initRvSearchSchedule() {
+    private fun setupRecyclerView() {
         binding.rvSearchSchedule.adapter = searchScheduleAdapter
         val itemDecoration = HorizontalInsetDividerDecoration(
             context = requireContext(),
@@ -48,13 +48,13 @@ class SearchScheduleFragment : BaseFragment<FragmentSearchScheduleBinding>(R.lay
         binding.rvSearchSchedule.addItemDecoration(itemDecoration)
     }
 
-    private fun observeListItem() {
+    private fun collectListItem() {
         stateCollect(searchScheduleViewModel.listItem) { listItem ->
             searchScheduleAdapter.submitList(listItem)
         }
     }
 
-    private fun observeScheduleClickEvent() {
+    private fun collectScheduleClickEvent() {
         sharedCollect(searchScheduleViewModel.scheduleClickEvent) {
             val action = SearchScheduleFragmentDirections.actionSearchScheduleFragmentToSaveScheduleFragment(BehaviorType.UPDATE)
             navController.navigate(action)

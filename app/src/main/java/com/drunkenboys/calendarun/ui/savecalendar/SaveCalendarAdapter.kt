@@ -11,7 +11,7 @@ import com.drunkenboys.calendarun.ui.base.BaseViewHolder
 import com.drunkenboys.calendarun.ui.savecalendar.model.CheckPointItem
 import com.drunkenboys.calendarun.util.showDatePickerDialog
 
-class SaveCalendarRecyclerViewAdapter(private val viewLifecycleOwner: LifecycleOwner) :
+class SaveCalendarAdapter(private val viewLifecycleOwner: LifecycleOwner) :
     ListAdapter<CheckPointItem, BaseViewHolder<ItemCheckPointBinding>>(CheckPointItem.diffUtil) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<ItemCheckPointBinding> =
@@ -27,9 +27,8 @@ class SaveCalendarRecyclerViewAdapter(private val viewLifecycleOwner: LifecycleO
     override fun onBindViewHolder(holder: BaseViewHolder<ItemCheckPointBinding>, position: Int) {
         with(holder.binding) {
             setVariable(BR.item, currentList[position])
-            setVariable(BR.adapter, this@SaveCalendarRecyclerViewAdapter)
+            setVariable(BR.adapter, this@SaveCalendarAdapter)
             lifecycleOwner = viewLifecycleOwner
         }
     }
-
 }
