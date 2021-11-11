@@ -20,7 +20,9 @@ object LocalDatabaseModule {
         appContext,
         Database::class.java,
         "AppDatabase.db"
-    ).build()
+    )
+        .createFromAsset("default.db")
+        .build()
 
     @Provides
     fun provideCalendarDao(database: Database) = database.calendarDao()
