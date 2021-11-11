@@ -1,7 +1,5 @@
 package com.drunkenboys.calendarun.ui.maincalendar
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.drunkenboys.calendarun.data.calendar.entity.Calendar
@@ -13,6 +11,8 @@ import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import com.drunkenboys.calendarun.data.schedule.local.ScheduleLocalDataSource
 import com.drunkenboys.ckscalendar.data.CalendarScheduleObject
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -23,49 +23,54 @@ class MainCalendarViewModel @Inject constructor(
     private val scheduleLocalDataSource: ScheduleLocalDataSource
 ) : ViewModel() {
 
-    private val _calendar = MutableLiveData<Calendar>()
-    val calendar: LiveData<Calendar> = _calendar
+    private val _calendar = MutableStateFlow<Calendar?>(null)
+    val calendar: StateFlow<Calendar?> = _calendar
 
-    private val _calendarList = MutableLiveData<List<Calendar>>()
-    val calendarList: LiveData<List<Calendar>> = _calendarList
+    private val _calendarList = MutableStateFlow<List<Calendar>>(emptyList())
+    val calendarList: StateFlow<List<Calendar>> = _calendarList
 
-    private val _checkPointList = MutableLiveData<List<CheckPoint>>()
-    val checkPointList: LiveData<List<CheckPoint>> = _checkPointList
+    private val _checkPointList = MutableStateFlow<List<CheckPoint>>(emptyList())
+    val checkPointList: StateFlow<List<CheckPoint>> = _checkPointList
 
-    private val _scheduleList = MutableLiveData<List<CalendarScheduleObject>>()
-    val scheduleList: LiveData<List<CalendarScheduleObject>> = _scheduleList
+    private val _scheduleList = MutableStateFlow<List<CalendarScheduleObject>>(emptyList())
+    val scheduleList: StateFlow<List<CalendarScheduleObject>> = _scheduleList
 
-    private val _menuItemOrder = MutableLiveData<Int>()
-    val menuItemOrder: LiveData<Int> = _menuItemOrder
+    private val _menuItemOrder = MutableStateFlow(0)
+    val menuItemOrder: StateFlow<Int> = _menuItemOrder
 
     fun setCalendar(calendar: Calendar) {
-        _calendar.value = calendar
-        IdStore.putId(IdStore.KEY_CALENDAR_ID, calendar.id)
-        fetchCheckPointList(calendar.id)
-        fetchScheduleList(calendar.id)
+        viewModelScope.launch {
+            _calendar.emit(calendar)
+            IdStore.putId(IdStore.KEY_CALENDAR_ID, calendar.id)
+            fetchCheckPointList(calendar.id)
+            fetchScheduleList(calendar.id)
+        }
     }
 
     fun fetchCalendarList() {
         viewModelScope.launch {
-            _calendarList.value = calendarLocalDataSource.fetchAllCalendar()
+            _calendarList.emit(calendarLocalDataSource.fetchAllCalendar())
         }
     }
 
     private fun fetchCheckPointList(calendarId: Long) {
         viewModelScope.launch {
-            _checkPointList.value = checkPointLocalDataSource.fetchCalendarCheckPoints(calendarId)
+            _checkPointList.emit(checkPointLocalDataSource.fetchCalendarCheckPoints(calendarId))
         }
     }
 
     private fun fetchScheduleList(calendarId: Long) {
         viewModelScope.launch {
-            _scheduleList.value = scheduleLocalDataSource.fetchCalendarSchedules(calendarId)
+            scheduleLocalDataSource.fetchCalendarSchedules(calendarId)
                 .map { schedule -> schedule.mapToCalendarScheduleObject() }
+                .let { _scheduleList.emit(it) }
         }
     }
 
     fun setMenuItemOrder(order: Int) {
-        _menuItemOrder.value = order
+        viewModelScope.launch {
+            _menuItemOrder.emit(order)
+        }
     }
 
     private fun Schedule.mapToCalendarScheduleObject() = CalendarScheduleObject(

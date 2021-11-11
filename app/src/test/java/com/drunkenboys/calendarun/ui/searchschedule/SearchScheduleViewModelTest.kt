@@ -1,6 +1,5 @@
 package com.drunkenboys.calendarun.ui.searchschedule
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import com.drunkenboys.calendarun.data.schedule.local.FakeScheduleLocalDataSource
 import com.drunkenboys.calendarun.data.schedule.local.ScheduleLocalDataSource
@@ -11,7 +10,6 @@ import kotlinx.coroutines.test.*
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import java.time.LocalDateTime
 import java.util.*
@@ -19,9 +17,6 @@ import java.util.*
 @ObsoleteCoroutinesApi
 @ExperimentalCoroutinesApi
 class SearchScheduleViewModelTest {
-
-    @get:Rule
-    var instantExecutorRule = InstantTaskExecutorRule()
 
     private lateinit var dataSource: ScheduleLocalDataSource
 
@@ -66,10 +61,6 @@ class SearchScheduleViewModelTest {
         viewModel.fetchScheduleList()
         val result = viewModel.listItem.value
 
-        if (result == null) {
-            fail("LiveData's value is null")
-            return@runBlockingTest
-        }
         assertEquals(0, result.size)
     }
 
@@ -84,10 +75,6 @@ class SearchScheduleViewModelTest {
         advanceTimeBy(500)
         val result = viewModel.listItem.value
 
-        if (result == null) {
-            fail("LiveData's value is null")
-            return@runBlockingTest
-        }
         assertEquals(1, result.size)
         assertEquals(4, result[0].scheduleList.size)
         assertTrue(result[0].scheduleList.all { it.schedule.name.startsWith("bar") })

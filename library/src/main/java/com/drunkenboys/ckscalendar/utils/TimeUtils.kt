@@ -1,8 +1,6 @@
 package com.drunkenboys.ckscalendar.utils
 
 import com.drunkenboys.ckscalendar.data.DayType
-import com.drunkenboys.ckscalendar.utils.TimeUtils.dayValue
-import com.drunkenboys.ckscalendar.yearcalendar.YearCalendarController
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.Period

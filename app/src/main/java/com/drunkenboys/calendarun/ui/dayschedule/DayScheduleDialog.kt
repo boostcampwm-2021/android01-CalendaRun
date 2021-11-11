@@ -12,6 +12,8 @@ import androidx.navigation.fragment.navArgs
 import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.databinding.DialogDayScheduleBinding
 import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
+import com.drunkenboys.calendarun.util.extensions.sharedCollect
+import com.drunkenboys.calendarun.util.extensions.stateCollect
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDate
 
@@ -60,13 +62,13 @@ class DayScheduleDialog : DialogFragment() {
     }
 
     private fun observeListItem() {
-        dayScheduleViewModel.listItem.observe(this) { listItem ->
+        stateCollect(dayScheduleViewModel.listItem) { listItem ->
             dayScheduleAdapter.submitList(listItem)
         }
     }
 
     private fun observeScheduleClickEvent() {
-        dayScheduleViewModel.scheduleClickEvent.observe(this) {
+        sharedCollect(dayScheduleViewModel.scheduleClickEvent) {
             val action = DayScheduleDialogDirections.actionDayScheduleDialogToSaveScheduleFragment(BehaviorType.UPDATE)
             navController.navigate(action)
         }
