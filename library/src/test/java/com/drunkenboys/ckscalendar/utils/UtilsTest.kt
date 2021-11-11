@@ -1,4 +1,4 @@
-package com.drunkenboys.ckscalendar.yearcalendar
+package com.drunkenboys.ckscalendar.utils
 
 import com.drunkenboys.ckscalendar.utils.TimeUtils.isSameWeek
 import org.junit.Assert.*
@@ -6,12 +6,9 @@ import org.junit.Assert.*
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import java.lang.reflect.Method
 import java.time.LocalDate
 
-class YearCalendarControllerTest {
-
-    private val controller = YearCalendarController()
+class UtilsTest {
 
     @Before
     fun setUp() {
