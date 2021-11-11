@@ -5,6 +5,10 @@
 
     <data>
 
+        <import type="com.drunkenboys.calendarun.ui.saveschedule.model.DateType" />
+
+        <import type="com.drunkenboys.calendarun.util.DateConverterKt" />
+
         <variable
             name="saveCalendarViewModel"
             type="com.drunkenboys.calendarun.ui.savecalendar.SaveCalendarViewModel" />
@@ -97,8 +101,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:onClick="@{() -> saveCalendarViewModel.emitPickStartDate()}"
-                    android:text="@{saveCalendarViewModel.calendarStartDate}"
+                    android:onClick="@{() -> saveCalendarViewModel.emitPickDate(DateType.START)}"
+                    android:text="@{DateConverterKt.localDateToString(saveCalendarViewModel.calendarStartDate)}"
                     app:layout_constraintEnd_toEndOf="@id/tv_saveCalendar_startDate"
                     app:layout_constraintStart_toStartOf="@+id/tv_saveCalendar_startDate"
                     app:layout_constraintTop_toBottomOf="@id/tv_saveCalendar_startDate"
@@ -109,8 +113,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:onClick="@{() -> saveCalendarViewModel.emitPickEndDate()}"
-                    android:text="@{saveCalendarViewModel.calendarEndDate}"
+                    android:onClick="@{() -> saveCalendarViewModel.emitPickDate(DateType.END)}"
+                    android:text="@{DateConverterKt.localDateToString(saveCalendarViewModel.calendarEndDate)}"
                     app:layout_constraintEnd_toEndOf="@id/tv_saveCalendar_endDate"
                     app:layout_constraintStart_toStartOf="@id/tv_saveCalendar_endDate"
                     app:layout_constraintTop_toBottomOf="@+id/tv_saveCalendar_endDate"

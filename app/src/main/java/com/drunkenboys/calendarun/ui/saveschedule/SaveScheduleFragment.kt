@@ -3,6 +3,7 @@ package com.drunkenboys.calendarun.ui.saveschedule
 import android.app.AlarmManager
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import androidx.appcompat.widget.ListPopupWindow
@@ -93,6 +94,8 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
     private fun collectPickDateTimeEvent() {
         sharedCollect(saveScheduleViewModel.pickDateTimeEvent) { dateType ->
             val dateInMillis = pickDateInMillis() ?: return@sharedCollect
+            Log.d(this::class.simpleName, "onCheckPointClick: $dateInMillis")
+
             val (hour, minute) = pickTime() ?: return@sharedCollect
 
             val dateTime = LocalDateTime.ofEpochSecond(dateInMillis / 1000, 0, ZoneOffset.UTC)
