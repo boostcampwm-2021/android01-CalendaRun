@@ -5,6 +5,9 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import androidx.compose.animation.*
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -37,7 +40,6 @@ import com.drunkenboys.ckscalendar.utils.toCalendarDatesList
 import java.time.DayOfWeek
 import java.time.LocalDate
 
-@ExperimentalAnimationApi
 class YearCalendarView
 @JvmOverloads constructor(
     context: Context,
@@ -69,7 +71,6 @@ class YearCalendarView
         }
     }
 
-    @ExperimentalAnimationApi
     @Composable
     private fun CalendarLazyColumn() {
         // RecyclerView의 상태를 관찰
@@ -148,7 +149,6 @@ class YearCalendarView
     ) {
         val weeks = month.toCalendarDatesList()
         var weekSchedules: Array<Array<CalendarScheduleObject?>> // 1주 스케줄
-        val density = LocalDensity.current // FIXME
 
         weeks.forEach { week ->
             // 1주일
@@ -161,7 +161,6 @@ class YearCalendarView
                 // 월 표시
                 if (controller.isFirstWeek(week, month.id)) {
                     AnimatedMonthHeader(
-                        density = density,
                         listState = listState,
                         month = month.id
                     )
@@ -187,24 +186,21 @@ class YearCalendarView
 
     @Composable
     private fun AnimatedMonthHeader(
-        density: Density,
         listState: LazyListState,
         month: Int
     ) {
-        AnimatedVisibility(visible = listState.isScrollInProgress,
-            enter = slideInVertically(
-                // Slide in from 40 dp from the top.
-                initialOffsetY = { with(density) { -40.dp.roundToPx() } }
-            ) + expandVertically(
-                // Expand from the top.
-                expandFrom = Alignment.Top
-            ) + fadeIn(
-                // Fade in with the initial alpha of 0.3f.
-                initialAlpha = 0.3f
-            ),
-            exit = slideOutVertically() + shrinkVertically() + fadeOut()) {
-            Text(text = "${month}월")
-        }
+        val density: Float by animateFloatAsState(
+            targetValue = if(listState.isScrollInProgress) 1f else 0f,
+            animationSpec = spring(
+                dampingRatio = Spring.DampingRatioNoBouncy,
+                stiffness = Spring.StiffnessMedium
+            )
+        )
+
+        Text(
+            text = "${month}월",
+            modifier = Modifier.alpha(density).padding(start = (density * 5).dp)
+        )
     }
 
     @Composable
