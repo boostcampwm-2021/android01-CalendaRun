@@ -27,14 +27,10 @@ class MonthCalendarView @JvmOverloads constructor(
 
     private var calendarList = listOf<CalendarSet>()
 
+    private val today = LocalDate.now()
+
     init {
         binding.vpMonthPage.adapter = pageAdapter
-        val today = LocalDate.now()
-        calendarList = generateCalendarOfYear(today.year)
-
-        pageAdapter.setItems(calendarList)
-
-        binding.vpMonthPage.offscreenPageLimit = 3
         binding.vpMonthPage.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
                 super.onPageScrolled(position, positionOffset, positionOffsetPixels)
@@ -51,12 +47,23 @@ class MonthCalendarView @JvmOverloads constructor(
             }
         })
 
+        setupDefaultCalendarSet()
         calendarList.forEachIndexed { index, calendarSet ->
             if (calendarSet.startDate.monthValue == today.monthValue) {
                 binding.vpMonthPage.setCurrentItem(index, false)
                 return@forEachIndexed
             }
         }
+    }
+
+    fun setCalendarSetList(calendarList: List<CalendarSet>) {
+        this.calendarList = calendarList
+        pageAdapter.setItems(calendarList)
+    }
+
+    fun setupDefaultCalendarSet() {
+        calendarList = generateCalendarOfYear(today.year)
+        pageAdapter.setItems(calendarList)
     }
 
     fun setOnDateClickListener(onDateClickListener: OnDayClickListener) {
