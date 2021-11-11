@@ -73,13 +73,8 @@ class SaveCalendarViewModel @Inject constructor(
     fun updateDate(date: LocalDate, dateType: DateType) {
         viewModelScope.launch {
             when (dateType) {
-                DateType.START -> {
-                    println(date)
-                    _calendarStartDate.emit(date)
-                }
-                DateType.END -> {
-                    _calendarEndDate.emit(date)
-                }
+                DateType.START -> _calendarStartDate.emit(date)
+                DateType.END -> _calendarEndDate.emit(date)
             }
         }
     }
