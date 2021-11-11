@@ -170,14 +170,15 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
                 LinearLayout.LayoutParams.WRAP_CONTENT
             )
             layoutParams.setMargins(0, 0, 0, context().dp2px(2.0f).toInt())
+            textView.includeFontPadding = false
             textView.isSingleLine = true
             textView.layoutParams = layoutParams
-            textView.height = calculateHeight / SCHEDULE_HEIGHT_DIVIDE_RATIO
             textView.gravity = Gravity.CENTER_VERTICAL
             textView.maxLines = 1
             textView.ellipsize = TextUtils.TruncateAt.END
-            textView.setPadding(context().dp2px(2.0f).toInt(), 0, 0, 0)
-            textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 10f)
+            val textSize = calculateHeight / SCHEDULE_HEIGHT_DIVIDE_RATIO
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize.toFloat())
+            textView.setPadding(context().dp2px(2.0f).toInt(), 0, 0, context().dp2px(2.0f).toInt())
             return textView
         }
 
@@ -214,7 +215,7 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
 
         private const val CALENDAR_COLUMN_SIZE = 7
 
-        private const val SCHEDULE_HEIGHT_DIVIDE_RATIO = 6
+        private const val SCHEDULE_HEIGHT_DIVIDE_RATIO = 10
 
         //TODO : 10개넘어가는 일정이 있으면 오류 가능성 있음
         private const val SCHEDULE_CONTAINER_SIZE = 10
