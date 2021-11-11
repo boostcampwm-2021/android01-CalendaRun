@@ -1,9 +1,16 @@
 library:
   - library/**/*
 
+app:
+  - app/**/*
+
 test:
-  - src/test/**/*
+  - app/src/test/**/*
+  - app/src/androidTest/**/*
+  - library/src/test/**/*
+  - library/src/androidTest/**/*
 
 chore:
   - app/*.gradle
   - library/*.gradle
+  - build.gradle
