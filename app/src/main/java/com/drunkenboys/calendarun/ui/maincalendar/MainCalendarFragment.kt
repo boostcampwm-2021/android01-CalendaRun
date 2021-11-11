@@ -30,16 +30,15 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
 
         mainCalendarViewModel.fetchCalendarList()
         setupCalendarView()
-        setDataBinding()
+        setupDataBinding()
         setupToolbar()
         setupFab()
-        setNavigationOnClickListener()
-        setOnMenuItemClickListener()
-        setCalendarObserver()
-        setCalendarListObserver()
-        setCheckPointListObserver()
-        setScheduleListObserver()
-        setOnDaySecondClickListener()
+        setupNavigationOnClickListener()
+        setupOnMenuItemClickListener()
+        setupCalendarListObserver()
+        setupCheckPointListObserver()
+        setupScheduleListObserver()
+        setupOnDaySecondClickListener()
     }
 
     private fun setupCalendarView() {
@@ -48,7 +47,7 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         binding.calendarYear.isVisible = !isMonthCalendar
     }
 
-    private fun setDataBinding() {
+    private fun setupDataBinding() {
         binding.mainCalendarViewModel = mainCalendarViewModel
     }
 
@@ -66,15 +65,16 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         }
     }
 
-    private fun setNavigationOnClickListener() = with(binding) {
+    private fun setupNavigationOnClickListener() = with(binding) {
         toolbarMainCalendar.setNavigationOnClickListener {
+            val menuItemOrder = this@MainCalendarFragment.mainCalendarViewModel.menuItemOrder.value ?: DEFAULT_ORDER
             layoutDrawer.openDrawer(GravityCompat.START)
-            root.findViewById<TextView>(R.id.tv_drawerHeader_title).text =
-                this@MainCalendarFragment.mainCalendarViewModel.calendar.value?.name
+            binding.navView.menu[menuItemOrder].isChecked = true
+            binding.root.findViewById<TextView>(R.id.tv_drawerHeader_title).text = binding.navView.menu[menuItemOrder].title
         }
     }
 
-    private fun setOnMenuItemClickListener() {
+    private fun setupOnMenuItemClickListener() {
         binding.toolbarMainCalendar.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.menu_main_calendar_calendar -> {
@@ -93,28 +93,11 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         navController.navigate(action)
     }
 
-    private fun setCalendarObserver() {
-        mainCalendarViewModel.calendar.observe(viewLifecycleOwner) { calendar ->
-            binding.toolbarMainCalendar.title = calendar.name
-        }
-    }
-
-    private fun setCalendarListObserver() {
+    private fun setupCalendarListObserver() {
         mainCalendarViewModel.calendarList.observe(viewLifecycleOwner) { calendarList ->
             setupNavigationView(calendarList)
-        }
-    }
-
-    private fun setCheckPointListObserver() {
-        mainCalendarViewModel.checkPointList.observe(viewLifecycleOwner) { checkPointList ->
-            // TODO: 2021-11-10 CheckPoint 날짜 읽어서 뷰 나누기
-        }
-    }
-
-    private fun setScheduleListObserver() {
-        mainCalendarViewModel.scheduleList.observe(viewLifecycleOwner) { scheduleList ->
-            binding.calendarMonth.setSchedules(scheduleList)
-            binding.calendarYear.setSchedules(scheduleList)
+            val calendar = mainCalendarViewModel.calendarList.value?.get(0) ?: return@observe
+            mainCalendarViewModel.setCalendar(calendar)
         }
     }
 
@@ -124,7 +107,7 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
 
         calendarList.forEach { calendar ->
             menu.add(calendar.name)
-                .setIcon(R.drawable.ic_favorite_24)
+                .setIcon(R.drawable.ic_favorite_24).isCheckable = true
         }
         menu.add(getString(R.string.drawer_calendar_add))
             .setIcon(R.drawable.ic_add)
@@ -132,17 +115,31 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         binding.navView.setNavigationItemSelectedListener { item ->
             menu.forEachIndexed { index, menuItem ->
                 if (menuItem == item) {
+                    if (item == menu[calendarList.size]) {
+                        navigateToSaveSchedule()
+                        return@forEachIndexed
+                    }
+                    mainCalendarViewModel.setMenuItemOrder(index)
                     // TODO: 2021-11-11 item에 맞는 캘린더 뷰로 변경
-                    item.isChecked = true
                     mainCalendarViewModel.setCalendar(calendarList[index])
-                    return@forEachIndexed
                 }
             }
-            if (item == menu[calendarList.size]) {
-                navigateToSaveSchedule()
-            }
+
             binding.layoutDrawer.closeDrawer(GravityCompat.START)
             true
+        }
+    }
+
+    private fun setupCheckPointListObserver() {
+        mainCalendarViewModel.checkPointList.observe(viewLifecycleOwner) { checkPointList ->
+            // TODO: 2021-11-10 CheckPoint 날짜 읽어서 뷰 나누기
+        }
+    }
+
+    private fun setupScheduleListObserver() {
+        mainCalendarViewModel.scheduleList.observe(viewLifecycleOwner) { scheduleList ->
+            binding.calendarMonth.setSchedules(scheduleList)
+            binding.calendarYear.setSchedules(scheduleList)
         }
     }
 
@@ -152,10 +149,14 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         binding.layoutDrawer.closeDrawer(GravityCompat.START)
     }
 
-    private fun setOnDaySecondClickListener() {
+    private fun setupOnDaySecondClickListener() {
         binding.calendarMonth.setOnDaySecondClickListener { date, _ ->
             val action = MainCalendarFragmentDirections.actionMainCalendarFragmentToDayScheduleDialog(date.toString())
             navController.navigate(action)
         }
+    }
+
+    companion object {
+        private const val DEFAULT_ORDER = 0
     }
 }
