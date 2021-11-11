@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,10 +22,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
@@ -63,10 +62,13 @@ class YearCalendarView
 
     init {
         binding.composeYearCalendarViewYearCalendar.setContent {
-            // 위 -> 아래가 아닌 안 -> 밖으로 생성.
-            // 요일 표시가 가장 바깥에 오지 않으면 날짜에 가려진다.
-            CalendarLazyColumn()
-            WeekHeader()
+            //
+            CustomTheme(design = design) {
+                // 위 -> 아래가 아닌 안 -> 밖으로 생성.
+                // 요일 표시가 가장 바깥에 오지 않으면 날짜에 가려진다.
+                CalendarLazyColumn()
+                WeekHeader()
+            }
         }
     }
 
@@ -78,7 +80,10 @@ class YearCalendarView
 
         var clickedDay by remember { mutableStateOf<CalendarDate?>(today) }
         val clickedEdge = { day: CalendarDate ->
-            BorderStroke(width = 2.dp, color = if (clickedDay?.date == day.date) Color(design.selectedFrameColor) else Color.Transparent)
+            BorderStroke(
+                width = 2.dp,
+                color = if (clickedDay?.date == day.date) Color(design.selectedFrameColor) else Color.Transparent
+            )
         }
 
         val dayColumnModifier = { day: CalendarDate ->
@@ -99,8 +104,9 @@ class YearCalendarView
                 item {
                     Text(
                         text = "${year[0].startDate.year}년",
+                        color = MaterialTheme.colors.primary,
                         modifier = Modifier
-                            .background(color = Color(design.backgroundColor))
+                            .background(color = MaterialTheme.colors.background)
                             .fillMaxWidth(),
                         textAlign = TextAlign.Center
                     )
@@ -128,12 +134,13 @@ class YearCalendarView
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color.White),
+                .background(MaterialTheme.colors.background),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             design.weekSimpleStringSet.forEach { dayId ->
                 Text(
                     text = dayId,
+                    color = MaterialTheme.colors.primary,
                     textAlign = TextAlign.Center
                 )
             }
@@ -202,6 +209,7 @@ class YearCalendarView
 
         Text(
             text = "${month}월",
+            color = MaterialTheme.colors.primary,
             modifier = Modifier.alpha(density).padding(start = (density * 5).dp)
         )
     }
@@ -212,7 +220,7 @@ class YearCalendarView
             DayType.HOLIDAY -> Color(design.holidayTextColor)
             DayType.SATURDAY -> Color(design.saturdayTextColor)
             DayType.SUNDAY -> Color(design.sundayTextColor)
-            else -> Color(design.weekDayTextColor)
+            else -> MaterialTheme.colors.primary
         }
 
         // FIXME: mapper 추가
