@@ -4,9 +4,11 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
+import androidx.compose.animation.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Text
@@ -16,8 +18,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
@@ -33,6 +37,7 @@ import com.drunkenboys.ckscalendar.utils.toCalendarDatesList
 import java.time.DayOfWeek
 import java.time.LocalDate
 
+@ExperimentalAnimationApi
 @ExperimentalFoundationApi
 class YearCalendarView
 @JvmOverloads constructor(
@@ -62,13 +67,15 @@ class YearCalendarView
         }
     }
 
+    @ExperimentalAnimationApi
     @ExperimentalFoundationApi
     @Composable
     private fun CalendarLazyColumn() {
         // RecyclerView의 상태를 관찰
         val listState = rememberLazyListState()
         val today = CalendarDate(LocalDate.now(), DayType.PADDING, true) // 초기화를 위한 dummy
-        var weekSchedules: Array<Array<CalendarScheduleObject?>> // 1주 스케줄
+
+        var currentYear by remember { mutableStateOf(0) }
 
         var clickedDay by remember { mutableStateOf<CalendarDate?>(today) }
         val clickedEdge = { day: CalendarDate ->
@@ -88,63 +95,36 @@ class YearCalendarView
 
         // RecyclerView와 유사
         LazyColumn(state = listState) {
-            yearList.forEach { year ->
-                stickyHeader {
-                    // 연 표시
-                    Text(
-                        text = "${year[0].startDate.year}년",
-                        modifier = Modifier
-                            .background(color = Color(design.backgroundColor))
-                            .fillMaxWidth(),
-                        textAlign = TextAlign.Center
-                    )
-                    // 요일 표시
-                    Row(
-                        modifier = Modifier.fillMaxWidth().background(Color.White),
-                        horizontalArrangement = Arrangement.SpaceEvenly
-                    ) {
-                        design.weekSimpleStringSet.forEach { dayId ->
-                            Text(
-                                text = dayId,
-                                textAlign = TextAlign.Center
-                            )
-                        }
+            stickyHeader {
+                // 연 표시
+                Text(
+                    text = "${currentYear}년",
+                    modifier = Modifier
+                        .background(color = Color(design.backgroundColor))
+                        .fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
+                // 요일 표시
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color.White),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    design.weekSimpleStringSet.forEach { dayId ->
+                        Text(
+                            text = dayId,
+                            textAlign = TextAlign.Center
+                        )
                     }
                 }
+            }
 
+            yearList.forEach { year ->
                 // 달력
                 items(year) { month ->
-                    val weeks = month.toCalendarDatesList()
-
-                    weeks.forEach { week ->
-                        // 1주일
-                        ConstraintLayout(
-                            constraintSet = dayOfWeekConstraints(week.map { day -> day.date.toString() }),
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            weekSchedules = Array(7) { Array(design.visibleScheduleCount) { null } }
-
-                            // 월 표시
-                            if (controller.isFirstWeek(week, month.id))
-                                Text(text = "${month.id}월")
-
-                            week.forEach { day ->
-                                when (day.dayType) {
-                                    // 빈 날짜
-                                    DayType.PADDING -> {
-                                        PaddingText(day = day)
-                                    }
-                                    // 1일
-                                    else -> {
-                                        Column(modifier = dayColumnModifier(day), horizontalAlignment = Alignment.CenterHorizontally) {
-                                            DayText(day = day)
-                                            ScheduleText(today = day.date, schedules, weekSchedules)
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    currentYear = year[0].startDate.year
+                    MonthCalendar(month, listState = listState, dayColumnModifier = dayColumnModifier)
                 }
             }
         }
@@ -153,6 +133,68 @@ class YearCalendarView
         LaunchedEffect(listState) {
             listState.scrollToItem(index = LAST_YEAR - 1) // preload
             listState.scrollToItem(index = getTodayItemIndex())
+        }
+    }
+
+    @Composable
+    private fun MonthCalendar(
+        month: CalendarSet,
+        listState: LazyListState,
+        dayColumnModifier: (CalendarDate) -> Modifier
+    ) {
+        val weeks = month.toCalendarDatesList()
+        var weekSchedules: Array<Array<CalendarScheduleObject?>> // 1주 스케줄
+        val density = LocalDensity.current // FIXME
+
+        weeks.forEach { week ->
+            // 1주일
+            ConstraintLayout(
+                constraintSet = dayOfWeekConstraints(week.map { day -> day.date.toString() }),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                weekSchedules = Array(7) { Array(design.visibleScheduleCount) { null } }
+                // 월 표시
+                if (controller.isFirstWeek(week, month.id))
+                    AnimatedMonthHeader(density = density, listState = listState, month.id)
+
+                week.forEach { day ->
+                    when (day.dayType) {
+                        // 빈 날짜
+                        DayType.PADDING -> {
+                            PaddingText(day = day)
+                        }
+                        // 1일
+                        else -> {
+                            Column(modifier = dayColumnModifier(day), horizontalAlignment = Alignment.CenterHorizontally) {
+                                DayText(day = day)
+                                ScheduleText(today = day.date, schedules, weekSchedules)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @Composable
+    private fun AnimatedMonthHeader(
+        density: Density,
+        listState: LazyListState,
+        month: Int
+    ) {
+        AnimatedVisibility(visible = listState.isScrollInProgress,
+            enter = slideInVertically(
+                // Slide in from 40 dp from the top.
+                initialOffsetY = { with(density) { -40.dp.roundToPx() } }
+            ) + expandVertically(
+                // Expand from the top.
+                expandFrom = Alignment.Top
+            ) + fadeIn(
+                // Fade in with the initial alpha of 0.3f.
+                initialAlpha = 0.3f
+            ),
+            exit = slideOutVertically() + shrinkVertically() + fadeOut()) {
+            Text(text = "${month}월")
         }
     }
 
@@ -216,7 +258,9 @@ class YearCalendarView
 
         weekScheduleList[weekNum].forEach { schedule ->
             val modifier =
-                if (schedule != null) Modifier.fillMaxWidth().background(color = Color(schedule.color))
+                if (schedule != null) Modifier
+                    .fillMaxWidth()
+                    .background(color = Color(schedule.color))
                 else Modifier.fillMaxWidth()
 
             Text(
@@ -234,7 +278,7 @@ class YearCalendarView
         val today = LocalDate.now()
 
         // (월 달력 12개 + 년 헤더 1개) + 이번달
-        return (today.year - INIT_YEAR) * 13 + today.monthValue
+        return (today.year - INIT_YEAR) * 12 + today.monthValue
     }
 
     private fun dayOfWeekConstraints(weekIds: List<String>) = ConstraintSet {
