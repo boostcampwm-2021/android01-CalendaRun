@@ -125,15 +125,15 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
                 true
             }
 
-        val manageMenu = menu.addSubMenu("달력 관리")
-        manageMenu.add("달력 관리")
+        val manageMenu = menu.addSubMenu(getString(R.string.drawer_calendar_manage))
+        manageMenu.add(getString(R.string.drawer_calendar_manage))
             .setIcon(R.drawable.ic_calendar_today)
             .setOnMenuItemClickListener {
                 // TODO: 2021-11-11 달력 관리 화면으로 이동
                 true
             }
 
-        manageMenu.add("테마 설정")
+        manageMenu.add(getString(R.string.drawer_theme_setting))
             .setIcon(R.drawable.ic_palette)
             .setOnMenuItemClickListener {
                 // TODO: 2021-11-11 테마 설정 화면으로 이동동
