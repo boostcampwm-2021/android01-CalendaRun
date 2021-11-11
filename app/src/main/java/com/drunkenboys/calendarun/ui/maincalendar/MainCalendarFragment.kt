@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import androidx.core.view.GravityCompat
-import androidx.core.view.forEachIndexed
 import androidx.core.view.get
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
@@ -95,7 +94,9 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         mainCalendarViewModel.calendarList.observe(viewLifecycleOwner) { calendarList ->
             setupNavigationView(calendarList)
             val menuItemOrder = mainCalendarViewModel.menuItemOrder.value ?: DEFAULT_ORDER
-            val calendar = mainCalendarViewModel.calendarList.value?.get(menuItemOrder) ?: return@observe
+            // TODO: 2021-11-11 calendarList 크기가 0일 때 오류 수정
+            if (calendarList.isEmpty()) return@observe
+            val calendar = calendarList[menuItemOrder]
             mainCalendarViewModel.setCalendar(calendar)
         }
     }
@@ -104,29 +105,40 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         val menu = binding.navView.menu
         menu.clear()
 
-        calendarList.forEach { calendar ->
+        calendarList.forEachIndexed { index, calendar ->
             menu.add(calendar.name)
-                .setIcon(R.drawable.ic_favorite_24).isCheckable = true
-        }
-        menu.add(getString(R.string.drawer_calendar_add))
-            .setIcon(R.drawable.ic_add)
-
-        binding.navView.setNavigationItemSelectedListener { item ->
-            menu.forEachIndexed { index, menuItem ->
-                if (menuItem == item) {
-                    if (item == menu[calendarList.size]) {
-                        navigateToSaveSchedule()
-                        return@forEachIndexed
-                    }
+                .setIcon(R.drawable.ic_favorite_24)
+                .setCheckable(true)
+                .setOnMenuItemClickListener {
                     mainCalendarViewModel.setMenuItemOrder(index)
                     // TODO: 2021-11-11 item에 맞는 캘린더 뷰로 변경
-                    mainCalendarViewModel.setCalendar(calendarList[index])
+                    mainCalendarViewModel.setCalendar(calendar)
+                    binding.layoutDrawer.closeDrawer(GravityCompat.START)
+                    true
                 }
+        }
+
+        menu.add(getString(R.string.drawer_calendar_add))
+            .setIcon(R.drawable.ic_add)
+            .setOnMenuItemClickListener {
+                navigateToSaveSchedule()
+                true
             }
 
-            binding.layoutDrawer.closeDrawer(GravityCompat.START)
-            true
-        }
+        val manageMenu = menu.addSubMenu("달력 관리")
+        manageMenu.add("달력 관리")
+            .setIcon(R.drawable.ic_calendar_today)
+            .setOnMenuItemClickListener {
+                // TODO: 2021-11-11 달력 관리 화면으로 이동
+                true
+            }
+
+        manageMenu.add("테마 설정")
+            .setIcon(R.drawable.ic_palette)
+            .setOnMenuItemClickListener {
+                // TODO: 2021-11-11 테마 설정 화면으로 이동동
+                true
+            }
     }
 
     private fun setupCheckPointListObserver() {
