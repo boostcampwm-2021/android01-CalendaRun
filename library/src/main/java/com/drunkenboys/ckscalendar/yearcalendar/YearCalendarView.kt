@@ -61,10 +61,13 @@ class YearCalendarView
 
     init {
         binding.composeYearCalendarViewYearCalendar.setContent {
-            // 위 -> 아래가 아닌 안 -> 밖으로 생성.
-            // 요일 표시가 가장 바깥에 오지 않으면 날짜에 가려진다.
-            CalendarLazyColumn()
-            WeekHeader()
+            //
+            CustomTheme(design = design) {
+                // 위 -> 아래가 아닌 안 -> 밖으로 생성.
+                // 요일 표시가 가장 바깥에 오지 않으면 날짜에 가려진다.
+                CalendarLazyColumn()
+                WeekHeader()
+            }
         }
     }
 
