@@ -2,7 +2,6 @@ package com.drunkenboys.ckscalendar.month
 
 import android.graphics.Color
 import android.text.TextUtils
-import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -74,6 +73,9 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
     override fun onBindViewHolder(holder: Holder, position: Int) {
         holder.bind(currentList[position])
     }
+
+    override fun getItemCount(): Int = currentList.size
+
 
     inner class Holder(private val binding: ItemMonthCellBinding, private val calculateHeight: Int) :
         RecyclerView.ViewHolder(binding.root) {
@@ -218,9 +220,5 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
         private const val SCHEDULE_CONTAINER_SIZE = 10
 
         private const val MAX_VISIBLE_SCHEDULE_SIZE = 3
-    }
-
-    override fun getItemCount(): Int {
-        return currentList.size
     }
 }
