@@ -2,10 +2,11 @@ package com.drunkenboys.calendarun.ui.savecalendar.model
 
 import androidx.recyclerview.widget.DiffUtil
 import kotlinx.coroutines.flow.MutableStateFlow
+import java.time.LocalDate
 
 data class CheckPointItem(
     val name: MutableStateFlow<String> = MutableStateFlow(""),
-    val date: MutableStateFlow<String> = MutableStateFlow(""),
+    val date: MutableStateFlow<LocalDate?> = MutableStateFlow(null),
     var check: Boolean = false
 ) {
 

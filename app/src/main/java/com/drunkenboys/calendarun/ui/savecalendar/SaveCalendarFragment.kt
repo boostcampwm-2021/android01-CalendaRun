@@ -4,22 +4,26 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.setupWithNavController
 import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.databinding.FragmentSaveCalendarBinding
 import com.drunkenboys.calendarun.ui.base.BaseFragment
+import com.drunkenboys.calendarun.ui.savecalendar.model.CheckPointItem
 import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
+import com.drunkenboys.calendarun.util.extensions.pickDateInMillis
 import com.drunkenboys.calendarun.util.extensions.sharedCollect
 import com.drunkenboys.calendarun.util.extensions.stateCollect
-import com.drunkenboys.calendarun.util.showDatePickerDialog
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 @AndroidEntryPoint
 class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.fragment_save_calendar) {
 
     private val saveCalendarViewModel by viewModels<SaveCalendarViewModel>()
-    private val saveCalendarAdapter by lazy { SaveCalendarAdapter(viewLifecycleOwner) }
+    private val saveCalendarAdapter by lazy { SaveCalendarAdapter(viewLifecycleOwner, ::onCheckPointClick) }
 
     private val args: SaveCalendarFragmentArgs by navArgs()
 
@@ -32,6 +36,16 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
         collectCheckPointItemList()
         collectPickDateTimeEvent()
         collectSaveCalendarEvent()
+    }
+
+    private fun onCheckPointClick(checkPointItem: CheckPointItem) {
+        lifecycleScope.launch {
+            val dateInMillis = pickDateInMillis() ?: return@launch
+
+            val dateTime = LocalDate.ofEpochDay(dateInMillis / 1000 / 60 / 60 / 24)
+
+            checkPointItem.date.emit(dateTime)
+        }
     }
 
     private fun setupToolbar() = with(binding) {
@@ -57,15 +71,12 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
     }
 
     private fun collectPickDateTimeEvent() {
-        sharedCollect(saveCalendarViewModel.pickStartDateEvent) {
-            showDatePickerDialog(requireContext()) { _, year, month, dayOfMonth ->
-                saveCalendarViewModel.setCalendarStartDate(getString(R.string.ui_date_format, year, month + 1, dayOfMonth))
-            }
-        }
-        sharedCollect(saveCalendarViewModel.pickEndDateEvent) {
-            showDatePickerDialog(requireContext()) { _, year, month, dayOfMonth ->
-                saveCalendarViewModel.setCalendarEndDate(getString(R.string.ui_date_format, year, month + 1, dayOfMonth))
-            }
+        sharedCollect(saveCalendarViewModel.pickDateEvent) { dateType ->
+            val dateInMillis = pickDateInMillis() ?: return@sharedCollect
+
+            val date = LocalDate.ofEpochDay(dateInMillis / 1000 / 60 / 60 / 24)
+
+            saveCalendarViewModel.updateDate(date, dateType)
         }
     }
 
