@@ -3,7 +3,6 @@ package com.drunkenboys.calendarun.ui.savecalendar
 import android.content.Context
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.drunkenboys.calendarun.BR
 import com.drunkenboys.calendarun.R
@@ -13,7 +12,7 @@ import com.drunkenboys.calendarun.ui.savecalendar.model.CheckPointItem
 import com.drunkenboys.calendarun.util.showDatePickerDialog
 
 class SaveCalendarRecyclerViewAdapter(private val viewLifecycleOwner: LifecycleOwner) :
-    ListAdapter<CheckPointItem, BaseViewHolder<ItemCheckPointBinding>>(diffUtil) {
+    ListAdapter<CheckPointItem, BaseViewHolder<ItemCheckPointBinding>>(CheckPointItem.diffUtil) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<ItemCheckPointBinding> =
         BaseViewHolder(parent, R.layout.item_check_point)
@@ -33,14 +32,4 @@ class SaveCalendarRecyclerViewAdapter(private val viewLifecycleOwner: LifecycleO
         }
     }
 
-    companion object {
-
-        private val diffUtil = object : DiffUtil.ItemCallback<CheckPointItem>() {
-            override fun areItemsTheSame(oldItem: CheckPointItem, newItem: CheckPointItem) =
-                oldItem.date == newItem.date
-
-            override fun areContentsTheSame(oldItem: CheckPointItem, newItem: CheckPointItem) =
-                oldItem == newItem
-        }
-    }
 }
