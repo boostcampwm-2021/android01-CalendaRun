@@ -135,7 +135,7 @@
                     app:layout_constraintTop_toBottomOf="@id/tv_saveCalendar_endDatePicker" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/r_saveCalendar_checkPointList"
+                    android:id="@+id/rv_save_calendar_check_point_list"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
@@ -161,7 +161,7 @@
                     app:drawableStartCompat="@drawable/ic_add_circle_24"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/r_saveCalendar_checkPointList" />
+                    app:layout_constraintTop_toBottomOf="@+id/rv_save_calendar_check_point_list" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>

@@ -11,7 +11,7 @@
 
         <variable
             name="adapter"
-            type="com.drunkenboys.calendarun.ui.savecalendar.SaveCalendarRecyclerViewAdapter" />
+            type="com.drunkenboys.calendarun.ui.savecalendar.SaveCalendarAdapter" />
 
     </data>
 

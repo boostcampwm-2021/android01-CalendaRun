@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.drunkenboys.calendarun.data.calendar.entity.Calendar
+import com.drunkenboys.calendarun.util.defaultZoneOffset
 import java.time.LocalDateTime
 
 @Entity(
@@ -27,6 +28,15 @@ data class Schedule(
     val memo: String,
     val color: Int
 ) {
+
+    fun notificationDateTimeMillis(): Long {
+        return when (notificationType) {
+            NotificationType.NONE -> return 0
+            NotificationType.TEN_MINUTES_AGO -> startDate.minusMinutes(10).toEpochSecond(defaultZoneOffset)
+            NotificationType.A_HOUR_AGO -> startDate.minusHours(1).toEpochSecond(defaultZoneOffset)
+            NotificationType.A_DAY_AGO -> startDate.minusDays(1).toEpochSecond(defaultZoneOffset)
+        } * 1000
+    }
 
     enum class NotificationType {
         NONE,
