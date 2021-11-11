@@ -124,7 +124,11 @@ class YearCalendarView
                 // 달력
                 items(year) { month ->
                     currentYear = year[0].startDate.year
-                    MonthCalendar(month, listState = listState, dayColumnModifier = dayColumnModifier)
+                    MonthCalendar(
+                        month = month,
+                        listState = listState,
+                        dayColumnModifier = dayColumnModifier
+                    )
                 }
             }
         }
