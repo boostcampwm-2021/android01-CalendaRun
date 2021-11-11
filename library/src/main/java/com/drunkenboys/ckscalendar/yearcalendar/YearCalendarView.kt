@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -79,7 +80,10 @@ class YearCalendarView
 
         var clickedDay by remember { mutableStateOf<CalendarDate?>(today) }
         val clickedEdge = { day: CalendarDate ->
-            BorderStroke(width = 2.dp, color = if (clickedDay?.date == day.date) Color(design.selectedFrameColor) else Color.Transparent)
+            BorderStroke(
+                width = 2.dp,
+                color = if (clickedDay?.date == day.date) Color(design.selectedFrameColor) else Color.Transparent
+            )
         }
 
         val dayColumnModifier = { day: CalendarDate ->
@@ -101,7 +105,7 @@ class YearCalendarView
                     Text(
                         text = "${year[0].startDate.year}년",
                         modifier = Modifier
-                            .background(color = Color(design.backgroundColor))
+                            .background(color = MaterialTheme.colors.background)
                             .fillMaxWidth(),
                         textAlign = TextAlign.Center
                     )
@@ -129,7 +133,7 @@ class YearCalendarView
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color.White),
+                .background(MaterialTheme.colors.background),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             design.weekSimpleStringSet.forEach { dayId ->
@@ -213,7 +217,7 @@ class YearCalendarView
             DayType.HOLIDAY -> Color(design.holidayTextColor)
             DayType.SATURDAY -> Color(design.saturdayTextColor)
             DayType.SUNDAY -> Color(design.sundayTextColor)
-            else -> Color(design.weekDayTextColor)
+            else -> MaterialTheme.colors.primary
         }
 
         // FIXME: mapper 추가
