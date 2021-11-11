@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.core.view.GravityCompat
 import androidx.core.view.get
+import androidx.core.view.isEmpty
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.ui.setupWithNavController
@@ -49,14 +50,15 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
 
     private fun setupToolbar() {
         binding.toolbarMainCalendar.setupWithNavController(navController, binding.layoutDrawer)
-        setupNavigationOnClickListener()
         setupOnMenuItemClickListener()
+        setupNavigationOnClickListener()
     }
 
     private fun setupNavigationOnClickListener() = with(binding) {
         toolbarMainCalendar.setNavigationOnClickListener {
             val menuItemOrder = this@MainCalendarFragment.mainCalendarViewModel.menuItemOrder.value
             layoutDrawer.openDrawer(GravityCompat.START)
+            if (binding.navView.menu.isEmpty()) return@setNavigationOnClickListener
             binding.navView.menu[menuItemOrder].isChecked = true
             binding.root.findViewById<TextView>(R.id.tv_drawerHeader_title).text = binding.navView.menu[menuItemOrder].title
         }
@@ -98,12 +100,9 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
 
     private fun collectCalendarList() {
         stateCollect(mainCalendarViewModel.calendarList) { calendarList ->
-            if (calendarList.isEmpty()) return@stateCollect
-
             setupNavigationView(calendarList)
 
             val menuItemOrder = mainCalendarViewModel.menuItemOrder.value
-            // TODO: 2021-11-11 calendarList 크기가 0일 때 오류 수정
             if (calendarList.isEmpty()) return@stateCollect
             val calendar = calendarList[menuItemOrder]
             mainCalendarViewModel.setCalendar(calendar)
