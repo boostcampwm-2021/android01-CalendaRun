@@ -104,6 +104,7 @@ class YearCalendarView
                 item {
                     Text(
                         text = "${year[0].startDate.year}년",
+                        color = MaterialTheme.colors.primary,
                         modifier = Modifier
                             .background(color = MaterialTheme.colors.background)
                             .fillMaxWidth(),
@@ -139,6 +140,7 @@ class YearCalendarView
             design.weekSimpleStringSet.forEach { dayId ->
                 Text(
                     text = dayId,
+                    color = MaterialTheme.colors.primary,
                     textAlign = TextAlign.Center
                 )
             }
@@ -207,6 +209,7 @@ class YearCalendarView
 
         Text(
             text = "${month}월",
+            color = MaterialTheme.colors.primary,
             modifier = Modifier.alpha(density).padding(start = (density * 5).dp)
         )
     }
