@@ -35,6 +35,9 @@ class MainCalendarViewModel @Inject constructor(
     private val _scheduleList = MutableLiveData<List<CalendarScheduleObject>>()
     val scheduleList: LiveData<List<CalendarScheduleObject>> = _scheduleList
 
+    private val _menuItemOrder = MutableLiveData<Int>()
+    val menuItemOrder: LiveData<Int> = _menuItemOrder
+
     fun setCalendar(calendar: Calendar) {
         _calendar.value = calendar
         IdStore.putId(IdStore.KEY_CALENDAR_ID, calendar.id)
@@ -59,6 +62,10 @@ class MainCalendarViewModel @Inject constructor(
             _scheduleList.value = scheduleLocalDataSource.fetchCalendarSchedules(calendarId)
                 .map { schedule -> schedule.mapToCalendarScheduleObject() }
         }
+    }
+
+    fun setMenuItemOrder(order: Int) {
+        _menuItemOrder.value = order
     }
 
     private fun Schedule.mapToCalendarScheduleObject() = CalendarScheduleObject(
