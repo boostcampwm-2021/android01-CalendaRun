@@ -38,7 +38,6 @@ import java.time.DayOfWeek
 import java.time.LocalDate
 
 @ExperimentalAnimationApi
-@ExperimentalFoundationApi
 class YearCalendarView
 @JvmOverloads constructor(
     context: Context,
@@ -63,19 +62,19 @@ class YearCalendarView
 
     init {
         binding.composeYearCalendarViewYearCalendar.setContent {
+            // 위 -> 아래가 아닌 안 -> 밖으로 생성.
+            // 요일 표시가 가장 바깥에 오지 않으면 날짜에 가려진다.
             CalendarLazyColumn()
+            WeekHeader()
         }
     }
 
     @ExperimentalAnimationApi
-    @ExperimentalFoundationApi
     @Composable
     private fun CalendarLazyColumn() {
         // RecyclerView의 상태를 관찰
         val listState = rememberLazyListState()
         val today = CalendarDate(LocalDate.now(), DayType.PADDING, true) // 초기화를 위한 dummy
-
-        var currentYear by remember { mutableStateOf(0) }
 
         var clickedDay by remember { mutableStateOf<CalendarDate?>(today) }
         val clickedEdge = { day: CalendarDate ->
@@ -95,35 +94,19 @@ class YearCalendarView
 
         // RecyclerView와 유사
         LazyColumn(state = listState) {
-            stickyHeader {
-                // 연 표시
-                Text(
-                    text = "${currentYear}년",
-                    modifier = Modifier
-                        .background(color = Color(design.backgroundColor))
-                        .fillMaxWidth(),
-                    textAlign = TextAlign.Center
-                )
-                // 요일 표시
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color.White),
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    design.weekSimpleStringSet.forEach { dayId ->
-                        Text(
-                            text = dayId,
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                }
-            }
-
             yearList.forEach { year ->
                 // 달력
+                item {
+                    Text(
+                        text = "${year[0].startDate.year}년",
+                        modifier = Modifier
+                            .background(color = Color(design.backgroundColor))
+                            .fillMaxWidth(),
+                        textAlign = TextAlign.Center
+                    )
+                }
+
                 items(year) { month ->
-                    currentYear = year[0].startDate.year
                     MonthCalendar(
                         month = month,
                         listState = listState,
@@ -139,6 +122,23 @@ class YearCalendarView
             listState.scrollToItem(index = getTodayItemIndex())
         }
     }
+    
+    @Composable
+    private fun WeekHeader() {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.White),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            design.weekSimpleStringSet.forEach { dayId ->
+                Text(
+                    text = dayId,
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
+    }
 
     @Composable
     private fun MonthCalendar(
@@ -152,15 +152,20 @@ class YearCalendarView
 
         weeks.forEach { week ->
             // 1주일
+            // 연 표시
             ConstraintLayout(
                 constraintSet = dayOfWeekConstraints(week.map { day -> day.date.toString() }),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 weekSchedules = Array(7) { Array(design.visibleScheduleCount) { null } }
                 // 월 표시
-                if (controller.isFirstWeek(week, month.id))
-                    AnimatedMonthHeader(density = density, listState = listState, month.id)
-
+                if (controller.isFirstWeek(week, month.id)) {
+                    AnimatedMonthHeader(
+                        density = density,
+                        listState = listState,
+                        month = month.id
+                    )
+                }
                 week.forEach { day ->
                     when (day.dayType) {
                         // 빈 날짜
@@ -282,7 +287,7 @@ class YearCalendarView
         val today = LocalDate.now()
 
         // (월 달력 12개 + 년 헤더 1개) + 이번달
-        return (today.year - INIT_YEAR) * 12 + today.monthValue
+        return (today.year - INIT_YEAR) * 13 + today.monthValue
     }
 
     private fun dayOfWeekConstraints(weekIds: List<String>) = ConstraintSet {
