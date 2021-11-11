@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.drunkenboys.calendarun.R
+import com.drunkenboys.calendarun.data.idstore.IdStore
 import com.drunkenboys.calendarun.databinding.DialogDayScheduleBinding
 import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
 import com.drunkenboys.calendarun.util.extensions.sharedCollect
@@ -56,6 +57,7 @@ class DayScheduleDialog : DialogFragment() {
 
     private fun setupIvAddSchedule() {
         binding.imgDayScheduleAddSchedule.setOnClickListener {
+            IdStore.clearId(IdStore.KEY_SCHEDULE_ID)
             val action = DayScheduleDialogDirections.actionDayScheduleDialogToSaveScheduleFragment(BehaviorType.INSERT, args.localDate)
             navController.navigate(action)
         }
