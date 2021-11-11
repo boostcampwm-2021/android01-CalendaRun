@@ -35,6 +35,7 @@ import com.drunkenboys.ckscalendar.data.*
 import com.drunkenboys.ckscalendar.listener.OnDayClickListener
 import com.drunkenboys.ckscalendar.listener.OnDaySecondClickListener
 import com.drunkenboys.ckscalendar.utils.TimeUtils.dayValue
+import com.drunkenboys.ckscalendar.utils.TimeUtils.isSameWeek
 import com.drunkenboys.ckscalendar.utils.dp
 import com.drunkenboys.ckscalendar.utils.toCalendarDatesList
 import java.time.DayOfWeek
@@ -48,8 +49,6 @@ class YearCalendarView
 ) : LinearLayout(context, attrs, defStyleAttr) {
 
     private val binding: LayoutYearCalendarBinding by lazy { LayoutYearCalendarBinding.inflate(LayoutInflater.from(context), this, true) }
-
-    private val controller = YearCalendarController()
 
     private var design = CalendarDesignObject()
 
@@ -159,7 +158,7 @@ class YearCalendarView
             ) {
                 weekSchedules = Array(7) { Array(design.visibleScheduleCount) { null } }
                 // 월 표시
-                if (controller.isFirstWeek(week, month.id)) {
+                if (isFirstWeek(week, month.id)) {
                     AnimatedMonthHeader(
                         listState = listState,
                         month = month.id
@@ -182,6 +181,10 @@ class YearCalendarView
                 }
             }
         }
+    }
+
+    private fun isFirstWeek(week: List<CalendarDate>, monthId: Int) = week.any { day ->
+        day.date.dayOfMonth == 1 && monthId == day.date.monthValue
     }
 
     @Composable
@@ -257,9 +260,7 @@ class YearCalendarView
             }
         }
 
-        with(controller) {
-            setWeekSchedule(getStartScheduleList(today, scheduleList), weekScheduleList, today)
-        }
+        setWeekSchedule(getStartScheduleList(today, scheduleList), weekScheduleList, today)
 
         weekScheduleList[weekNum].forEach { schedule ->
             val modifier =
@@ -277,6 +278,37 @@ class YearCalendarView
             )
             Spacer(modifier = Modifier.height(2.dp))
         }
+    }
+
+    private fun setWeekSchedule(
+        todaySchedules: List<CalendarScheduleObject>,
+        weekSchedules: Array<Array<CalendarScheduleObject?>>,
+        today: LocalDate
+    ) {
+        val todayOfWeek = today.dayOfWeek.dayValue()
+
+        todaySchedules.forEach { todaySchedule ->
+            val weekEndDate =
+                if (!today.isSameWeek(todaySchedule.endDate.toLocalDate())) DayOfWeek.SATURDAY.value
+                else todaySchedule.endDate.dayOfWeek.dayValue()
+
+            weekSchedules[todayOfWeek].forEachIndexed { index, space ->
+                if (space == null) {
+                    (todayOfWeek..weekEndDate).forEach { weekNum ->
+                        weekSchedules[weekNum][index] = todaySchedule
+                    }
+                    return@forEach
+                }
+            }
+        }
+    }
+
+    private fun getStartScheduleList(today: LocalDate, scheduleList: List<CalendarScheduleObject>) = scheduleList.filter { schedule ->
+        val isStart = schedule.startDate.toLocalDate() == today
+        val isSunday = today.dayOfWeek == DayOfWeek.SUNDAY
+        val isFirstOfMonth = today.dayOfMonth == 1
+        val isDateInScheduleRange = today in schedule.startDate.toLocalDate()..schedule.endDate.toLocalDate()
+        isStart || ((isSunday || isFirstOfMonth) && (isDateInScheduleRange))
     }
 
     private fun getTodayItemIndex(): Int {
