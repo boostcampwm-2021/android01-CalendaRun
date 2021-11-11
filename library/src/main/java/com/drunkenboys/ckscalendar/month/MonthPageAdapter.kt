@@ -1,5 +1,6 @@
 package com.drunkenboys.ckscalendar.month
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
@@ -9,6 +10,7 @@ import com.drunkenboys.ckscalendar.databinding.ItemMonthPageBinding
 import com.drunkenboys.ckscalendar.listener.OnDayClickListener
 import com.drunkenboys.ckscalendar.listener.OnDaySecondClickListener
 import com.drunkenboys.ckscalendar.utils.TimeUtils.parseDayWeekToDayType
+import kotlinx.coroutines.*
 import java.time.DayOfWeek
 import java.time.LocalDate
 
@@ -87,63 +89,66 @@ class MonthPageAdapter : RecyclerView.Adapter<MonthPageAdapter.Holder>() {
             onDayClick: OnDayClickListener?,
             onDaySecondClick: OnDaySecondClickListener?
         ) {
-            val dates = mutableListOf<CalendarDate>()
-            val startMonth = item.startDate.monthValue
-            val startDay = item.startDate.dayOfWeek
-            val endMonth = item.endDate.monthValue
+            CoroutineScope(Dispatchers.Default).launch {
+                val dates = mutableListOf<CalendarDate>()
+                val startMonth = item.startDate.monthValue
+                val startDay = item.startDate.dayOfWeek
+                val endMonth = item.endDate.monthValue
 
-            cachedCalendar[item.id]?.let {
-                dates.addAll(it)
-            } ?: run {
-                (startMonth..endMonth).forEach { month ->
-                    when (month) {
-                        startMonth -> {
-                            // add Start Padding
-                            if (startDay != DayOfWeek.SUNDAY) {
-                                dates.addAll(makePadding(startDay.ordinal))
+                cachedCalendar[item.id]?.let {
+                    dates.addAll(it)
+                } ?: run {
+                    (startMonth..endMonth).forEach { month ->
+                        when (month) {
+                            startMonth -> {
+                                // add Start Padding
+                                if (startDay != DayOfWeek.SUNDAY) {
+                                    dates.addAll(makePadding(startDay.ordinal))
+                                }
+
+                                // add Start Dates
+                                dates.addAll(makeDates(item.startDate, month))
                             }
-
-                            // add Start Dates
-                            dates.addAll(makeDates(item.startDate, month))
-                        }
-                        else -> {
-                            // add Normal Dates
-                            dates.addAll(makeDates(item.endDate, month))
+                            else -> {
+                                // add Normal Dates
+                                dates.addAll(makeDates(item.endDate, month))
+                            }
                         }
                     }
-                }
-                // add End Padding
-                val weekPadding = 6 - dates.size % weekSize
-                dates.addAll(makePadding(weekPadding))
+                    // add End Padding
+                    val weekPadding = 6 - dates.size % weekSize
+                    dates.addAll(makePadding(weekPadding))
 
-                // add FullSize Padding
-                if (dates.size < calendarFullSize) {
-                    val fullSizePadding = calendarFullSize - dates.size - 1
-                    dates.addAll(makePadding(fullSizePadding))
+                    // add FullSize Padding
+                    if (dates.size < calendarFullSize) {
+                        val fullSizePadding = calendarFullSize - dates.size - 1
+                        dates.addAll(makePadding(fullSizePadding))
+                    }
+                }
+
+                // check and set recycle data
+                if (lastSelectPagePosition == adapterPosition) {
+                    monthAdapter.selectedPosition = lastSelectDayPosition
+                } else {
+                    monthAdapter.selectedPosition = -1
+                }
+
+                if (isFirstToday) {
+                    dates.find {
+                        it.date.monthValue == today.monthValue &&
+                                it.date.dayOfMonth == today.dayOfMonth &&
+                                it.dayType != DayType.PADDING
+                    }?.let {
+                        it.isSelected = true
+                        isFirstToday = false
+                    }
+                }
+                withContext(Dispatchers.Main){
+                    monthAdapter.setItems(dates, schedules, calendarDesign, adapterPosition)
+                    monthAdapter.onDateClickListener = onDayClick
+                    monthAdapter.onDateSecondClickListener = onDaySecondClick
                 }
             }
-
-            // check and set recycle data
-            if (lastSelectPagePosition == adapterPosition) {
-                monthAdapter.selectedPosition = lastSelectDayPosition
-            } else {
-                monthAdapter.selectedPosition = -1
-            }
-
-            if (isFirstToday) {
-                dates.find {
-                    it.date.monthValue == today.monthValue &&
-                            it.date.dayOfMonth == today.dayOfMonth &&
-                            it.dayType != DayType.PADDING
-                }?.let {
-                    it.isSelected = true
-                    isFirstToday = false
-                }
-            }
-
-            monthAdapter.setItems(dates, schedules, calendarDesign, adapterPosition)
-            monthAdapter.onDateClickListener = onDayClick
-            monthAdapter.onDateSecondClickListener = onDaySecondClick
         }
 
         private fun makeDates(date: LocalDate, month: Int): List<CalendarDate> {

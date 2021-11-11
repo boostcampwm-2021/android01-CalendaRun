@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.drunkenboys.ckscalendar.data.CalendarDate
 import com.drunkenboys.ckscalendar.data.CalendarDesignObject
@@ -21,10 +20,16 @@ import com.drunkenboys.ckscalendar.listener.OnDaySecondClickListener
 import com.drunkenboys.ckscalendar.utils.context
 import com.drunkenboys.ckscalendar.utils.dp2px
 import com.drunkenboys.ckscalendar.utils.tintStroke
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : ListAdapter<CalendarDate, MonthAdapter.Holder>(diffUtil) {
+class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : RecyclerView.Adapter<MonthAdapter.Holder>() {
 
     private val schedules = mutableListOf<CalendarScheduleObject>()
+
+    private val currentList = mutableListOf<CalendarDate>()
 
     private lateinit var calendarDesign: CalendarDesignObject
 
@@ -54,7 +59,9 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Lis
         this.currentPagePosition = currentPagePosition
         this.schedules.clear()
         this.schedules.addAll(schedules)
-        submitList(list)
+        this.currentList.clear()
+        this.currentList.addAll(list)
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
@@ -66,6 +73,9 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Lis
     override fun onBindViewHolder(holder: Holder, position: Int) {
         holder.bind(currentList[position])
     }
+
+    override fun getItemCount(): Int = currentList.size
+
 
     inner class Holder(private val binding: ItemMonthCellBinding, private val calculateHeight: Int) :
         RecyclerView.ViewHolder(binding.root) {
@@ -100,14 +110,18 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Lis
             }
             binding.tvMonthDay.setTextColor(textColor)
 
-            binding.layoutMonthSchedule.removeAllViews()
-            val scheduleContainer = makePaddingScheduleList(item, schedules)
-            val hasAnySchedule = scheduleContainer.any { it != null }
-            if (hasAnySchedule) {
-                scheduleContainer.map { it ?: makeDefaultScheduleTextView() }
-                    .forEach {
-                        binding.layoutMonthSchedule.addView(it)
+            CoroutineScope(Dispatchers.Default).launch {
+                val scheduleContainer = makePaddingScheduleList(item, schedules)
+                val hasAnySchedule = scheduleContainer.any { it != null }
+                if (hasAnySchedule) {
+                    withContext(Dispatchers.Main) {
+                        binding.layoutMonthSchedule.removeAllViews()
+                        scheduleContainer.map { it ?: makeDefaultScheduleTextView() }
+                            .forEach {
+                                binding.layoutMonthSchedule.addView(it)
+                            }
                     }
+                }
             }
         }
 
