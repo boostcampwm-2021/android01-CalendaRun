@@ -18,7 +18,7 @@
         tools:context=".ui.dayschedule.DayScheduleDialog">
 
         <ImageView
-            android:id="@+id/iv_daySchedule_addSchedule"
+            android:id="@+id/img_daySchedule_addSchedule"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_gravity="end"
