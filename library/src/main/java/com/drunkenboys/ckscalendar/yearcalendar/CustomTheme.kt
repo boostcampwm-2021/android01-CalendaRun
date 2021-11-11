@@ -15,11 +15,11 @@ fun CustomTheme(
     content: @Composable () -> Unit
 ) {
     val darkColors = darkColors(
-        primary = Color(design.weekDayTextColor),
+        primary = Color.White,
         primaryVariant = Color(design.selectedFrameColor),
         secondary = Color(design.saturdayTextColor),
         secondaryVariant = Color(design.sundayTextColor),
-        background = Color(design.backgroundColor),
+        background = Color.Black,
     )
 
     val lightColors = lightColors(
