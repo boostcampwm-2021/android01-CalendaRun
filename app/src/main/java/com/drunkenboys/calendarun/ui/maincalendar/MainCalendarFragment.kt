@@ -1,10 +1,8 @@
 package com.drunkenboys.calendarun.ui.maincalendar
 
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
-import androidx.annotation.RequiresApi
 import androidx.core.view.GravityCompat
 import androidx.core.view.get
 import androidx.core.view.isVisible
@@ -17,11 +15,7 @@ import com.drunkenboys.calendarun.data.idstore.IdStore
 import com.drunkenboys.calendarun.databinding.FragmentMainCalendarBinding
 import com.drunkenboys.calendarun.ui.base.BaseFragment
 import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
-import com.drunkenboys.ckscalendar.data.CalendarDesignObject
-import com.drunkenboys.ckscalendar.data.CalendarScheduleObject
-import com.drunkenboys.ckscalendar.data.ScheduleColorType
 import dagger.hilt.android.AndroidEntryPoint
-import java.time.LocalDate
 
 @AndroidEntryPoint
 class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.fragment_main_calendar) {
@@ -36,6 +30,7 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         mainCalendarViewModel.fetchCalendarList()
         setupCalendarView()
         setDataBinding()
+        setupFab()
         setupToolbar()
         setNavigationOnClickListener()
         setOnMenuItemClickListener()
