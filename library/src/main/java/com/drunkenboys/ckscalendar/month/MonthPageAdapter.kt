@@ -1,6 +1,5 @@
 package com.drunkenboys.ckscalendar.month
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
@@ -10,7 +9,10 @@ import com.drunkenboys.ckscalendar.databinding.ItemMonthPageBinding
 import com.drunkenboys.ckscalendar.listener.OnDayClickListener
 import com.drunkenboys.ckscalendar.listener.OnDaySecondClickListener
 import com.drunkenboys.ckscalendar.utils.TimeUtils.parseDayWeekToDayType
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.DayOfWeek
 import java.time.LocalDate
 
@@ -143,7 +145,7 @@ class MonthPageAdapter : RecyclerView.Adapter<MonthPageAdapter.Holder>() {
                         isFirstToday = false
                     }
                 }
-                withContext(Dispatchers.Main){
+                withContext(Dispatchers.Main) {
                     monthAdapter.setItems(dates, schedules, calendarDesign, adapterPosition)
                     monthAdapter.onDateClickListener = onDayClick
                     monthAdapter.onDateSecondClickListener = onDaySecondClick
@@ -151,11 +153,12 @@ class MonthPageAdapter : RecyclerView.Adapter<MonthPageAdapter.Holder>() {
             }
         }
 
-        private fun makeDates(date: LocalDate, month: Int): List<CalendarDate> {
-            return (1..date.lengthOfMonth()).map { day ->
-                val local = LocalDate.of(date.year, month, day)
-                val dayType = parseDayWeekToDayType(local.dayOfWeek)
-                CalendarDate(local, dayType)
+        private fun makeDates(selectedDate: LocalDate, month: Int): List<CalendarDate> {
+            val monthDate = LocalDate.of(selectedDate.year, month, 1)
+            return (1..monthDate.lengthOfMonth()).map { day ->
+                val date = LocalDate.of(selectedDate.year, month, day)
+                val dayType = parseDayWeekToDayType(date.dayOfWeek)
+                CalendarDate(date, dayType)
             }
         }
 
