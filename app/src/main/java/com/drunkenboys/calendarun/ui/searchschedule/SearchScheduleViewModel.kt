@@ -1,7 +1,5 @@
 package com.drunkenboys.calendarun.ui.searchschedule
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.drunkenboys.calendarun.data.idstore.IdStore
@@ -9,11 +7,13 @@ import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import com.drunkenboys.calendarun.data.schedule.local.ScheduleLocalDataSource
 import com.drunkenboys.calendarun.ui.searchschedule.model.DateItem
 import com.drunkenboys.calendarun.ui.searchschedule.model.DateScheduleItem
-import com.drunkenboys.calendarun.util.SingleLiveEvent
-import com.drunkenboys.calendarun.util.extensions.getOrThrow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import javax.inject.Inject
@@ -23,34 +23,35 @@ class SearchScheduleViewModel @Inject constructor(
     private val scheduleDataSource: ScheduleLocalDataSource
 ) : ViewModel() {
 
-    val word = MutableLiveData("")
+    val word = MutableStateFlow("")
 
-    private val _listItem = MutableLiveData<List<DateItem>>()
-    val listItem: LiveData<List<DateItem>> = _listItem
+    private val _listItem = MutableStateFlow<List<DateItem>>(emptyList())
+    val listItem: StateFlow<List<DateItem>> = _listItem
 
-    private val _scheduleClickEvent = SingleLiveEvent<Unit>()
-    val scheduleClickEvent: LiveData<Unit> = _scheduleClickEvent
+    private val _scheduleClickEvent = MutableSharedFlow<Unit>()
+    val scheduleClickEvent: SharedFlow<Unit> = _scheduleClickEvent
 
-    private val _isSearching = MutableLiveData(false)
-    val isSearching: LiveData<Boolean> = _isSearching
+    private val _isSearching = MutableStateFlow(false)
+    val isSearching: StateFlow<Boolean> = _isSearching
 
     private var debounceJob: Job = Job()
 
     fun fetchScheduleList() {
-        if (word.value.isNullOrEmpty()) {
-            _isSearching.value = true
+        viewModelScope.launch {
+            if (word.value.isEmpty()) {
+                _isSearching.emit(true)
 
-            viewModelScope.launch {
                 val today = LocalDateTime.now()
 
-                _listItem.value = scheduleDataSource.fetchAllSchedule()
+                scheduleDataSource.fetchAllSchedule()
                     .filter { schedule -> schedule.startDate >= today }
                     .mapToDateItem()
+                    .let { _listItem.emit(it) }
 
-                _isSearching.value = false
+                _isSearching.emit(false)
+            } else {
+                searchSchedule(word.value)
             }
-        } else {
-            searchSchedule(word.getOrThrow())
         }
     }
 
@@ -64,9 +65,11 @@ class SearchScheduleViewModel @Inject constructor(
         .sortedBy { dateItem -> dateItem.date }
 
     private fun emitScheduleClickEvent(schedule: Schedule) {
-        IdStore.putId(IdStore.KEY_CALENDAR_ID, schedule.calendarId)
-        IdStore.putId(IdStore.KEY_SCHEDULE_ID, schedule.id)
-        _scheduleClickEvent.value = Unit
+        viewModelScope.launch {
+            IdStore.putId(IdStore.KEY_CALENDAR_ID, schedule.calendarId)
+            IdStore.putId(IdStore.KEY_SCHEDULE_ID, schedule.id)
+            _scheduleClickEvent.emit(Unit)
+        }
     }
 
     fun searchSchedule(word: String) {
@@ -76,15 +79,17 @@ class SearchScheduleViewModel @Inject constructor(
             fetchScheduleList()
             return
         }
-        _isSearching.value = true
 
         viewModelScope.launch(debounceJob) {
+            _isSearching.emit(true)
+
             delay(DEBOUNCE_DURATION)
-            _listItem.value = scheduleDataSource.fetchAllSchedule()
+            scheduleDataSource.fetchAllSchedule()
                 .filter { schedule -> word in schedule.name }
                 .mapToDateItem()
+                .let { _listItem.emit(it) }
 
-            _isSearching.value = false
+            _isSearching.emit(false)
         }
     }
 

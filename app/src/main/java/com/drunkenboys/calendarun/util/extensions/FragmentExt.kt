@@ -2,10 +2,18 @@ package com.drunkenboys.calendarun.util.extensions
 
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.drunkenboys.calendarun.R
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
@@ -43,4 +51,22 @@ suspend fun Fragment.pickTime() = suspendCancellableCoroutine<Pair<Int, Int>?> {
     }
 
     timePicker.show(parentFragmentManager, timePicker::class.simpleName)
+}
+
+fun <T> Fragment.stateCollect(stateFlow: StateFlow<T>, block: suspend (T) -> Unit) {
+    lifecycleScope.launch {
+        repeatOnLifecycle(Lifecycle.State.STARTED) {
+            stateFlow.collect {
+                block(it)
+            }
+        }
+    }
+}
+
+fun <T> Fragment.sharedCollect(sharedFlow: SharedFlow<T>, block: suspend (T) -> Unit) {
+    lifecycleScope.launch {
+        sharedFlow.collectLatest {
+            block(it)
+        }
+    }
 }

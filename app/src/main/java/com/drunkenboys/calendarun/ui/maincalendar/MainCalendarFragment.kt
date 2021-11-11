@@ -15,6 +15,7 @@ import com.drunkenboys.calendarun.data.idstore.IdStore
 import com.drunkenboys.calendarun.databinding.FragmentMainCalendarBinding
 import com.drunkenboys.calendarun.ui.base.BaseFragment
 import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
+import com.drunkenboys.calendarun.util.extensions.stateCollect
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -65,7 +66,7 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
 
     private fun setupNavigationOnClickListener() = with(binding) {
         toolbarMainCalendar.setNavigationOnClickListener {
-            val menuItemOrder = this@MainCalendarFragment.mainCalendarViewModel.menuItemOrder.value ?: DEFAULT_ORDER
+            val menuItemOrder = this@MainCalendarFragment.mainCalendarViewModel.menuItemOrder.value
             layoutDrawer.openDrawer(GravityCompat.START)
             binding.navView.menu[menuItemOrder].isChecked = true
             binding.root.findViewById<TextView>(R.id.tv_drawerHeader_title).text = binding.navView.menu[menuItemOrder].title
@@ -92,10 +93,12 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
     }
 
     private fun setupCalendarListObserver() {
-        mainCalendarViewModel.calendarList.observe(viewLifecycleOwner) { calendarList ->
+        stateCollect(mainCalendarViewModel.calendarList) { calendarList ->
+            if (calendarList.isEmpty()) return@stateCollect
+
             setupNavigationView(calendarList)
-            val menuItemOrder = mainCalendarViewModel.menuItemOrder.value ?: DEFAULT_ORDER
-            val calendar = mainCalendarViewModel.calendarList.value?.get(menuItemOrder) ?: return@observe
+            val menuItemOrder = mainCalendarViewModel.menuItemOrder.value
+            val calendar = mainCalendarViewModel.calendarList.value[menuItemOrder]
             mainCalendarViewModel.setCalendar(calendar)
         }
     }
@@ -130,13 +133,13 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
     }
 
     private fun setupCheckPointListObserver() {
-        mainCalendarViewModel.checkPointList.observe(viewLifecycleOwner) { checkPointList ->
+        stateCollect(mainCalendarViewModel.checkPointList) { checkPointList ->
             // TODO: 2021-11-10 CheckPoint 날짜 읽어서 뷰 나누기
         }
     }
 
     private fun setupScheduleListObserver() {
-        mainCalendarViewModel.scheduleList.observe(viewLifecycleOwner) { scheduleList ->
+        stateCollect(mainCalendarViewModel.scheduleList) { scheduleList ->
             binding.calendarMonth.setSchedules(scheduleList)
             binding.calendarYear.setSchedules(scheduleList)
         }
@@ -156,6 +159,7 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
     }
 
     companion object {
+
         private const val DEFAULT_ORDER = 0
     }
 }

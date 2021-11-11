@@ -1,6 +1,6 @@
 package com.drunkenboys.calendarun.ui.saveschedule
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import app.cash.turbine.test
 import com.drunkenboys.calendarun.data.calendar.local.CalendarLocalDataSource
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import com.drunkenboys.calendarun.data.schedule.local.FakeCalendarLocalDataSource
@@ -10,20 +10,18 @@ import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.ObsoleteCoroutinesApi
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.test.*
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import java.time.LocalDateTime
 
 @ObsoleteCoroutinesApi
 @ExperimentalCoroutinesApi
 class SaveScheduleViewModelTest {
-
-    @get:Rule
-    var instantExecutorRule = InstantTaskExecutorRule()
 
     private lateinit var scheduleDataSource: ScheduleLocalDataSource
     private lateinit var calendarDataSource: CalendarLocalDataSource
@@ -75,24 +73,35 @@ class SaveScheduleViewModelTest {
     @Test
     fun `제목_미입력_시_저장_테스트`() = testScope.runBlockingTest {
         viewModel.init(BehaviorType.INSERT)
-        viewModel.saveSchedule()
 
-        assertEquals(null, viewModel.saveScheduleEvent.value)
+        viewModel.saveScheduleEvent.test {
+            viewModel.saveSchedule()
+
+            try {
+                awaitItem()
+            } catch (e: Exception) {
+                assertTrue(e is TimeoutCancellationException)
+            }
+            cancelAndConsumeRemainingEvents()
+        }
     }
 
     @Test
-    fun `정상_입력_시_저장_테스트`() {
+    fun `정상_입력_시_저장_테스트`() = testScope.runBlockingTest {
         viewModel.init(BehaviorType.INSERT)
         val title = "test title"
         val memo = "test memo"
         viewModel.title.value = title
         viewModel.memo.value = memo
 
-        viewModel.saveSchedule()
-        val result = viewModel.saveScheduleEvent.value
+        viewModel.saveScheduleEvent.test {
+            viewModel.saveSchedule()
+            val result = awaitItem()
 
-        assertEquals(title, result?.name)
-        assertEquals(memo, result?.memo)
+            assertEquals(title, result.name)
+            assertEquals(memo, result.memo)
+            cancelAndConsumeRemainingEvents()
+        }
     }
 
     @Test
@@ -100,11 +109,14 @@ class SaveScheduleViewModelTest {
         val startDate = LocalDateTime.now()
         val endDate = LocalDateTime.now()
         val schedule = Schedule(0, 0, "test", startDate, endDate, Schedule.NotificationType.A_HOUR_AGO, "memo", 0)
-        scheduleDataSource.insertSchedule(schedule)
-        viewModel.init(BehaviorType.UPDATE)
 
-        viewModel.deleteSchedule()
+        viewModel.deleteScheduleEvent.test {
+            scheduleDataSource.insertSchedule(schedule)
+            viewModel.init(BehaviorType.UPDATE)
+            viewModel.deleteSchedule()
 
-        assertEquals(schedule, viewModel.deleteScheduleEvent.value)
+            assertEquals(schedule, awaitItem())
+            cancelAndConsumeRemainingEvents()
+        }
     }
 }

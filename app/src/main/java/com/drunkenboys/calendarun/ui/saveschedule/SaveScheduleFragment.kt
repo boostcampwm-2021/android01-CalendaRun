@@ -8,7 +8,6 @@ import android.widget.ArrayAdapter
 import androidx.appcompat.widget.ListPopupWindow
 import androidx.core.content.getSystemService
 import androidx.core.view.isVisible
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
 import androidx.navigation.ui.AppBarConfiguration
@@ -22,7 +21,6 @@ import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
 import com.drunkenboys.calendarun.util.*
 import com.drunkenboys.calendarun.util.extensions.*
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.util.*
@@ -86,56 +84,50 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
             setAdapter(dropDownAdapter)
             isModal = true
             setOnItemClickListener { _, _, position, _ ->
-                saveScheduleViewModel.notificationType.value = Schedule.NotificationType.values()[position]
+                saveScheduleViewModel.updateNotificationType(Schedule.NotificationType.values()[position])
                 dismiss()
             }
         }
     }
 
     private fun observePickDateTimeEvent() {
-        saveScheduleViewModel.pickDateTimeEvent.observe(viewLifecycleOwner) { dateType ->
-            dateType ?: return@observe
+        sharedCollect(saveScheduleViewModel.pickDateTimeEvent) { dateType ->
+            val dateInMillis = pickDateInMillis() ?: return@sharedCollect
+            val (hour, minute) = pickTime() ?: return@sharedCollect
 
-            lifecycleScope.launch {
-                val dateInMillis = pickDateInMillis() ?: return@launch
-                val (hour, minute) = pickTime() ?: return@launch
+            val dateTime = LocalDateTime.ofEpochSecond(dateInMillis / 1000, 0, ZoneOffset.UTC)
+                .withHour(hour)
+                .withMinute(minute)
 
-                val dateTime = LocalDateTime.ofEpochSecond(dateInMillis / 1000, 0, ZoneOffset.UTC)
-                    .withHour(hour)
-                    .withMinute(minute)
-
-                saveScheduleViewModel.updateDate(dateTime, dateType)
-            }
+            saveScheduleViewModel.updateDate(dateTime, dateType)
         }
     }
 
     private fun observePickNotificationTypeEvent() {
-        saveScheduleViewModel.pickNotificationTypeEvent.observe(viewLifecycleOwner) {
+        sharedCollect(saveScheduleViewModel.pickNotificationTypeEvent) {
             notificationPopupWidow?.show()
         }
     }
 
     private fun observeNotification() {
-        saveScheduleViewModel.notificationType.observe(viewLifecycleOwner) { type ->
+        stateCollect(saveScheduleViewModel.notificationType) { type ->
             binding.tvSaveScheduleNotification.text = when (type) {
                 Schedule.NotificationType.NONE -> getString(R.string.saveSchedule_notificationNone)
                 Schedule.NotificationType.TEN_MINUTES_AGO -> getString(R.string.saveSchedule_notificationTenMinutesAgo)
                 Schedule.NotificationType.A_HOUR_AGO -> getString(R.string.saveSchedule_notificationAHourAgo)
                 Schedule.NotificationType.A_DAY_AGO -> getString(R.string.saveSchedule_notificationADayAgo)
-                null -> ""
             }
         }
     }
 
     private fun observeTagColor() {
-        saveScheduleViewModel.tagColor.observe(viewLifecycleOwner) { color ->
-            color ?: return@observe
+        stateCollect(saveScheduleViewModel.tagColor) { color ->
             binding.viewSaveScheduleTagColor.backgroundTintList = ColorStateList.valueOf(color)
         }
     }
 
     private fun observeIsPickTagColorPopupVisible() {
-        saveScheduleViewModel.isPickTagColorPopupVisible.observe(viewLifecycleOwner, ::togglePickTagColorPopup)
+        stateCollect(saveScheduleViewModel.isPickTagColorPopupVisible, ::togglePickTagColorPopup)
     }
 
     private fun togglePickTagColorPopup(isVisible: Boolean) = with(binding.layoutSaveSchedulePickTagColorPopup) {
@@ -152,7 +144,7 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
     }
 
     private fun observeSaveScheduleEvent() {
-        saveScheduleViewModel.saveScheduleEvent.observe(viewLifecycleOwner) { schedule ->
+        sharedCollect(saveScheduleViewModel.saveScheduleEvent) { schedule ->
             saveNotification(schedule)
             showToast(getString(R.string.toast_schedule_saved))
             navController.navigateUp()
@@ -173,7 +165,7 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
     }
 
     private fun observeDeleteScheduleEvent() {
-        saveScheduleViewModel.deleteScheduleEvent.observe(viewLifecycleOwner) { schedule ->
+        sharedCollect(saveScheduleViewModel.deleteScheduleEvent) { schedule ->
             deleteNotification(schedule)
             showToast(getString(R.string.toast_schedule_deleted))
             navController.navigateUp()

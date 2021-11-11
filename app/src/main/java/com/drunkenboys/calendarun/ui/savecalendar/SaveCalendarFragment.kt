@@ -10,6 +10,8 @@ import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.databinding.FragmentSaveCalendarBinding
 import com.drunkenboys.calendarun.ui.base.BaseFragment
 import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
+import com.drunkenboys.calendarun.util.extensions.sharedCollect
+import com.drunkenboys.calendarun.util.extensions.stateCollect
 import com.drunkenboys.calendarun.util.showDatePickerDialog
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -49,27 +51,26 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
     }
 
     private fun setCheckPointItemListObserver() {
-        saveCalendarViewModel.checkPointItemList.observe(viewLifecycleOwner) { list ->
+        stateCollect(saveCalendarViewModel.checkPointItemList) { list ->
             saveCalendarAdapter.submitList(list)
         }
     }
 
     private fun setPickDateTimeEventObserver() {
-        saveCalendarViewModel.pickStartDateEvent.observe(viewLifecycleOwner) {
+        sharedCollect(saveCalendarViewModel.pickStartDateEvent) {
             showDatePickerDialog(requireContext()) { _, year, month, dayOfMonth ->
                 saveCalendarViewModel.setCalendarStartDate(getString(R.string.ui_date_format, year, month + 1, dayOfMonth))
             }
         }
-        saveCalendarViewModel.pickEndDateEvent.observe(viewLifecycleOwner) {
+        sharedCollect(saveCalendarViewModel.pickEndDateEvent) {
             showDatePickerDialog(requireContext()) { _, year, month, dayOfMonth ->
                 saveCalendarViewModel.setCalendarEndDate(getString(R.string.ui_date_format, year, month + 1, dayOfMonth))
             }
         }
-
     }
 
     private fun setSaveCalendarEventObserver() {
-        saveCalendarViewModel.saveCalendarEvent.observe(viewLifecycleOwner) { isSaved ->
+        sharedCollect(saveCalendarViewModel.saveCalendarEvent) { isSaved ->
             if (isSaved) {
                 navController.navigateUp()
             } else {

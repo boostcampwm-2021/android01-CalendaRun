@@ -1,7 +1,5 @@
 package com.drunkenboys.calendarun.ui.saveschedule
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.drunkenboys.calendarun.data.calendar.local.CalendarLocalDataSource
@@ -11,10 +9,12 @@ import com.drunkenboys.calendarun.di.CalendarId
 import com.drunkenboys.calendarun.di.ScheduleId
 import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
 import com.drunkenboys.calendarun.ui.saveschedule.model.DateType
-import com.drunkenboys.calendarun.util.SingleLiveEvent
-import com.drunkenboys.calendarun.util.extensions.getOrThrow
 import com.drunkenboys.ckscalendar.data.ScheduleColorType
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -32,38 +32,39 @@ class SaveScheduleViewModel @Inject constructor(
 
     private lateinit var behaviorType: BehaviorType
 
-    val title = MutableLiveData("")
+    val title = MutableStateFlow("")
 
-    private val _startDate = MutableLiveData<LocalDateTime>()
-    val startDate: LiveData<LocalDateTime> = _startDate
+    private val _startDate = MutableStateFlow<LocalDateTime?>(null)
+    val startDate: StateFlow<LocalDateTime?> = _startDate
 
-    private val _endDate = MutableLiveData<LocalDateTime>()
-    val endDate: LiveData<LocalDateTime> = _endDate
+    private val _endDate = MutableStateFlow<LocalDateTime?>(null)
+    val endDate: StateFlow<LocalDateTime?> = _endDate
 
-    val memo = MutableLiveData("")
+    val memo = MutableStateFlow("")
 
-    private val _calendarName = MutableLiveData("test")
-    val calendarName: LiveData<String> = _calendarName
+    private val _calendarName = MutableStateFlow("test")
+    val calendarName: StateFlow<String> = _calendarName
 
-    val notificationType = MutableLiveData(Schedule.NotificationType.TEN_MINUTES_AGO)
+    private val _notificationType = MutableStateFlow(Schedule.NotificationType.TEN_MINUTES_AGO)
+    val notificationType: StateFlow<Schedule.NotificationType> = _notificationType
 
-    private val _tagColor = MutableLiveData(ScheduleColorType.RED.color)
-    val tagColor: LiveData<Int> = _tagColor
+    private val _tagColor = MutableStateFlow(ScheduleColorType.RED.color)
+    val tagColor: StateFlow<Int> = _tagColor
 
-    private val _saveScheduleEvent = SingleLiveEvent<Schedule>()
-    val saveScheduleEvent: LiveData<Schedule> = _saveScheduleEvent
+    private val _isPickTagColorPopupVisible = MutableStateFlow(false)
+    val isPickTagColorPopupVisible: StateFlow<Boolean> = _isPickTagColorPopupVisible
 
-    private val _deleteScheduleEvent = SingleLiveEvent<Schedule>()
-    val deleteScheduleEvent: LiveData<Schedule> = _deleteScheduleEvent
+    private val _saveScheduleEvent = MutableSharedFlow<Schedule>()
+    val saveScheduleEvent: SharedFlow<Schedule> = _saveScheduleEvent
 
-    private val _pickDateTimeEvent = SingleLiveEvent<DateType>()
-    val pickDateTimeEvent: LiveData<DateType> = _pickDateTimeEvent
+    private val _deleteScheduleEvent = MutableSharedFlow<Schedule>()
+    val deleteScheduleEvent: SharedFlow<Schedule> = _deleteScheduleEvent
 
-    private val _pickNotificationTypeEvent = SingleLiveEvent<Unit>()
-    val pickNotificationTypeEvent: LiveData<Unit> = _pickNotificationTypeEvent
+    private val _pickDateTimeEvent = MutableSharedFlow<DateType>()
+    val pickDateTimeEvent: SharedFlow<DateType> = _pickDateTimeEvent
 
-    private val _isPickTagColorPopupVisible = MutableLiveData(false)
-    val isPickTagColorPopupVisible: LiveData<Boolean> = _isPickTagColorPopupVisible
+    private val _pickNotificationTypeEvent = MutableSharedFlow<Unit>()
+    val pickNotificationTypeEvent: SharedFlow<Unit> = _pickNotificationTypeEvent
 
     fun init(behaviorType: BehaviorType, localDate: String? = null) {
         initCalendarName()
@@ -75,52 +76,60 @@ class SaveScheduleViewModel @Inject constructor(
 
     private fun initCalendarName() {
         viewModelScope.launch {
-            _calendarName.value = calendarDataSource.fetchCalendar(calendarId).name
+            _calendarName.emit(calendarDataSource.fetchCalendar(calendarId).name)
         }
     }
 
     private fun initScheduleDateTime(localDate: String?) {
-        val localDateTime = if (localDate == null) {
-            LocalDateTime.now()
-                .withMinute(0)
-                .withSecond(0)
-        } else {
-            LocalDateTime.of(LocalDate.parse(localDate), LocalTime.of(12, 0))
+        viewModelScope.launch {
+            val localDateTime = if (localDate == null) {
+                LocalDateTime.now()
+                    .withMinute(0)
+                    .withSecond(0)
+            } else {
+                LocalDateTime.of(LocalDate.parse(localDate), LocalTime.of(12, 0))
+            }
+            _startDate.emit(localDateTime)
+            _endDate.emit(localDateTime)
         }
-        _startDate.value = localDateTime
-        _endDate.value = localDateTime
     }
 
     private fun initData() {
         viewModelScope.launch {
             val schedule = scheduleDataSource.fetchSchedule(scheduleId)
 
-            title.value = schedule.name
-            _startDate.value = schedule.startDate
-            _endDate.value = schedule.endDate
-            memo.value = schedule.memo
-            notificationType.value = schedule.notificationType
-            _tagColor.value = schedule.color
+            title.emit(schedule.name)
+            _startDate.emit(schedule.startDate)
+            _endDate.emit(schedule.endDate)
+            memo.emit(schedule.memo)
+            _notificationType.emit(schedule.notificationType)
+            _tagColor.emit(schedule.color)
         }
     }
 
     fun emitPickDateTimeEvent(dateType: DateType) {
-        _pickDateTimeEvent.value = dateType
+        viewModelScope.launch {
+            _pickDateTimeEvent.emit(dateType)
+        }
     }
 
     fun emitPickNotificationTypeEvent() {
-        _pickNotificationTypeEvent.value = Unit
+        viewModelScope.launch {
+            _pickNotificationTypeEvent.emit(Unit)
+        }
     }
 
     fun updateDate(date: LocalDateTime, dateType: DateType) {
-        when (dateType) {
-            DateType.START -> {
-                if (date.isAfter(endDate.getOrThrow())) _endDate.value = date
-                _startDate.value = date
-            }
-            DateType.END -> {
-                if (date.isBefore(startDate.getOrThrow())) _startDate.value = date
-                _endDate.value = date
+        viewModelScope.launch {
+            when (dateType) {
+                DateType.START -> {
+                    if (date.isAfter(endDate.value)) _endDate.emit(date)
+                    _startDate.emit(date)
+                }
+                DateType.END -> {
+                    if (date.isBefore(startDate.value)) _startDate.emit(date)
+                    _endDate.emit(date)
+                }
             }
         }
     }
@@ -132,6 +141,12 @@ class SaveScheduleViewModel @Inject constructor(
         return format(dateFormat)
     }
 
+    fun updateNotificationType(notificationType: Schedule.NotificationType) {
+        viewModelScope.launch {
+            _notificationType.emit(notificationType)
+        }
+    }
+
     fun saveSchedule() {
         if (isInvalidInput()) return
 
@@ -141,11 +156,11 @@ class SaveScheduleViewModel @Inject constructor(
             when (behaviorType) {
                 BehaviorType.INSERT -> {
                     val rowId = scheduleDataSource.insertSchedule(schedule)
-                    _saveScheduleEvent.value = schedule.copy(id = rowId)
+                    _saveScheduleEvent.emit(schedule.copy(id = rowId))
                 }
                 BehaviorType.UPDATE -> {
                     scheduleDataSource.updateSchedule(schedule)
-                    _saveScheduleEvent.value = schedule
+                    _saveScheduleEvent.emit(schedule)
                 }
             }
         }
@@ -153,10 +168,10 @@ class SaveScheduleViewModel @Inject constructor(
 
     private fun isInvalidInput(): Boolean {
         if (!this::behaviorType.isInitialized) return true
-        if (title.value.isNullOrEmpty()) return true
+        if (title.value.isEmpty()) return true
         startDate.value ?: return true
         endDate.value ?: return true
-        if (calendarName.value.isNullOrEmpty()) return true
+        if (calendarName.value.isEmpty()) return true
 
         return false
     }
@@ -164,12 +179,12 @@ class SaveScheduleViewModel @Inject constructor(
     private fun createScheduleInstance() = Schedule(
         id = scheduleId,
         calendarId = calendarId,
-        name = title.getOrThrow(),
-        startDate = startDate.getOrThrow(),
-        endDate = endDate.getOrThrow(),
-        notificationType = notificationType.getOrThrow(),
-        memo = memo.getOrThrow(),
-        color = tagColor.getOrThrow()
+        name = title.value,
+        startDate = startDate.value ?: LocalDateTime.now(),
+        endDate = endDate.value ?: LocalDateTime.now(),
+        notificationType = notificationType.value,
+        memo = memo.value,
+        color = tagColor.value
     )
 
     fun deleteSchedule() {
@@ -179,16 +194,20 @@ class SaveScheduleViewModel @Inject constructor(
             val deleteSchedule = scheduleDataSource.fetchSchedule(scheduleId)
             scheduleDataSource.deleteSchedule(deleteSchedule)
 
-            _deleteScheduleEvent.value = deleteSchedule
+            _deleteScheduleEvent.emit(deleteSchedule)
         }
     }
 
     fun togglePickTagColorPopup() {
-        _isPickTagColorPopupVisible.value = !_isPickTagColorPopupVisible.getOrThrow()
+        viewModelScope.launch {
+            _isPickTagColorPopupVisible.emit(!_isPickTagColorPopupVisible.value)
+        }
     }
 
     fun pickTagColor(tagColor: Int) {
-        _tagColor.value = tagColor
-        _isPickTagColorPopupVisible.value = false
+        viewModelScope.launch {
+            _tagColor.emit(tagColor)
+            _isPickTagColorPopupVisible.emit(false)
+        }
     }
 }
