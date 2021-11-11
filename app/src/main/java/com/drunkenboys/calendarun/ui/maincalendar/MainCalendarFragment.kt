@@ -99,7 +99,7 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
             
             val menuItemOrder = mainCalendarViewModel.menuItemOrder.value ?: DEFAULT_ORDER
             // TODO: 2021-11-11 calendarList 크기가 0일 때 오류 수정
-            if (calendarList.isEmpty()) return@observe
+            if (calendarList.isEmpty()) return@stateCollect
             val calendar = calendarList[menuItemOrder]
             mainCalendarViewModel.setCalendar(calendar)
         }
