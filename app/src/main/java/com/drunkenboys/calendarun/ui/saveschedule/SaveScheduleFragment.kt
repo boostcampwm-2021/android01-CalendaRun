@@ -94,7 +94,6 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
     private fun collectPickDateTimeEvent() {
         sharedCollect(saveScheduleViewModel.pickDateTimeEvent) { dateType ->
             val dateInMillis = pickDateInMillis() ?: return@sharedCollect
-            Log.d(this::class.simpleName, "onCheckPointClick: $dateInMillis")
 
             val (hour, minute) = pickTime() ?: return@sharedCollect
 
