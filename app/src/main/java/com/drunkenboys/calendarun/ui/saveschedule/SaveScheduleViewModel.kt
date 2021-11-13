@@ -32,17 +32,19 @@ class SaveScheduleViewModel @Inject constructor(
 
     private val calendarId = savedStateHandle[KEY_CALENDAR_ID] ?: 0L
     private val scheduleId = savedStateHandle[KEY_SCHEDULE_ID] ?: 0L
-    private val localDate = savedStateHandle.get<String>(KEY_LOCAL_DATE)
+    private val localDateTime = savedStateHandle.get<String>(KEY_LOCAL_DATE)?.let {
+        LocalDateTime.of(LocalDate.parse(it), LocalTime.of(12, 0))
+    } ?: run { LocalDateTime.now().withMinute(0).withSecond(0) }
 
     private val isUpdateSchedule = scheduleId > 0
 
     val title = MutableStateFlow("")
 
-    private val _startDate = MutableStateFlow<LocalDateTime?>(null)
-    val startDate: StateFlow<LocalDateTime?> = _startDate
+    private val _startDate = MutableStateFlow<LocalDateTime>(localDateTime)
+    val startDate: StateFlow<LocalDateTime> = _startDate
 
-    private val _endDate = MutableStateFlow<LocalDateTime?>(null)
-    val endDate: StateFlow<LocalDateTime?> = _endDate
+    private val _endDate = MutableStateFlow<LocalDateTime>(localDateTime)
+    val endDate: StateFlow<LocalDateTime> = _endDate
 
     val memo = MutableStateFlow("")
 
@@ -72,27 +74,12 @@ class SaveScheduleViewModel @Inject constructor(
 
     init {
         initCalendarName()
-        initScheduleDateTime()
         restoreScheduleData()
     }
 
     private fun initCalendarName() {
         viewModelScope.launch {
             _calendarName.emit(calendarDataSource.fetchCalendar(calendarId).name)
-        }
-    }
-
-    private fun initScheduleDateTime() {
-        viewModelScope.launch {
-            val localDateTime = if (localDate == null) {
-                LocalDateTime.now()
-                    .withMinute(0)
-                    .withSecond(0)
-            } else {
-                LocalDateTime.of(LocalDate.parse(localDate), LocalTime.of(12, 0))
-            }
-            _startDate.emit(localDateTime)
-            _endDate.emit(localDateTime)
         }
     }
 
@@ -182,8 +169,6 @@ class SaveScheduleViewModel @Inject constructor(
 
     private fun isInvalidInput(): Boolean {
         if (title.value.isEmpty()) return true
-        startDate.value ?: return true
-        endDate.value ?: return true
         if (calendarName.value.isEmpty()) return true
 
         return false
@@ -193,8 +178,8 @@ class SaveScheduleViewModel @Inject constructor(
         id = scheduleId,
         calendarId = calendarId,
         name = title.value,
-        startDate = startDate.value ?: LocalDateTime.now(),
-        endDate = endDate.value ?: LocalDateTime.now(),
+        startDate = startDate.value,
+        endDate = endDate.value,
         notificationType = notificationType.value,
         memo = memo.value,
         color = tagColor.value
