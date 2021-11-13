@@ -78,21 +78,21 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
     }
 
     private fun navigateToSearchSchedule() {
-        val action = MainCalendarFragmentDirections.actionMainCalendarFragmentToSearchScheduleFragment()
+        val action = MainCalendarFragmentDirections.toSearchSchedule()
         navController.navigate(action)
     }
 
     private fun setupMonthCalendar() {
         binding.calendarMonth.setOnDaySecondClickListener { date, _ ->
             val calendarId = mainCalendarViewModel.calendar.value?.id ?: throw IllegalStateException("calendarId is null")
-            val action = MainCalendarFragmentDirections.actionMainCalendarFragmentToDayScheduleDialog(calendarId, date.toString())
+            val action = MainCalendarFragmentDirections.toDayScheduleDialog(calendarId, date.toString())
             navController.navigate(action)
         }
     }
 
     private fun collectFabClickEvent() {
         sharedCollect(mainCalendarViewModel.fabClickEvent) { calendarId ->
-            val action = MainCalendarFragmentDirections.actionMainCalendarFragmentToSaveScheduleFragment(calendarId, 0)
+            val action = MainCalendarFragmentDirections.toSaveSchedule(calendarId, 0)
             navController.navigate(action)
         }
     }
@@ -149,7 +149,7 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
     }
 
     private fun navigateToSaveCalendar() {
-        val action = MainCalendarFragmentDirections.actionMainCalendarFragmentToSaveCalendarFragment()
+        val action = MainCalendarFragmentDirections.toSaveCalendar()
         navController.navigate(action)
         binding.layoutDrawer.closeDrawer(GravityCompat.START)
     }

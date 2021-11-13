@@ -66,7 +66,7 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
     private fun setupToolbarMenuItemClickListener() = with(binding) {
         toolbarSaveSchedule.setOnMenuItemClickListener { item ->
             if (item.itemId == R.id.menu_delete_schedule) {
-                navController.navigate(SaveScheduleFragmentDirections.actionSaveScheduleFragmentToDeleteScheduleDialog())
+                navController.navigate(SaveScheduleFragmentDirections.toDeleteScheduleDialog())
                 true
             } else {
                 false

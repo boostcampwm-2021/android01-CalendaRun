@@ -55,8 +55,7 @@ class DayScheduleDialog : DialogFragment() {
 
     private fun setupImgAddSchedule() {
         binding.imgDayScheduleAddSchedule.setOnClickListener {
-            val action =
-                DayScheduleDialogDirections.actionDayScheduleDialogToSaveScheduleFragment(args.calendarId, 0, localDate = args.localDate)
+            val action = DayScheduleDialogDirections.toSaveSchedule(args.calendarId, 0, localDate = args.localDate)
             navController.navigate(action)
         }
     }
@@ -69,7 +68,7 @@ class DayScheduleDialog : DialogFragment() {
 
     private fun collectScheduleClickEvent() {
         sharedCollect(dayScheduleViewModel.scheduleClickEvent) { schedule ->
-            val action = DayScheduleDialogDirections.actionDayScheduleDialogToSaveScheduleFragment(schedule.calendarId, schedule.id)
+            val action = DayScheduleDialogDirections.toSaveSchedule(schedule.calendarId, schedule.id)
             navController.navigate(action)
         }
     }

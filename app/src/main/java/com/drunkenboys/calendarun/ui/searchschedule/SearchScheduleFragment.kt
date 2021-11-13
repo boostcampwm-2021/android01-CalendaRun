@@ -55,8 +55,7 @@ class SearchScheduleFragment : BaseFragment<FragmentSearchScheduleBinding>(R.lay
 
     private fun collectScheduleClickEvent() {
         sharedCollect(searchScheduleViewModel.scheduleClickEvent) { schedule ->
-            val action =
-                SearchScheduleFragmentDirections.actionSearchScheduleFragmentToSaveScheduleFragment(schedule.calendarId, schedule.id)
+            val action = SearchScheduleFragmentDirections.toSaveSchedule(schedule.calendarId, schedule.id)
             navController.navigate(action)
         }
     }

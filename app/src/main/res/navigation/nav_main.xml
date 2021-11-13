@@ -10,28 +10,28 @@
         android:name="com.drunkenboys.calendarun.ui.maincalendar.MainCalendarFragment"
         tools:layout="@layout/fragment_main_calendar">
         <action
-            android:id="@+id/action_mainCalendarFragment_to_saveScheduleFragment"
+            android:id="@+id/to_saveSchedule"
             app:destination="@id/saveScheduleFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
         <action
-            android:id="@+id/action_mainCalendarFragment_to_searchScheduleFragment"
+            android:id="@+id/to_searchSchedule"
             app:destination="@id/searchScheduleFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <action
-            android:id="@+id/action_mainCalendarFragment_to_saveCalendarFragment"
+            android:id="@+id/to_saveCalendar"
             app:destination="@+id/saveCalendarFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
         <action
-            android:id="@+id/action_mainCalendarFragment_to_dayScheduleDialog"
+            android:id="@+id/to_dayScheduleDialog"
             app:destination="@id/dayScheduleDialog" />
     </fragment>
 
@@ -40,7 +40,7 @@
         android:name="com.drunkenboys.calendarun.ui.saveschedule.SaveScheduleFragment"
         tools:layout="@layout/fragment_save_schedule">
         <action
-            android:id="@+id/action_saveScheduleFragment_to_deleteScheduleDialog"
+            android:id="@+id/to_deleteScheduleDialog"
             app:destination="@id/deleteScheduleDialog" />
         <argument
             android:name="calendarId"
@@ -74,7 +74,7 @@
         android:name="com.drunkenboys.calendarun.ui.searchschedule.SearchScheduleFragment"
         tools:layout="@layout/fragment_search_schedule">
         <action
-            android:id="@+id/action_searchScheduleFragment_to_saveScheduleFragment"
+            android:id="@+id/to_saveSchedule"
             app:destination="@id/saveScheduleFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
@@ -93,7 +93,7 @@
             android:name="localDate"
             app:argType="string" />
         <action
-            android:id="@+id/action_dayScheduleDialog_to_saveScheduleFragment"
+            android:id="@+id/to_saveSchedule"
             app:destination="@id/saveScheduleFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
