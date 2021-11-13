@@ -177,7 +177,7 @@ class SaveScheduleViewModel @Inject constructor(
     )
 
     fun deleteSchedule() {
-        if (scheduleId < 0) return
+        if (!isUpdateSchedule) return
 
         viewModelScope.launch {
             val deleteSchedule = scheduleDataSource.fetchSchedule(scheduleId)
