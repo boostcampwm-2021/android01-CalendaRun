@@ -6,12 +6,13 @@ import com.drunkenboys.calendarun.data.calendar.entity.Calendar
 import com.drunkenboys.calendarun.data.calendar.local.CalendarLocalDataSource
 import com.drunkenboys.calendarun.data.checkpoint.entity.CheckPoint
 import com.drunkenboys.calendarun.data.checkpoint.local.CheckPointLocalDataSource
-import com.drunkenboys.calendarun.data.idstore.IdStore
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import com.drunkenboys.calendarun.data.schedule.local.ScheduleLocalDataSource
 import com.drunkenboys.ckscalendar.data.CalendarScheduleObject
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -38,10 +39,12 @@ class MainCalendarViewModel @Inject constructor(
     private val _menuItemOrder = MutableStateFlow(0)
     val menuItemOrder: StateFlow<Int> = _menuItemOrder
 
+    private val _fabClickEvent = MutableSharedFlow<Long>()
+    val fabClickEvent: SharedFlow<Long> = _fabClickEvent
+
     fun setCalendar(calendar: Calendar) {
         viewModelScope.launch {
             _calendar.emit(calendar)
-            IdStore.putId(IdStore.KEY_CALENDAR_ID, calendar.id)
             fetchCheckPointList(calendar.id)
             fetchScheduleList(calendar.id)
         }
@@ -80,4 +83,10 @@ class MainCalendarViewModel @Inject constructor(
         startDate = startDate,
         endDate = endDate
     )
+
+    fun emitFabClickEvent() {
+        viewModelScope.launch {
+            _fabClickEvent.emit(calendar.value?.id ?: 0)
+        }
+    }
 }

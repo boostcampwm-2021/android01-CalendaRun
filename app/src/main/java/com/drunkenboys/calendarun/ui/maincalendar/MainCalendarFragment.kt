@@ -11,10 +11,9 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.ui.setupWithNavController
 import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.data.calendar.entity.Calendar
-import com.drunkenboys.calendarun.data.idstore.IdStore
 import com.drunkenboys.calendarun.databinding.FragmentMainCalendarBinding
 import com.drunkenboys.calendarun.ui.base.BaseFragment
-import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
+import com.drunkenboys.calendarun.util.extensions.sharedCollect
 import com.drunkenboys.calendarun.util.extensions.stateCollect
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -31,8 +30,8 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         setupCalendarView()
         setupDataBinding()
         setupToolbar()
-        setupFab()
         setupMonthCalendar()
+        collectFabClickEvent()
         collectCalendarList()
         collectCheckPointList()
         collectScheduleList()
@@ -83,17 +82,17 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         navController.navigate(action)
     }
 
-    private fun setupFab() {
-        binding.fabMainCalenderAddSchedule.setOnClickListener {
-            IdStore.clearId(IdStore.KEY_SCHEDULE_ID)
-            val action = MainCalendarFragmentDirections.actionMainCalendarFragmentToSaveScheduleFragment(BehaviorType.INSERT)
+    private fun setupMonthCalendar() {
+        binding.calendarMonth.setOnDaySecondClickListener { date, _ ->
+            val calendarId = mainCalendarViewModel.calendar.value?.id ?: throw IllegalStateException("calendarId is null")
+            val action = MainCalendarFragmentDirections.actionMainCalendarFragmentToDayScheduleDialog(calendarId, date.toString())
             navController.navigate(action)
         }
     }
 
-    private fun setupMonthCalendar() {
-        binding.calendarMonth.setOnDaySecondClickListener { date, _ ->
-            val action = MainCalendarFragmentDirections.actionMainCalendarFragmentToDayScheduleDialog(date.toString())
+    private fun collectFabClickEvent() {
+        sharedCollect(mainCalendarViewModel.fabClickEvent) { calendarId ->
+            val action = MainCalendarFragmentDirections.actionMainCalendarFragmentToSaveScheduleFragment(calendarId, 0)
             navController.navigate(action)
         }
     }

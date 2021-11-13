@@ -10,9 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.drunkenboys.calendarun.R
-import com.drunkenboys.calendarun.data.idstore.IdStore
 import com.drunkenboys.calendarun.databinding.DialogDayScheduleBinding
-import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
 import com.drunkenboys.calendarun.util.extensions.sharedCollect
 import com.drunkenboys.calendarun.util.extensions.stateCollect
 import dagger.hilt.android.AndroidEntryPoint
@@ -42,7 +40,7 @@ class DayScheduleDialog : DialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         setupRvDaySchedule()
-        setupIvAddSchedule()
+        setupImgAddSchedule()
         collectListItem()
         collectScheduleClickEvent()
 
@@ -55,10 +53,10 @@ class DayScheduleDialog : DialogFragment() {
         binding.rvDaySchedule.adapter = dayScheduleAdapter
     }
 
-    private fun setupIvAddSchedule() {
+    private fun setupImgAddSchedule() {
         binding.imgDayScheduleAddSchedule.setOnClickListener {
-            IdStore.clearId(IdStore.KEY_SCHEDULE_ID)
-            val action = DayScheduleDialogDirections.actionDayScheduleDialogToSaveScheduleFragment(BehaviorType.INSERT, args.localDate)
+            val action =
+                DayScheduleDialogDirections.actionDayScheduleDialogToSaveScheduleFragment(args.calendarId, 0, localDate = args.localDate)
             navController.navigate(action)
         }
     }
@@ -70,8 +68,8 @@ class DayScheduleDialog : DialogFragment() {
     }
 
     private fun collectScheduleClickEvent() {
-        sharedCollect(dayScheduleViewModel.scheduleClickEvent) {
-            val action = DayScheduleDialogDirections.actionDayScheduleDialogToSaveScheduleFragment(BehaviorType.UPDATE)
+        sharedCollect(dayScheduleViewModel.scheduleClickEvent) { schedule ->
+            val action = DayScheduleDialogDirections.actionDayScheduleDialogToSaveScheduleFragment(schedule.calendarId, schedule.id)
             navController.navigate(action)
         }
     }

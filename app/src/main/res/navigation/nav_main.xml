@@ -39,12 +39,15 @@
         android:id="@+id/saveScheduleFragment"
         android:name="com.drunkenboys.calendarun.ui.saveschedule.SaveScheduleFragment"
         tools:layout="@layout/fragment_save_schedule">
-        <argument
-            android:name="behaviorType"
-            app:argType="com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType" />
         <action
             android:id="@+id/action_saveScheduleFragment_to_deleteScheduleDialog"
             app:destination="@id/deleteScheduleDialog" />
+        <argument
+            android:name="calendarId"
+            app:argType="long" />
+        <argument
+            android:name="scheduleId"
+            app:argType="long" />
         <argument
             android:name="localDate"
             android:defaultValue="@null"
@@ -83,6 +86,9 @@
         android:id="@+id/dayScheduleDialog"
         android:name="com.drunkenboys.calendarun.ui.dayschedule.DayScheduleDialog"
         tools:layout="@layout/dialog_day_schedule">
+        <argument
+            android:name="calendarId"
+            app:argType="long" />
         <argument
             android:name="localDate"
             app:argType="string" />

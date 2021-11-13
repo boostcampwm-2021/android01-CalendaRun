@@ -1,13 +1,14 @@
 package com.drunkenboys.calendarun.ui.saveschedule
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.drunkenboys.calendarun.KEY_CALENDAR_ID
+import com.drunkenboys.calendarun.KEY_LOCAL_DATE
+import com.drunkenboys.calendarun.KEY_SCHEDULE_ID
 import com.drunkenboys.calendarun.data.calendar.local.CalendarLocalDataSource
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import com.drunkenboys.calendarun.data.schedule.local.ScheduleLocalDataSource
-import com.drunkenboys.calendarun.di.CalendarId
-import com.drunkenboys.calendarun.di.ScheduleId
-import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
 import com.drunkenboys.calendarun.ui.saveschedule.model.DateType
 import com.drunkenboys.ckscalendar.data.ScheduleColorType
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,13 +25,16 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SaveScheduleViewModel @Inject constructor(
-    @CalendarId private val calendarId: Long,
-    @ScheduleId private val scheduleId: Long,
+    savedStateHandle: SavedStateHandle,
     private val calendarDataSource: CalendarLocalDataSource,
     private val scheduleDataSource: ScheduleLocalDataSource
 ) : ViewModel() {
 
-    private lateinit var behaviorType: BehaviorType
+    private val calendarId = savedStateHandle[KEY_CALENDAR_ID] ?: 0L
+    private val scheduleId = savedStateHandle[KEY_SCHEDULE_ID] ?: 0L
+    private val localDate = savedStateHandle.get<String>(KEY_LOCAL_DATE)
+
+    private val isUpdateSchedule = scheduleId > 0
 
     val title = MutableStateFlow("")
 
@@ -66,12 +70,10 @@ class SaveScheduleViewModel @Inject constructor(
     private val _deleteScheduleEvent = MutableSharedFlow<Schedule>()
     val deleteScheduleEvent: SharedFlow<Schedule> = _deleteScheduleEvent
 
-    fun init(behaviorType: BehaviorType, localDate: String? = null) {
+    init {
         initCalendarName()
-        initScheduleDateTime(localDate)
-        this.behaviorType = behaviorType
-
-        if (behaviorType == BehaviorType.UPDATE) restoreScheduleData()
+        initScheduleDateTime()
+        restoreScheduleData()
     }
 
     private fun initCalendarName() {
@@ -80,7 +82,7 @@ class SaveScheduleViewModel @Inject constructor(
         }
     }
 
-    private fun initScheduleDateTime(localDate: String?) {
+    private fun initScheduleDateTime() {
         viewModelScope.launch {
             val localDateTime = if (localDate == null) {
                 LocalDateTime.now()
@@ -95,6 +97,8 @@ class SaveScheduleViewModel @Inject constructor(
     }
 
     private fun restoreScheduleData() {
+        if (!isUpdateSchedule) return
+
         viewModelScope.launch {
             val schedule = scheduleDataSource.fetchSchedule(scheduleId)
 
@@ -166,21 +170,17 @@ class SaveScheduleViewModel @Inject constructor(
         viewModelScope.launch {
             val schedule = createScheduleInstance()
 
-            when (behaviorType) {
-                BehaviorType.INSERT -> {
-                    val rowId = scheduleDataSource.insertSchedule(schedule)
-                    _saveScheduleEvent.emit(schedule.copy(id = rowId))
-                }
-                BehaviorType.UPDATE -> {
-                    scheduleDataSource.updateSchedule(schedule)
-                    _saveScheduleEvent.emit(schedule)
-                }
+            if (isUpdateSchedule) {
+                scheduleDataSource.updateSchedule(schedule)
+                _saveScheduleEvent.emit(schedule)
+            } else {
+                val rowId = scheduleDataSource.insertSchedule(schedule)
+                _saveScheduleEvent.emit(schedule.copy(id = rowId))
             }
         }
     }
 
     private fun isInvalidInput(): Boolean {
-        if (!this::behaviorType.isInitialized) return true
         if (title.value.isEmpty()) return true
         startDate.value ?: return true
         endDate.value ?: return true

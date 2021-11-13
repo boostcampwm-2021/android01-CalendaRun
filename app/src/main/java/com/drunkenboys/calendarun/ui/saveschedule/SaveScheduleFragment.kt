@@ -3,7 +3,6 @@ package com.drunkenboys.calendarun.ui.saveschedule
 import android.app.AlarmManager
 import android.content.res.ColorStateList
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import androidx.appcompat.widget.ListPopupWindow
@@ -11,14 +10,12 @@ import androidx.core.content.getSystemService
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
-import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import com.drunkenboys.calendarun.databinding.FragmentSaveScheduleBinding
 import com.drunkenboys.calendarun.receiver.ScheduleAlarmReceiver
 import com.drunkenboys.calendarun.ui.base.BaseFragment
-import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
 import com.drunkenboys.calendarun.util.*
 import com.drunkenboys.calendarun.util.extensions.*
 import dagger.hilt.android.AndroidEntryPoint
@@ -49,18 +46,24 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
         collectIsPickTagColorPopupVisible()
         collectSaveScheduleEvent()
         collectDeleteScheduleEvent()
-
-        saveScheduleViewModel.init(args.behaviorType, args.localDate)
     }
 
     private fun setupToolbar() = with(binding) {
-        when (args.behaviorType) {
-            BehaviorType.INSERT -> toolbarSaveSchedule.title = "일정 추가"
-            BehaviorType.UPDATE -> {
-                toolbarSaveSchedule.title = "일정 수정"
-                toolbarSaveSchedule.inflateMenu(R.menu.menu_save_schedule_toolbar)
-            }
+        setupToolbarTitle()
+        setupToolbarMenuItemClickListener()
+        toolbarSaveSchedule.setupWithNavController(navController)
+    }
+
+    private fun setupToolbarTitle() = with(binding) {
+        if (args.scheduleId > 0) {
+            toolbarSaveSchedule.title = "일정 추가"
+        } else {
+            toolbarSaveSchedule.title = "일정 수정"
+            toolbarSaveSchedule.inflateMenu(R.menu.menu_save_schedule_toolbar)
         }
+    }
+
+    private fun setupToolbarMenuItemClickListener() = with(binding) {
         toolbarSaveSchedule.setOnMenuItemClickListener { item ->
             if (item.itemId == R.id.menu_delete_schedule) {
                 navController.navigate(SaveScheduleFragmentDirections.actionSaveScheduleFragmentToDeleteScheduleDialog())
@@ -69,9 +72,6 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
                 false
             }
         }
-
-        val appBarConfig = AppBarConfiguration(navController.graph)
-        toolbarSaveSchedule.setupWithNavController(navController, appBarConfig)
     }
 
     private fun setupNotificationPopupWindow() {

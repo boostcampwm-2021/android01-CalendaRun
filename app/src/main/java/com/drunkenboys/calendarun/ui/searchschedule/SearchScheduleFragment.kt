@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.databinding.FragmentSearchScheduleBinding
 import com.drunkenboys.calendarun.ui.base.BaseFragment
-import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
 import com.drunkenboys.calendarun.util.extensions.sharedCollect
 import com.drunkenboys.calendarun.util.extensions.stateCollect
 import dagger.hilt.android.AndroidEntryPoint
@@ -55,8 +54,9 @@ class SearchScheduleFragment : BaseFragment<FragmentSearchScheduleBinding>(R.lay
     }
 
     private fun collectScheduleClickEvent() {
-        sharedCollect(searchScheduleViewModel.scheduleClickEvent) {
-            val action = SearchScheduleFragmentDirections.actionSearchScheduleFragmentToSaveScheduleFragment(BehaviorType.UPDATE)
+        sharedCollect(searchScheduleViewModel.scheduleClickEvent) { schedule ->
+            val action =
+                SearchScheduleFragmentDirections.actionSearchScheduleFragmentToSaveScheduleFragment(schedule.calendarId, schedule.id)
             navController.navigate(action)
         }
     }
