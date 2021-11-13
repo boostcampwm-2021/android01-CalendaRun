@@ -54,8 +54,8 @@ suspend fun Fragment.pickTime() = suspendCancellableCoroutine<Pair<Int, Int>?> {
 }
 
 fun <T> Fragment.stateCollect(stateFlow: StateFlow<T>, block: suspend (T) -> Unit) {
-    lifecycleScope.launch {
-        repeatOnLifecycle(Lifecycle.State.STARTED) {
+    viewLifecycleOwner.lifecycleScope.launch {
+        viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
             stateFlow.collect {
                 block(it)
             }
@@ -64,7 +64,7 @@ fun <T> Fragment.stateCollect(stateFlow: StateFlow<T>, block: suspend (T) -> Uni
 }
 
 fun <T> Fragment.sharedCollect(sharedFlow: SharedFlow<T>, block: suspend (T) -> Unit) {
-    lifecycleScope.launch {
+    viewLifecycleOwner.lifecycleScope.launch {
         sharedFlow.collectLatest {
             block(it)
         }
