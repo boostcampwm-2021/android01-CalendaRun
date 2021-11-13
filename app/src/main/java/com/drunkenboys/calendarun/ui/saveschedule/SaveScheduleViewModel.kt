@@ -58,8 +58,8 @@ class SaveScheduleViewModel @Inject constructor(
     private val _isPickTagColorPopupVisible = MutableStateFlow(false)
     val isPickTagColorPopupVisible: StateFlow<Boolean> = _isPickTagColorPopupVisible
 
-    private val _pickDateTimeEvent = MutableSharedFlow<DateType>()
-    val pickDateTimeEvent: SharedFlow<DateType> = _pickDateTimeEvent
+    private val _pickDateTimeEvent = MutableSharedFlow<Pair<DateType, LocalDateTime>>()
+    val pickDateTimeEvent: SharedFlow<Pair<DateType, LocalDateTime>> = _pickDateTimeEvent
 
     private val _pickNotificationTypeEvent = MutableSharedFlow<Unit>()
     val pickNotificationTypeEvent: SharedFlow<Unit> = _pickNotificationTypeEvent
@@ -91,7 +91,10 @@ class SaveScheduleViewModel @Inject constructor(
 
     fun emitPickDateTimeEvent(dateType: DateType) {
         viewModelScope.launch {
-            _pickDateTimeEvent.emit(dateType)
+            when (dateType) {
+                DateType.START -> _pickDateTimeEvent.emit(dateType to startDate.value)
+                DateType.END -> _pickDateTimeEvent.emit(dateType to endDate.value)
+            }
         }
     }
 
