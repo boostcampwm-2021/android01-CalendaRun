@@ -12,10 +12,7 @@ import com.drunkenboys.calendarun.data.schedule.local.ScheduleLocalDataSource
 import com.drunkenboys.calendarun.ui.saveschedule.model.DateType
 import com.drunkenboys.ckscalendar.data.ScheduleColorType
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -48,8 +45,9 @@ class SaveScheduleViewModel @Inject constructor(
 
     val memo = MutableStateFlow("")
 
-    private val _calendarName = MutableStateFlow("")
-    val calendarName: StateFlow<String> = _calendarName
+    val calendarName = flow {
+        emit(calendarDataSource.fetchCalendar(calendarId).name)
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, "")
 
     private val _notificationType = MutableStateFlow(Schedule.NotificationType.TEN_MINUTES_AGO)
     val notificationType: StateFlow<Schedule.NotificationType> = _notificationType
@@ -73,14 +71,7 @@ class SaveScheduleViewModel @Inject constructor(
     val deleteScheduleEvent: SharedFlow<Schedule> = _deleteScheduleEvent
 
     init {
-        initCalendarName()
         restoreScheduleData()
-    }
-
-    private fun initCalendarName() {
-        viewModelScope.launch {
-            _calendarName.emit(calendarDataSource.fetchCalendar(calendarId).name)
-        }
     }
 
     private fun restoreScheduleData() {
