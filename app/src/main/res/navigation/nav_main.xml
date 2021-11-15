@@ -91,7 +91,7 @@
 
     <fragment
         android:id="@+id/manageCalendarFragment"
-        android:name="com.drunkenboys.calendarun.ui.manageCalendar.ManageCalendarFragment"
+        android:name="com.drunkenboys.calendarun.ui.managecalendar.ManageCalendarFragment"
         tools:layout="@layout/fragment_manage_calendar">
 
     </fragment>
