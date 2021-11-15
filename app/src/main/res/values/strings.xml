@@ -57,6 +57,7 @@
     <string name="toast_schedule_deleted">일정이 삭제되었습니다</string>
 
     <string name="contentDescription_ivAddSchedule">일정 추가 버튼</string>
-
+    <string name="saveSchedule_toolbarTitle_insert">일정 추가</string>
+    <string name="saveSchedule_toolbarTitle_update">일정 수정</string>
 
 </resources>

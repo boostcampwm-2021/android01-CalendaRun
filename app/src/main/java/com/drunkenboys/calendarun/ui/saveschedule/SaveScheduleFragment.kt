@@ -56,9 +56,9 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
 
     private fun setupToolbarTitle() = with(binding) {
         if (args.scheduleId == 0L) {
-            toolbarSaveSchedule.title = "일정 추가"
+            toolbarSaveSchedule.title = getString(R.string.saveSchedule_toolbarTitle_insert)
         } else {
-            toolbarSaveSchedule.title = "일정 수정"
+            toolbarSaveSchedule.title = getString(R.string.saveSchedule_toolbarTitle_update)
             toolbarSaveSchedule.inflateMenu(R.menu.menu_save_schedule_toolbar)
         }
     }
