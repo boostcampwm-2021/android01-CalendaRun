@@ -1,11 +1,11 @@
 package com.drunkenboys.calendarun.ui.dayschedule
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.drunkenboys.calendarun.data.idstore.IdStore
+import com.drunkenboys.calendarun.KEY_CALENDAR_ID
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import com.drunkenboys.calendarun.data.schedule.local.ScheduleLocalDataSource
-import com.drunkenboys.calendarun.di.CalendarId
 import com.drunkenboys.calendarun.ui.searchschedule.model.DateScheduleItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -19,9 +19,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DayScheduleViewModel @Inject constructor(
-    @CalendarId private val calendarId: Long,
+    savedStateHandle: SavedStateHandle,
     private val scheduleDataSource: ScheduleLocalDataSource
 ) : ViewModel() {
+
+    private val calendarId = savedStateHandle[KEY_CALENDAR_ID] ?: 0L
 
     private val _dateString = MutableStateFlow("")
     val dateString: StateFlow<String> = _dateString
@@ -29,8 +31,8 @@ class DayScheduleViewModel @Inject constructor(
     private val _listItem = MutableStateFlow<List<DateScheduleItem>>(emptyList())
     val listItem: StateFlow<List<DateScheduleItem>> = _listItem
 
-    private val _scheduleClickEvent = MutableSharedFlow<Unit>()
-    val scheduleClickEvent: SharedFlow<Unit> = _scheduleClickEvent
+    private val _scheduleClickEvent = MutableSharedFlow<Schedule>()
+    val scheduleClickEvent: SharedFlow<Schedule> = _scheduleClickEvent
 
     fun fetchScheduleList(localDate: LocalDate) {
         viewModelScope.launch {
@@ -48,9 +50,7 @@ class DayScheduleViewModel @Inject constructor(
 
     private fun emitScheduleClickEvent(schedule: Schedule) {
         viewModelScope.launch {
-            IdStore.putId(IdStore.KEY_CALENDAR_ID, schedule.calendarId)
-            IdStore.putId(IdStore.KEY_SCHEDULE_ID, schedule.id)
-            _scheduleClickEvent.emit(Unit)
+            _scheduleClickEvent.emit(schedule)
         }
     }
 }
