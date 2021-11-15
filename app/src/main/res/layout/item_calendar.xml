@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_calendar_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/calendar_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_calendar_nameValue"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textSize="18dp"
+            app:layout_constraintEnd_toEndOf="@+id/tv_calendar_name"
+            app:layout_constraintStart_toStartOf="@id/tv_calendar_name"
+            app:layout_constraintTop_toBottomOf="@id/tv_calendar_name"
+            tools:text="모의고사" />
+
+        <TextView
+            android:id="@+id/tv_startDate_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:text="@string/calendar_start_date"
+            app:layout_constraintEnd_toStartOf="@+id/tv_endDate_name"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="@+id/tv_calendar_nameValue"
+            app:layout_constraintTop_toBottomOf="@id/tv_calendar_nameValue" />
+
+        <TextView
+            android:id="@+id/tv_endDate_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/calendar_end_date"
+            app:layout_constraintEnd_toEndOf="@+id/tv_calendar_nameValue"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/tv_startDate_name"
+            app:layout_constraintTop_toBottomOf="@id/tv_calendar_nameValue" />
+
+        <TextView
+            android:id="@+id/tv_startDate_nameValue"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textSize="18dp"
+            app:layout_constraintEnd_toEndOf="@+id/tv_startDate_name"
+            app:layout_constraintStart_toStartOf="@id/tv_startDate_name"
+            app:layout_constraintTop_toBottomOf="@id/tv_startDate_name"
+            tools:text="2021.03.05" />
+
+        <TextView
+            android:id="@+id/tv_endDate_nameValue"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textSize="18dp"
+            app:layout_constraintEnd_toEndOf="@id/tv_endDate_name"
+            app:layout_constraintStart_toStartOf="@id/tv_endDate_name"
+            app:layout_constraintTop_toBottomOf="@id/tv_endDate_name"
+            tools:text="2021.11.15" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
