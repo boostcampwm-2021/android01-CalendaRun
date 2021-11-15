@@ -112,7 +112,7 @@ class YearCalendarView
                     )
                 }
 
-                items(year) { month ->
+                items(year, key = {month -> month.startDate}) { month ->
                     MonthCalendar(
                         month = month,
                         listState = listState,
