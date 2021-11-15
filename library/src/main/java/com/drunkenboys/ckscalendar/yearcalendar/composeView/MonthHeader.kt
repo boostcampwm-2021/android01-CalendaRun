@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -29,6 +30,18 @@ fun AnimatedMonthHeader(
     Text(
         text = "${month}월",
         color = MaterialTheme.colors.primary,
-        modifier = Modifier.alpha(density).padding(start = (density * 5).dp)
+        modifier = Modifier
+            .alpha(density)
+            .padding(start = (density * 5).dp)
+    )
+}
+
+@Preview
+@Composable
+fun PreviewMonthHeader() {
+    Text(
+        text = "1월",
+        color = MaterialTheme.colors.primary,
+        modifier = Modifier.padding(start = 5.dp)
     )
 }
