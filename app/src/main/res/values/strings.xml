@@ -61,5 +61,6 @@
     <string name="saveSchedule_toolbarTitle_update">일정 수정</string>
 
     <string name="manageCalender_addCalendarDescription">달력 추가 버튼</string>
+    <string name="manageCalendar_toolbarTitle_manage">달력 관리</string>
 
 </resources>
