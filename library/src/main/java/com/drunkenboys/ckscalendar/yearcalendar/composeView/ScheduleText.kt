@@ -35,19 +35,19 @@ fun ScheduleText(
         }
     }
 
+    val color = { schedule: CalendarScheduleObject? ->
+        if (schedule != null) Color(schedule.color) else Color.Transparent
+    }
+
     setWeekSchedule(getStartScheduleList(today, scheduleList), weekScheduleList, today)
 
     weekScheduleList[weekNum].forEach { schedule ->
-        val modifier =
-            if (schedule != null) Modifier
-                .fillMaxWidth()
-                .background(color = Color(schedule.color))
-            else Modifier.fillMaxWidth()
-
         Text(
             text = scheduleText(schedule),
             maxLines = 1,
-            modifier = modifier,
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(color = color(schedule)),
             overflow = TextOverflow.Ellipsis,
             fontSize = design.textSize.dp()
         )
@@ -79,6 +79,7 @@ private fun setWeekSchedule(
 }
 
 private fun getStartScheduleList(today: LocalDate, scheduleList: List<CalendarScheduleObject>) = scheduleList.filter { schedule ->
+    // TODO: 정렬
     val isStart = schedule.startDate.toLocalDate() == today
     val isSunday = today.dayOfWeek == DayOfWeek.SUNDAY
     val isFirstOfMonth = today.dayOfMonth == 1
