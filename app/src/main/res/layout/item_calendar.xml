@@ -9,7 +9,7 @@
 
         <variable
             name="item"
-            type="com.drunkenboys.calendarun.ui.managecalendar.model.CalendarItem" />
+            type="com.drunkenboys.calendarun.data.calendar.entity.Calendar" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -32,7 +32,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="@{item.title}"
+            android:text="@{item.name}"
             android:textSize="18dp"
             app:layout_constraintEnd_toEndOf="@+id/tv_calendar_name"
             app:layout_constraintStart_toStartOf="@id/tv_calendar_name"

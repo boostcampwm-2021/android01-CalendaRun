@@ -2,22 +2,27 @@ package com.drunkenboys.calendarun.ui.managecalendar
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.viewModels
 import androidx.navigation.ui.setupWithNavController
 import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.databinding.FragmentManageCalendarBinding
 import com.drunkenboys.calendarun.ui.base.BaseFragment
+import com.drunkenboys.calendarun.util.extensions.stateCollect
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class ManageCalendarFragment : BaseFragment<FragmentManageCalendarBinding>(R.layout.fragment_manage_calendar) {
 
     private val manageCalendarAdapter = ManageCalendarAdapter()
+    private val manageCalendarViewModel by viewModels<ManageCalendarViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        manageCalendarViewModel.fetchCalendarList()
         setupToolbar()
         setupAdapter()
+        collectCalendarList()
     }
 
     private fun setupToolbar() {
@@ -27,5 +32,11 @@ class ManageCalendarFragment : BaseFragment<FragmentManageCalendarBinding>(R.lay
 
     private fun setupAdapter() {
         binding.rvManageCalendar.adapter = manageCalendarAdapter
+    }
+
+    private fun collectCalendarList() {
+        stateCollect(manageCalendarViewModel.calendarList) { calendarList ->
+            manageCalendarAdapter.submitList(calendarList)
+        }
     }
 }
