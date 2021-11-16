@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="MonthCalendarView">
+        <attr name="weekDayTextColor" format="color" />
+        <attr name="holidayTextColor" format="color" />
+        <attr name="saturdayTextColor" format="color" />
+        <attr name="sundayTextColor" format="color" />
+        <attr name="selectedFrameColor" format="color" />
+        <attr name="backgroundColor" format="color" />
+        <attr name="selectedFrameDrawable" format="reference" />
+        <attr name="visibleScheduleCount" format="integer" />
+    </declare-styleable>
+</resources>
