@@ -8,6 +8,9 @@ import androidx.core.view.isEmpty
 import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.ui.setupWithNavController
 import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.data.calendar.entity.Calendar
@@ -16,7 +19,10 @@ import com.drunkenboys.calendarun.databinding.FragmentMainCalendarBinding
 import com.drunkenboys.calendarun.ui.base.BaseFragment
 import com.drunkenboys.calendarun.util.extensions.sharedCollect
 import com.drunkenboys.calendarun.util.extensions.stateCollect
+import com.drunkenboys.calendarun.util.extensions.throttleFirst
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.fragment_main_calendar) {
@@ -36,6 +42,7 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         collectCalendarList()
         collectCheckPointList()
         collectScheduleList()
+        collectDaySecondClickListener()
     }
 
     private fun setupCalendarView() {
@@ -90,10 +97,9 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
     }
 
     private fun setupMonthCalendar() {
+        // TODO: 2021-11-16 이벤트를 발행하는 부분을 xml로 이동시킬 수 있으면 좋을듯
         binding.calendarMonth.setOnDaySecondClickListener { date, _ ->
-            val calendarId = mainCalendarViewModel.calendar.value?.id ?: throw IllegalStateException("calendarId is null")
-            val action = MainCalendarFragmentDirections.toDayScheduleDialog(calendarId, date.toString())
-            navController.navigate(action)
+            mainCalendarViewModel.emitDaySecondClickEvent(date)
         }
     }
 
@@ -174,7 +180,22 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         }
     }
 
+    private fun collectDaySecondClickListener() {
+        // TODO: 2021-11-16 현재 flow 확장함수가 StateFlow와 SharedFlow만 받기 때문에 라이프사이클 처리를 명시해주고 있는데 개선이 필요해보임.
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                mainCalendarViewModel.daySecondClickEvent.throttleFirst(DEFAULT_TOUCH_THROTTLE_PERIOD).collect { date ->
+                    val calendarId = mainCalendarViewModel.calendar.value?.id ?: throw IllegalStateException("calendarId is null")
+                    val action = MainCalendarFragmentDirections.toDayScheduleDialog(calendarId, date.toString())
+                    navController.navigate(action)
+                }
+            }
+        }
+    }
+
     companion object {
+
         private const val FIRST_HEADER = 0
+        private const val DEFAULT_TOUCH_THROTTLE_PERIOD = 500L
     }
 }
