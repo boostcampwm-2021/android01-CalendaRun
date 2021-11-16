@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.databinding.FragmentSearchScheduleBinding
 import com.drunkenboys.calendarun.ui.base.BaseFragment
+import com.drunkenboys.calendarun.util.HorizontalInsetDividerDecoration
 import com.drunkenboys.calendarun.util.extensions.sharedCollect
 import com.drunkenboys.calendarun.util.extensions.stateCollect
 import dagger.hilt.android.AndroidEntryPoint
