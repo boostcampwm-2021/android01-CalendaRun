@@ -2,8 +2,10 @@ package com.drunkenboys.ckscalendar.yearcalendar
 
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
+import com.drunkenboys.ckscalendar.FakeFactory
 import com.drunkenboys.ckscalendar.data.CalendarDesignObject
 import com.drunkenboys.ckscalendar.data.CalendarScheduleObject
+import com.drunkenboys.ckscalendar.data.CalendarSet
 
 class YearCalendarViewModel: ViewModel() {
 
@@ -12,6 +14,11 @@ class YearCalendarViewModel: ViewModel() {
 
     private val _design = mutableStateOf(CalendarDesignObject())
     val design: State<CalendarDesignObject> = _design
+
+    private val _yearList = (YearCalendarView.INIT_YEAR..YearCalendarView.LAST_YEAR).map { year ->
+        FakeFactory.createFakeCalendarSetList(year)
+    }
+    val yearList: List<List<CalendarSet>> = _yearList
 
     fun setSchedule(schedule: CalendarScheduleObject) {
         this._schedules.value = this.schedules.value.plus(schedule)

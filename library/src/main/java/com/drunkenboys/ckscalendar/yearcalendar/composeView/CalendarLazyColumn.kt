@@ -55,7 +55,7 @@ fun CalendarLazyColumn(
 
     // RecyclerView와 유사
     LazyColumn(state = listState) {
-        yearList.forEach { year ->
+        viewModel.yearList.forEach { year ->
             // 달력
             item {
                 Text(
@@ -84,10 +84,6 @@ fun CalendarLazyColumn(
         listState.scrollToItem(index = YearCalendarView.LAST_YEAR - 1) // preload
         listState.scrollToItem(index = getTodayItemIndex())
     }
-}
-
-private val yearList = (YearCalendarView.INIT_YEAR..YearCalendarView.LAST_YEAR).map { year ->
-    FakeFactory.createFakeCalendarSetList(year)
 }
 
 private fun getTodayItemIndex(): Int {
