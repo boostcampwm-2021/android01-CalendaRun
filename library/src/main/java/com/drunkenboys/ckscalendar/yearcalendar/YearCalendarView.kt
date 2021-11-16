@@ -24,7 +24,7 @@ class YearCalendarView
     private var onDateClickListener: OnDayClickListener? = null
     private var onDateSecondClickListener: OnDaySecondClickListener? = null
 
-    private var schedules = mutableListOf<CalendarScheduleObject>()
+    private var state = CalendarState()
 
     init {
         binding.composeYearCalendarViewYearCalendar.setContent {
@@ -36,7 +36,7 @@ class YearCalendarView
                     design = design,
                     onDayClickListener = onDateClickListener,
                     onDaySecondClickListener = onDateSecondClickListener,
-                    schedules = schedules
+                    calendarState = state
                 )
                 WeekHeader(design = design)
             }
@@ -52,11 +52,11 @@ class YearCalendarView
     }
 
     fun setSchedule(schedule: CalendarScheduleObject) {
-        schedules.add(schedule)
+        state.setSchedule(schedule)
     }
 
     fun setSchedules(schedules: List<CalendarScheduleObject>) {
-        this.schedules.addAll(schedules)
+        state.setSchedules(schedules)
     }
 
     fun setTheme(designObject: CalendarDesignObject) {

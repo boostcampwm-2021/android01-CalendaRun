@@ -15,15 +15,16 @@ import com.drunkenboys.ckscalendar.data.CalendarScheduleObject
 import com.drunkenboys.ckscalendar.utils.TimeUtils.dayValue
 import com.drunkenboys.ckscalendar.utils.TimeUtils.isSameWeek
 import com.drunkenboys.ckscalendar.utils.dp
+import com.drunkenboys.ckscalendar.yearcalendar.CalendarState
 import java.time.DayOfWeek
 import java.time.LocalDate
 
 @Composable
 fun ScheduleText(
     today: LocalDate,
-    scheduleList: List<CalendarScheduleObject>,
     weekScheduleList: Array<Array<CalendarScheduleObject?>>,
-    design: CalendarDesignObject
+    design: CalendarDesignObject,
+    calendarState: CalendarState
 ) {
     val weekNum = (today.dayOfWeek.dayValue())
 
@@ -39,7 +40,7 @@ fun ScheduleText(
         if (schedule != null) Color(schedule.color) else Color.Transparent
     }
 
-    setWeekSchedule(getStartScheduleList(today, scheduleList), weekScheduleList, today)
+    setWeekSchedule(getStartScheduleList(today, calendarState.schedules.value), weekScheduleList, today)
 
     weekScheduleList[weekNum].forEach { schedule ->
         Text(
@@ -56,13 +57,13 @@ fun ScheduleText(
 }
 
 private fun setWeekSchedule(
-    todaySchedules: List<CalendarScheduleObject>,
+    todaySchedules: List<CalendarScheduleObject>?,
     weekSchedules: Array<Array<CalendarScheduleObject?>>,
     today: LocalDate
 ) {
     val todayOfWeek = today.dayOfWeek.dayValue()
 
-    todaySchedules.forEach { todaySchedule ->
+    todaySchedules?.forEach { todaySchedule ->
         val weekEndDate =
             if (!today.isSameWeek(todaySchedule.endDate.toLocalDate())) DayOfWeek.SATURDAY.value
             else todaySchedule.endDate.dayOfWeek.dayValue()
@@ -78,7 +79,7 @@ private fun setWeekSchedule(
     }
 }
 
-private fun getStartScheduleList(today: LocalDate, scheduleList: List<CalendarScheduleObject>) = scheduleList.filter { schedule ->
+private fun getStartScheduleList(today: LocalDate, schedules: List<CalendarScheduleObject>) = schedules.filter { schedule ->
     // TODO: 정렬
     val isStart = schedule.startDate.toLocalDate() == today
     val isSunday = today.dayOfWeek == DayOfWeek.SUNDAY

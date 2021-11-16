@@ -11,6 +11,7 @@ import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
 import com.drunkenboys.ckscalendar.data.*
 import com.drunkenboys.ckscalendar.utils.toCalendarDatesList
+import com.drunkenboys.ckscalendar.yearcalendar.CalendarState
 
 @Composable
 fun MonthCalendar(
@@ -18,7 +19,7 @@ fun MonthCalendar(
     listState: LazyListState,
     dayColumnModifier: (CalendarDate) -> Modifier,
     design: CalendarDesignObject,
-    schedules: List<CalendarScheduleObject>
+    calendarState: CalendarState
 ) {
     val weeks = month.toCalendarDatesList()
     var weekSchedules: Array<Array<CalendarScheduleObject?>> // 1주 스케줄
@@ -48,7 +49,7 @@ fun MonthCalendar(
                     else -> {
                         Column(modifier = dayColumnModifier(day), horizontalAlignment = Alignment.CenterHorizontally) {
                             DayText(day = day, design = design)
-                            ScheduleText(today = day.date, schedules, weekSchedules, design = design)
+                            ScheduleText(today = day.date, weekSchedules, design = design, calendarState = calendarState)
                         }
                     }
                 }
