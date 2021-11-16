@@ -47,19 +47,33 @@
                     android:layout_marginTop="4dp"
                     android:background="@color/divider" />
 
-                <com.drunkenboys.calendarun.view.ColorIndicatorTextView
-                    android:id="@+id/tv_theme_weekday"
+                <com.drunkenboys.calendarun.view.ExpandableLinearLayout
+                    android:id="@+id/layout_theme_weekday"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:drawableStart="@drawable/ic_palette"
-                    android:drawableEnd="@drawable/bg_tag_color"
-                    android:drawablePadding="8dp"
-                    android:gravity="center_vertical"
-                    android:paddingVertical="16dp"
-                    android:text="@string/weekday"
-                    android:textColor="@color/black"
-                    android:textSize="16sp"
-                    app:indicatorTint="@color/black" />
+                    android:orientation="vertical">
+
+                    <com.drunkenboys.calendarun.view.ColorIndicatorTextView
+                        android:id="@+id/tv_theme_weekday"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/ic_palette"
+                        android:drawableEnd="@drawable/bg_tag_color"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:paddingVertical="16dp"
+                        android:text="@string/weekday"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        app:indicatorTint="@color/black" />
+
+                    <include
+                        layout="@layout/view_color_set"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone" />
+
+                </com.drunkenboys.calendarun.view.ExpandableLinearLayout>
 
                 <com.drunkenboys.calendarun.view.ColorIndicatorTextView
                     android:id="@+id/tv_theme_holiday"
