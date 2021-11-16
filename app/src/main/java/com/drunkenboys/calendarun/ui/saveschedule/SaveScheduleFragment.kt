@@ -92,10 +92,10 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
     }
 
     private fun collectPickDateTimeEvent() {
-        sharedCollect(saveScheduleViewModel.pickDateTimeEvent) { dateType ->
-            val dateInMillis = pickDateInMillis() ?: return@sharedCollect
+        sharedCollect(saveScheduleViewModel.pickDateTimeEvent) { (dateType, localDateTime) ->
+            val dateInMillis = pickDateInMillis(localDateTime.toLocalDate()) ?: return@sharedCollect
 
-            val (hour, minute) = pickTime() ?: return@sharedCollect
+            val (hour, minute) = pickTime(localDateTime.toLocalTime()) ?: return@sharedCollect
 
             val dateTime = LocalDateTime.ofEpochSecond(dateInMillis / 1000, 0, ZoneOffset.UTC)
                 .withHour(hour)
