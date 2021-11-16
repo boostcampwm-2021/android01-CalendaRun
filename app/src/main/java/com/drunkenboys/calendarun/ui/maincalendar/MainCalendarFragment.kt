@@ -2,7 +2,6 @@ package com.drunkenboys.calendarun.ui.maincalendar
 
 import android.os.Bundle
 import android.view.View
-import android.widget.TextView
 import androidx.core.view.GravityCompat
 import androidx.core.view.get
 import androidx.core.view.isEmpty
@@ -12,6 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.ui.setupWithNavController
 import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.data.calendar.entity.Calendar
+import com.drunkenboys.calendarun.databinding.DrawerHeaderBinding
 import com.drunkenboys.calendarun.databinding.FragmentMainCalendarBinding
 import com.drunkenboys.calendarun.ui.base.BaseFragment
 import com.drunkenboys.calendarun.util.extensions.sharedCollect
@@ -55,12 +55,13 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
     }
 
     private fun setupAddDrawerListener() = with(binding) {
+        val drawerHeaderBinding = DrawerHeaderBinding.bind(navView.getHeaderView(FIRST_HEADER))
         layoutDrawer.addDrawerListener(object : DrawerLayout.DrawerListener {
             override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
                 val menuItemOrder = this@MainCalendarFragment.mainCalendarViewModel.menuItemOrder.value
                 if (binding.navView.menu.isEmpty()) return
                 binding.navView.menu[menuItemOrder].isChecked = true
-                binding.root.findViewById<TextView>(R.id.tv_drawerHeader_title).text = binding.navView.menu[menuItemOrder].title
+                drawerHeaderBinding.tvDrawerHeaderTitle.text = binding.navView.menu[menuItemOrder].title
             }
 
             override fun onDrawerOpened(drawerView: View) {}
@@ -171,5 +172,9 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
             binding.calendarMonth.setSchedules(scheduleList)
             binding.calendarYear.setSchedules(scheduleList)
         }
+    }
+
+    companion object {
+        private const val FIRST_HEADER = 0
     }
 }
