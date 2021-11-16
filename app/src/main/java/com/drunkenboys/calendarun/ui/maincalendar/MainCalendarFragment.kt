@@ -132,7 +132,7 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
                 }
         }
 
-        menu.add(getString(R.string.drawer_calendar_add))
+        menu.add(getString(R.string.calendar_add))
             .setIcon(R.drawable.ic_add)
             .setOnMenuItemClickListener {
                 navigateToSaveCalendar()

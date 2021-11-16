@@ -51,9 +51,9 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
         toolbarSaveCalendar.setupWithNavController(navController)
 
         if (args.calendarId == 0L) {
-            toolbarSaveCalendar.title = "달력 추가"
+            toolbarSaveCalendar.title = getString(R.string.calendar_add)
         } else {
-            toolbarSaveCalendar.title = "달력 수정"
+            toolbarSaveCalendar.title = getString(R.string.calendar_edit)
         }
     }
 
