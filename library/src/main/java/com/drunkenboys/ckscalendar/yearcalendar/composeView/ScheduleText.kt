@@ -12,7 +12,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.drunkenboys.ckscalendar.data.CalendarScheduleObject
 import com.drunkenboys.ckscalendar.utils.TimeUtils.dayValue
-import com.drunkenboys.ckscalendar.utils.TimeUtils.isSameWeek
 import com.drunkenboys.ckscalendar.utils.dp
 import com.drunkenboys.ckscalendar.yearcalendar.YearCalendarViewModel
 import java.time.DayOfWeek

@@ -1,6 +1,5 @@
 package com.drunkenboys.ckscalendar.yearcalendar
 
-import android.util.Log
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import com.drunkenboys.ckscalendar.FakeFactory
@@ -25,12 +24,20 @@ class YearCalendarViewModel: ViewModel() {
         FakeFactory.createFakeCalendarSetList(year)
     }
 
+    private var recomposeScope: RecomposeScope? = null
+
+    fun setRecomposeScope(recompose: RecomposeScope) {
+        this.recomposeScope = recompose
+    }
+
     fun setSchedule(schedule: CalendarScheduleObject) {
         this._schedules.value = this.schedules.value.plus(schedule)
+        recomposeScope?.invalidate()
     }
 
     fun setSchedules(schedules: List<CalendarScheduleObject>) {
         this._schedules.value = schedules
+        recomposeScope?.invalidate()
     }
 
     fun setDesign(design: CalendarDesignObject) {
