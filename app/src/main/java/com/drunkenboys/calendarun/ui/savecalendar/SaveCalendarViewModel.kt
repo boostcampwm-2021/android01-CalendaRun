@@ -1,7 +1,9 @@
 package com.drunkenboys.calendarun.ui.savecalendar
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.drunkenboys.calendarun.KEY_CALENDAR_ID
 import com.drunkenboys.calendarun.data.calendar.entity.Calendar
 import com.drunkenboys.calendarun.data.calendar.local.CalendarLocalDataSource
 import com.drunkenboys.calendarun.data.checkpoint.entity.CheckPoint
@@ -19,12 +21,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SaveCalendarViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
     private val calendarLocalDataSource: CalendarLocalDataSource,
     private val checkPointLocalDataSource: CheckPointLocalDataSource
 ) : ViewModel() {
 
-    private val _calendar = MutableStateFlow<Calendar?>(null)
-    val calendar: StateFlow<Calendar?> = _calendar
+    private val calendarId = savedStateHandle[KEY_CALENDAR_ID] ?: 0L
 
     private val _checkPointItemList = MutableStateFlow<MutableList<CheckPointItem>>(mutableListOf())
     val checkPointItemList: StateFlow<MutableList<CheckPointItem>> = _checkPointItemList
@@ -43,9 +45,25 @@ class SaveCalendarViewModel @Inject constructor(
     private val _saveCalendarEvent = MutableSharedFlow<Boolean>()
     val saveCalendarEvent: SharedFlow<Boolean> = _saveCalendarEvent
 
-    fun setCalendar(calendar: Calendar) {
+    init {
         viewModelScope.launch {
-            _calendar.emit(calendar)
+            val calendar = calendarLocalDataSource.fetchCalendar(calendarId) ?: return@launch
+
+            calendarName.emit(calendar.name)
+            _calendarStartDate.emit(calendar.startDate)
+            _calendarEndDate.emit(calendar.endDate)
+
+            val checkPointItemList = mutableListOf<CheckPointItem>()
+            val checkPointList = checkPointLocalDataSource.fetchCalendarCheckPoints(calendarId)
+            checkPointList.forEach { checkPoint ->
+                checkPointItemList.add(
+                    CheckPointItem(
+                        name = MutableStateFlow(checkPoint.name),
+                        date = MutableStateFlow(checkPoint.date)
+                    )
+                )
+            }
+            _checkPointItemList.emit(checkPointItemList)
         }
     }
 

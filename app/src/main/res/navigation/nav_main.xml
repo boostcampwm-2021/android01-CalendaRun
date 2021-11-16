@@ -31,6 +31,13 @@
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
         <action
+            android:id="@+id/to_manageCalendar"
+            app:destination="@+id/manageCalendarFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
             android:id="@+id/to_dayScheduleDialog"
             app:destination="@id/dayScheduleDialog" />
     </fragment>
@@ -64,9 +71,9 @@
         android:name="com.drunkenboys.calendarun.ui.savecalendar.SaveCalendarFragment"
         tools:layout="@layout/fragment_save_calendar">
         <argument
-            android:name="behaviorType"
-            android:defaultValue="INSERT"
-            app:argType="com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType" />
+            android:name="calendarId"
+            android:defaultValue="0L"
+            app:argType="long" />
     </fragment>
 
     <fragment
@@ -76,6 +83,26 @@
         <action
             android:id="@+id/to_saveSchedule"
             app:destination="@id/saveScheduleFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/manageCalendarFragment"
+        android:name="com.drunkenboys.calendarun.ui.managecalendar.ManageCalendarFragment"
+        tools:layout="@layout/fragment_manage_calendar">
+        <action
+            android:id="@+id/to_saveCalendar"
+            app:destination="@id/saveCalendarFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/to_editCalendar"
+            app:destination="@id/saveCalendarFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"

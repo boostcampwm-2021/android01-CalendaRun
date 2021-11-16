@@ -11,7 +11,6 @@ import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.databinding.FragmentSaveCalendarBinding
 import com.drunkenboys.calendarun.ui.base.BaseFragment
 import com.drunkenboys.calendarun.ui.savecalendar.model.CheckPointItem
-import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
 import com.drunkenboys.calendarun.util.extensions.pickDateInMillis
 import com.drunkenboys.calendarun.util.extensions.sharedCollect
 import com.drunkenboys.calendarun.util.extensions.stateCollect
@@ -50,9 +49,11 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
 
     private fun setupToolbar() = with(binding) {
         toolbarSaveCalendar.setupWithNavController(navController)
-        when (args.behaviorType) {
-            BehaviorType.INSERT -> toolbarSaveCalendar.title = "달력 추가"
-            BehaviorType.UPDATE -> toolbarSaveCalendar.title = "달력 수정"
+
+        if (args.calendarId == 0L) {
+            toolbarSaveCalendar.title = getString(R.string.calendar_add)
+        } else {
+            toolbarSaveCalendar.title = getString(R.string.calendar_edit)
         }
     }
 

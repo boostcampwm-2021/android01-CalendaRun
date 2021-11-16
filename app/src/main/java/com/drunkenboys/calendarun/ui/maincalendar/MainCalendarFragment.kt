@@ -132,7 +132,7 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
                 }
         }
 
-        menu.add(getString(R.string.drawer_calendar_add))
+        menu.add(getString(R.string.calendar_add))
             .setIcon(R.drawable.ic_add)
             .setOnMenuItemClickListener {
                 navigateToSaveCalendar()
@@ -143,7 +143,7 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         manageMenu.add(getString(R.string.drawer_calendar_manage))
             .setIcon(R.drawable.ic_calendar_today)
             .setOnMenuItemClickListener {
-                // TODO: 2021-11-11 달력 관리 화면으로 이동
+                navigateToManageCalendar()
                 true
             }
 
@@ -157,6 +157,12 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
 
     private fun navigateToSaveCalendar() {
         val action = MainCalendarFragmentDirections.toSaveCalendar()
+        navController.navigate(action)
+        binding.layoutDrawer.closeDrawer(GravityCompat.START)
+    }
+
+    private fun navigateToManageCalendar() {
+        val action = MainCalendarFragmentDirections.toManageCalendar()
         navController.navigate(action)
         binding.layoutDrawer.closeDrawer(GravityCompat.START)
     }

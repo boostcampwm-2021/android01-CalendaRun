@@ -1,4 +1,4 @@
-package com.drunkenboys.calendarun.ui.searchschedule
+package com.drunkenboys.calendarun.util
 
 import android.content.Context
 import android.graphics.Canvas
