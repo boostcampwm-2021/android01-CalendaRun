@@ -50,7 +50,8 @@ fun ScheduleText(
                 .fillMaxWidth()
                 .background(color = color(schedule)),
             overflow = TextOverflow.Ellipsis,
-            fontSize = design.textSize.dp()
+            fontSize = design.textSize.dp(),
+            color = Color.White
         )
         Spacer(modifier = Modifier.height(2.dp))
     }
