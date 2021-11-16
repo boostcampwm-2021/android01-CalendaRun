@@ -25,7 +25,7 @@ class MonthPageAdapter : RecyclerView.Adapter<MonthPageAdapter.Holder>() {
 
     private val cachedCalendar = HashMap<Int, List<CalendarDate>>()
 
-    private var calendarDesign = CalendarDesignObject.getDefaultDesign()
+    private lateinit var calendarDesign: CalendarDesignObject
 
     private var lastSelectPagePosition = -1
     private var lastSelectDayPosition = -1
