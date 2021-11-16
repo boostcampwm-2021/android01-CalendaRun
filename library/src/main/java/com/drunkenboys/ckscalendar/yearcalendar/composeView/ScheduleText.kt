@@ -38,7 +38,9 @@ fun ScheduleText(
         if (schedule != null) Color(schedule.color) else Color.Transparent
     }
 
-    setWeekSchedules(getStartScheduleList(today, viewModel.schedules.value), weekScheduleList, today)
+    val startSchedules = viewModel.getStartSchedules(today)
+
+    setWeekSchedules(startSchedules, weekScheduleList, today)
 
     weekScheduleList[weekNum].forEach { schedule ->
         Text(
@@ -62,32 +64,21 @@ private fun setWeekSchedules(
 ) {
     val todayOfWeek = today.dayOfWeek.dayValue()
 
+    // 오늘 스케줄 3개.forEach()
+    // weekSchedules 빈자리 찾으면 endDate 까지 그자리 차지
+    // 근데 왜 return@forEach??
     todaySchedules.forEach { todaySchedule ->
         val weekEndDate =
             if (!today.isSameWeek(todaySchedule.endDate.toLocalDate())) DayOfWeek.SATURDAY.value
             else todaySchedule.endDate.dayOfWeek.dayValue()
 
         weekSchedules[todayOfWeek].forEachIndexed { index, space ->
-            when (space) {
-                todaySchedule -> {
-                    return@forEach
+            if (space == null) {
+                (todayOfWeek..weekEndDate).forEach { weekNum ->
+                    weekSchedules[weekNum][index] = todaySchedule
                 }
-                null -> {
-                    (todayOfWeek..weekEndDate).forEach { weekNum ->
-                        weekSchedules[weekNum][index] = todaySchedule
-                    }
-                    return@forEach
-                }
+                return@forEach
             }
         }
     }
-}
-
-private fun getStartScheduleList(today: LocalDate, schedules: List<CalendarScheduleObject>) = schedules.filter { schedule ->
-    // TODO: 정렬
-    val isStart = schedule.startDate.toLocalDate() == today
-    val isSunday = today.dayOfWeek == DayOfWeek.SUNDAY
-    val isFirstOfMonth = today.dayOfMonth == 1
-    val isDateInScheduleRange = today in schedule.startDate.toLocalDate()..schedule.endDate.toLocalDate()
-    isStart || ((isSunday || isFirstOfMonth) && (isDateInScheduleRange))
 }

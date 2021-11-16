@@ -6,6 +6,8 @@ import com.drunkenboys.ckscalendar.FakeFactory
 import com.drunkenboys.ckscalendar.data.CalendarDesignObject
 import com.drunkenboys.ckscalendar.data.CalendarScheduleObject
 import com.drunkenboys.ckscalendar.data.CalendarSet
+import java.time.DayOfWeek
+import java.time.LocalDate
 
 class YearCalendarViewModel: ViewModel() {
 
@@ -15,10 +17,9 @@ class YearCalendarViewModel: ViewModel() {
     private val _design = mutableStateOf(CalendarDesignObject())
     val design: State<CalendarDesignObject> = _design
 
-    private val _yearList = (YearCalendarView.INIT_YEAR..YearCalendarView.LAST_YEAR).map { year ->
+    val yearList: List<List<CalendarSet>> = (INIT_YEAR..LAST_YEAR).map { year ->
         FakeFactory.createFakeCalendarSetList(year)
     }
-    val yearList: List<List<CalendarSet>> = _yearList
 
     fun setSchedule(schedule: CalendarScheduleObject) {
         this._schedules.value = this.schedules.value.plus(schedule)
@@ -34,5 +35,26 @@ class YearCalendarViewModel: ViewModel() {
 
     fun resetDesign() {
         _design.value = CalendarDesignObject()
+    }
+
+    fun getStartSchedules(today: LocalDate) = schedules.value.filter { schedule ->
+        // TODO: 정렬
+        val isStart = schedule.startDate.toLocalDate() == today
+        val isSunday = today.dayOfWeek == DayOfWeek.SUNDAY
+        val isFirstOfMonth = today.dayOfMonth == 1
+        val isDateInScheduleRange = today in schedule.startDate.toLocalDate()..schedule.endDate.toLocalDate()
+        isStart || ((isSunday || isFirstOfMonth) && (isDateInScheduleRange))
+    }
+
+    fun getTodayItemIndex(): Int {
+        val today = LocalDate.now()
+
+        // (월 달력 12개 + 년 헤더 1개) + 이번달
+        return (today.year - INIT_YEAR) * 13 + today.monthValue
+    }
+
+    companion object {
+        const val INIT_YEAR = 0
+        const val LAST_YEAR = 10000
     }
 }

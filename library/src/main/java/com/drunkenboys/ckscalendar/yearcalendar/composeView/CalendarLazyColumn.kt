@@ -81,14 +81,7 @@ fun CalendarLazyColumn(
 
     // 뷰가 호출되면 오늘 날짜가 보이게 스크롤
     LaunchedEffect(listState) {
-        listState.scrollToItem(index = YearCalendarView.LAST_YEAR - 1) // preload
-        listState.scrollToItem(index = getTodayItemIndex())
+        listState.scrollToItem(index = YearCalendarViewModel.LAST_YEAR) // preload
+        listState.scrollToItem(index = viewModel.getTodayItemIndex())
     }
-}
-
-private fun getTodayItemIndex(): Int {
-    val today = LocalDate.now()
-
-    // (월 달력 12개 + 년 헤더 1개) + 이번달
-    return (today.year - YearCalendarView.INIT_YEAR) * 13 + today.monthValue
 }
