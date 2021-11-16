@@ -6,9 +6,9 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.drunkenboys.calendarun.R
+import com.drunkenboys.calendarun.data.calendar.entity.Calendar
 import com.drunkenboys.calendarun.databinding.FragmentManageCalendarBinding
 import com.drunkenboys.calendarun.ui.base.BaseFragment
-import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
 import com.drunkenboys.calendarun.util.HorizontalInsetDividerDecoration
 import com.drunkenboys.calendarun.util.extensions.stateCollect
 import dagger.hilt.android.AndroidEntryPoint
@@ -16,7 +16,8 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class ManageCalendarFragment : BaseFragment<FragmentManageCalendarBinding>(R.layout.fragment_manage_calendar) {
 
-    private val manageCalendarAdapter = ManageCalendarAdapter()
+    private val manageCalendarAdapter = ManageCalendarAdapter(::onCalendarClickListener)
+
     private val manageCalendarViewModel by viewModels<ManageCalendarViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -27,6 +28,11 @@ class ManageCalendarFragment : BaseFragment<FragmentManageCalendarBinding>(R.lay
         setupAdapter()
         setupFabClickListener()
         collectCalendarList()
+    }
+
+    private fun onCalendarClickListener(calendar: Calendar) {
+        val action = ManageCalendarFragmentDirections.toEditCalendar(calendar.id)
+        navController.navigate(action)
     }
 
     private fun setupToolbar() {
@@ -48,7 +54,7 @@ class ManageCalendarFragment : BaseFragment<FragmentManageCalendarBinding>(R.lay
 
     private fun setupFabClickListener() {
         binding.fabManagerCalenderAddCalendar.setOnClickListener {
-            val action = ManageCalendarFragmentDirections.toSaveCalendar(BehaviorType.INSERT)
+            val action = ManageCalendarFragmentDirections.toSaveCalendar(0L)
             navController.navigate(action)
         }
     }
