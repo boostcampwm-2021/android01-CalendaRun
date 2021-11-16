@@ -17,6 +17,7 @@ import com.drunkenboys.calendarun.data.calendar.entity.Calendar
 import com.drunkenboys.calendarun.databinding.DrawerHeaderBinding
 import com.drunkenboys.calendarun.databinding.FragmentMainCalendarBinding
 import com.drunkenboys.calendarun.ui.base.BaseFragment
+import com.drunkenboys.calendarun.util.extensions.navigateSafe
 import com.drunkenboys.calendarun.util.extensions.sharedCollect
 import com.drunkenboys.calendarun.util.extensions.stateCollect
 import com.drunkenboys.calendarun.util.extensions.throttleFirst
@@ -187,7 +188,7 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
                 mainCalendarViewModel.daySecondClickEvent.throttleFirst(DEFAULT_TOUCH_THROTTLE_PERIOD).collect { date ->
                     val calendarId = mainCalendarViewModel.calendar.value?.id ?: throw IllegalStateException("calendarId is null")
                     val action = MainCalendarFragmentDirections.toDayScheduleDialog(calendarId, date.toString())
-                    navController.navigate(action)
+                    navController.navigateSafe(action)
                 }
             }
         }
