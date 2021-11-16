@@ -4,9 +4,11 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.navigation.ui.setupWithNavController
+import androidx.recyclerview.widget.RecyclerView
 import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.databinding.FragmentManageCalendarBinding
 import com.drunkenboys.calendarun.ui.base.BaseFragment
+import com.drunkenboys.calendarun.util.HorizontalInsetDividerDecoration
 import com.drunkenboys.calendarun.util.extensions.stateCollect
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -32,6 +34,14 @@ class ManageCalendarFragment : BaseFragment<FragmentManageCalendarBinding>(R.lay
 
     private fun setupAdapter() {
         binding.rvManageCalendar.adapter = manageCalendarAdapter
+        val itemDecoration = HorizontalInsetDividerDecoration(
+            context = requireContext(),
+            orientation = RecyclerView.VERTICAL,
+            leftInset = 16f,
+            rightInset = 16f,
+            ignoreLast = true
+        )
+        binding.rvManageCalendar.addItemDecoration(itemDecoration)
     }
 
     private fun collectCalendarList() {
