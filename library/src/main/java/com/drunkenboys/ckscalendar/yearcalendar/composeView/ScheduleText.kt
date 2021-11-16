@@ -40,7 +40,7 @@ fun ScheduleText(
 
     val startSchedules = viewModel.getStartSchedules(today)
 
-    setWeekSchedules(startSchedules, weekScheduleList, today)
+    viewModel.setWeekSchedules(startSchedules, weekScheduleList, today)
 
     weekScheduleList[weekNum].forEach { schedule ->
         Text(
@@ -54,31 +54,5 @@ fun ScheduleText(
             color = Color.White
         )
         Spacer(modifier = Modifier.height(2.dp))
-    }
-}
-
-private fun setWeekSchedules(
-    todaySchedules: List<CalendarScheduleObject>,
-    weekSchedules: Array<Array<CalendarScheduleObject?>>,
-    today: LocalDate
-) {
-    val todayOfWeek = today.dayOfWeek.dayValue()
-
-    // 오늘 스케줄 3개.forEach()
-    // weekSchedules 빈자리 찾으면 endDate 까지 그자리 차지
-    // 근데 왜 return@forEach??
-    todaySchedules.forEach { todaySchedule ->
-        val weekEndDate =
-            if (!today.isSameWeek(todaySchedule.endDate.toLocalDate())) DayOfWeek.SATURDAY.value
-            else todaySchedule.endDate.dayOfWeek.dayValue()
-
-        weekSchedules[todayOfWeek].forEachIndexed { index, space ->
-            if (space == null) {
-                (todayOfWeek..weekEndDate).forEach { weekNum ->
-                    weekSchedules[weekNum][index] = todaySchedule
-                }
-                return@forEach
-            }
-        }
     }
 }

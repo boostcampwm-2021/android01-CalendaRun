@@ -6,6 +6,8 @@ import com.drunkenboys.ckscalendar.FakeFactory
 import com.drunkenboys.ckscalendar.data.CalendarDesignObject
 import com.drunkenboys.ckscalendar.data.CalendarScheduleObject
 import com.drunkenboys.ckscalendar.data.CalendarSet
+import com.drunkenboys.ckscalendar.utils.TimeUtils.dayValue
+import com.drunkenboys.ckscalendar.utils.TimeUtils.isSameWeek
 import java.time.DayOfWeek
 import java.time.LocalDate
 
@@ -51,6 +53,32 @@ class YearCalendarViewModel: ViewModel() {
 
         // (월 달력 12개 + 년 헤더 1개) + 이번달
         return (today.year - INIT_YEAR) * 13 + today.monthValue
+    }
+
+    fun setWeekSchedules(
+        todaySchedules: List<CalendarScheduleObject>,
+        weekSchedules: Array<Array<CalendarScheduleObject?>>,
+        today: LocalDate
+    ) {
+        val todayOfWeek = today.dayOfWeek.dayValue()
+
+        // 오늘 스케줄 3개.forEach()
+        // weekSchedules 빈자리 찾으면 endDate 까지 그자리 차지
+        // 근데 왜 return@forEach??
+        todaySchedules.forEach { todaySchedule ->
+            val weekEndDate =
+                if (!today.isSameWeek(todaySchedule.endDate.toLocalDate())) DayOfWeek.SATURDAY.value
+                else todaySchedule.endDate.dayOfWeek.dayValue()
+
+            weekSchedules[todayOfWeek].forEachIndexed { index, space ->
+                if (space == null) {
+                    (todayOfWeek..weekEndDate).forEach { weekNum ->
+                        weekSchedules[weekNum][index] = todaySchedule
+                    }
+                    return@forEach
+                }
+            }
+        }
     }
 
     companion object {
