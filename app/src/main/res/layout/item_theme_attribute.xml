@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="title"
+            type="String" />
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingHorizontal="16dp">
+
+        <TextView
+            android:id="@+id/tv_saveSchedule_tagColor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawablePadding="8dp"
+            android:gravity="center_vertical"
+            android:paddingVertical="16dp"
+            android:text="@{title}"
+            android:textColor="@color/black"
+            app:drawableStartCompat="@drawable/ic_palette"
+            tools:text="메인 배경색" />
+
+        <FrameLayout
+            android:id="@+id/layout_saveSchedule_tagColor"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center|end">
+
+            <View
+                android:id="@+id/view_saveSchedule_tagColor"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_gravity="center"
+                android:background="@drawable/bg_tag_color"
+                tools:backgroundTint="@color/black" />
+
+        </FrameLayout>
+
+    </FrameLayout>
+
+</layout>
