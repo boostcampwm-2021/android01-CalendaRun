@@ -10,11 +10,16 @@
         <variable
             name="item"
             type="com.drunkenboys.calendarun.data.calendar.entity.Calendar" />
+
+        <variable
+            name="adapter"
+            type="com.drunkenboys.calendarun.ui.managecalendar.ManageCalendarAdapter" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:onClick="@{() -> adapter.onClick.invoke(item)}">
 
         <TextView
             android:id="@+id/tv_calendar_name"
