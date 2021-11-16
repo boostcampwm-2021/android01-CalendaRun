@@ -11,18 +11,22 @@ import com.drunkenboys.ckscalendar.data.CalendarDate
 import com.drunkenboys.ckscalendar.data.CalendarDesignObject
 import com.drunkenboys.ckscalendar.data.DayType
 import com.drunkenboys.ckscalendar.utils.dp
+import com.drunkenboys.ckscalendar.yearcalendar.YearCalendarViewModel
 
 @Composable
-fun DayText(day: CalendarDate, design: CalendarDesignObject) {
+fun DayText(
+    day: CalendarDate,
+    viewModel: YearCalendarViewModel
+) {
     val color = when (day.dayType) { // FIXME: month 와 통합
-        DayType.HOLIDAY -> Color(design.holidayTextColor)
-        DayType.SATURDAY -> Color(design.saturdayTextColor)
-        DayType.SUNDAY -> Color(design.sundayTextColor)
+        DayType.HOLIDAY -> Color(viewModel.design.value.holidayTextColor)
+        DayType.SATURDAY -> Color(viewModel.design.value.saturdayTextColor)
+        DayType.SUNDAY -> Color(viewModel.design.value.sundayTextColor)
         else -> MaterialTheme.colors.primary
     }
 
     // FIXME: mapper 추가
-    val align = when (design.textAlign) {
+    val align = when (viewModel.design.value.textAlign) {
         -1 -> TextAlign.Start
         0 -> TextAlign.Center
         1 -> TextAlign.End
@@ -34,6 +38,6 @@ fun DayText(day: CalendarDate, design: CalendarDesignObject) {
         color = color,
         modifier = Modifier.layoutId(day.date.toString()),
         textAlign = align,
-        fontSize = design.textSize.dp()
+        fontSize = viewModel.design.value.textSize.dp()
     )
 }

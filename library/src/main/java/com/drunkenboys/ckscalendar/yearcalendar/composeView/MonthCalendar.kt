@@ -11,14 +11,14 @@ import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
 import com.drunkenboys.ckscalendar.data.*
 import com.drunkenboys.ckscalendar.utils.toCalendarDatesList
+import com.drunkenboys.ckscalendar.yearcalendar.YearCalendarViewModel
 
 @Composable
 fun MonthCalendar(
     month: CalendarSet,
     listState: LazyListState,
     dayColumnModifier: (CalendarDate) -> Modifier,
-    design: CalendarDesignObject,
-    schedules: List<CalendarScheduleObject>
+    viewModel: YearCalendarViewModel
 ) {
     val weeks = month.toCalendarDatesList()
     var weekSchedules: Array<Array<CalendarScheduleObject?>> // 1주 스케줄
@@ -30,7 +30,7 @@ fun MonthCalendar(
             constraintSet = dayOfWeekConstraints(week.map { day -> day.date.toString() }),
             modifier = Modifier.fillMaxWidth()
         ) {
-            weekSchedules = Array(7) { Array(design.visibleScheduleCount) { null } }
+            weekSchedules = Array(7) { Array(viewModel.design.value.visibleScheduleCount) { null } }
             // 월 표시
             if (isFirstWeek(week, month.id)) {
                 AnimatedMonthHeader(
@@ -42,13 +42,13 @@ fun MonthCalendar(
                 when (day.dayType) {
                     // 빈 날짜
                     DayType.PADDING -> {
-                        PaddingText(day = day, design = design)
+                        PaddingText(day = day, viewModel = viewModel)
                     }
                     // 1일
                     else -> {
                         Column(modifier = dayColumnModifier(day), horizontalAlignment = Alignment.CenterHorizontally) {
-                            DayText(day = day, design = design)
-                            ScheduleText(today = day.date, schedules, weekSchedules, design = design)
+                            DayText(day = day, viewModel = viewModel)
+                            ScheduleText(today = day.date, weekSchedules, viewModel = viewModel)
                         }
                     }
                 }

@@ -9,11 +9,11 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import com.drunkenboys.ckscalendar.data.CalendarDesignObject
+import com.drunkenboys.ckscalendar.yearcalendar.YearCalendarViewModel
 
 @Composable
 fun WeekHeader(
-    design: CalendarDesignObject
+    viewModel: YearCalendarViewModel
 ) {
     Row(
         modifier = Modifier
@@ -21,7 +21,7 @@ fun WeekHeader(
             .background(MaterialTheme.colors.background),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
-        design.weekSimpleStringSet.forEach { dayId ->
+        viewModel.design.value.weekSimpleStringSet.forEach { dayId ->
             Text(
                 text = dayId,
                 color = MaterialTheme.colors.primary,

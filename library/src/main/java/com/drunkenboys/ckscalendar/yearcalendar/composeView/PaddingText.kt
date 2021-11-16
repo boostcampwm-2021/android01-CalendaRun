@@ -8,13 +8,13 @@ import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.drunkenboys.ckscalendar.data.CalendarDate
-import com.drunkenboys.ckscalendar.data.CalendarDesignObject
 import com.drunkenboys.ckscalendar.utils.dp
+import com.drunkenboys.ckscalendar.yearcalendar.YearCalendarViewModel
 
 @Composable
 fun PaddingText(
     day: CalendarDate,
-    design: CalendarDesignObject
+    viewModel: YearCalendarViewModel
 ) {
     Text(
         text = "${day.date.dayOfMonth}",
@@ -22,7 +22,7 @@ fun PaddingText(
             .layoutId(day.date.toString())
             .alpha(0f),
         textAlign = TextAlign.Center,
-        fontSize = design.textSize.dp()
+        fontSize = viewModel.design.value.textSize.dp()
     )
 }
 

@@ -10,20 +10,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.drunkenboys.ckscalendar.data.CalendarDesignObject
 import com.drunkenboys.ckscalendar.data.CalendarScheduleObject
 import com.drunkenboys.ckscalendar.utils.TimeUtils.dayValue
 import com.drunkenboys.ckscalendar.utils.TimeUtils.isSameWeek
 import com.drunkenboys.ckscalendar.utils.dp
+import com.drunkenboys.ckscalendar.yearcalendar.YearCalendarViewModel
 import java.time.DayOfWeek
 import java.time.LocalDate
 
 @Composable
 fun ScheduleText(
     today: LocalDate,
-    scheduleList: List<CalendarScheduleObject>,
     weekScheduleList: Array<Array<CalendarScheduleObject?>>,
-    design: CalendarDesignObject
+    viewModel: YearCalendarViewModel
 ) {
     val weekNum = (today.dayOfWeek.dayValue())
 
@@ -39,7 +38,7 @@ fun ScheduleText(
         if (schedule != null) Color(schedule.color) else Color.Transparent
     }
 
-    setWeekSchedule(getStartScheduleList(today, scheduleList), weekScheduleList, today)
+    setWeekSchedules(getStartScheduleList(today, viewModel.schedules.value), weekScheduleList, today)
 
     weekScheduleList[weekNum].forEach { schedule ->
         Text(
@@ -49,13 +48,14 @@ fun ScheduleText(
                 .fillMaxWidth()
                 .background(color = color(schedule)),
             overflow = TextOverflow.Ellipsis,
-            fontSize = design.textSize.dp()
+            fontSize = viewModel.design.value.textSize.dp(),
+            color = Color.White
         )
         Spacer(modifier = Modifier.height(2.dp))
     }
 }
 
-private fun setWeekSchedule(
+private fun setWeekSchedules(
     todaySchedules: List<CalendarScheduleObject>,
     weekSchedules: Array<Array<CalendarScheduleObject?>>,
     today: LocalDate
@@ -68,17 +68,22 @@ private fun setWeekSchedule(
             else todaySchedule.endDate.dayOfWeek.dayValue()
 
         weekSchedules[todayOfWeek].forEachIndexed { index, space ->
-            if (space == null) {
-                (todayOfWeek..weekEndDate).forEach { weekNum ->
-                    weekSchedules[weekNum][index] = todaySchedule
+            when (space) {
+                todaySchedule -> {
+                    return@forEach
                 }
-                return@forEach
+                null -> {
+                    (todayOfWeek..weekEndDate).forEach { weekNum ->
+                        weekSchedules[weekNum][index] = todaySchedule
+                    }
+                    return@forEach
+                }
             }
         }
     }
 }
 
-private fun getStartScheduleList(today: LocalDate, scheduleList: List<CalendarScheduleObject>) = scheduleList.filter { schedule ->
+private fun getStartScheduleList(today: LocalDate, schedules: List<CalendarScheduleObject>) = schedules.filter { schedule ->
     // TODO: 정렬
     val isStart = schedule.startDate.toLocalDate() == today
     val isSunday = today.dayOfWeek == DayOfWeek.SUNDAY

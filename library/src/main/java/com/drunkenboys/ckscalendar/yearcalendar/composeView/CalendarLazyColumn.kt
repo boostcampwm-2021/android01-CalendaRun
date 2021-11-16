@@ -20,15 +20,15 @@ import com.drunkenboys.ckscalendar.FakeFactory
 import com.drunkenboys.ckscalendar.data.*
 import com.drunkenboys.ckscalendar.listener.OnDayClickListener
 import com.drunkenboys.ckscalendar.listener.OnDaySecondClickListener
+import com.drunkenboys.ckscalendar.yearcalendar.YearCalendarViewModel
 import com.drunkenboys.ckscalendar.yearcalendar.YearCalendarView
 import java.time.LocalDate
 
 @Composable
 fun CalendarLazyColumn(
-    design: CalendarDesignObject,
     onDayClickListener: OnDayClickListener?,
     onDaySecondClickListener: OnDaySecondClickListener?,
-    schedules: List<CalendarScheduleObject>
+    viewModel: YearCalendarViewModel
 ) {
     // RecyclerView의 상태를 관찰
     val listState = rememberLazyListState()
@@ -38,7 +38,7 @@ fun CalendarLazyColumn(
     val clickedEdge = { day: CalendarDate ->
         BorderStroke(
             width = 2.dp,
-            color = if (clickedDay?.date == day.date) Color(design.selectedFrameColor) else Color.Transparent
+            color = if (clickedDay?.date == day.date) Color(viewModel.design.value.selectedFrameColor) else Color.Transparent
         )
     }
 
@@ -73,8 +73,7 @@ fun CalendarLazyColumn(
                     month = month,
                     listState = listState,
                     dayColumnModifier = dayColumnModifier,
-                    design = design,
-                    schedules = schedules
+                    viewModel = viewModel
                 )
             }
         }
