@@ -56,13 +56,13 @@ fun ScheduleText(
 }
 
 private fun setWeekSchedules(
-    todaySchedules: List<CalendarScheduleObject>?,
+    todaySchedules: List<CalendarScheduleObject>,
     weekSchedules: Array<Array<CalendarScheduleObject?>>,
     today: LocalDate
 ) {
     val todayOfWeek = today.dayOfWeek.dayValue()
 
-    todaySchedules?.forEach { todaySchedule ->
+    todaySchedules.forEach { todaySchedule ->
         val weekEndDate =
             if (!today.isSameWeek(todaySchedule.endDate.toLocalDate())) DayOfWeek.SATURDAY.value
             else todaySchedule.endDate.dayOfWeek.dayValue()
