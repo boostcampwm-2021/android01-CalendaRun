@@ -20,7 +20,7 @@ import com.drunkenboys.ckscalendar.FakeFactory
 import com.drunkenboys.ckscalendar.data.*
 import com.drunkenboys.ckscalendar.listener.OnDayClickListener
 import com.drunkenboys.ckscalendar.listener.OnDaySecondClickListener
-import com.drunkenboys.ckscalendar.yearcalendar.CalendarState
+import com.drunkenboys.ckscalendar.yearcalendar.YearCalendarViewModel
 import com.drunkenboys.ckscalendar.yearcalendar.YearCalendarView
 import java.time.LocalDate
 
@@ -29,7 +29,7 @@ fun CalendarLazyColumn(
     design: CalendarDesignObject,
     onDayClickListener: OnDayClickListener?,
     onDaySecondClickListener: OnDaySecondClickListener?,
-    calendarState: CalendarState
+    viewModel: YearCalendarViewModel
 ) {
     // RecyclerView의 상태를 관찰
     val listState = rememberLazyListState()
@@ -75,7 +75,7 @@ fun CalendarLazyColumn(
                     listState = listState,
                     dayColumnModifier = dayColumnModifier,
                     design = design,
-                    calendarState = calendarState
+                    viewModel = viewModel
                 )
             }
         }

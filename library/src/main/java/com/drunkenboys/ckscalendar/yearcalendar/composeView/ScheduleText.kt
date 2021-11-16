@@ -15,7 +15,7 @@ import com.drunkenboys.ckscalendar.data.CalendarScheduleObject
 import com.drunkenboys.ckscalendar.utils.TimeUtils.dayValue
 import com.drunkenboys.ckscalendar.utils.TimeUtils.isSameWeek
 import com.drunkenboys.ckscalendar.utils.dp
-import com.drunkenboys.ckscalendar.yearcalendar.CalendarState
+import com.drunkenboys.ckscalendar.yearcalendar.YearCalendarViewModel
 import java.time.DayOfWeek
 import java.time.LocalDate
 
@@ -24,7 +24,7 @@ fun ScheduleText(
     today: LocalDate,
     weekScheduleList: Array<Array<CalendarScheduleObject?>>,
     design: CalendarDesignObject,
-    calendarState: CalendarState
+    viewModel: YearCalendarViewModel
 ) {
     val weekNum = (today.dayOfWeek.dayValue())
 
@@ -40,7 +40,7 @@ fun ScheduleText(
         if (schedule != null) Color(schedule.color) else Color.Transparent
     }
 
-    setWeekSchedule(getStartScheduleList(today, calendarState.schedules.value), weekScheduleList, today)
+    setWeekSchedules(getStartScheduleList(today, viewModel.schedules.value), weekScheduleList, today)
 
     weekScheduleList[weekNum].forEach { schedule ->
         Text(
@@ -57,7 +57,7 @@ fun ScheduleText(
     }
 }
 
-private fun setWeekSchedule(
+private fun setWeekSchedules(
     todaySchedules: List<CalendarScheduleObject>?,
     weekSchedules: Array<Array<CalendarScheduleObject?>>,
     today: LocalDate
@@ -70,11 +70,16 @@ private fun setWeekSchedule(
             else todaySchedule.endDate.dayOfWeek.dayValue()
 
         weekSchedules[todayOfWeek].forEachIndexed { index, space ->
-            if (space == null) {
-                (todayOfWeek..weekEndDate).forEach { weekNum ->
-                    weekSchedules[weekNum][index] = todaySchedule
+            when (space) {
+                todaySchedule -> {
+                    return@forEach
                 }
-                return@forEach
+                null -> {
+                    (todayOfWeek..weekEndDate).forEach { weekNum ->
+                        weekSchedules[weekNum][index] = todaySchedule
+                    }
+                    return@forEach
+                }
             }
         }
     }
