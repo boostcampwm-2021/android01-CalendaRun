@@ -9,7 +9,7 @@
 
         <variable
             name="item"
-            type="com.drunkenboys.calendarun.data.calendar.entity.Calendar" />
+            type="com.drunkenboys.calendarun.ui.managecalendar.model.CalendarItem" />
 
         <variable
             name="adapter"

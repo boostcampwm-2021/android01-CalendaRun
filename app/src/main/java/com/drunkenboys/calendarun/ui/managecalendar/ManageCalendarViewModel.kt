@@ -2,8 +2,8 @@ package com.drunkenboys.calendarun.ui.managecalendar
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.drunkenboys.calendarun.data.calendar.entity.Calendar
 import com.drunkenboys.calendarun.data.calendar.local.CalendarLocalDataSource
+import com.drunkenboys.calendarun.ui.managecalendar.model.CalendarItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,12 +15,24 @@ class ManageCalendarViewModel @Inject constructor(
     private val calendarLocalDataSource: CalendarLocalDataSource
 ) : ViewModel() {
 
-    private val _calendarList = MutableStateFlow<List<Calendar>>(emptyList())
-    val calendarList: StateFlow<List<Calendar>> = _calendarList
+    private val _calendarItemList = MutableStateFlow<List<CalendarItem>>(emptyList())
+    val calendarItemList: StateFlow<List<CalendarItem>> = _calendarItemList
 
     fun fetchCalendarList() {
         viewModelScope.launch {
-            _calendarList.emit(calendarLocalDataSource.fetchAllCalendar())
+            val calendarList = calendarLocalDataSource.fetchAllCalendar()
+            val newCalendarItemList = mutableListOf<CalendarItem>()
+            calendarList.forEach { calendar ->
+                newCalendarItemList.add(
+                    CalendarItem(
+                        id = calendar.id,
+                        name = calendar.name,
+                        startDate = calendar.startDate,
+                        endDate = calendar.endDate
+                    )
+                )
+            }
+            _calendarItemList.emit(newCalendarItemList)
         }
     }
 }

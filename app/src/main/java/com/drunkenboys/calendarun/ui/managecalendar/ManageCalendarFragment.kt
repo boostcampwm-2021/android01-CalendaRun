@@ -6,9 +6,9 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.drunkenboys.calendarun.R
-import com.drunkenboys.calendarun.data.calendar.entity.Calendar
 import com.drunkenboys.calendarun.databinding.FragmentManageCalendarBinding
 import com.drunkenboys.calendarun.ui.base.BaseFragment
+import com.drunkenboys.calendarun.ui.managecalendar.model.CalendarItem
 import com.drunkenboys.calendarun.util.HorizontalInsetDividerDecoration
 import com.drunkenboys.calendarun.util.extensions.stateCollect
 import dagger.hilt.android.AndroidEntryPoint
@@ -16,7 +16,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class ManageCalendarFragment : BaseFragment<FragmentManageCalendarBinding>(R.layout.fragment_manage_calendar) {
 
-    private val manageCalendarAdapter = ManageCalendarAdapter(::onCalendarClickListener)
+    private val manageCalendarAdapter = ManageCalendarAdapter(::onCalendarItemClickListener)
 
     private val manageCalendarViewModel by viewModels<ManageCalendarViewModel>()
 
@@ -27,11 +27,11 @@ class ManageCalendarFragment : BaseFragment<FragmentManageCalendarBinding>(R.lay
         setupToolbar()
         setupAdapter()
         setupFabClickListener()
-        collectCalendarList()
+        collectCalendarItemList()
     }
 
-    private fun onCalendarClickListener(calendar: Calendar) {
-        val action = ManageCalendarFragmentDirections.toEditCalendar(calendar.id)
+    private fun onCalendarItemClickListener(calendarItem: CalendarItem) {
+        val action = ManageCalendarFragmentDirections.toEditCalendar(calendarItem.id)
         navController.navigate(action)
     }
 
@@ -59,9 +59,9 @@ class ManageCalendarFragment : BaseFragment<FragmentManageCalendarBinding>(R.lay
         }
     }
 
-    private fun collectCalendarList() {
-        stateCollect(manageCalendarViewModel.calendarList) { calendarList ->
-            manageCalendarAdapter.submitList(calendarList)
+    private fun collectCalendarItemList() {
+        stateCollect(manageCalendarViewModel.calendarItemList) { calendarItemList ->
+            manageCalendarAdapter.submitList(calendarItemList)
         }
     }
 }
