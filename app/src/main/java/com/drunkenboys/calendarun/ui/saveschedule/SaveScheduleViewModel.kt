@@ -12,10 +12,7 @@ import com.drunkenboys.calendarun.data.schedule.local.ScheduleLocalDataSource
 import com.drunkenboys.calendarun.ui.saveschedule.model.DateType
 import com.drunkenboys.ckscalendar.data.ScheduleColorType
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -32,22 +29,25 @@ class SaveScheduleViewModel @Inject constructor(
 
     private val calendarId = savedStateHandle[KEY_CALENDAR_ID] ?: 0L
     private val scheduleId = savedStateHandle[KEY_SCHEDULE_ID] ?: 0L
-    private val localDate = savedStateHandle.get<String>(KEY_LOCAL_DATE)
+    private val localDateTime = savedStateHandle.get<String>(KEY_LOCAL_DATE)?.let {
+        LocalDateTime.of(LocalDate.parse(it), LocalTime.of(12, 0))
+    } ?: run { LocalDateTime.now().withMinute(0).withSecond(0) }
 
     private val isUpdateSchedule = scheduleId > 0
 
     val title = MutableStateFlow("")
 
-    private val _startDate = MutableStateFlow<LocalDateTime?>(null)
-    val startDate: StateFlow<LocalDateTime?> = _startDate
+    private val _startDate = MutableStateFlow<LocalDateTime>(localDateTime)
+    val startDate: StateFlow<LocalDateTime> = _startDate
 
-    private val _endDate = MutableStateFlow<LocalDateTime?>(null)
-    val endDate: StateFlow<LocalDateTime?> = _endDate
+    private val _endDate = MutableStateFlow<LocalDateTime>(localDateTime)
+    val endDate: StateFlow<LocalDateTime> = _endDate
 
     val memo = MutableStateFlow("")
 
-    private val _calendarName = MutableStateFlow("")
-    val calendarName: StateFlow<String> = _calendarName
+    val calendarName = flow {
+        emit(calendarDataSource.fetchCalendar(calendarId).name)
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, "")
 
     private val _notificationType = MutableStateFlow(Schedule.NotificationType.TEN_MINUTES_AGO)
     val notificationType: StateFlow<Schedule.NotificationType> = _notificationType
@@ -58,8 +58,8 @@ class SaveScheduleViewModel @Inject constructor(
     private val _isPickTagColorPopupVisible = MutableStateFlow(false)
     val isPickTagColorPopupVisible: StateFlow<Boolean> = _isPickTagColorPopupVisible
 
-    private val _pickDateTimeEvent = MutableSharedFlow<DateType>()
-    val pickDateTimeEvent: SharedFlow<DateType> = _pickDateTimeEvent
+    private val _pickDateTimeEvent = MutableSharedFlow<Pair<DateType, LocalDateTime>>()
+    val pickDateTimeEvent: SharedFlow<Pair<DateType, LocalDateTime>> = _pickDateTimeEvent
 
     private val _pickNotificationTypeEvent = MutableSharedFlow<Unit>()
     val pickNotificationTypeEvent: SharedFlow<Unit> = _pickNotificationTypeEvent
@@ -71,29 +71,7 @@ class SaveScheduleViewModel @Inject constructor(
     val deleteScheduleEvent: SharedFlow<Schedule> = _deleteScheduleEvent
 
     init {
-        initCalendarName()
-        initScheduleDateTime()
         restoreScheduleData()
-    }
-
-    private fun initCalendarName() {
-        viewModelScope.launch {
-            _calendarName.emit(calendarDataSource.fetchCalendar(calendarId).name)
-        }
-    }
-
-    private fun initScheduleDateTime() {
-        viewModelScope.launch {
-            val localDateTime = if (localDate == null) {
-                LocalDateTime.now()
-                    .withMinute(0)
-                    .withSecond(0)
-            } else {
-                LocalDateTime.of(LocalDate.parse(localDate), LocalTime.of(12, 0))
-            }
-            _startDate.emit(localDateTime)
-            _endDate.emit(localDateTime)
-        }
     }
 
     private fun restoreScheduleData() {
@@ -113,7 +91,10 @@ class SaveScheduleViewModel @Inject constructor(
 
     fun emitPickDateTimeEvent(dateType: DateType) {
         viewModelScope.launch {
-            _pickDateTimeEvent.emit(dateType)
+            when (dateType) {
+                DateType.START -> _pickDateTimeEvent.emit(dateType to startDate.value)
+                DateType.END -> _pickDateTimeEvent.emit(dateType to endDate.value)
+            }
         }
     }
 
@@ -182,8 +163,6 @@ class SaveScheduleViewModel @Inject constructor(
 
     private fun isInvalidInput(): Boolean {
         if (title.value.isEmpty()) return true
-        startDate.value ?: return true
-        endDate.value ?: return true
         if (calendarName.value.isEmpty()) return true
 
         return false
@@ -193,15 +172,15 @@ class SaveScheduleViewModel @Inject constructor(
         id = scheduleId,
         calendarId = calendarId,
         name = title.value,
-        startDate = startDate.value ?: LocalDateTime.now(),
-        endDate = endDate.value ?: LocalDateTime.now(),
+        startDate = startDate.value,
+        endDate = endDate.value,
         notificationType = notificationType.value,
         memo = memo.value,
         color = tagColor.value
     )
 
     fun deleteSchedule() {
-        if (scheduleId < 0) return
+        if (!isUpdateSchedule) return
 
         viewModelScope.launch {
             val deleteSchedule = scheduleDataSource.fetchSchedule(scheduleId)

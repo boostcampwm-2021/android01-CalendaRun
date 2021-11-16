@@ -11,3 +11,5 @@ fun stringToLocalDate(date: String): LocalDate =
     LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy.M.d"))
 
 fun LocalDate?.localDateToString(): String = this?.format(DateTimeFormatter.ofPattern("yyyy.M.d")) ?: ""
+
+fun LocalDate.toLong() = toEpochDay() * 24 * 60 * 60 * 1000
