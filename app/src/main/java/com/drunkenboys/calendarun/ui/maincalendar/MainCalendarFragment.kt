@@ -157,7 +157,8 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         manageMenu.add(getString(R.string.drawer_theme_setting))
             .setIcon(R.drawable.ic_palette)
             .setOnMenuItemClickListener {
-                // TODO: 2021-11-11 테마 설정 화면으로 이동동
+                val action = MainCalendarFragmentDirections.toThemeFragment()
+                navController.navigate(action)
                 true
             }
     }
