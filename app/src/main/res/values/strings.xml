@@ -60,6 +60,16 @@
     <string name="contentDescription_ivAddSchedule">일정 추가 버튼</string>
     <string name="saveSchedule_toolbarTitle_insert">일정 추가</string>
     <string name="saveSchedule_toolbarTitle_update">일정 수정</string>
+    <string name="textColor">글자색</string>
+    <string name="weekday">평일</string>
+    <string name="holiday">공휴일</string>
+    <string name="saturday">토요일</string>
+    <string name="sunday">일요일</string>
+    <string name="backgroundColor">배경색</string>
+    <string name="selectedDayStroke">선택한 요일 테두리</string>
+    <string name="dayBackgroundColor">요일 배경</string>
+    <string name="text">글자</string>
+    <string name="schedule">일정</string>
 
     <string name="manageCalender_addCalendarDescription">달력 추가 버튼</string>
     <string name="manageCalendar_toolbarTitle_manage">달력 관리</string>

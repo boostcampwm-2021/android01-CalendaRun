@@ -32,27 +32,140 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:paddingHorizontal="16dp">
 
-                <include
-                    layout="@layout/item_theme_attribute"
-                    app:title='@{"메인 배경색"}' />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/textColor" />
 
-                <include
-                    layout="@layout/item_theme_attribute"
-                    app:title='@{"서브 배경색"}' />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@color/divider" />
 
-                <include
-                    layout="@layout/item_theme_attribute"
-                    app:title='@{"글씨색"}' />
+                <com.drunkenboys.calendarun.view.ColorIndicatorTextView
+                    android:id="@+id/tv_theme_weekday"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_palette"
+                    android:drawableEnd="@drawable/bg_tag_color"
+                    android:drawablePadding="8dp"
+                    android:gravity="center_vertical"
+                    android:paddingVertical="16dp"
+                    android:text="@string/weekday"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    app:indicatorTint="@color/black" />
 
-                <include
-                    layout="@layout/item_theme_attribute"
-                    app:title='@{"토요일"}' />
+                <com.drunkenboys.calendarun.view.ColorIndicatorTextView
+                    android:id="@+id/tv_theme_holiday"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_palette"
+                    android:drawableEnd="@drawable/bg_tag_color"
+                    android:drawablePadding="8dp"
+                    android:gravity="center_vertical"
+                    android:paddingVertical="16dp"
+                    android:text="@string/holiday"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    app:indicatorTint="@color/black" />
 
-                <include
-                    layout="@layout/item_theme_attribute"
-                    app:title='@{"공휴일"}' />
+                <com.drunkenboys.calendarun.view.ColorIndicatorTextView
+                    android:id="@+id/tv_theme_saturday"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_palette"
+                    android:drawableEnd="@drawable/bg_tag_color"
+                    android:drawablePadding="8dp"
+                    android:gravity="center_vertical"
+                    android:paddingVertical="16dp"
+                    android:text="@string/saturday"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    app:indicatorTint="@color/black" />
+
+                <com.drunkenboys.calendarun.view.ColorIndicatorTextView
+                    android:id="@+id/tv_theme_sunday"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_palette"
+                    android:drawableEnd="@drawable/bg_tag_color"
+                    android:drawablePadding="8dp"
+                    android:gravity="center_vertical"
+                    android:paddingVertical="16dp"
+                    android:text="@string/sunday"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    app:indicatorTint="@color/black" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/backgroundColor" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@color/divider" />
+
+                <com.drunkenboys.calendarun.view.ColorIndicatorTextView
+                    android:id="@+id/tv_theme_selectedDayStroke"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_palette"
+                    android:drawableEnd="@drawable/bg_tag_color"
+                    android:drawablePadding="8dp"
+                    android:gravity="center_vertical"
+                    android:paddingVertical="16dp"
+                    android:text="@string/selectedDayStroke"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    app:indicatorTint="@color/black" />
+
+                <com.drunkenboys.calendarun.view.ColorIndicatorTextView
+                    android:id="@+id/tv_theme_dayBackground"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_palette"
+                    android:drawableEnd="@drawable/bg_tag_color"
+                    android:drawablePadding="8dp"
+                    android:gravity="center_vertical"
+                    android:paddingVertical="16dp"
+                    android:text="@string/dayBackgroundColor"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    app:indicatorTint="@color/black" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/text" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@color/divider" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/schedule" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@color/divider" />
 
             </LinearLayout>
 
