@@ -38,9 +38,7 @@ fun ScheduleText(
         if (schedule != null) Color(schedule.color) else Color.Transparent
     }
 
-    val startSchedules = viewModel.getStartSchedules(today)
-
-    viewModel.setWeekSchedules(startSchedules, weekScheduleList, today)
+    viewModel.setWeekSchedules(weekScheduleList, today)
 
     weekScheduleList[weekNum].forEach { schedule ->
         Text(

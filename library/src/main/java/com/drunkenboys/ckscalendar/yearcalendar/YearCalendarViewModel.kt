@@ -1,8 +1,10 @@
 package com.drunkenboys.ckscalendar.yearcalendar
 
+import android.util.Log
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import com.drunkenboys.ckscalendar.FakeFactory
+import com.drunkenboys.ckscalendar.data.CalendarDate
 import com.drunkenboys.ckscalendar.data.CalendarDesignObject
 import com.drunkenboys.ckscalendar.data.CalendarScheduleObject
 import com.drunkenboys.ckscalendar.data.CalendarSet
@@ -39,15 +41,6 @@ class YearCalendarViewModel: ViewModel() {
         _design.value = CalendarDesignObject()
     }
 
-    fun getStartSchedules(today: LocalDate) = schedules.value.filter { schedule ->
-        // TODO: 정렬
-        val isStart = schedule.startDate.toLocalDate() == today
-        val isSunday = today.dayOfWeek == DayOfWeek.SUNDAY
-        val isFirstOfMonth = today.dayOfMonth == 1
-        val isDateInScheduleRange = today in schedule.startDate.toLocalDate()..schedule.endDate.toLocalDate()
-        isStart || ((isSunday || isFirstOfMonth) && (isDateInScheduleRange))
-    }
-
     fun getTodayItemIndex(): Int {
         val today = LocalDate.now()
 
@@ -56,16 +49,12 @@ class YearCalendarViewModel: ViewModel() {
     }
 
     fun setWeekSchedules(
-        todaySchedules: List<CalendarScheduleObject>,
         weekSchedules: Array<Array<CalendarScheduleObject?>>,
         today: LocalDate
     ) {
         val todayOfWeek = today.dayOfWeek.dayValue()
 
-        // 오늘 스케줄 3개.forEach()
-        // weekSchedules 빈자리 찾으면 endDate 까지 그자리 차지
-        // 근데 왜 return@forEach??
-        todaySchedules.forEach { todaySchedule ->
+        getStartSchedules(today).forEach { todaySchedule ->
             val weekEndDate =
                 if (!today.isSameWeek(todaySchedule.endDate.toLocalDate())) DayOfWeek.SATURDAY.value
                 else todaySchedule.endDate.dayOfWeek.dayValue()
@@ -80,6 +69,20 @@ class YearCalendarViewModel: ViewModel() {
             }
         }
     }
+
+    private fun getStartSchedules(today: LocalDate) = schedules.value.filter { schedule ->
+        // TODO: 정렬
+        val isStart = schedule.startDate.toLocalDate() == today
+        val isSunday = today.dayOfWeek == DayOfWeek.SUNDAY
+        val isFirstOfMonth = today.dayOfMonth == 1
+        val isDateInScheduleRange = today in schedule.startDate.toLocalDate()..schedule.endDate.toLocalDate()
+        isStart || ((isSunday || isFirstOfMonth) && (isDateInScheduleRange))
+    }
+
+    fun isFirstWeek(week: List<CalendarDate>, monthId: Int) = week.any { day ->
+        day.date.dayOfMonth == 1 && monthId == day.date.monthValue
+    }
+
 
     companion object {
         const val INIT_YEAR = 0
