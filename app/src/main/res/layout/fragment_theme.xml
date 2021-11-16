@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/layout_theme_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar_theme"
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize"
+                app:title="테마 설정"
+                app:titleTextColor="@color/white" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <include
+                    layout="@layout/item_theme_attribute"
+                    app:title='@{"메인 배경색"}' />
+
+                <include
+                    layout="@layout/item_theme_attribute"
+                    app:title='@{"서브 배경색"}' />
+
+                <include
+                    layout="@layout/item_theme_attribute"
+                    app:title='@{"글씨색"}' />
+
+                <include
+                    layout="@layout/item_theme_attribute"
+                    app:title='@{"토요일"}' />
+
+                <include
+                    layout="@layout/item_theme_attribute"
+                    app:title='@{"공휴일"}' />
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </LinearLayout>
+
+</layout>
