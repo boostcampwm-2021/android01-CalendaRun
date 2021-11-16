@@ -72,6 +72,7 @@
         tools:layout="@layout/fragment_save_calendar">
         <argument
             android:name="calendarId"
+            android:defaultValue="0L"
             app:argType="long" />
     </fragment>
 

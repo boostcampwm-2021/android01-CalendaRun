@@ -54,7 +54,7 @@ class ManageCalendarFragment : BaseFragment<FragmentManageCalendarBinding>(R.lay
 
     private fun setupFabClickListener() {
         binding.fabManagerCalenderAddCalendar.setOnClickListener {
-            val action = ManageCalendarFragmentDirections.toSaveCalendar(0L)
+            val action = ManageCalendarFragmentDirections.toSaveCalendar()
             navController.navigate(action)
         }
     }

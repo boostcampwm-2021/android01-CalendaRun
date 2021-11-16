@@ -156,7 +156,7 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
     }
 
     private fun navigateToSaveCalendar() {
-        val action = MainCalendarFragmentDirections.toSaveCalendar(0L)
+        val action = MainCalendarFragmentDirections.toSaveCalendar()
         navController.navigate(action)
         binding.layoutDrawer.closeDrawer(GravityCompat.START)
     }
