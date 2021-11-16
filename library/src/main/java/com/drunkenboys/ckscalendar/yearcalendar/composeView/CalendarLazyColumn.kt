@@ -26,7 +26,6 @@ import java.time.LocalDate
 
 @Composable
 fun CalendarLazyColumn(
-    design: CalendarDesignObject,
     onDayClickListener: OnDayClickListener?,
     onDaySecondClickListener: OnDaySecondClickListener?,
     viewModel: YearCalendarViewModel
@@ -39,7 +38,7 @@ fun CalendarLazyColumn(
     val clickedEdge = { day: CalendarDate ->
         BorderStroke(
             width = 2.dp,
-            color = if (clickedDay?.date == day.date) Color(design.selectedFrameColor) else Color.Transparent
+            color = if (clickedDay?.date == day.date) Color(viewModel.design.value.selectedFrameColor) else Color.Transparent
         )
     }
 
@@ -74,7 +73,6 @@ fun CalendarLazyColumn(
                     month = month,
                     listState = listState,
                     dayColumnModifier = dayColumnModifier,
-                    design = design,
                     viewModel = viewModel
                 )
             }

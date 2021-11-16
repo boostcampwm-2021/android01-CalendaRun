@@ -10,7 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.drunkenboys.ckscalendar.data.CalendarDesignObject
 import com.drunkenboys.ckscalendar.data.CalendarScheduleObject
 import com.drunkenboys.ckscalendar.utils.TimeUtils.dayValue
 import com.drunkenboys.ckscalendar.utils.TimeUtils.isSameWeek
@@ -23,7 +22,6 @@ import java.time.LocalDate
 fun ScheduleText(
     today: LocalDate,
     weekScheduleList: Array<Array<CalendarScheduleObject?>>,
-    design: CalendarDesignObject,
     viewModel: YearCalendarViewModel
 ) {
     val weekNum = (today.dayOfWeek.dayValue())
@@ -50,7 +48,7 @@ fun ScheduleText(
                 .fillMaxWidth()
                 .background(color = color(schedule)),
             overflow = TextOverflow.Ellipsis,
-            fontSize = design.textSize.dp(),
+            fontSize = viewModel.design.value.textSize.dp(),
             color = Color.White
         )
         Spacer(modifier = Modifier.height(2.dp))

@@ -19,8 +19,6 @@ class YearCalendarView
 
     private val binding: LayoutYearCalendarBinding by lazy { LayoutYearCalendarBinding.inflate(LayoutInflater.from(context), this, true) }
 
-    private var design = CalendarDesignObject()
-
     private var onDateClickListener: OnDayClickListener? = null
     private var onDateSecondClickListener: OnDaySecondClickListener? = null
 
@@ -29,16 +27,15 @@ class YearCalendarView
     init {
         binding.composeYearCalendarViewYearCalendar.setContent {
             //
-            CustomTheme(design = design) {
+            CustomTheme(design = viewModel.design.value) {
                 // 위 -> 아래가 아닌 안 -> 밖으로 생성.
                 // 요일 표시가 가장 바깥에 오지 않으면 날짜에 가려진다.
                 CalendarLazyColumn(
-                    design = design,
                     onDayClickListener = onDateClickListener,
                     onDaySecondClickListener = onDateSecondClickListener,
                     viewModel = viewModel
                 )
-                WeekHeader(design = design)
+                WeekHeader(viewModel = viewModel)
             }
         }
     }
@@ -60,15 +57,14 @@ class YearCalendarView
     }
 
     fun setTheme(designObject: CalendarDesignObject) {
-        design = designObject
+        viewModel.setDesign(designObject)
     }
 
     fun resetTheme() {
-        design = CalendarDesignObject()
+        viewModel.resetDesign()
     }
 
     companion object {
-        const val TAG = "YEAR_CALENDAR"
         const val INIT_YEAR = 0
         const val LAST_YEAR = 10000
     }

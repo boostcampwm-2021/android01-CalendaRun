@@ -20,4 +20,12 @@ class YearCalendarViewModel: ViewModel() {
     fun setSchedules(schedules: List<CalendarScheduleObject>) {
         this._schedules.value = schedules
     }
+
+    fun setDesign(design: CalendarDesignObject) {
+        _design.value = design
+    }
+
+    fun resetDesign() {
+        _design.value = CalendarDesignObject()
+    }
 }
