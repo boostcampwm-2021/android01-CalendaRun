@@ -80,7 +80,7 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
 
     private fun collectCheckPointItemList() {
         stateCollect(saveCalendarViewModel.checkPointItemList) { list ->
-            saveCalendarAdapter.submitList(list)
+            saveCalendarAdapter.submitList(list.sortedBy { checkPointItem -> checkPointItem.date.value })
         }
     }
 
