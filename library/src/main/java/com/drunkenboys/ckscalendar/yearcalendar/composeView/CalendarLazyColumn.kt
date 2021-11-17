@@ -22,6 +22,7 @@ import com.drunkenboys.ckscalendar.listener.OnDayClickListener
 import com.drunkenboys.ckscalendar.listener.OnDaySecondClickListener
 import com.drunkenboys.ckscalendar.yearcalendar.CustomTheme
 import com.drunkenboys.ckscalendar.yearcalendar.YearCalendarViewModel
+import java.time.LocalDate
 
 @Composable
 fun CalendarLazyColumn(
@@ -83,8 +84,8 @@ fun CalendarLazyColumn(
 
     // 뷰가 호출되면 오늘 날짜가 보이게 스크롤
     LaunchedEffect(listState) {
-        listState.scrollToItem(index = YearCalendarViewModel.LAST_YEAR) // preload
-        listState.scrollToItem(index = viewModel.getTodayItemIndex())
+        listState.scrollToItem(index = viewModel.getDayItemIndex(LocalDate.of(2100, 1, 1))) // preload
+        listState.scrollToItem(index = viewModel.getDayItemIndex())
     }
 }
 
