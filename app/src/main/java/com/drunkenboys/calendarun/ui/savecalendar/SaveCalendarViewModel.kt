@@ -97,6 +97,13 @@ class SaveCalendarViewModel @Inject constructor(
         }
     }
 
+    fun deleteCheckPointItem(currentCheckPointItemList: List<CheckPointItem>) {
+        viewModelScope.launch {
+            val newCheckPointItemList = currentCheckPointItemList.filter { checkPointItem -> !checkPointItem.check }
+            _checkPointItemList.emit(newCheckPointItemList.toMutableList())
+        }
+    }
+
     private fun saveCalendar(): Boolean {
         val calendarName = calendarName.value
         val startDate = _calendarStartDate.value ?: return false
@@ -141,4 +148,5 @@ class SaveCalendarViewModel @Inject constructor(
 
     private fun isValidateCheckPointDate(checkPointDate: LocalDate, startDate: LocalDate, endDate: LocalDate) =
         checkPointDate.isAfter(startDate) && checkPointDate.isBefore(endDate)
+
 }

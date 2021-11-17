@@ -32,6 +32,7 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
         setupToolbar()
         setupDataBinding()
         setupRecyclerView()
+        setupToolbarMenuOnItemClickListener()
         collectCheckPointItemList()
         collectPickDateTimeEvent()
         collectSaveCalendarEvent()
@@ -63,6 +64,18 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
 
     private fun setupRecyclerView() {
         binding.rvSaveCalendarCheckPointList.adapter = saveCalendarAdapter
+    }
+
+    private fun setupToolbarMenuOnItemClickListener() {
+        binding.toolbarSaveCalendar.setOnMenuItemClickListener { item ->
+            if (item.itemId == R.id.menu_delete_checkPoint) {
+                val currentCheckPointItemList = saveCalendarAdapter.currentList
+                saveCalendarViewModel.deleteCheckPointItem(currentCheckPointItemList)
+                true
+            } else {
+                false
+            }
+        }
     }
 
     private fun collectCheckPointItemList() {
