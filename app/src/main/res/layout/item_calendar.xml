@@ -91,16 +91,6 @@
             app:layout_constraintTop_toBottomOf="@id/tv_endDate_name"
             tools:text="2021.11.15" />
 
-        <!--<com.google.android.material.checkbox.MaterialCheckBox
-            android:id="@+id/ch_calendar_select"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:button="@drawable/selector_check_box_18"
-            android:checked="@={item.check}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />-->
-
         <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/ch_calendar_select"
             android:layout_width="wrap_content"
