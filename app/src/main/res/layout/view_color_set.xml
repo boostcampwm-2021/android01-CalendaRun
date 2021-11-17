@@ -100,6 +100,22 @@
         </FrameLayout>
 
         <FrameLayout
+            android:id="@+id/view_colorSet_black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{()->viewModel.setColorType(@color/black, themeColorType)}"
+            android:padding="8dp"
+            tools:ignore="MissingConstraints">
+
+            <View
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="@drawable/bg_tag_color"
+                android:backgroundTint="@color/black" />
+
+        </FrameLayout>
+
+        <FrameLayout
             android:id="@+id/view_colorSet_navy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -179,13 +195,30 @@
 
         </FrameLayout>
 
-        <androidx.constraintlayout.helper.widget.Flow
+        <FrameLayout
+            android:id="@+id/view_colorSet_white"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:constraint_referenced_ids="view_colorSet_red, view_colorSet_orange, view_colorSet_yellow, view_colorSet_green, view_colorSet_blue, view_colorSet_navy, view_colorSet_purple, view_colorSet_grey, view_colorSet_cyan, view_colorSet_magenta"
-            app:flow_horizontalGap="32dp"
+            android:clipToPadding="false"
+            android:onClick="@{()->viewModel.setColorType(@color/white, themeColorType)}"
+            android:padding="8dp"
+            tools:ignore="MissingConstraints">
+
+            <View
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="@drawable/bg_tag_color"
+                android:backgroundTint="@color/white"
+                android:elevation="4dp" />
+
+        </FrameLayout>
+
+        <androidx.constraintlayout.helper.widget.Flow
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="view_colorSet_red, view_colorSet_orange, view_colorSet_yellow, view_colorSet_green, view_colorSet_blue, view_colorSet_black, view_colorSet_navy, view_colorSet_purple, view_colorSet_grey, view_colorSet_cyan, view_colorSet_magenta, view_colorSet_white"
             app:flow_horizontalStyle="spread"
-            app:flow_maxElementsWrap="5"
+            app:flow_maxElementsWrap="6"
             app:flow_verticalGap="4dp"
             app:flow_wrapMode="chain"
             app:layout_constraintBottom_toBottomOf="parent"
