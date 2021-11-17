@@ -185,11 +185,13 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         // TODO: 2021-11-16 현재 flow 확장함수가 StateFlow와 SharedFlow만 받기 때문에 라이프사이클 처리를 명시해주고 있는데 개선이 필요해보임.
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                mainCalendarViewModel.daySecondClickEvent.throttleFirst(DEFAULT_TOUCH_THROTTLE_PERIOD).collect { date ->
-                    val calendarId = mainCalendarViewModel.calendar.value?.id ?: throw IllegalStateException("calendarId is null")
-                    val action = MainCalendarFragmentDirections.toDayScheduleDialog(calendarId, date.toString())
-                    navController.navigateSafe(action)
-                }
+                mainCalendarViewModel.daySecondClickEvent
+                    .throttleFirst(DEFAULT_TOUCH_THROTTLE_PERIOD)
+                    .collect { date ->
+                        val calendarId = mainCalendarViewModel.calendar.value?.id ?: throw IllegalStateException("calendarId is null")
+                        val action = MainCalendarFragmentDirections.toDayScheduleDialog(calendarId, date.toString())
+                        navController.navigateSafe(action)
+                    }
             }
         }
     }
