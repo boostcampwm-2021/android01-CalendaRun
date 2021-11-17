@@ -5,7 +5,9 @@ import android.content.res.ColorStateList
 import android.content.res.TypedArray
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.core.content.ContextCompat
 import com.drunkenboys.calendarun.R
+import com.drunkenboys.calendarun.util.extensions.updateCompoundDrawablesRelativeWithIntrinsicBounds
 
 class ColorIndicatorTextView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyle: Int = 0
@@ -36,6 +38,11 @@ class ColorIndicatorTextView @JvmOverloads constructor(
     }
 
     fun setIndicatorTint(color: Int) {
-        compoundDrawablesRelative[2].setTintList(ColorStateList.valueOf(color))
+        if (color == ContextCompat.getColor(context, R.color.white)) {
+            updateCompoundDrawablesRelativeWithIntrinsicBounds(end = ContextCompat.getDrawable(context, R.drawable.bg_tag_color_stroke))
+        } else {
+            updateCompoundDrawablesRelativeWithIntrinsicBounds(end = ContextCompat.getDrawable(context, R.drawable.bg_tag_color))
+            compoundDrawablesRelative[2].setTintList(ColorStateList.valueOf(color))
+        }
     }
 }
