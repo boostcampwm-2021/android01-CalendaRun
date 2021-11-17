@@ -12,7 +12,6 @@ data class CheckPointItem(
 ) {
 
     companion object {
-
         val diffUtil by lazy {
             object : DiffUtil.ItemCallback<CheckPointItem>() {
                 override fun areItemsTheSame(oldItem: CheckPointItem, newItem: CheckPointItem) =
