@@ -9,6 +9,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import com.drunkenboys.ckscalendar.utils.GravityMapper
 import com.drunkenboys.ckscalendar.yearcalendar.YearCalendarViewModel
 
 @Composable
@@ -25,7 +26,7 @@ fun WeekHeader(
             Text(
                 text = dayId,
                 color = MaterialTheme.colors.primary,
-                textAlign = TextAlign.Center
+                textAlign = GravityMapper.toTextAlign(viewModel.design.value.textAlign)
             )
         }
     }
