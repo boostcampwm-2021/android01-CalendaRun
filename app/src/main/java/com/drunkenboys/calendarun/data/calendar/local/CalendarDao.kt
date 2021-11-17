@@ -2,13 +2,14 @@ package com.drunkenboys.calendarun.data.calendar.local
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
 import com.drunkenboys.calendarun.data.calendar.entity.Calendar
 
 @Dao
 interface CalendarDao {
 
-    @Insert
+    @Insert(onConflict = REPLACE)
     suspend fun insertCalendar(calendar: Calendar): Long
 
     @Query("SELECT * FROM `calendar`")
