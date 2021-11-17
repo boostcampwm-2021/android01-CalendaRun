@@ -94,6 +94,10 @@ class YearCalendarViewModel: ViewModel() {
         _clickedDay.value = day
     }
 
+    fun getDaySchedules(day: LocalDate) = schedules.value.filter { schedule ->
+        day in schedule.startDate.toLocalDate()..schedule.endDate.toLocalDate()
+    }
+
     companion object {
         const val INIT_YEAR = 0
         const val LAST_YEAR = 10000
