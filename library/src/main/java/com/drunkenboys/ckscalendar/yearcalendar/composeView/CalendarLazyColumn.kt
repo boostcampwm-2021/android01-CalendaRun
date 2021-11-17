@@ -16,12 +16,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.drunkenboys.ckscalendar.FakeFactory
 import com.drunkenboys.ckscalendar.data.*
 import com.drunkenboys.ckscalendar.listener.OnDayClickListener
 import com.drunkenboys.ckscalendar.listener.OnDaySecondClickListener
 import com.drunkenboys.ckscalendar.yearcalendar.YearCalendarViewModel
-import com.drunkenboys.ckscalendar.yearcalendar.YearCalendarView
 import java.time.LocalDate
 
 @Composable
@@ -42,6 +40,10 @@ fun CalendarLazyColumn(
         )
     }
 
+    // viewModel의 recomposer를 LazyColumn으로 설정해서 setSchedule 호출 시 recompose
+    viewModel.setRecomposeScope(currentRecomposeScope)
+
+    // state hoisting
     val dayColumnModifier = { day: CalendarDate ->
         Modifier
             .layoutId(day.date.toString())
@@ -55,7 +57,7 @@ fun CalendarLazyColumn(
 
     // RecyclerView와 유사
     LazyColumn(state = listState) {
-        yearList.forEach { year ->
+        viewModel.yearList.forEach { year ->
             // 달력
             item {
                 Text(
@@ -81,18 +83,7 @@ fun CalendarLazyColumn(
 
     // 뷰가 호출되면 오늘 날짜가 보이게 스크롤
     LaunchedEffect(listState) {
-        listState.scrollToItem(index = YearCalendarView.LAST_YEAR - 1) // preload
-        listState.scrollToItem(index = getTodayItemIndex())
+        listState.scrollToItem(index = YearCalendarViewModel.LAST_YEAR) // preload
+        listState.scrollToItem(index = viewModel.getTodayItemIndex())
     }
-}
-
-private val yearList = (YearCalendarView.INIT_YEAR..YearCalendarView.LAST_YEAR).map { year ->
-    FakeFactory.createFakeCalendarSetList(year)
-}
-
-private fun getTodayItemIndex(): Int {
-    val today = LocalDate.now()
-
-    // (월 달력 12개 + 년 헤더 1개) + 이번달
-    return (today.year - YearCalendarView.INIT_YEAR) * 13 + today.monthValue
 }

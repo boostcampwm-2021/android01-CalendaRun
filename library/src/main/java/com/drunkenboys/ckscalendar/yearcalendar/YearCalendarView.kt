@@ -63,9 +63,4 @@ class YearCalendarView
     fun resetTheme() {
         viewModel.resetDesign()
     }
-
-    companion object {
-        const val INIT_YEAR = 0
-        const val LAST_YEAR = 10000
-    }
 }

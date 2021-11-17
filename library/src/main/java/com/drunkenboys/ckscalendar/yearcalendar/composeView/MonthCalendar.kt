@@ -32,33 +32,23 @@ fun MonthCalendar(
         ) {
             weekSchedules = Array(7) { Array(viewModel.design.value.visibleScheduleCount) { null } }
             // 월 표시
-            if (isFirstWeek(week, month.id)) {
-                AnimatedMonthHeader(
-                    listState = listState,
-                    month = month.id
-                )
-            }
+            if (viewModel.isFirstWeek(week, month.id))
+                AnimatedMonthHeader(listState = listState, month = month.id)
+
             week.forEach { day ->
                 when (day.dayType) {
                     // 빈 날짜
-                    DayType.PADDING -> {
-                        PaddingText(day = day, viewModel = viewModel)
-                    }
+                    DayType.PADDING -> PaddingText(day = day, viewModel = viewModel)
+
                     // 1일
-                    else -> {
-                        Column(modifier = dayColumnModifier(day), horizontalAlignment = Alignment.CenterHorizontally) {
-                            DayText(day = day, viewModel = viewModel)
-                            ScheduleText(today = day.date, weekSchedules, viewModel = viewModel)
-                        }
+                    else -> Column(modifier = dayColumnModifier(day), horizontalAlignment = Alignment.CenterHorizontally) {
+                        DayText(day = day, viewModel = viewModel)
+                        ScheduleText(today = day.date, weekSchedules, viewModel = viewModel)
                     }
                 }
             }
         }
     }
-}
-
-private fun isFirstWeek(week: List<CalendarDate>, monthId: Int) = week.any { day ->
-    day.date.dayOfMonth == 1 && monthId == day.date.monthValue
 }
 
 private fun dayOfWeekConstraints(weekIds: List<String>) = ConstraintSet {
