@@ -7,7 +7,8 @@ data class CalendarItem(
     val id: Long,
     val name: String,
     val startDate: LocalDate,
-    val endDate: LocalDate
+    val endDate: LocalDate,
+    var check: Boolean = false
 ) {
     companion object {
         val diffUtil by lazy {
