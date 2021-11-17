@@ -11,6 +11,7 @@ import com.drunkenboys.ckscalendar.data.*
 import com.drunkenboys.ckscalendar.listener.OnDayClickListener
 import com.drunkenboys.ckscalendar.listener.OnDaySecondClickListener
 import com.drunkenboys.ckscalendar.yearcalendar.composeView.*
+import java.time.LocalDate
 
 @BindingMethods(
     value = [
@@ -77,5 +78,21 @@ class YearCalendarView
 
     fun resetTheme() {
         viewModel.resetDesign()
+    }
+
+    fun moveToDay(day: LocalDate) {
+        // TODO: 원하는 날짜로 스크롤
+
+        // TODO: 원하는 날짜로 클릭
+    }
+
+    fun getSelectedDay(): LocalDate {
+        // TODO: 선택된 날짜 반환
+        return TODO()
+    }
+
+    fun getDaySchedules(day: LocalDate): List<CalendarScheduleObject> {
+        // 해당 날짜가 포함된 스케줄 제공
+        return TODO()
     }
 }
