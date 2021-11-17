@@ -3,6 +3,7 @@ package com.drunkenboys.calendarun.view
 import android.animation.ObjectAnimator
 import android.content.Context
 import android.util.AttributeSet
+import android.view.MotionEvent
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.Transformation
@@ -25,13 +26,14 @@ class ExpandableLinearLayout @JvmOverloads constructor(
         isClickable = true
     }
 
-    override fun performClick(): Boolean {
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        val result = super.dispatchTouchEvent(ev)
         if (isAnimationEnd && isExpand) {
             collapse()
         } else if (isAnimationEnd && !isExpand) {
             expand()
         }
-        return super.performClick()
+        return result
     }
 
     private fun expand() {
