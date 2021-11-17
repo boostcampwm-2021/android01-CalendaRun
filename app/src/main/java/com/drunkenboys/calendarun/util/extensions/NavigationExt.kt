@@ -8,7 +8,6 @@ import androidx.navigation.NavDirections
  * 이동할 수 있는 destination이 있는지 확인 후 navigate.
  */
 fun NavController.navigateSafe(action: NavDirections) {
-    val currentDestination = currentDestination ?: return
-    currentDestination.getAction(action.actionId) ?: return
+    currentDestination?.getAction(action.actionId) ?: return
     navigate(action)
 }
