@@ -25,7 +25,7 @@ class MonthPageAdapter : RecyclerView.Adapter<MonthPageAdapter.Holder>() {
 
     private val cachedCalendar = HashMap<Int, List<CalendarDate>>()
 
-    private var calendarDesign = CalendarDesignObject.getDefaultDesign()
+    private lateinit var calendarDesign: CalendarDesignObject
 
     private var lastSelectPagePosition = -1
     private var lastSelectDayPosition = -1
@@ -33,8 +33,8 @@ class MonthPageAdapter : RecyclerView.Adapter<MonthPageAdapter.Holder>() {
     private val today = LocalDate.now()
     private var isFirstToday = true
 
-    var onDateClickListener: OnDayClickListener? = null
-    var onDateSecondClickListener: OnDaySecondClickListener? = null
+    var onDayClickListener: OnDayClickListener? = null
+    var onDaySecondClickListener: OnDaySecondClickListener? = null
 
     fun setItems(list: List<CalendarSet>) {
         cachedCalendar.clear()
@@ -48,7 +48,7 @@ class MonthPageAdapter : RecyclerView.Adapter<MonthPageAdapter.Holder>() {
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
-        holder.bind(list[position], onDateClickListener, onDateSecondClickListener)
+        holder.bind(list[position], onDayClickListener, onDaySecondClickListener)
     }
 
     override fun getItemCount(): Int = list.size
@@ -147,8 +147,8 @@ class MonthPageAdapter : RecyclerView.Adapter<MonthPageAdapter.Holder>() {
                 }
                 withContext(Dispatchers.Main) {
                     monthAdapter.setItems(dates, schedules, calendarDesign, adapterPosition)
-                    monthAdapter.onDateClickListener = onDayClick
-                    monthAdapter.onDateSecondClickListener = onDaySecondClick
+                    monthAdapter.onDayClickListener = onDayClick
+                    monthAdapter.onDaySecondClickListener = onDaySecondClick
                 }
             }
         }
