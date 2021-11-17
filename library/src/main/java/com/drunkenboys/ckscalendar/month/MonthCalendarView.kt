@@ -6,6 +6,8 @@ import android.graphics.Color
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.databinding.BindingMethod
+import androidx.databinding.BindingMethods
 import androidx.viewpager2.widget.ViewPager2
 import com.drunkenboys.ckscalendar.R
 import com.drunkenboys.ckscalendar.data.CalendarDesignObject
@@ -17,6 +19,19 @@ import com.drunkenboys.ckscalendar.listener.OnDayClickListener
 import com.drunkenboys.ckscalendar.listener.OnDaySecondClickListener
 import java.time.LocalDate
 
+@BindingMethods(
+    value = [
+        BindingMethod(
+            type = MonthCalendarView::class,
+            attribute = "app:onDayClick",
+            method = "setOnDateClickListener"
+        ),
+        BindingMethod(
+            type = MonthCalendarView::class,
+            attribute = "app:onDaySecondClick",
+            method = "setOnDaySecondClickListener"
+        )]
+)
 class MonthCalendarView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
