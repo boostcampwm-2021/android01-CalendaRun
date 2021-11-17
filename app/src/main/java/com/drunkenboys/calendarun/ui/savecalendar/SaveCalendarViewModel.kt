@@ -58,6 +58,7 @@ class SaveCalendarViewModel @Inject constructor(
             checkPointList.forEach { checkPoint ->
                 checkPointItemList.add(
                     CheckPointItem(
+                        id = checkPoint.id,
                         name = MutableStateFlow(checkPoint.name),
                         date = MutableStateFlow(checkPoint.date)
                     )
@@ -121,7 +122,7 @@ class SaveCalendarViewModel @Inject constructor(
 
         viewModelScope.launch() {
             val newCalender = Calendar(
-                id = 0,
+                id = calendarId,
                 name = calendarName,
                 startDate = startDate,
                 endDate = endDate,
@@ -129,11 +130,12 @@ class SaveCalendarViewModel @Inject constructor(
             val calendarId = calendarLocalDataSource.insertCalendar(newCalender)
 
             _checkPointItemList.value.forEach { item ->
+                val id = item.id
                 val checkPointName = item.name.value
                 val date = item.date.value ?: return@launch
                 checkPointLocalDataSource.insertCheckPoint(
                     CheckPoint(
-                        id = 0,
+                        id = id,
                         calendarId = calendarId,
                         name = checkPointName,
                         date = date
