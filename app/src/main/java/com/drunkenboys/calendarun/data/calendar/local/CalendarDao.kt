@@ -1,6 +1,7 @@
 package com.drunkenboys.calendarun.data.calendar.local
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
@@ -18,4 +19,7 @@ interface CalendarDao {
     @Query("SELECT * FROM `calendar` WHERE id == :id")
     suspend fun fetchCalendar(id: Long): Calendar
 
+    @Delete
+    suspend fun deleteCalendar(calendar: Calendar)
+    
 }
