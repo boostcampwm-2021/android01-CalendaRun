@@ -27,6 +27,7 @@ class ManageCalendarFragment : BaseFragment<FragmentManageCalendarBinding>(R.lay
         setupToolbar()
         setupAdapter()
         setupFabClickListener()
+        setupToolbarMenuItemOnClickListener()
         collectCalendarItemList()
     }
 
@@ -56,6 +57,19 @@ class ManageCalendarFragment : BaseFragment<FragmentManageCalendarBinding>(R.lay
         binding.fabManagerCalenderAddCalendar.setOnClickListener {
             val action = ManageCalendarFragmentDirections.toSaveCalendar()
             navController.navigate(action)
+        }
+    }
+
+    private fun setupToolbarMenuItemOnClickListener() {
+        binding.toolbarManageCalendar.setOnMenuItemClickListener { item ->
+            if (item.itemId == R.id.menu_delete_schedule) {
+                val currentCalendarItemList = manageCalendarAdapter.currentList
+                manageCalendarViewModel.deleteCalendarItem(currentCalendarItemList)
+                true
+            } else {
+                false
+            }
+
         }
     }
 

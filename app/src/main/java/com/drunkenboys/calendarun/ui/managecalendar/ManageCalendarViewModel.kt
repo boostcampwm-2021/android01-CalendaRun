@@ -2,6 +2,7 @@ package com.drunkenboys.calendarun.ui.managecalendar
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.drunkenboys.calendarun.data.calendar.entity.Calendar
 import com.drunkenboys.calendarun.data.calendar.local.CalendarLocalDataSource
 import com.drunkenboys.calendarun.ui.managecalendar.model.CalendarItem
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,6 +34,24 @@ class ManageCalendarViewModel @Inject constructor(
                 )
             }
             _calendarItemList.emit(newCalendarItemList)
+        }
+    }
+
+    fun deleteCalendarItem(currentCalendarItemList: List<CalendarItem>) {
+        viewModelScope.launch {
+            currentCalendarItemList
+                .filter { calendarItem -> calendarItem.check }
+                .forEach { calendarItem ->
+                    calendarLocalDataSource.deleteCalendar(
+                        Calendar(
+                            id = calendarItem.id,
+                            name = calendarItem.name,
+                            startDate = calendarItem.startDate,
+                            endDate = calendarItem.endDate
+                        )
+                    )
+                }
+            fetchCalendarList()
         }
     }
 }
