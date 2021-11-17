@@ -86,9 +86,8 @@ class YearCalendarView
         // TODO: 원하는 날짜로 클릭
     }
 
-    fun getSelectedDay(): LocalDate {
-        // TODO: 선택된 날짜 반환
-        return TODO()
+    fun findClickedDay(): LocalDate? {
+        return viewModel.clickedDay.value?.date
     }
 
     fun getDaySchedules(day: LocalDate): List<CalendarScheduleObject> {

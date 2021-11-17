@@ -30,9 +30,8 @@ fun CalendarLazyColumn(
 ) {
     // RecyclerView의 상태를 관찰
     val listState = rememberLazyListState()
-    val today = CalendarDate(LocalDate.now(), DayType.PADDING, true) // 초기화를 위한 dummy
 
-    var clickedDay by remember { mutableStateOf<CalendarDate?>(today) }
+    val clickedDay by remember { viewModel.clickedDay }
     val clickedEdge = { day: CalendarDate ->
         BorderStroke(
             width = 2.dp,
@@ -51,7 +50,7 @@ fun CalendarLazyColumn(
             .clickable(onClick = {
                 if (clickedDay != day) onDayClickListener?.onDayClick(day.date, 0)
                 else onDaySecondClickListener?.onDayClick(day.date, 0)
-                clickedDay = day
+                viewModel.clickDay(day)
             })
     }
 
