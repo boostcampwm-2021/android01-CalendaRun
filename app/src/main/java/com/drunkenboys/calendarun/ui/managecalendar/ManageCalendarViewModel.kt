@@ -6,7 +6,9 @@ import com.drunkenboys.calendarun.data.calendar.entity.Calendar
 import com.drunkenboys.calendarun.data.calendar.local.CalendarLocalDataSource
 import com.drunkenboys.calendarun.ui.managecalendar.model.CalendarItem
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -18,6 +20,9 @@ class ManageCalendarViewModel @Inject constructor(
 
     private val _calendarItemList = MutableStateFlow<List<CalendarItem>>(emptyList())
     val calendarItemList: StateFlow<List<CalendarItem>> = _calendarItemList
+
+    private val _deleteCalendarEvent = MutableSharedFlow<Unit>()
+    val deleteCalendarEvent: SharedFlow<Unit> = _deleteCalendarEvent
 
     fun fetchCalendarList() {
         viewModelScope.launch {
@@ -52,6 +57,12 @@ class ManageCalendarViewModel @Inject constructor(
                     )
                 }
             fetchCalendarList()
+        }
+    }
+
+    fun emitDeleteCalendarEvent() {
+        viewModelScope.launch {
+            _deleteCalendarEvent.emit(Unit)
         }
     }
 }
