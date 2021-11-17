@@ -36,8 +36,8 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
     var selectedPosition = -1
     var currentPagePosition = -1
 
-    var onDateClickListener: OnDayClickListener? = null
-    var onDateSecondClickListener: OnDaySecondClickListener? = null
+    var onDayClickListener: OnDayClickListener? = null
+    var onDaySecondClickListener: OnDaySecondClickListener? = null
 
     private val lineIndex = HashMap<String, Int>()
 
@@ -197,9 +197,9 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
 
         private fun notifyClickEventType() {
             if (selectedPosition == adapterPosition) {
-                onDateSecondClickListener?.onDayClick(currentList[adapterPosition].date, adapterPosition)
+                onDaySecondClickListener?.onDayClick(currentList[adapterPosition].date, adapterPosition)
             } else {
-                onDateClickListener?.onDayClick(currentList[adapterPosition].date, adapterPosition)
+                onDayClickListener?.onDayClick(currentList[adapterPosition].date, adapterPosition)
             }
         }
     }

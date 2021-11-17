@@ -24,7 +24,7 @@ import java.time.LocalDate
         BindingMethod(
             type = MonthCalendarView::class,
             attribute = "app:onDayClick",
-            method = "setOnDateClickListener"
+            method = "setOnDayClickListener"
         ),
         BindingMethod(
             type = MonthCalendarView::class,
@@ -110,12 +110,12 @@ class MonthCalendarView @JvmOverloads constructor(
         pageAdapter.setItems(calendarList)
     }
 
-    fun setOnDateClickListener(onDateClickListener: OnDayClickListener) {
-        pageAdapter.onDateClickListener = onDateClickListener
+    fun setOnDayClickListener(onDayClickListener: OnDayClickListener) {
+        pageAdapter.onDayClickListener = onDayClickListener
     }
 
-    fun setOnDaySecondClickListener(onDateSecondClickListener: OnDaySecondClickListener) {
-        pageAdapter.onDateSecondClickListener = onDateSecondClickListener
+    fun setOnDaySecondClickListener(onDaySecondClickListener: OnDaySecondClickListener) {
+        pageAdapter.onDaySecondClickListener = onDaySecondClickListener
     }
 
     fun setSchedules(schedules: List<CalendarScheduleObject>) {
