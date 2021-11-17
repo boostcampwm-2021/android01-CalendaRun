@@ -10,4 +10,6 @@ interface CalendarLocalDataSource {
 
     suspend fun fetchCalendar(id: Long): Calendar
 
+    suspend fun deleteCalendar(calendar: Calendar)
+
 }
