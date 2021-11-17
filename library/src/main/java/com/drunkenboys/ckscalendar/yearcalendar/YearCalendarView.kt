@@ -4,12 +4,27 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
+import androidx.databinding.BindingMethod
+import androidx.databinding.BindingMethods
 import com.drunkenboys.ckscalendar.databinding.LayoutYearCalendarBinding
 import com.drunkenboys.ckscalendar.data.*
 import com.drunkenboys.ckscalendar.listener.OnDayClickListener
 import com.drunkenboys.ckscalendar.listener.OnDaySecondClickListener
 import com.drunkenboys.ckscalendar.yearcalendar.composeView.*
 
+@BindingMethods(
+    value = [
+        BindingMethod(
+            type = YearCalendarView::class,
+            attribute = "app:onDayClick",
+            method = "setOnDayClickListener"
+        ),
+        BindingMethod(
+            type = YearCalendarView::class,
+            attribute = "app:onDaySecondClick",
+            method = "setOnDaySecondClickListener"
+        )]
+)
 class YearCalendarView
 @JvmOverloads constructor(
     context: Context,
