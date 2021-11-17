@@ -17,9 +17,9 @@ class YearCalendarViewModel: ViewModel() {
     private val _design = mutableStateOf(CalendarDesignObject())
     val design: State<CalendarDesignObject> = _design
 
-    val yearList: List<List<CalendarSet>> = (INIT_YEAR..LAST_YEAR).map { year ->
-        FakeFactory.createFakeCalendarSetList(year)
-    }
+    private var currentYear = LocalDate.now().year
+
+    val yearList: MutableList<List<CalendarSet>> = mutableListOf(createCalendarSets(currentYear))
 
     private val _clickedDay = mutableStateOf<CalendarDate?>(CalendarDate(LocalDate.now(), DayType.WEEKDAY))
     val clickedDay: State<CalendarDate?> = _clickedDay
@@ -48,6 +48,7 @@ class YearCalendarViewModel: ViewModel() {
         _design.value = CalendarDesignObject()
     }
 
+    // FIXME
     fun getDayItemIndex(day: LocalDate = LocalDate.now()): Int {
         // (월 달력 12개 + 년 헤더 1개) + 이번달
         return (day.year - INIT_YEAR) * 13 + day.monthValue
@@ -94,6 +95,29 @@ class YearCalendarViewModel: ViewModel() {
 
     fun getDaySchedules(day: LocalDate) = schedules.value.filter { schedule ->
         day in schedule.startDate.toLocalDate()..schedule.endDate.toLocalDate()
+    }
+
+    fun fetchNextCalendarSet() {
+        yearList.add(createCalendarSets(++currentYear))
+        recomposeScope?.invalidate()
+    }
+
+    fun fetchPrevCalendarSet() {
+        TODO()
+    }
+
+    private fun createCalendarSets(year: Int): List<CalendarSet> {
+        val calendarMonth = mutableListOf<CalendarSet>()
+        var startOfMonth: LocalDate
+        var endOfMonth: LocalDate
+
+        (1..12).forEach { month ->
+            startOfMonth = LocalDate.of(year, month, 1)
+            endOfMonth = startOfMonth.plusDays(startOfMonth.lengthOfMonth() - 1L)
+            calendarMonth.add(CalendarSet(month, "${month}월", startOfMonth, endOfMonth))
+        }
+
+        return calendarMonth
     }
 
     companion object {
