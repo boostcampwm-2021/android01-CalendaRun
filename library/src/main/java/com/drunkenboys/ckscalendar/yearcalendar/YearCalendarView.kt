@@ -4,12 +4,28 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
+import androidx.databinding.BindingMethod
+import androidx.databinding.BindingMethods
 import com.drunkenboys.ckscalendar.databinding.LayoutYearCalendarBinding
 import com.drunkenboys.ckscalendar.data.*
 import com.drunkenboys.ckscalendar.listener.OnDayClickListener
 import com.drunkenboys.ckscalendar.listener.OnDaySecondClickListener
 import com.drunkenboys.ckscalendar.yearcalendar.composeView.*
+import java.time.LocalDate
 
+@BindingMethods(
+    value = [
+        BindingMethod(
+            type = YearCalendarView::class,
+            attribute = "app:onDayClick",
+            method = "setOnDayClickListener"
+        ),
+        BindingMethod(
+            type = YearCalendarView::class,
+            attribute = "app:onDaySecondClick",
+            method = "setOnDaySecondClickListener"
+        )]
+)
 class YearCalendarView
 @JvmOverloads constructor(
     context: Context,
@@ -63,4 +79,14 @@ class YearCalendarView
     fun resetTheme() {
         viewModel.resetDesign()
     }
+
+    fun moveToDay(day: LocalDate) {
+        // TODO: 원하는 날짜로 스크롤
+
+        // TODO: 원하는 날짜로 클릭
+    }
+
+    fun findClickedDay(): LocalDate? = viewModel.clickedDay.value?.date
+
+    fun getDaySchedules(day: LocalDate): List<CalendarScheduleObject> = viewModel.getDaySchedules(day)
 }

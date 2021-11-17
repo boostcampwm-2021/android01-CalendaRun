@@ -15,10 +15,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.drunkenboys.ckscalendar.data.*
 import com.drunkenboys.ckscalendar.listener.OnDayClickListener
 import com.drunkenboys.ckscalendar.listener.OnDaySecondClickListener
+import com.drunkenboys.ckscalendar.yearcalendar.CustomTheme
 import com.drunkenboys.ckscalendar.yearcalendar.YearCalendarViewModel
 import java.time.LocalDate
 
@@ -30,9 +32,8 @@ fun CalendarLazyColumn(
 ) {
     // RecyclerView의 상태를 관찰
     val listState = rememberLazyListState()
-    val today = CalendarDate(LocalDate.now(), DayType.PADDING, true) // 초기화를 위한 dummy
 
-    var clickedDay by remember { mutableStateOf<CalendarDate?>(today) }
+    val clickedDay by remember { viewModel.clickedDay }
     val clickedEdge = { day: CalendarDate ->
         BorderStroke(
             width = 2.dp,
@@ -51,7 +52,7 @@ fun CalendarLazyColumn(
             .clickable(onClick = {
                 if (clickedDay != day) onDayClickListener?.onDayClick(day.date, 0)
                 else onDaySecondClickListener?.onDayClick(day.date, 0)
-                clickedDay = day
+                viewModel.clickDay(day)
             })
     }
 
@@ -83,7 +84,21 @@ fun CalendarLazyColumn(
 
     // 뷰가 호출되면 오늘 날짜가 보이게 스크롤
     LaunchedEffect(listState) {
-        listState.scrollToItem(index = YearCalendarViewModel.LAST_YEAR) // preload
-        listState.scrollToItem(index = viewModel.getTodayItemIndex())
+        listState.scrollToItem(index = viewModel.getDayItemIndex(LocalDate.of(2100, 1, 1))) // preload
+        listState.scrollToItem(index = viewModel.getDayItemIndex())
+    }
+}
+
+@Preview
+@Composable
+fun PreviewCalendar() {
+    val viewModel = YearCalendarViewModel()
+
+    CustomTheme(design = viewModel.design.value) {
+        CalendarLazyColumn(
+            onDayClickListener = null,
+            onDaySecondClickListener = null,
+            viewModel = viewModel
+        )
     }
 }

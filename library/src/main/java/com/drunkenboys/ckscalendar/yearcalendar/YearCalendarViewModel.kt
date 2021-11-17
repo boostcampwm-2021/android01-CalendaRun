@@ -3,10 +3,7 @@ package com.drunkenboys.ckscalendar.yearcalendar
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import com.drunkenboys.ckscalendar.FakeFactory
-import com.drunkenboys.ckscalendar.data.CalendarDate
-import com.drunkenboys.ckscalendar.data.CalendarDesignObject
-import com.drunkenboys.ckscalendar.data.CalendarScheduleObject
-import com.drunkenboys.ckscalendar.data.CalendarSet
+import com.drunkenboys.ckscalendar.data.*
 import com.drunkenboys.ckscalendar.utils.TimeUtils.dayValue
 import com.drunkenboys.ckscalendar.utils.TimeUtils.isSameWeek
 import java.time.DayOfWeek
@@ -23,6 +20,9 @@ class YearCalendarViewModel: ViewModel() {
     val yearList: List<List<CalendarSet>> = (INIT_YEAR..LAST_YEAR).map { year ->
         FakeFactory.createFakeCalendarSetList(year)
     }
+
+    private val _clickedDay = mutableStateOf<CalendarDate?>(CalendarDate(LocalDate.now(), DayType.WEEKDAY))
+    val clickedDay: State<CalendarDate?> = _clickedDay
 
     private var recomposeScope: RecomposeScope? = null
 
@@ -48,11 +48,9 @@ class YearCalendarViewModel: ViewModel() {
         _design.value = CalendarDesignObject()
     }
 
-    fun getTodayItemIndex(): Int {
-        val today = LocalDate.now()
-
+    fun getDayItemIndex(day: LocalDate = LocalDate.now()): Int {
         // (월 달력 12개 + 년 헤더 1개) + 이번달
-        return (today.year - INIT_YEAR) * 13 + today.monthValue
+        return (day.year - INIT_YEAR) * 13 + day.monthValue
     }
 
     fun setWeekSchedules(
@@ -90,6 +88,13 @@ class YearCalendarViewModel: ViewModel() {
         day.date.dayOfMonth == 1 && monthId == day.date.monthValue
     }
 
+    fun clickDay(day: CalendarDate) {
+        _clickedDay.value = day
+    }
+
+    fun getDaySchedules(day: LocalDate) = schedules.value.filter { schedule ->
+        day in schedule.startDate.toLocalDate()..schedule.endDate.toLocalDate()
+    }
 
     companion object {
         const val INIT_YEAR = 0
