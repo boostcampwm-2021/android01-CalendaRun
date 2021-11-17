@@ -22,6 +22,7 @@ import com.drunkenboys.ckscalendar.data.DayType
 import com.drunkenboys.ckscalendar.databinding.LayoutWeekCalendarBinding
 import com.drunkenboys.ckscalendar.listener.OnDayClickListener
 import com.drunkenboys.ckscalendar.weekcalendar.WeekCalendar
+import com.drunkenboys.ckscalendar.yearcalendar.CustomTheme
 import com.drunkenboys.ckscalendar.yearcalendar.YearCalendarViewModel
 import java.time.LocalDate
 
@@ -59,15 +60,16 @@ class WeekCalendarView
                         if (clickedDay != day) {
                             onDateClickListener?.onDayClick(day.date, 0)
                             clickedDay = day
-                        }
-                        else clickedDay = null
+                        } else clickedDay = null
                     })
             }
 
-            WeekCalendar(
-                viewModel = viewModel,
-                dayModifier = dayColumnModifier
-            )
+            CustomTheme(design = viewModel.design.value) {
+                WeekCalendar(
+                    viewModel = viewModel,
+                    dayModifier = dayColumnModifier
+                )
+            }
         }
     }
 
