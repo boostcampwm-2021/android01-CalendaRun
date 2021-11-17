@@ -28,7 +28,7 @@
             android:layout_marginHorizontal="16dp"
             android:layout_marginTop="16dp"
             android:text="@string/saveCalendar_title"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/ch_calendar_select"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -90,6 +90,16 @@
             app:layout_constraintStart_toStartOf="@id/tv_endDate_name"
             app:layout_constraintTop_toBottomOf="@id/tv_endDate_name"
             tools:text="2021.11.15" />
+
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/ch_calendar_select"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@drawable/selector_check_box_18"
+            android:checked="@={item.check}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
