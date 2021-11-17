@@ -70,7 +70,7 @@
                         android:text="@string/weekday"
                         android:textColor="@color/black"
                         android:textSize="16sp"
-                        app:indicatorTint="@color/black" />
+                        app:indicatorTint="@{viewModel.weekdayColor}" />
 
                     <include
                         layout="@layout/view_color_set"
@@ -100,7 +100,7 @@
                         android:text="@string/holiday"
                         android:textColor="@color/black"
                         android:textSize="16sp"
-                        app:indicatorTint="@color/black" />
+                        app:indicatorTint="@{viewModel.holidayColor}" />
 
                     <include
                         layout="@layout/view_color_set"
@@ -129,7 +129,7 @@
                         android:text="@string/saturday"
                         android:textColor="@color/black"
                         android:textSize="16sp"
-                        app:indicatorTint="@color/black" />
+                        app:indicatorTint="@{viewModel.saturdayColor}" />
 
                     <include
                         layout="@layout/view_color_set"
@@ -158,7 +158,7 @@
                         android:text="@string/sunday"
                         android:textColor="@color/black"
                         android:textSize="16sp"
-                        app:indicatorTint="@color/black" />
+                        app:indicatorTint="@{viewModel.sundayColor}" />
 
                     <include
                         layout="@layout/view_color_set"
@@ -199,7 +199,7 @@
                         android:text="@string/selectedDayStroke"
                         android:textColor="@color/black"
                         android:textSize="16sp"
-                        app:indicatorTint="@color/black" />
+                        app:indicatorTint="@{viewModel.selectedDayStrokeColor}" />
 
                     <include
                         layout="@layout/view_color_set"
@@ -228,7 +228,7 @@
                         android:text="@string/dayBackgroundColor"
                         android:textColor="@color/black"
                         android:textSize="16sp"
-                        app:indicatorTint="@color/black" />
+                        app:indicatorTint="@{viewModel.dayBackgroundColor}" />
 
                     <include
                         layout="@layout/view_color_set"

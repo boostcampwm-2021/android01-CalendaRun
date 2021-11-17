@@ -34,4 +34,8 @@ class ColorIndicatorTextView @JvmOverloads constructor(
 
         typedArray.recycle()
     }
+
+    fun setIndicatorTint(color: Int) {
+        compoundDrawablesRelative[2].setTintList(ColorStateList.valueOf(color))
+    }
 }
