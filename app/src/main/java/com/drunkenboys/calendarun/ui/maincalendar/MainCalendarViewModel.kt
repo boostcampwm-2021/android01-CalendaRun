@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
@@ -41,6 +42,9 @@ class MainCalendarViewModel @Inject constructor(
 
     private val _fabClickEvent = MutableSharedFlow<Long>()
     val fabClickEvent: SharedFlow<Long> = _fabClickEvent
+
+    private val _daySecondClickEvent = MutableSharedFlow<LocalDate>()
+    val daySecondClickEvent: SharedFlow<LocalDate> = _daySecondClickEvent
 
     fun setCalendar(calendar: Calendar) {
         viewModelScope.launch {
@@ -87,6 +91,12 @@ class MainCalendarViewModel @Inject constructor(
     fun emitFabClickEvent() {
         viewModelScope.launch {
             _fabClickEvent.emit(calendar.value?.id ?: 0)
+        }
+    }
+
+    fun emitDaySecondClickEvent(date: LocalDate) {
+        viewModelScope.launch {
+            _daySecondClickEvent.emit(date)
         }
     }
 }
