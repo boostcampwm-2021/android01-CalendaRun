@@ -14,7 +14,10 @@ fun LazyListState.ShouldNextScroll(
     val shouldLoadMore = remember {
         derivedStateOf {
             with(layoutInfo) {
-                visibleItemsInfo.last().index >=  totalItemsCount - 1
+                //  화면에 보이는 마지막 인덱스
+                val lastIndex = visibleItemsInfo.lastOrNull() ?: return@derivedStateOf true
+
+                lastIndex.index >=  totalItemsCount - 1
             }
         }
     }
@@ -28,7 +31,6 @@ fun LazyListState.ShouldNextScroll(
     }
 }
 
-// FIXME: 첫 아이템보다 이전으로 가는 로직
 @Composable
 fun LazyListState.ShouldPrevScroll(
     onLoadMore: () -> Unit
@@ -37,7 +39,10 @@ fun LazyListState.ShouldPrevScroll(
     val shouldLoadMore = remember {
         derivedStateOf {
             with(layoutInfo) {
-                visibleItemsInfo.last().index >=  totalItemsCount - 1
+                //화면에 보이는 첫번째 인덱스
+                val firstIndex = visibleItemsInfo.firstOrNull() ?: return@derivedStateOf true
+
+                firstIndex.index <=  1
             }
         }
     }
