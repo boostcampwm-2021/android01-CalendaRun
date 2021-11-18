@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="common_month">월</string>
+    <string name="common_year">년</string>
     <string name="sunday">일</string>
     <string name="monday">월</string>
     <string name="tuesday">화</string>
