@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="com.drunkenboys.ckscalendar.data.ScheduleColorType" />
+
+        <variable
+            name="viewModel"
+            type="com.drunkenboys.calendarun.ui.theme.ThemeViewModel" />
+
+        <variable
+            name="themeColorType"
+            type="com.drunkenboys.calendarun.ui.theme.model.ThemeColorType" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <FrameLayout
+            android:id="@+id/view_colorSet_red"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{()->viewModel.setColorType(ScheduleColorType.RED.color, themeColorType)}"
+            android:padding="8dp">
+
+            <View
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="@drawable/bg_tag_color"
+                android:backgroundTint="@{ScheduleColorType.RED.color}" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/view_colorSet_orange"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{()->viewModel.setColorType(ScheduleColorType.ORANGE.color, themeColorType)}"
+            android:padding="8dp"
+            tools:ignore="MissingConstraints">
+
+            <View
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="@drawable/bg_tag_color"
+                android:backgroundTint="@{ScheduleColorType.ORANGE.color}" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/view_colorSet_yellow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{()->viewModel.setColorType(ScheduleColorType.YELLOW.color, themeColorType)}"
+            android:padding="8dp"
+            tools:ignore="MissingConstraints">
+
+            <View
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="@drawable/bg_tag_color"
+                android:backgroundTint="@{ScheduleColorType.YELLOW.color}" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/view_colorSet_green"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{()->viewModel.setColorType(ScheduleColorType.GREEN.color, themeColorType)}"
+            android:padding="8dp"
+            tools:ignore="MissingConstraints">
+
+            <View
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="@drawable/bg_tag_color"
+                android:backgroundTint="@{ScheduleColorType.GREEN.color}" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/view_colorSet_blue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{()->viewModel.setColorType(ScheduleColorType.BLUE.color, themeColorType)}"
+            android:padding="8dp"
+            tools:ignore="MissingConstraints">
+
+            <View
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="@drawable/bg_tag_color"
+                android:backgroundTint="@{ScheduleColorType.BLUE.color}" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/view_colorSet_black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{()->viewModel.setColorType(@color/black, themeColorType)}"
+            android:padding="8dp"
+            tools:ignore="MissingConstraints">
+
+            <View
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="@drawable/bg_tag_color"
+                android:backgroundTint="@color/black" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/view_colorSet_navy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{()->viewModel.setColorType(ScheduleColorType.NAVY.color, themeColorType)}"
+            android:padding="8dp"
+            tools:ignore="MissingConstraints">
+
+            <View
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="@drawable/bg_tag_color"
+                android:backgroundTint="@{ScheduleColorType.NAVY.color}" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/view_colorSet_purple"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{()->viewModel.setColorType(ScheduleColorType.PURPLE.color, themeColorType)}"
+            android:padding="8dp"
+            tools:ignore="MissingConstraints">
+
+            <View
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="@drawable/bg_tag_color"
+                android:backgroundTint="@{ScheduleColorType.PURPLE.color}" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/view_colorSet_grey"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{()->viewModel.setColorType(ScheduleColorType.GRAY.color, themeColorType)}"
+            android:padding="8dp"
+            tools:ignore="MissingConstraints">
+
+            <View
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="@drawable/bg_tag_color"
+                android:backgroundTint="@{ScheduleColorType.GRAY.color}" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/view_colorSet_cyan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{()->viewModel.setColorType(ScheduleColorType.CYAN.color, themeColorType)}"
+            android:padding="8dp"
+            tools:ignore="MissingConstraints">
+
+            <View
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="@drawable/bg_tag_color"
+                android:backgroundTint="@{ScheduleColorType.CYAN.color}" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/view_colorSet_magenta"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{()->viewModel.setColorType(ScheduleColorType.MAGENTA.color, themeColorType)}"
+            android:padding="8dp"
+            tools:ignore="MissingConstraints">
+
+            <View
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="@drawable/bg_tag_color"
+                android:backgroundTint="@{ScheduleColorType.MAGENTA.color}" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/view_colorSet_white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:onClick="@{()->viewModel.setColorType(@color/white, themeColorType)}"
+            android:padding="8dp"
+            tools:ignore="MissingConstraints">
+
+            <View
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="@drawable/bg_tag_color"
+                android:backgroundTint="@color/white"
+                android:elevation="4dp" />
+
+        </FrameLayout>
+
+        <androidx.constraintlayout.helper.widget.Flow
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="view_colorSet_red, view_colorSet_orange, view_colorSet_yellow, view_colorSet_green, view_colorSet_blue, view_colorSet_black, view_colorSet_navy, view_colorSet_purple, view_colorSet_grey, view_colorSet_cyan, view_colorSet_magenta, view_colorSet_white"
+            app:flow_horizontalStyle="spread"
+            app:flow_maxElementsWrap="6"
+            app:flow_verticalGap="4dp"
+            app:flow_wrapMode="chain"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

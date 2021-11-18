@@ -40,6 +40,9 @@
         <action
             android:id="@+id/to_dayScheduleDialog"
             app:destination="@id/dayScheduleDialog" />
+        <action
+            android:id="@+id/to_themeFragment"
+            app:destination="@id/themeFragment" />
     </fragment>
 
     <fragment
@@ -134,5 +137,10 @@
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
     </dialog>
+
+    <fragment
+        android:id="@+id/themeFragment"
+        android:name="com.drunkenboys.calendarun.ui.theme.ThemeFragment"
+        tools:layout="@layout/fragment_theme" />
 
 </navigation>
