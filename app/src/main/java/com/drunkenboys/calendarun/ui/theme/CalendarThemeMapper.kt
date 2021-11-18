@@ -17,6 +17,19 @@ fun CalendarTheme.toCalendarDesignObject() = CalendarDesignObject(
     visibleScheduleCount = visibleScheduleCount
 )
 
+fun CalendarDesignObject.toCalendarTheme() = CalendarTheme(
+    weekDayTextColor = weekDayTextColor,
+    holidayTextColor = holidayTextColor,
+    saturdayTextColor = saturdayTextColor,
+    sundayTextColor = sundayTextColor,
+    selectedFrameColor = selectedFrameColor,
+    backgroundColor = backgroundColor,
+    textSize = textSize,
+    textAlign = textAlign,
+    languageType = CalendarTheme.LanguageType.KOREAN,
+    visibleScheduleCount = visibleScheduleCount
+)
+
 val CalendarTheme.LanguageType.weekSimpleStringSet: List<String>
     get() = when (this) {
         CalendarTheme.LanguageType.KOREAN -> listOf("일", "월", "화", "수", "목", "금", "토")

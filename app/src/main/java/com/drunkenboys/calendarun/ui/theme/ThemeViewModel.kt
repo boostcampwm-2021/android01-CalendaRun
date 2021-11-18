@@ -51,24 +51,28 @@ class ThemeViewModel @Inject constructor(
     val visibleScheduleCount: StateFlow<Int> = _visibleScheduleCount
 
     init {
-        initState()
+        restoreState()
     }
 
-    private fun initState() {
+    private fun restoreState() {
         viewModelScope.launch {
             val calendarTheme = calendarThemeDataSource.fetchCalendarTheme().first()
 
-            _weekdayTextColor.value = calendarTheme.weekDayTextColor
-            _holidayTextColor.value = calendarTheme.holidayTextColor
-            _saturdayTextColor.value = calendarTheme.saturdayTextColor
-            _sundayTextColor.value = calendarTheme.sundayTextColor
-            _selectedFrameColor.value = calendarTheme.selectedFrameColor
-            _backgroundColor.value = calendarTheme.backgroundColor
-            _textSize.value = calendarTheme.textSize
-            _textAlign.value = calendarTheme.textAlign
-            _languageType.value = calendarTheme.languageType
-            _visibleScheduleCount.value = calendarTheme.visibleScheduleCount
+            initState(calendarTheme)
         }
+    }
+
+    private fun initState(calendarTheme: CalendarTheme) {
+        _weekdayTextColor.value = calendarTheme.weekDayTextColor
+        _holidayTextColor.value = calendarTheme.holidayTextColor
+        _saturdayTextColor.value = calendarTheme.saturdayTextColor
+        _sundayTextColor.value = calendarTheme.sundayTextColor
+        _selectedFrameColor.value = calendarTheme.selectedFrameColor
+        _backgroundColor.value = calendarTheme.backgroundColor
+        _textSize.value = calendarTheme.textSize
+        _textAlign.value = calendarTheme.textAlign
+        _languageType.value = calendarTheme.languageType
+        _visibleScheduleCount.value = calendarTheme.visibleScheduleCount
     }
 
     fun setColorType(color: Int, type: ThemeColorType) {
@@ -109,6 +113,11 @@ class ThemeViewModel @Inject constructor(
         viewModelScope.launch {
             calendarThemeDataSource.updateCalendarTheme(createCalendarTheme())
         }
+    }
+
+    fun resetTheme() {
+        initState(defaultDesign.toCalendarTheme())
+        updateTheme()
     }
 
     private fun createCalendarTheme() = CalendarTheme(
