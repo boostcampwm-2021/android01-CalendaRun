@@ -22,8 +22,8 @@ class YearCalendarViewModel: ViewModel() {
     private var _calendar = mutableStateOf(createCalendarSets(currentYear))
     val calendar: State<List<CalendarSet>> = _calendar
 
-    private val _clickedDay = mutableStateOf<CalendarDate?>(CalendarDate(LocalDate.now(), DayType.WEEKDAY))
-    val clickedDay: State<CalendarDate?> = _clickedDay
+    private val _clickedDay = mutableStateOf<LocalDate?>(LocalDate.now())
+    val clickedDay: State<LocalDate?> = _clickedDay
 
     private var recomposeScope: RecomposeScope? = null
 
@@ -90,7 +90,7 @@ class YearCalendarViewModel: ViewModel() {
     }
 
     fun clickDay(day: CalendarDate) {
-        _clickedDay.value = day
+        _clickedDay.value = day.date
     }
 
     fun getDaySchedules(day: LocalDate) = schedules.value.filter { schedule ->
@@ -98,11 +98,17 @@ class YearCalendarViewModel: ViewModel() {
     }
 
     fun fetchNextCalendarSet() {
-        _calendar.value = _calendar.value.plus(createCalendarSets(++currentYear))
+        // FIXME: 기본 캘린더와 생성된 캘린더를 구분짓는 로직 하드코딩
+        if (_calendar.value.all { month -> month.name.contains("월") || _calendar.value.isEmpty()}) {
+            _calendar.value = _calendar.value.plus(createCalendarSets(++currentYear))
+        }
     }
 
     fun fetchPrevCalendarSet() {
-        _calendar.value = createCalendarSets(--initYear).plus(_calendar.value)
+        // FIXME: 기본 캘린더와 생성된 캘린더를 구분짓는 로직 하드코딩
+        if (_calendar.value.all { month -> month.name.contains("월") || _calendar.value.isEmpty() }) {
+            _calendar.value = createCalendarSets(--initYear).plus(_calendar.value)
+        }
     }
 
     private fun createCalendarSets(year: Int): List<CalendarSet> {
@@ -120,13 +126,23 @@ class YearCalendarViewModel: ViewModel() {
     }
 
     fun setCheckPoints(checkPoints: List<CalendarSet>) {
-        _calendar.value = checkPoints
+        if (checkPoints.isEmpty()) resetCheckPoint()
+        else _calendar.value = checkPoints
     }
 
     fun resetCheckPoint() {
+        // 시작 년도 초기화
         initYear = LocalDate.now().year
         currentYear = initYear
 
+        // 앞 뒤로 여유 1년씩 추가
+        fetchPrevCalendarSet()
         _calendar.value = createCalendarSets(currentYear)
+        fetchNextCalendarSet()
+
+        // 오늘 선택
+        _clickedDay.value = LocalDate.now()
+
+        // TODO: 스크롤
     }
 }
