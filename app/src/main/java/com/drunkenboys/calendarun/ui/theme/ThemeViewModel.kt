@@ -95,6 +95,11 @@ class ThemeViewModel @Inject constructor(
         updateTheme()
     }
 
+    fun setLanguageType(languageType: CalendarTheme.LanguageType) {
+        _languageType.value = languageType
+        updateTheme()
+    }
+
     private fun updateTheme() {
         viewModelScope.launch {
             calendarThemeDataSource.updateCalendarTheme(createCalendarTheme())

@@ -9,6 +9,8 @@
 
         <import type="android.view.Gravity" />
 
+        <import type="com.drunkenboys.calendarun.data.calendartheme.entity.CalendarTheme.LanguageType" />
+
         <variable
             name="viewModel"
             type="com.drunkenboys.calendarun.ui.theme.ThemeViewModel" />
@@ -410,17 +412,60 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/tv_theme_languageType"
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/tv_theme_languageType"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:drawablePadding="8dp"
+                            android:gravity="center_vertical"
+                            android:paddingVertical="16dp"
+                            android:text="@string/language"
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
+                            app:drawableStartCompat="@drawable/ic_text_fields" />
+
+                        <TextView
+                            android:id="@+id/tv_theme_languageTypeContent"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical|end"
+                            android:text="@{viewModel.languageType.description}"
+                            android:textColor="?colorOnSurface"
+                            android:textSize="16sp" />
+
+                    </FrameLayout>
+
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawablePadding="8dp"
-                        android:gravity="center_vertical"
-                        android:paddingVertical="16dp"
-                        android:text="@string/language"
-                        android:textColor="@color/black"
-                        android:textSize="16sp"
-                        app:drawableStartCompat="@drawable/ic_text_fields" />
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:gravity="center_vertical"
+                            android:onClick="@{() -> viewModel.setLanguageType(LanguageType.KOREAN)}"
+                            android:paddingHorizontal="16dp"
+                            android:paddingVertical="8dp"
+                            android:text="@{LanguageType.KOREAN.description}"
+                            android:textColor="?colorOnSurface" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:gravity="center_vertical"
+                            android:onClick="@{() -> viewModel.setLanguageType(LanguageType.ENGLISH)}"
+                            android:paddingHorizontal="16dp"
+                            android:paddingVertical="8dp"
+                            android:text="@{LanguageType.ENGLISH.description}"
+                            android:textColor="?colorOnSurface" />
+
+                    </LinearLayout>
 
                 </com.drunkenboys.calendarun.view.ExpandableLinearLayout>
 
