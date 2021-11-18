@@ -100,6 +100,11 @@ class ThemeViewModel @Inject constructor(
         updateTheme()
     }
 
+    fun setVisibleScheduleCount(count: Int) {
+        _visibleScheduleCount.value = count
+        updateTheme()
+    }
+
     private fun updateTheme() {
         viewModelScope.launch {
             calendarThemeDataSource.updateCalendarTheme(createCalendarTheme())

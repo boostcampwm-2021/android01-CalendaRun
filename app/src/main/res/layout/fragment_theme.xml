@@ -43,7 +43,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingHorizontal="16dp">
+                android:paddingHorizontal="16dp"
+                android:paddingBottom="16dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -487,17 +488,90 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/tv_theme_visibleScheduleCount"
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/tv_theme_visibleScheduleCount"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:drawablePadding="8dp"
+                            android:gravity="center_vertical"
+                            android:paddingVertical="16dp"
+                            android:text="@string/maxDisplayCount"
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
+                            app:drawableStartCompat="@drawable/ic_list" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical|end"
+                            android:text="@{viewModel.visibleScheduleCount.toString()}"
+                            android:textColor="?colorOnSurface"
+                            android:textSize="16sp" />
+
+                    </FrameLayout>
+
+                    <com.drunkenboys.calendarun.view.ExpandableLinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawablePadding="8dp"
-                        android:gravity="center_vertical"
-                        android:paddingVertical="16dp"
-                        android:text="@string/maxDisplayCount"
-                        android:textColor="@color/black"
-                        android:textSize="16sp"
-                        app:drawableStartCompat="@drawable/ic_list" />
+                        android:orientation="vertical"
+                        android:visibility="gone"
+                        tools:visibility="visible">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:gravity="center_vertical"
+                            android:onClick="@{() -> viewModel.setVisibleScheduleCount(1)}"
+                            android:paddingHorizontal="16dp"
+                            android:paddingVertical="8dp"
+                            android:text="@string/one"
+                            android:textColor="?colorOnSurface" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:gravity="center_vertical"
+                            android:onClick="@{() -> viewModel.setVisibleScheduleCount(2)}"
+                            android:paddingHorizontal="16dp"
+                            android:paddingVertical="8dp"
+                            android:text="@string/two"
+                            android:textColor="?colorOnSurface" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:gravity="center_vertical"
+                            android:onClick="@{() -> viewModel.setVisibleScheduleCount(3)}"
+                            android:paddingHorizontal="16dp"
+                            android:paddingVertical="8dp"
+                            android:text="@string/three"
+                            android:textColor="?colorOnSurface" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:gravity="center_vertical"
+                            android:onClick="@{() -> viewModel.setVisibleScheduleCount(4)}"
+                            android:paddingHorizontal="16dp"
+                            android:paddingVertical="8dp"
+                            android:text="@string/four"
+                            android:textColor="?colorOnSurface" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:gravity="center_vertical"
+                            android:onClick="@{() -> viewModel.setVisibleScheduleCount(5)}"
+                            android:paddingHorizontal="16dp"
+                            android:paddingVertical="8dp"
+                            android:text="@string/five"
+                            android:textColor="?colorOnSurface" />
+
+                    </com.drunkenboys.calendarun.view.ExpandableLinearLayout>
 
                 </com.drunkenboys.calendarun.view.ExpandableLinearLayout>
 
