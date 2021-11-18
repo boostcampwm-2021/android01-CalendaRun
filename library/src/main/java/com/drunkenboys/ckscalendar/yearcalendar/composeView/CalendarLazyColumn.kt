@@ -41,7 +41,7 @@ fun CalendarLazyColumn(
     val clickedEdge = { day: CalendarDate ->
         BorderStroke(
             width = 2.dp,
-            color = if (clickedDay?.date == day.date) Color(viewModel.design.value.selectedFrameColor) else Color.Transparent
+            color = if (clickedDay == day.date) Color(viewModel.design.value.selectedFrameColor) else Color.Transparent
         )
     }
 
@@ -54,7 +54,7 @@ fun CalendarLazyColumn(
             .layoutId(day.date.toString())
             .border(clickedEdge(day))
             .clickable(onClick = {
-                if (clickedDay != day) onDayClickListener?.onDayClick(day.date, 0)
+                if (clickedDay != day.date) onDayClickListener?.onDayClick(day.date, 0)
                 else onDaySecondClickListener?.onDayClick(day.date, 0)
                 viewModel.clickDay(day)
             })
