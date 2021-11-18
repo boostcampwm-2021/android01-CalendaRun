@@ -16,7 +16,7 @@ class YearCalendarViewModel: ViewModel() {
     private val _design = mutableStateOf(CalendarDesignObject())
     val design: State<CalendarDesignObject> = _design
 
-    private var initYear = LocalDate.now().year
+    private var initYear = LocalDate.now().year - 1
     private var currentYear = initYear
 
     private var _calendar = mutableStateOf(createCalendarSets(currentYear))
@@ -51,7 +51,7 @@ class YearCalendarViewModel: ViewModel() {
 
     // FIXME: 체크포인트 속에서 오늘의 날짜 찾기
     fun getDayItemIndex(day: LocalDate = LocalDate.now()): Int {
-        return day.monthValue + 12
+        return day.monthValue
     }
 
     fun setWeekSchedules(
@@ -85,8 +85,8 @@ class YearCalendarViewModel: ViewModel() {
         isStart || ((isSunday || isFirstOfMonth) && (isDateInScheduleRange))
     }
 
-    fun isFirstWeek(week: List<CalendarDate>, monthId: Int) = week.any { day ->
-        day.date.dayOfMonth == 1 && monthId == day.date.monthValue
+    fun isFirstWeek(week: List<CalendarDate>, month: CalendarSet) = week.any { day ->
+        day.date == month.startDate && day.dayType != DayType.PADDING
     }
 
     fun clickDay(day: CalendarDate) {
