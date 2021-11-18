@@ -3,13 +3,19 @@ package com.drunkenboys.calendarun.ui.theme
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.drunkenboys.calendarun.data.calendartheme.entity.CalendarTheme
+import com.drunkenboys.calendarun.data.calendartheme.local.CalendarThemeLocalDataSource
 import com.drunkenboys.calendarun.ui.theme.model.ThemeColorType
 import com.drunkenboys.ckscalendar.data.CalendarDesignObject
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class ThemeViewModel : ViewModel() {
+@HiltViewModel
+class ThemeViewModel @Inject constructor(
+    private val calendarThemeDataSource: CalendarThemeLocalDataSource
+) : ViewModel() {
 
     private val defaultDesign = CalendarDesignObject.getDefaultDesign()
 
@@ -55,6 +61,24 @@ class ThemeViewModel : ViewModel() {
 
         viewModelScope.launch {
             colorState.emit(color)
+            updateTheme()
         }
     }
+
+    private suspend fun updateTheme() {
+        calendarThemeDataSource.updateCalendarTheme(createCalendarTheme())
+    }
+
+    private fun createCalendarTheme() = CalendarTheme(
+        weekDayTextColor = weekdayTextColor.value,
+        holidayTextColor = holidayTextColor.value,
+        saturdayTextColor = saturdayTextColor.value,
+        sundayTextColor = sundayTextColor.value,
+        selectedFrameColor = selectedFrameColor.value,
+        backgroundColor = backgroundColor.value,
+        textSize = textSize.value,
+        textAlign = textAlign.value,
+        languageType = languageType.value,
+        visibleScheduleCount = visibleScheduleCount.value
+    )
 }
