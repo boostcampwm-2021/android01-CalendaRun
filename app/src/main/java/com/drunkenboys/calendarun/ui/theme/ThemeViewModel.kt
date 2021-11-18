@@ -12,32 +12,32 @@ class ThemeViewModel : ViewModel() {
 
     private val defaultDesign = CalendarDesignObject.getDefaultDesign()
 
-    private val _weekdayColor = MutableStateFlow(defaultDesign.weekDayTextColor)
-    val weekdayColor: StateFlow<Int> = _weekdayColor
+    private val _weekdayTextColor = MutableStateFlow(defaultDesign.weekDayTextColor)
+    val weekdayTextColor: StateFlow<Int> = _weekdayTextColor
 
-    private val _holidayColor = MutableStateFlow(defaultDesign.holidayTextColor)
-    val holidayColor: StateFlow<Int> = _holidayColor
+    private val _holidayTextColor = MutableStateFlow(defaultDesign.holidayTextColor)
+    val holidayTextColor: StateFlow<Int> = _holidayTextColor
 
-    private val _saturdayColor = MutableStateFlow(defaultDesign.saturdayTextColor)
-    val saturdayColor: StateFlow<Int> = _saturdayColor
+    private val _saturdayTextColor = MutableStateFlow(defaultDesign.saturdayTextColor)
+    val saturdayTextColor: StateFlow<Int> = _saturdayTextColor
 
-    private val _sundayColor = MutableStateFlow(defaultDesign.sundayTextColor)
-    val sundayColor: StateFlow<Int> = _sundayColor
+    private val _sundayTextColor = MutableStateFlow(defaultDesign.sundayTextColor)
+    val sundayTextColor: StateFlow<Int> = _sundayTextColor
 
-    private val _selectedDayStrokeColor = MutableStateFlow(defaultDesign.selectedFrameColor)
-    val selectedDayStrokeColor: StateFlow<Int> = _selectedDayStrokeColor
+    private val _selectedFrameColor = MutableStateFlow(defaultDesign.selectedFrameColor)
+    val selectedFrameColor: StateFlow<Int> = _selectedFrameColor
 
-    private val _dayBackgroundColor = MutableStateFlow(defaultDesign.backgroundColor)
-    val dayBackgroundColor: StateFlow<Int> = _dayBackgroundColor
+    private val _backgroundColor = MutableStateFlow(defaultDesign.backgroundColor)
+    val backgroundColor: StateFlow<Int> = _backgroundColor
 
     fun setColorType(color: Int, type: ThemeColorType) {
         val colorState = when (type) {
-            ThemeColorType.WEEKDAY -> _weekdayColor
-            ThemeColorType.HOLIDAY -> _holidayColor
-            ThemeColorType.SATURDAY -> _saturdayColor
-            ThemeColorType.SUNDAY -> _sundayColor
-            ThemeColorType.SELECTED_DAY_STROKE -> _selectedDayStrokeColor
-            ThemeColorType.DAY_BACKGROUND -> _dayBackgroundColor
+            ThemeColorType.WEEKDAY -> _weekdayTextColor
+            ThemeColorType.HOLIDAY -> _holidayTextColor
+            ThemeColorType.SATURDAY -> _saturdayTextColor
+            ThemeColorType.SUNDAY -> _sundayTextColor
+            ThemeColorType.SELECTED_DAY_STROKE -> _selectedFrameColor
+            ThemeColorType.DAY_BACKGROUND -> _backgroundColor
         }
 
         viewModelScope.launch {
