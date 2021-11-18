@@ -9,16 +9,12 @@ import com.drunkenboys.calendarun.data.checkpoint.entity.CheckPoint
 import com.drunkenboys.calendarun.data.checkpoint.local.CheckPointLocalDataSource
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import com.drunkenboys.calendarun.data.schedule.local.ScheduleLocalDataSource
-import com.drunkenboys.calendarun.util.nextDay
 import com.drunkenboys.calendarun.ui.theme.toCalendarDesignObject
+import com.drunkenboys.calendarun.util.nextDay
 import com.drunkenboys.ckscalendar.data.CalendarScheduleObject
 import com.drunkenboys.ckscalendar.data.CalendarSet
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -60,7 +56,7 @@ class MainCalendarViewModel @Inject constructor(
             _calendar.emit(calendar)
             fetchCheckPointList(calendar.id).join()
             fetchScheduleList(calendar.id)
-            createCalendarSetList()
+            createCalendarSetList(calendar.id)
         }
     }
 
@@ -110,7 +106,7 @@ class MainCalendarViewModel @Inject constructor(
         }
     }
 
-    private fun createCalendarSetList() {
+    private fun createCalendarSetList(id: Long) {
         viewModelScope.launch {
             val calendarNameList = createCalendarSetNameList() ?: return@launch
             val calendarDateList = createCalendarSetDateList() ?: return@launch
@@ -121,7 +117,7 @@ class MainCalendarViewModel @Inject constructor(
             for (i in calendarNameList.indices) {
                 calendarSetList.add(
                     CalendarSet(
-                        id = i,
+                        id = id.toInt(), // CalendarSet 기본캘린더 ID에 대한 Unique 값이 필요함
                         name = calendarNameList[i],
                         startDate = calendarStartDateList[i],
                         endDate = calendarEndDateList[i]
@@ -160,7 +156,7 @@ class MainCalendarViewModel @Inject constructor(
 
         return calendarStartDateList to calendarEndDateList
     }
-    
+
     fun fetchCalendarDesignObject() = calendarThemeDataSource.fetchCalendarTheme()
         .map { it.toCalendarDesignObject() }
 }
