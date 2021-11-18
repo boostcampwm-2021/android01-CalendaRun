@@ -9,9 +9,16 @@ import com.drunkenboys.calendarun.data.checkpoint.entity.CheckPoint
 import com.drunkenboys.calendarun.data.checkpoint.local.CheckPointLocalDataSource
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import com.drunkenboys.calendarun.data.schedule.local.ScheduleLocalDataSource
+import com.drunkenboys.calendarun.util.nextDay
 import com.drunkenboys.calendarun.ui.theme.toCalendarDesignObject
 import com.drunkenboys.ckscalendar.data.CalendarScheduleObject
+import com.drunkenboys.ckscalendar.data.CalendarSet
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -32,10 +39,12 @@ class MainCalendarViewModel @Inject constructor(
     val calendarList: StateFlow<List<Calendar>> = _calendarList
 
     private val _checkPointList = MutableStateFlow<List<CheckPoint>>(emptyList())
-    val checkPointList: StateFlow<List<CheckPoint>> = _checkPointList
 
     private val _scheduleList = MutableStateFlow<List<CalendarScheduleObject>>(emptyList())
     val scheduleList: StateFlow<List<CalendarScheduleObject>> = _scheduleList
+
+    private val _calendarSetList = MutableStateFlow<List<CalendarSet>>(emptyList())
+    val calendarSetList: StateFlow<List<CalendarSet>> = _calendarSetList
 
     private val _menuItemOrder = MutableStateFlow(0)
     val menuItemOrder: StateFlow<Int> = _menuItemOrder
@@ -49,8 +58,9 @@ class MainCalendarViewModel @Inject constructor(
     fun setCalendar(calendar: Calendar) {
         viewModelScope.launch {
             _calendar.emit(calendar)
-            fetchCheckPointList(calendar.id)
+            fetchCheckPointList(calendar.id).join()
             fetchScheduleList(calendar.id)
+            createCalendarSetList()
         }
     }
 
@@ -60,9 +70,9 @@ class MainCalendarViewModel @Inject constructor(
         }
     }
 
-    private fun fetchCheckPointList(calendarId: Long) {
-        viewModelScope.launch {
-            _checkPointList.emit(checkPointLocalDataSource.fetchCalendarCheckPoints(calendarId))
+    private fun fetchCheckPointList(calendarId: Long): Job {
+        return viewModelScope.launch {
+            _checkPointList.emit(checkPointLocalDataSource.fetchCalendarCheckPoints(calendarId).sortedBy { checkPoint -> checkPoint.date })
         }
     }
 
@@ -100,6 +110,57 @@ class MainCalendarViewModel @Inject constructor(
         }
     }
 
+    private fun createCalendarSetList() {
+        viewModelScope.launch {
+            val calendarNameList = createCalendarSetNameList() ?: return@launch
+            val calendarDateList = createCalendarSetDateList() ?: return@launch
+            val (calendarStartDateList, calendarEndDateList) = calendarDateList.first to calendarDateList.second
+
+            val calendarSetList = mutableListOf<CalendarSet>()
+
+            for (i in calendarNameList.indices) {
+                calendarSetList.add(
+                    CalendarSet(
+                        id = i,
+                        name = calendarNameList[i],
+                        startDate = calendarStartDateList[i],
+                        endDate = calendarEndDateList[i]
+                    )
+                )
+            }
+
+            _calendarSetList.emit(calendarSetList.toList())
+        }
+    }
+
+    private fun createCalendarSetNameList(): List<String>? {
+        val calendarName = _calendar.value?.name ?: return null
+        val checkPointNameList = _checkPointList.value.map { checkPoint -> checkPoint.name }
+
+        val calendarSetNameList = mutableListOf<String>()
+        checkPointNameList.forEach { checkPointName -> calendarSetNameList.add(checkPointName) }
+        calendarSetNameList.add(calendarName)
+
+        return calendarSetNameList
+    }
+
+    private fun createCalendarSetDateList(): Pair<List<LocalDate>, List<LocalDate>>? {
+        val startDate = _calendar.value?.startDate ?: return null
+        val endDate = _calendar.value?.endDate ?: return null
+        val checkPointDateList = _checkPointList.value.map { checkPoint -> checkPoint.date }
+        val calendarStartDateList = mutableListOf<LocalDate>()
+        val calendarEndDateList = mutableListOf<LocalDate>()
+
+        calendarStartDateList.add(startDate)
+        if (checkPointDateList.isNotEmpty()) {
+            calendarStartDateList.addAll(checkPointDateList.map { localDate -> localDate.nextDay() })
+            calendarEndDateList.addAll(checkPointDateList)
+        }
+        calendarEndDateList.add(endDate)
+
+        return calendarStartDateList to calendarEndDateList
+    }
+    
     fun fetchCalendarDesignObject() = calendarThemeDataSource.fetchCalendarTheme()
         .map { it.toCalendarDesignObject() }
 }
