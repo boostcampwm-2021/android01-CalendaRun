@@ -2,7 +2,6 @@ package com.drunkenboys.ckscalendar.yearcalendar
 
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
-import com.drunkenboys.ckscalendar.FakeFactory
 import com.drunkenboys.ckscalendar.data.*
 import com.drunkenboys.ckscalendar.utils.TimeUtils.dayValue
 import com.drunkenboys.ckscalendar.utils.TimeUtils.isSameWeek
@@ -17,7 +16,8 @@ class YearCalendarViewModel: ViewModel() {
     private val _design = mutableStateOf(CalendarDesignObject())
     val design: State<CalendarDesignObject> = _design
 
-    private var currentYear = LocalDate.now().year
+    private var initYear = LocalDate.now().year
+    private var currentYear = initYear
 
     val yearList: MutableList<List<CalendarSet>> = mutableListOf(createCalendarSets(currentYear))
 
@@ -103,7 +103,8 @@ class YearCalendarViewModel: ViewModel() {
     }
 
     fun fetchPrevCalendarSet() {
-        TODO()
+        yearList.add(0, createCalendarSets(--initYear))
+        recomposeScope?.invalidate()
     }
 
     private fun createCalendarSets(year: Int): List<CalendarSet> {
@@ -122,6 +123,5 @@ class YearCalendarViewModel: ViewModel() {
 
     companion object {
         const val INIT_YEAR = 0
-        const val LAST_YEAR = 10000
     }
 }
