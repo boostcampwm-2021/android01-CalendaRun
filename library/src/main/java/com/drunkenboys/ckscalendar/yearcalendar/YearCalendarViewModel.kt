@@ -48,10 +48,9 @@ class YearCalendarViewModel: ViewModel() {
         _design.value = CalendarDesignObject()
     }
 
-    // FIXME
     fun getDayItemIndex(day: LocalDate = LocalDate.now()): Int {
         // (월 달력 12개 + 년 헤더 1개) + 이번달
-        return (day.year - INIT_YEAR) * 13 + day.monthValue
+        return day.monthValue + 13
     }
 
     fun setWeekSchedules(

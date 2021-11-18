@@ -86,7 +86,7 @@ fun CalendarLazyColumn(
 
     // 뷰가 호출되면 오늘 날짜가 보이게 스크롤
     LaunchedEffect(listState) {
-//        listState.scrollToItem(index = viewModel.getDayItemIndex())
+        listState.scrollToItem(index = viewModel.getDayItemIndex())
     }
 
     listState.ShouldNextScroll() {
