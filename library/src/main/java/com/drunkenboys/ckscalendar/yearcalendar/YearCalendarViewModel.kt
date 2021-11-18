@@ -99,12 +99,10 @@ class YearCalendarViewModel: ViewModel() {
 
     fun fetchNextCalendarSet() {
         _calendar.value = _calendar.value.plus(createCalendarSets(++currentYear))
-        recomposeScope?.invalidate()
     }
 
     fun fetchPrevCalendarSet() {
         _calendar.value = createCalendarSets(--initYear).plus(_calendar.value)
-        recomposeScope?.invalidate()
     }
 
     private fun createCalendarSets(year: Int): List<CalendarSet> {
