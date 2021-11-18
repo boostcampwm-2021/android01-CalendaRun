@@ -119,8 +119,4 @@ class YearCalendarViewModel: ViewModel() {
 
         return calendarMonth
     }
-
-    companion object {
-        const val INIT_YEAR = 0
-    }
 }
