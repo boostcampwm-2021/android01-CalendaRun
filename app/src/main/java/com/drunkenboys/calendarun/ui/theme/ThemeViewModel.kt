@@ -9,6 +9,7 @@ import com.drunkenboys.ckscalendar.data.CalendarDesignObject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -48,6 +49,27 @@ class ThemeViewModel @Inject constructor(
 
     private val _visibleScheduleCount = MutableStateFlow(defaultDesign.visibleScheduleCount)
     val visibleScheduleCount: StateFlow<Int> = _visibleScheduleCount
+
+    init {
+        initState()
+    }
+
+    private fun initState() {
+        viewModelScope.launch {
+            val calendarTheme = calendarThemeDataSource.fetchCalendarTheme().first()
+
+            _weekdayTextColor.value = calendarTheme.weekDayTextColor
+            _holidayTextColor.value = calendarTheme.holidayTextColor
+            _saturdayTextColor.value = calendarTheme.saturdayTextColor
+            _sundayTextColor.value = calendarTheme.sundayTextColor
+            _selectedFrameColor.value = calendarTheme.selectedFrameColor
+            _backgroundColor.value = calendarTheme.backgroundColor
+            _textSize.value = calendarTheme.textSize
+            _textAlign.value = calendarTheme.textAlign
+            _languageType.value = calendarTheme.languageType
+            _visibleScheduleCount.value = calendarTheme.visibleScheduleCount
+        }
+    }
 
     fun setColorType(color: Int, type: ThemeColorType) {
         val colorState = when (type) {
