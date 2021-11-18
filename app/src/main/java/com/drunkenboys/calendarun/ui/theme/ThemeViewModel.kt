@@ -90,6 +90,11 @@ class ThemeViewModel @Inject constructor(
         updateTheme()
     }
 
+    fun setTextAlign(textAlign: Int) {
+        _textAlign.value = textAlign
+        updateTheme()
+    }
+
     private fun updateTheme() {
         viewModelScope.launch {
             calendarThemeDataSource.updateCalendarTheme(createCalendarTheme())
