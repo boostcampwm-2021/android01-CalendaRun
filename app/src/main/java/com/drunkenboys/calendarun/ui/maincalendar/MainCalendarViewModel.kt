@@ -4,11 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.drunkenboys.calendarun.data.calendar.entity.Calendar
 import com.drunkenboys.calendarun.data.calendar.local.CalendarLocalDataSource
+import com.drunkenboys.calendarun.data.calendartheme.local.CalendarThemeLocalDataSource
 import com.drunkenboys.calendarun.data.checkpoint.entity.CheckPoint
 import com.drunkenboys.calendarun.data.checkpoint.local.CheckPointLocalDataSource
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import com.drunkenboys.calendarun.data.schedule.local.ScheduleLocalDataSource
 import com.drunkenboys.calendarun.util.nextDay
+import com.drunkenboys.calendarun.ui.theme.toCalendarDesignObject
 import com.drunkenboys.ckscalendar.data.CalendarScheduleObject
 import com.drunkenboys.ckscalendar.data.CalendarSet
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,6 +19,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
@@ -25,7 +28,8 @@ import javax.inject.Inject
 class MainCalendarViewModel @Inject constructor(
     private val calendarLocalDataSource: CalendarLocalDataSource,
     private val checkPointLocalDataSource: CheckPointLocalDataSource,
-    private val scheduleLocalDataSource: ScheduleLocalDataSource
+    private val scheduleLocalDataSource: ScheduleLocalDataSource,
+    private val calendarThemeDataSource: CalendarThemeLocalDataSource
 ) : ViewModel() {
 
     private val _calendar = MutableStateFlow<Calendar?>(null)
@@ -156,4 +160,7 @@ class MainCalendarViewModel @Inject constructor(
 
         return calendarStartDateList to calendarEndDateList
     }
+    
+    fun fetchCalendarDesignObject() = calendarThemeDataSource.fetchCalendarTheme()
+        .map { it.toCalendarDesignObject() }
 }

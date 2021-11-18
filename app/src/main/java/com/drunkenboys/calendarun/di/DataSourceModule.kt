@@ -2,6 +2,8 @@ package com.drunkenboys.calendarun.di
 
 import com.drunkenboys.calendarun.data.calendar.local.CalendarLocalDataSource
 import com.drunkenboys.calendarun.data.calendar.local.CalendarLocalDataSourceImpl
+import com.drunkenboys.calendarun.data.calendartheme.local.CalendarThemeLocalDataSource
+import com.drunkenboys.calendarun.data.calendartheme.local.CalendarThemeLocalDataSourceImpl
 import com.drunkenboys.calendarun.data.checkpoint.local.CheckPointLocalDataSource
 import com.drunkenboys.calendarun.data.checkpoint.local.CheckPointLocalDataSourceImpl
 import com.drunkenboys.calendarun.data.schedule.local.ScheduleLocalDataSource
@@ -23,5 +25,8 @@ abstract class DataSourceModule {
 
     @Binds
     abstract fun bindScheduleDataSource(dataSource: ScheduleLocalDataSourceImpl): ScheduleLocalDataSource
+
+    @Binds
+    abstract fun bindCalendarThemeDataSource(dataSource: CalendarThemeLocalDataSourceImpl): CalendarThemeLocalDataSource
 
 }

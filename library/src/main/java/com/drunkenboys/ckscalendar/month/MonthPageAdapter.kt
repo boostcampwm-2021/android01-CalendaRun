@@ -8,12 +8,11 @@ import com.drunkenboys.ckscalendar.data.*
 import com.drunkenboys.ckscalendar.databinding.ItemMonthPageBinding
 import com.drunkenboys.ckscalendar.listener.OnDayClickListener
 import com.drunkenboys.ckscalendar.listener.OnDaySecondClickListener
-import com.drunkenboys.ckscalendar.utils.TimeUtils.parseDayWeekToDayType
+import com.drunkenboys.ckscalendar.utils.context
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.time.DayOfWeek
 import java.time.LocalDate
 
 
@@ -24,6 +23,7 @@ class MonthPageAdapter : RecyclerView.Adapter<MonthPageAdapter.Holder>() {
     private val schedules = mutableListOf<CalendarScheduleObject>()
 
     private val cachedCalendar = HashMap<Int, List<CalendarDate>>()
+    private val infinityCalendar = HashMap<Int, CalendarSet>()
 
     private lateinit var calendarDesign: CalendarDesignObject
 
@@ -33,11 +33,31 @@ class MonthPageAdapter : RecyclerView.Adapter<MonthPageAdapter.Holder>() {
     private val today = LocalDate.now()
     private var isFirstToday = true
 
+    private var isNormalCalendar = true
+
+    private val monthCellFactory = MonthCellFactory()
+
     var onDayClickListener: OnDayClickListener? = null
     var onDaySecondClickListener: OnDaySecondClickListener? = null
 
-    fun setItems(list: List<CalendarSet>) {
+    fun getCalendarSetName(position: Int): CalendarSet? {
+        return if (isNormalCalendar) {
+            infinityCalendar[position]
+        } else {
+            list[position]
+        }
+    }
+
+    fun setItems(list: List<CalendarSet>, isNormalCalendar: Boolean) {
         cachedCalendar.clear()
+
+        this.isNormalCalendar = isNormalCalendar
+        if (isNormalCalendar) {
+            list.forEachIndexed { index, calendarSet ->
+                infinityCalendar[index + Int.MAX_VALUE / 2] = calendarSet
+            }
+        }
+
         this.list.clear()
         this.list.addAll(list)
         notifyDataSetChanged()
@@ -48,10 +68,36 @@ class MonthPageAdapter : RecyclerView.Adapter<MonthPageAdapter.Holder>() {
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
-        holder.bind(list[position], onDayClickListener, onDaySecondClickListener)
+        val calendarSet = if (isNormalCalendar) {
+            // hash key != position
+            val preCalendarSet = infinityCalendar[position - 1]
+            val nextCalendarSet = infinityCalendar[position + 1]
+            //현재가 1월
+            if (preCalendarSet == null) {
+                val currentSet = (infinityCalendar[position]?.startDate?.year ?: today.year) - 1
+                CalendarSet.generateCalendarOfYear(holder.context(), currentSet)
+                    .forEachIndexed { index, calendarSet ->
+                        infinityCalendar[position - 12 + index] = calendarSet
+                    }
+            }
+            // 현재가 12월
+            if (nextCalendarSet == null) {
+                val currentSet = (infinityCalendar[position]?.startDate?.year ?: today.year) + 1
+                CalendarSet.generateCalendarOfYear(holder.context(), currentSet)
+                    .forEachIndexed { index, calendarSet ->
+                        infinityCalendar[position + 1 + index] = calendarSet
+                    }
+            }
+            infinityCalendar.get(position)
+
+        } else {
+            list[position]
+        }
+        holder.bind(calendarSet!!, onDayClickListener, onDaySecondClickListener)
     }
 
-    override fun getItemCount(): Int = list.size
+    override fun getItemCount(): Int = if (isNormalCalendar) Int.MAX_VALUE else list.size
+
 
     fun setSchedule(schedules: List<CalendarScheduleObject>) {
         this.schedules.clear()
@@ -65,9 +111,6 @@ class MonthPageAdapter : RecyclerView.Adapter<MonthPageAdapter.Holder>() {
     }
 
     inner class Holder(private val binding: ItemMonthPageBinding) : RecyclerView.ViewHolder(binding.root) {
-
-        private val weekSize = 7
-        private val calendarFullSize = 42
 
         private val monthAdapter = MonthAdapter { pagePosition, selectPosition ->
             // TODO : 성능 문제로 개선 필요
@@ -93,39 +136,11 @@ class MonthPageAdapter : RecyclerView.Adapter<MonthPageAdapter.Holder>() {
         ) {
             CoroutineScope(Dispatchers.Default).launch {
                 val dates = mutableListOf<CalendarDate>()
-                val startMonth = item.startDate.monthValue
-                val startDay = item.startDate.dayOfWeek
-                val endMonth = item.endDate.monthValue
 
                 cachedCalendar[item.id]?.let {
                     dates.addAll(it)
                 } ?: run {
-                    (startMonth..endMonth).forEach { month ->
-                        when (month) {
-                            startMonth -> {
-                                // add Start Padding
-                                if (startDay != DayOfWeek.SUNDAY) {
-                                    dates.addAll(makePadding(startDay.ordinal))
-                                }
-
-                                // add Start Dates
-                                dates.addAll(makeDates(item.startDate, month))
-                            }
-                            else -> {
-                                // add Normal Dates
-                                dates.addAll(makeDates(item.endDate, month))
-                            }
-                        }
-                    }
-                    // add End Padding
-                    val weekPadding = 6 - dates.size % weekSize
-                    dates.addAll(makePadding(weekPadding))
-
-                    // add FullSize Padding
-                    if (dates.size < calendarFullSize) {
-                        val fullSizePadding = calendarFullSize - dates.size - 1
-                        dates.addAll(makePadding(fullSizePadding))
-                    }
+                    dates.addAll(monthCellFactory.makeCell(item))
                 }
 
                 // check and set recycle data
@@ -150,21 +165,6 @@ class MonthPageAdapter : RecyclerView.Adapter<MonthPageAdapter.Holder>() {
                     monthAdapter.onDayClickListener = onDayClick
                     monthAdapter.onDaySecondClickListener = onDaySecondClick
                 }
-            }
-        }
-
-        private fun makeDates(selectedDate: LocalDate, month: Int): List<CalendarDate> {
-            val monthDate = LocalDate.of(selectedDate.year, month, 1)
-            return (1..monthDate.lengthOfMonth()).map { day ->
-                val date = LocalDate.of(selectedDate.year, month, day)
-                val dayType = parseDayWeekToDayType(date.dayOfWeek)
-                CalendarDate(date, dayType)
-            }
-        }
-
-        private fun makePadding(paddingCount: Int): List<CalendarDate> {
-            return (0..paddingCount).map {
-                CalendarDate(LocalDate.now(), DayType.PADDING)
             }
         }
     }

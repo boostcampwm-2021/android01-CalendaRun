@@ -141,6 +141,15 @@
     <fragment
         android:id="@+id/themeFragment"
         android:name="com.drunkenboys.calendarun.ui.theme.ThemeFragment"
-        tools:layout="@layout/fragment_theme" />
+        tools:layout="@layout/fragment_theme">
+        <action
+            android:id="@+id/to_themeResetDialog"
+            app:destination="@id/themeResetDialog" />
+    </fragment>
+
+    <dialog
+        android:id="@+id/themeResetDialog"
+        android:name="com.drunkenboys.calendarun.ui.theme.ThemeResetDialog"
+        android:label="ThemeResetDialog" />
 
 </navigation>
