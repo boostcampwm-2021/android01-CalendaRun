@@ -2,7 +2,6 @@ package com.drunkenboys.ckscalendar.yearcalendar
 
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
-import com.drunkenboys.ckscalendar.FakeFactory
 import com.drunkenboys.ckscalendar.data.*
 import com.drunkenboys.ckscalendar.utils.TimeUtils.dayValue
 import com.drunkenboys.ckscalendar.utils.TimeUtils.isSameWeek
@@ -17,9 +16,10 @@ class YearCalendarViewModel: ViewModel() {
     private val _design = mutableStateOf(CalendarDesignObject())
     val design: State<CalendarDesignObject> = _design
 
-    val yearList: List<List<CalendarSet>> = (INIT_YEAR..LAST_YEAR).map { year ->
-        FakeFactory.createFakeCalendarSetList(year)
-    }
+    private var initYear = LocalDate.now().year
+    private var currentYear = initYear
+
+    val yearList: MutableList<List<CalendarSet>> = mutableListOf(createCalendarSets(currentYear))
 
     private val _clickedDay = mutableStateOf<CalendarDate?>(CalendarDate(LocalDate.now(), DayType.WEEKDAY))
     val clickedDay: State<CalendarDate?> = _clickedDay
@@ -50,7 +50,7 @@ class YearCalendarViewModel: ViewModel() {
 
     fun getDayItemIndex(day: LocalDate = LocalDate.now()): Int {
         // (월 달력 12개 + 년 헤더 1개) + 이번달
-        return (day.year - INIT_YEAR) * 13 + day.monthValue
+        return day.monthValue + 13
     }
 
     fun setWeekSchedules(
@@ -96,8 +96,31 @@ class YearCalendarViewModel: ViewModel() {
         day in schedule.startDate.toLocalDate()..schedule.endDate.toLocalDate()
     }
 
+    fun fetchNextCalendarSet() {
+        yearList.add(createCalendarSets(++currentYear))
+        recomposeScope?.invalidate()
+    }
+
+    fun fetchPrevCalendarSet() {
+        yearList.add(0, createCalendarSets(--initYear))
+        recomposeScope?.invalidate()
+    }
+
+    private fun createCalendarSets(year: Int): List<CalendarSet> {
+        val calendarMonth = mutableListOf<CalendarSet>()
+        var startOfMonth: LocalDate
+        var endOfMonth: LocalDate
+
+        (1..12).forEach { month ->
+            startOfMonth = LocalDate.of(year, month, 1)
+            endOfMonth = startOfMonth.plusDays(startOfMonth.lengthOfMonth() - 1L)
+            calendarMonth.add(CalendarSet(month, "${month}월", startOfMonth, endOfMonth))
+        }
+
+        return calendarMonth
+    }
+
     companion object {
         const val INIT_YEAR = 0
-        const val LAST_YEAR = 10000
     }
 }
