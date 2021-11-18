@@ -16,10 +16,7 @@ class YearCalendarViewModel: ViewModel() {
     private val _design = mutableStateOf(CalendarDesignObject())
     val design: State<CalendarDesignObject> = _design
 
-    private var initYear = LocalDate.now().year - 1
-    private var currentYear = initYear
-
-    private var _calendar = mutableStateOf(createCalendarSets(currentYear))
+    private var _calendar = mutableStateOf(createCalendarSets(LocalDate.now().year))
     val calendar: State<List<CalendarSet>> = _calendar
 
     private val _clickedDay = mutableStateOf<LocalDate?>(LocalDate.now())
@@ -100,14 +97,18 @@ class YearCalendarViewModel: ViewModel() {
     fun fetchNextCalendarSet() {
         // FIXME: 기본 캘린더와 생성된 캘린더를 구분짓는 로직 하드코딩
         if (_calendar.value.all { month -> month.name.contains("월") || _calendar.value.isEmpty()}) {
-            _calendar.value = _calendar.value.plus(createCalendarSets(++currentYear))
+            val nextYear = _calendar.value.last().endDate.year + 1
+
+            _calendar.value = _calendar.value.plus(createCalendarSets(nextYear))
         }
     }
 
     fun fetchPrevCalendarSet() {
         // FIXME: 기본 캘린더와 생성된 캘린더를 구분짓는 로직 하드코딩
         if (_calendar.value.all { month -> month.name.contains("월") || _calendar.value.isEmpty() }) {
-            _calendar.value = createCalendarSets(--initYear).plus(_calendar.value)
+            val prevYear = _calendar.value.first().startDate.year - 1
+
+            _calendar.value = createCalendarSets(prevYear).plus(_calendar.value)
         }
     }
 
@@ -131,13 +132,9 @@ class YearCalendarViewModel: ViewModel() {
     }
 
     fun resetCheckPoint() {
-        // 시작 년도 초기화
-        initYear = LocalDate.now().year
-        currentYear = initYear
-
         // 앞 뒤로 여유 1년씩 추가
         fetchPrevCalendarSet()
-        _calendar.value = createCalendarSets(currentYear)
+        _calendar.value = createCalendarSets(LocalDate.now().year)
         fetchNextCalendarSet()
 
         // 오늘 선택
