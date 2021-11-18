@@ -9,7 +9,11 @@ data class CheckPointItem(
     val name: MutableStateFlow<String> = MutableStateFlow(""),
     val date: MutableStateFlow<LocalDate?> = MutableStateFlow(null),
     var check: Boolean = false
-) {
+) : Comparable<CheckPointItem> {
+
+    override fun compareTo(other: CheckPointItem): Int =
+        compareValuesBy(this, other) { checkPoint -> checkPoint.date.value }
+
 
     companion object {
         val diffUtil by lazy {
