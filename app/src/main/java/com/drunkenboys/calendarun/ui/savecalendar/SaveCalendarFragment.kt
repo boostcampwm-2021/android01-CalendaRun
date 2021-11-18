@@ -15,6 +15,7 @@ import com.drunkenboys.calendarun.util.extensions.pickDateInMillis
 import com.drunkenboys.calendarun.util.extensions.sharedCollect
 import com.drunkenboys.calendarun.util.extensions.stateCollect
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -80,9 +81,9 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
 
     private fun collectCheckPointItemList() {
         stateCollect(saveCalendarViewModel.checkPointItemList) { list ->
-            var newList = list.sortedDescending()
-            newList = newList.sortedWith(nullsFirst())
-            saveCalendarAdapter.submitList(newList)
+            saveCalendarAdapter.submitList(list.sortedWith(compareBy(nullsFirst(reverseOrder())) { it.date.value }))
+            delay(300)
+            binding.svSaveCalendar.smoothScrollTo(0, binding.tvSaveCalendarSaveCalendar.bottom)
         }
     }
 
