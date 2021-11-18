@@ -66,7 +66,7 @@
             app:layout_constraintTop_toBottomOf="@id/tv_checkPoint_date"
             tools:text="2021.03.19" />
 
-        <androidx.appcompat.widget.AppCompatCheckBox
+        <com.google.android.material.checkbox.MaterialCheckBox
             android:id="@+id/cb_checkPoint_select"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -1,14 +1,23 @@
 package com.drunkenboys.calendarun.ui.managecalendar.model
 
 import androidx.recyclerview.widget.DiffUtil
+import com.drunkenboys.calendarun.data.calendar.entity.Calendar
 import java.time.LocalDate
 
 data class CalendarItem(
     val id: Long,
     val name: String,
     val startDate: LocalDate,
-    val endDate: LocalDate
+    val endDate: LocalDate,
+    var check: Boolean = false
 ) {
+    fun toCalendar() = Calendar(
+        id = id,
+        name = name,
+        startDate = startDate,
+        endDate = endDate
+    )
+
     companion object {
         val diffUtil by lazy {
             object : DiffUtil.ItemCallback<CalendarItem>() {

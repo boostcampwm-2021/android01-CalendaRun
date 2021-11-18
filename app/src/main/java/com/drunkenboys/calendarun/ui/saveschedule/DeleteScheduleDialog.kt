@@ -17,10 +17,10 @@ class DeleteScheduleDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): AlertDialog = AlertDialog.Builder(requireContext())
         .setTitle(R.string.deleteScheduleDialog_title)
         .setMessage(R.string.deleteScheduleDialog_message)
-        .setPositiveButton(R.string.menuSaveScheduleToolbar_delete) { _, _ ->
+        .setPositiveButton(R.string.delete) { _, _ ->
             saveScheduleViewModel.deleteSchedule()
             findNavController().navigateUp()
         }
-        .setNegativeButton(R.string.deleteScheduleDialog_cancel) { _, _ -> }
+        .setNegativeButton(R.string.cancel) { _, _ -> }
         .create()
 }

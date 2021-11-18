@@ -22,4 +22,8 @@ class CalendarLocalDataSourceImpl @Inject constructor(
     override suspend fun fetchCalendar(id: Long) = withContext(dispatcher) {
         calendarDao.fetchCalendar(id)
     }
+
+    override suspend fun deleteCalendar(calendar: Calendar) {
+        calendarDao.deleteCalendar(calendar)
+    }
 }

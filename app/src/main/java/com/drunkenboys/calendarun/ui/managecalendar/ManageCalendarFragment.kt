@@ -2,7 +2,7 @@ package com.drunkenboys.calendarun.ui.managecalendar
 
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.viewModels
+import androidx.navigation.navGraphViewModels
 import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.drunkenboys.calendarun.R
@@ -10,6 +10,7 @@ import com.drunkenboys.calendarun.databinding.FragmentManageCalendarBinding
 import com.drunkenboys.calendarun.ui.base.BaseFragment
 import com.drunkenboys.calendarun.ui.managecalendar.model.CalendarItem
 import com.drunkenboys.calendarun.util.HorizontalInsetDividerDecoration
+import com.drunkenboys.calendarun.util.extensions.sharedCollect
 import com.drunkenboys.calendarun.util.extensions.stateCollect
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -18,7 +19,7 @@ class ManageCalendarFragment : BaseFragment<FragmentManageCalendarBinding>(R.lay
 
     private val manageCalendarAdapter = ManageCalendarAdapter(::onCalendarItemClickListener)
 
-    private val manageCalendarViewModel by viewModels<ManageCalendarViewModel>()
+    private val manageCalendarViewModel by navGraphViewModels<ManageCalendarViewModel>(R.id.manageCalendarFragment) { defaultViewModelProviderFactory }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -27,7 +28,9 @@ class ManageCalendarFragment : BaseFragment<FragmentManageCalendarBinding>(R.lay
         setupToolbar()
         setupAdapter()
         setupFabClickListener()
+        setupToolbarMenuItemOnClickListener()
         collectCalendarItemList()
+        collectDeleteCalendar()
     }
 
     private fun onCalendarItemClickListener(calendarItem: CalendarItem) {
@@ -59,9 +62,27 @@ class ManageCalendarFragment : BaseFragment<FragmentManageCalendarBinding>(R.lay
         }
     }
 
+    private fun setupToolbarMenuItemOnClickListener() {
+        binding.toolbarManageCalendar.setOnMenuItemClickListener { item ->
+            if (item.itemId == R.id.menu_delete_schedule) {
+                navController.navigate(ManageCalendarFragmentDirections.toDeleteCalendarDialog())
+                true
+            } else {
+                false
+            }
+        }
+    }
+
     private fun collectCalendarItemList() {
         stateCollect(manageCalendarViewModel.calendarItemList) { calendarItemList ->
             manageCalendarAdapter.submitList(calendarItemList)
+        }
+    }
+
+    private fun collectDeleteCalendar() {
+        sharedCollect(manageCalendarViewModel.deleteCalendarEvent) {
+            val currentCalendarItemList = manageCalendarAdapter.currentList
+            manageCalendarViewModel.deleteCalendarItem(currentCalendarItemList)
         }
     }
 }

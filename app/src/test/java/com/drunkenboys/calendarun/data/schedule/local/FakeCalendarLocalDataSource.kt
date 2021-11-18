@@ -17,4 +17,9 @@ class FakeCalendarLocalDataSource : CalendarLocalDataSource {
     override suspend fun fetchCalendar(id: Long): Calendar {
         return Calendar(0, "test calendar", LocalDate.now(), LocalDate.now())
     }
+
+    override suspend fun deleteCalendar(calendar: Calendar) {
+        TODO("Not yet implemented")
+    }
+
 }

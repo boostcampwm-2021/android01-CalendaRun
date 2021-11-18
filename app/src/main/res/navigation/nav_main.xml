@@ -107,7 +107,14 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/to_deleteCalendarDialog"
+            app:destination="@+id/deleteCalendarDialog" />
     </fragment>
+
+    <dialog
+        android:id="@+id/deleteCalendarDialog"
+        android:name="com.drunkenboys.calendarun.ui.managecalendar.DeleteCalendarDialog" />
 
     <dialog
         android:id="@+id/dayScheduleDialog"
