@@ -32,4 +32,7 @@ object LocalDatabaseModule {
 
     @Provides
     fun provideScheduleDao(database: Database) = database.scheduleDao()
+
+    @Provides
+    fun provideCalendarThemeDao(database: Database) = database.calendarThemeDao()
 }
