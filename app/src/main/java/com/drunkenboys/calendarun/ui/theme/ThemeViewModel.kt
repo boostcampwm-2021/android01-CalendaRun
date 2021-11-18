@@ -2,6 +2,7 @@ package com.drunkenboys.calendarun.ui.theme
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.drunkenboys.calendarun.data.calendartheme.entity.CalendarTheme
 import com.drunkenboys.calendarun.ui.theme.model.ThemeColorType
 import com.drunkenboys.ckscalendar.data.CalendarDesignObject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,6 +30,18 @@ class ThemeViewModel : ViewModel() {
 
     private val _backgroundColor = MutableStateFlow(defaultDesign.backgroundColor)
     val backgroundColor: StateFlow<Int> = _backgroundColor
+
+    private val _textSize = MutableStateFlow(defaultDesign.textSize)
+    val textSize: StateFlow<Int> = _textSize
+
+    private val _textAlign = MutableStateFlow(defaultDesign.textAlign)
+    val textAlign: StateFlow<Int> = _textAlign
+
+    private val _languageType = MutableStateFlow(CalendarTheme.LanguageType.KOREAN)
+    val languageType: StateFlow<CalendarTheme.LanguageType> = _languageType
+
+    private val _visibleScheduleCount = MutableStateFlow(defaultDesign.visibleScheduleCount)
+    val visibleScheduleCount: StateFlow<Int> = _visibleScheduleCount
 
     fun setColorType(color: Int, type: ThemeColorType) {
         val colorState = when (type) {
