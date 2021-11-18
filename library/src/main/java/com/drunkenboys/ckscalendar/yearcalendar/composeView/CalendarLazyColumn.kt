@@ -21,9 +21,10 @@ import androidx.compose.ui.unit.dp
 import com.drunkenboys.ckscalendar.data.*
 import com.drunkenboys.ckscalendar.listener.OnDayClickListener
 import com.drunkenboys.ckscalendar.listener.OnDaySecondClickListener
+import com.drunkenboys.ckscalendar.utils.ShouldNextScroll
+import com.drunkenboys.ckscalendar.utils.ShouldPrevScroll
 import com.drunkenboys.ckscalendar.yearcalendar.CustomTheme
 import com.drunkenboys.ckscalendar.yearcalendar.YearCalendarViewModel
-import java.time.LocalDate
 
 @Composable
 fun CalendarLazyColumn(
@@ -85,8 +86,15 @@ fun CalendarLazyColumn(
 
     // 뷰가 호출되면 오늘 날짜가 보이게 스크롤
     LaunchedEffect(listState) {
-        listState.scrollToItem(index = viewModel.getDayItemIndex(LocalDate.of(2100, 1, 1))) // preload
         listState.scrollToItem(index = viewModel.getDayItemIndex())
+    }
+
+    listState.ShouldNextScroll() {
+        viewModel.fetchNextCalendarSet()
+    }
+
+    listState.ShouldPrevScroll {
+        viewModel.fetchPrevCalendarSet()
     }
 }
 
