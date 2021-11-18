@@ -37,8 +37,8 @@ fun MonthCalendar(
         ) {
             weekSchedules = Array(7) { Array(viewModel.design.value.visibleScheduleCount) { null } }
             // 월 표시
-            if (viewModel.isFirstWeek(week, month.id))
-                AnimatedMonthHeader(listState = listState, month = month.id)
+            if (viewModel.isFirstWeek(week, month))
+                AnimatedMonthHeader(listState = listState, monthName = month.name)
 
             week.forEach { day ->
                 when (day.dayType) {

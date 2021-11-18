@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun AnimatedMonthHeader(
     listState: LazyListState,
-    month: Int
+    monthName: String
 ) {
     val density: Float by animateFloatAsState(
         targetValue = if(listState.isScrollInProgress) 1f else 0f,
@@ -28,7 +28,7 @@ fun AnimatedMonthHeader(
     )
 
     Text(
-        text = "${month}월",
+        text = monthName,
         color = MaterialTheme.colors.primary,
         modifier = Modifier
             .alpha(density)
