@@ -1,5 +1,6 @@
 package com.drunkenboys.ckscalendar.yearcalendar.composeView
 
+import android.view.Gravity
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -93,6 +94,11 @@ fun CalendarLazyColumn(
 @Composable
 fun PreviewCalendar() {
     val viewModel = YearCalendarViewModel()
+
+    // design 커스텀 테스트
+    viewModel.setDesign(CalendarDesignObject(
+        textAlign = Gravity.CENTER
+    ))
 
     CustomTheme(design = viewModel.design.value) {
         CalendarLazyColumn(

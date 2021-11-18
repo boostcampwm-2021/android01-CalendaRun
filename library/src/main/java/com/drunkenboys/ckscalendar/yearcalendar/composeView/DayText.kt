@@ -7,11 +7,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import com.drunkenboys.ckscalendar.data.CalendarDate
 import com.drunkenboys.ckscalendar.data.CalendarDesignObject
 import com.drunkenboys.ckscalendar.data.DayType
+import com.drunkenboys.ckscalendar.utils.GravityMapper
 import com.drunkenboys.ckscalendar.utils.dp
+import com.drunkenboys.ckscalendar.yearcalendar.CustomTheme
 import com.drunkenboys.ckscalendar.yearcalendar.YearCalendarViewModel
+import java.time.LocalDate
 
 @Composable
 fun DayText(
@@ -25,19 +29,20 @@ fun DayText(
         else -> MaterialTheme.colors.primary
     }
 
-    // FIXME: mapper 추가
-    val align = when (viewModel.design.value.textAlign) {
-        -1 -> TextAlign.Start
-        0 -> TextAlign.Center
-        1 -> TextAlign.End
-        else -> TextAlign.Center
-    }
-
     Text(
         text = "${day.date.dayOfMonth}",
         color = color,
         modifier = Modifier.layoutId(day.date.toString()),
-        textAlign = align,
+        textAlign = GravityMapper.toTextAlign(viewModel.design.value.textAlign),
         fontSize = viewModel.design.value.textSize.dp()
     )
+}
+
+@Preview
+@Composable
+fun PreviewDayText() {
+    val viewModel = YearCalendarViewModel()
+    CustomTheme(design = viewModel.design.value) {
+        DayText(day = CalendarDate(date = LocalDate.now(), dayType = DayType.WEEKDAY), viewModel = viewModel)
+    }
 }
