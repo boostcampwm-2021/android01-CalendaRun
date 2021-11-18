@@ -9,7 +9,9 @@ import com.drunkenboys.calendarun.data.checkpoint.local.CheckPointLocalDataSourc
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import com.drunkenboys.calendarun.data.schedule.local.ScheduleLocalDataSource
 import com.drunkenboys.ckscalendar.data.CalendarScheduleObject
+import com.drunkenboys.ckscalendar.data.CalendarSet
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -32,7 +34,6 @@ class MainCalendarViewModel @Inject constructor(
     val calendarList: StateFlow<List<Calendar>> = _calendarList
 
     private val _checkPointList = MutableStateFlow<List<CheckPoint>>(emptyList())
-    val checkPointList: StateFlow<List<CheckPoint>> = _checkPointList
 
     private val _scheduleList = MutableStateFlow<List<CalendarScheduleObject>>(emptyList())
     val scheduleList: StateFlow<List<CalendarScheduleObject>> = _scheduleList
@@ -49,7 +50,7 @@ class MainCalendarViewModel @Inject constructor(
     fun setCalendar(calendar: Calendar) {
         viewModelScope.launch {
             _calendar.emit(calendar)
-            fetchCheckPointList(calendar.id)
+            fetchCheckPointList(calendar.id).join()
             fetchScheduleList(calendar.id)
         }
     }
