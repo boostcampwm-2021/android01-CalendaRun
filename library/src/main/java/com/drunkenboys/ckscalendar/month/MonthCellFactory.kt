@@ -23,11 +23,19 @@ class MonthCellFactory {
                     }
 
                     // add Start Dates
-                    dates.addAll(makeDates(item.startDate, month))
+                    if (startMonth == endMonth) {
+                        dates.addAll(makeDates(item.startDate.dayOfMonth, item.endDate.dayOfMonth, month, item.startDate.year))
+                    } else {
+                        dates.addAll(makeDates(item.startDate.dayOfMonth, item.startDate.lengthOfMonth(), month, item.startDate.year))
+                    }
+                }
+                endMonth -> {
+                    dates.addAll(makeDates(1, item.endDate.dayOfMonth, month, item.endDate.year))
                 }
                 else -> {
                     // add Normal Dates
-                    dates.addAll(makeDates(item.endDate, month))
+                    val monthDate = LocalDate.of(item.endDate.year, month, 1)
+                    dates.addAll(makeDates(1, monthDate.lengthOfMonth(), month, monthDate.year))
                 }
             }
         }
@@ -44,10 +52,9 @@ class MonthCellFactory {
         return dates
     }
 
-    private fun makeDates(selectedDate: LocalDate, month: Int): List<CalendarDate> {
-        val monthDate = LocalDate.of(selectedDate.year, month, 1)
-        return (1..monthDate.lengthOfMonth()).map { day ->
-            val date = LocalDate.of(selectedDate.year, month, day)
+    private fun makeDates(startDay: Int, endDay: Int, month: Int, year: Int): List<CalendarDate> {
+        return (startDay..endDay).map { day ->
+            val date = LocalDate.of(year, month, day)
             val dayType = TimeUtils.parseDayWeekToDayType(date.dayOfWeek)
             CalendarDate(date, dayType)
         }
@@ -59,7 +66,7 @@ class MonthCellFactory {
         }
     }
 
-    companion object{
+    companion object {
 
         private const val WEEK_SIZE = 7
         private const val CALENDAR_FULL_SIZE = 42

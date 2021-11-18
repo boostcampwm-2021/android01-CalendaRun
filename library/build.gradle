@@ -12,7 +12,7 @@ android {
         minSdk 21
         targetSdk 31
         versionCode 1
-        versionName "0.0.1"
+        versionName "0.0.3"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -90,7 +90,7 @@ afterEvaluate {
                 from components.release
                 groupId = 'com.github.boostcampwm-2021'
                 artifactId = 'android01-CalendaRun'
-                version = '0.0.1'
+                version = '0.0.3'
             }
         }
     }

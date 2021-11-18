@@ -94,6 +94,7 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
                 // TODO: 2021-11-11 테마 설정 화면으로 이동
                 val action = MainCalendarFragmentDirections.toThemeFragment()
                 navController.navigate(action)
+                binding.layoutDrawer.closeDrawer(GravityCompat.START)
                 true
             }
     }
@@ -119,7 +120,13 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
 
     private fun collectCalendarSet() {
         stateCollect(mainCalendarViewModel.calendarSetList) { calendarSetList ->
-            binding.calendarMonth.setCalendarSetList(calendarSetList)
+            if (calendarSetList.isEmpty()) return@stateCollect
+
+            if (calendarSetList.firstOrNull()?.id == 1) { // CalendarSet 기본캘린더 ID에 대한 Unique 값이 필요함
+                binding.calendarMonth.setupDefaultCalendarSet()
+            } else {
+                binding.calendarMonth.setCalendarSetList(calendarSetList)
+            }
         }
     }
 

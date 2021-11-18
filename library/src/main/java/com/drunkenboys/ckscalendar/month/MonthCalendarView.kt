@@ -69,12 +69,6 @@ class MonthCalendarView @JvmOverloads constructor(
         binding.vpMonthPage.registerOnPageChangeCallback(onPageChange)
 
         setupDefaultCalendarSet()
-        calendarList.forEachIndexed { index, calendarSet ->
-            if (calendarSet.startDate.monthValue == today.monthValue) {
-                binding.vpMonthPage.setCurrentItem(Int.MAX_VALUE / 2 + index, false)
-                return@forEachIndexed
-            }
-        }
 
         // xml에서 넘어온 attribute 값 적용
         val attr = context.obtainStyledAttributes(attrs, R.styleable.MonthCalendarView)
@@ -100,19 +94,23 @@ class MonthCalendarView @JvmOverloads constructor(
         }
     }
 
-    private fun initAttribute() {
-
-    }
-
     fun setCalendarSetList(calendarList: List<CalendarSet>) {
         this.calendarList = calendarList
         pageAdapter.setItems(calendarList, false)
+        binding.tvMonthCalendarViewCurrentMonth.text = calendarList.first().name
     }
 
     fun setupDefaultCalendarSet() {
         calendarList = CalendarSet.generateCalendarOfYear(context, today.year)
         pageAdapter.setItems(calendarList, true)
-        binding.vpMonthPage.setCurrentItem(Int.MAX_VALUE / 2, false)
+
+        calendarList.forEachIndexed { index, calendarSet -> //오늘 날짜로 이동
+            if (calendarSet.startDate.monthValue == today.monthValue) {
+                binding.tvMonthCalendarViewCurrentMonth.text = calendarSet.name
+                binding.vpMonthPage.setCurrentItem(Int.MAX_VALUE / 2 + index, false)
+                return@forEachIndexed
+            }
+        }
     }
 
     fun setOnDayClickListener(onDayClickListener: OnDayClickListener) {
