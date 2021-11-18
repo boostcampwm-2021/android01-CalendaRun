@@ -46,23 +46,25 @@ class MonthCalendarView @JvmOverloads constructor(
 
     private val today = LocalDate.now()
 
+    private val onPageChange = object : ViewPager2.OnPageChangeCallback() {
+        override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+            super.onPageScrolled(position, positionOffset, positionOffsetPixels)
+        }
+
+        @SuppressLint("SetTextI18n")
+        override fun onPageSelected(position: Int) {
+            super.onPageSelected(position)
+            binding.tvMonthCalendarViewCurrentMonth.text = calendarList[position].name
+        }
+
+        override fun onPageScrollStateChanged(state: Int) {
+            super.onPageScrollStateChanged(state)
+        }
+    }
+
     init {
         binding.vpMonthPage.adapter = pageAdapter
-        binding.vpMonthPage.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-                super.onPageScrolled(position, positionOffset, positionOffsetPixels)
-            }
-
-            @SuppressLint("SetTextI18n")
-            override fun onPageSelected(position: Int) {
-                super.onPageSelected(position)
-                binding.tvMonthCalendarViewCurrentMonth.text = calendarList[position].name
-            }
-
-            override fun onPageScrollStateChanged(state: Int) {
-                super.onPageScrollStateChanged(state)
-            }
-        })
+        binding.vpMonthPage.registerOnPageChangeCallback(onPageChange)
 
         setupDefaultCalendarSet()
         calendarList.forEachIndexed { index, calendarSet ->
