@@ -30,6 +30,7 @@
                 android:id="@+id/toolbar_theme"
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"
+                app:menu="@menu/menu_theme_toolbar"
                 app:title="테마 설정"
                 app:titleTextColor="@color/white" />
 
