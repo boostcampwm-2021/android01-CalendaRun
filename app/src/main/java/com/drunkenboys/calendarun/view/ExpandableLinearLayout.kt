@@ -3,12 +3,14 @@ package com.drunkenboys.calendarun.view
 import android.animation.ObjectAnimator
 import android.content.Context
 import android.util.AttributeSet
+import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.Transformation
 import android.widget.LinearLayout
 import androidx.core.animation.addListener
+import androidx.core.view.GestureDetectorCompat
 import androidx.core.view.get
 import androidx.core.view.isVisible
 import com.drunkenboys.calendarun.util.extensions.setAnimationListener
@@ -16,6 +18,8 @@ import com.drunkenboys.calendarun.util.extensions.setAnimationListener
 class ExpandableLinearLayout @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyle: Int = 0
 ) : LinearLayout(context, attrs, defStyle) {
+
+    private val mDetector = GestureDetectorCompat(context, SingleTapListener())
 
     private var isExpand = false
     private var isAnimationEnd = true
@@ -28,11 +32,7 @@ class ExpandableLinearLayout @JvmOverloads constructor(
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
         val result = super.dispatchTouchEvent(ev)
-        if (isAnimationEnd && isExpand) {
-            collapse()
-        } else if (isAnimationEnd && !isExpand) {
-            expand()
-        }
+        mDetector.onTouchEvent(ev)
         return result
     }
 
@@ -112,6 +112,18 @@ class ExpandableLinearLayout @JvmOverloads constructor(
             val diff = targetHeight * interpolatedTime
             layoutParams.height = (originalHeight - diff).toInt()
             requestLayout()
+        }
+    }
+
+    private inner class SingleTapListener : GestureDetector.SimpleOnGestureListener() {
+
+        override fun onSingleTapUp(e: MotionEvent): Boolean {
+            if (isAnimationEnd && isExpand) {
+                collapse()
+            } else if (isAnimationEnd && !isExpand) {
+                expand()
+            }
+            return super.onSingleTapUp(e)
         }
     }
 
