@@ -52,6 +52,7 @@ class MainCalendarViewModel @Inject constructor(
             _calendar.emit(calendar)
             fetchCheckPointList(calendar.id).join()
             fetchScheduleList(calendar.id)
+            createCalendarSetList()
         }
     }
 
