@@ -12,4 +12,4 @@ fun stringToLocalDate(date: String): LocalDate =
 
 fun LocalDate?.localDateToString(): String = this?.format(DateTimeFormatter.ofPattern("yyyy.M.d")) ?: ""
 
-fun LocalDate.toLong() = toEpochDay() * 24 * 60 * 60 * 1000
+fun LocalDate.toSecondLong() = toEpochDay() * 24 * 60 * 60 * 1000
