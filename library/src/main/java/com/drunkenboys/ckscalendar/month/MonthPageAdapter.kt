@@ -8,6 +8,7 @@ import com.drunkenboys.ckscalendar.data.*
 import com.drunkenboys.ckscalendar.databinding.ItemMonthPageBinding
 import com.drunkenboys.ckscalendar.listener.OnDayClickListener
 import com.drunkenboys.ckscalendar.listener.OnDaySecondClickListener
+import com.drunkenboys.ckscalendar.utils.context
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -22,6 +23,7 @@ class MonthPageAdapter : RecyclerView.Adapter<MonthPageAdapter.Holder>() {
     private val schedules = mutableListOf<CalendarScheduleObject>()
 
     private val cachedCalendar = HashMap<Int, List<CalendarDate>>()
+    private val infinityCalendar = HashMap<Int, CalendarSet>()
 
     private lateinit var calendarDesign: CalendarDesignObject
 
@@ -31,13 +33,31 @@ class MonthPageAdapter : RecyclerView.Adapter<MonthPageAdapter.Holder>() {
     private val today = LocalDate.now()
     private var isFirstToday = true
 
+    private var isNormalCalendar = true
+
     private val monthCellFactory = MonthCellFactory()
 
     var onDayClickListener: OnDayClickListener? = null
     var onDaySecondClickListener: OnDaySecondClickListener? = null
 
-    fun setItems(list: List<CalendarSet>) {
+    fun getCalendarSetName(position: Int): CalendarSet? {
+        return if (isNormalCalendar) {
+            infinityCalendar[position]
+        } else {
+            list[position]
+        }
+    }
+
+    fun setItems(list: List<CalendarSet>, isNormalCalendar: Boolean) {
         cachedCalendar.clear()
+
+        this.isNormalCalendar = isNormalCalendar
+        if (isNormalCalendar) {
+            list.forEachIndexed { index, calendarSet ->
+                infinityCalendar[index + Int.MAX_VALUE / 2] = calendarSet
+            }
+        }
+
         this.list.clear()
         this.list.addAll(list)
         notifyDataSetChanged()
@@ -48,10 +68,36 @@ class MonthPageAdapter : RecyclerView.Adapter<MonthPageAdapter.Holder>() {
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
-        holder.bind(list[position], onDayClickListener, onDaySecondClickListener)
+        val calendarSet = if (isNormalCalendar) {
+            // hash key != position
+            val preCalendarSet = infinityCalendar[position - 1]
+            val nextCalendarSet = infinityCalendar[position + 1]
+            //현재가 1월
+            if (preCalendarSet == null) {
+                val currentSet = (infinityCalendar[position]?.startDate?.year ?: today.year) - 1
+                CalendarSet.generateCalendarOfYear(holder.context(), currentSet)
+                    .forEachIndexed { index, calendarSet ->
+                        infinityCalendar[position - 12 + index] = calendarSet
+                    }
+            }
+            // 현재가 12월
+            if (nextCalendarSet == null) {
+                val currentSet = (infinityCalendar[position]?.startDate?.year ?: today.year) + 1
+                CalendarSet.generateCalendarOfYear(holder.context(), currentSet)
+                    .forEachIndexed { index, calendarSet ->
+                        infinityCalendar[position + 1 + index] = calendarSet
+                    }
+            }
+            infinityCalendar.get(position)
+
+        } else {
+            list[position]
+        }
+        holder.bind(calendarSet!!, onDayClickListener, onDaySecondClickListener)
     }
 
-    override fun getItemCount(): Int = list.size
+    override fun getItemCount(): Int = if (isNormalCalendar) Int.MAX_VALUE else list.size
+
 
     fun setSchedule(schedules: List<CalendarScheduleObject>) {
         this.schedules.clear()

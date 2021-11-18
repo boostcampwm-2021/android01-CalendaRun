@@ -54,7 +54,9 @@ class MonthCalendarView @JvmOverloads constructor(
         @SuppressLint("SetTextI18n")
         override fun onPageSelected(position: Int) {
             super.onPageSelected(position)
-            binding.tvMonthCalendarViewCurrentMonth.text = calendarList[position].name
+            pageAdapter.getCalendarSetName(position)?.let {
+                binding.tvMonthCalendarViewCurrentMonth.text = it.name
+            }
         }
 
         override fun onPageScrollStateChanged(state: Int) {
@@ -69,7 +71,7 @@ class MonthCalendarView @JvmOverloads constructor(
         setupDefaultCalendarSet()
         calendarList.forEachIndexed { index, calendarSet ->
             if (calendarSet.startDate.monthValue == today.monthValue) {
-                binding.vpMonthPage.setCurrentItem(index, false)
+                binding.vpMonthPage.setCurrentItem(Int.MAX_VALUE / 2 + index, false)
                 return@forEachIndexed
             }
         }
@@ -104,12 +106,13 @@ class MonthCalendarView @JvmOverloads constructor(
 
     fun setCalendarSetList(calendarList: List<CalendarSet>) {
         this.calendarList = calendarList
-        pageAdapter.setItems(calendarList)
+        pageAdapter.setItems(calendarList, false)
     }
 
     fun setupDefaultCalendarSet() {
-        calendarList = generateCalendarOfYear(today.year)
-        pageAdapter.setItems(calendarList)
+        calendarList = CalendarSet.generateCalendarOfYear(context, today.year)
+        pageAdapter.setItems(calendarList, true)
+        binding.vpMonthPage.setCurrentItem(Int.MAX_VALUE / 2, false)
     }
 
     fun setOnDayClickListener(onDayClickListener: OnDayClickListener) {
@@ -137,18 +140,5 @@ class MonthCalendarView @JvmOverloads constructor(
         }
         binding.root.setBackgroundColor(calendarDesign.backgroundColor)
         pageAdapter.setDesign(calendarDesign)
-    }
-
-    private fun generateCalendarOfYear(year: Int): List<CalendarSet> {
-        return (1..12).map { month ->
-            val start = LocalDate.of(year, month, 1)
-            val end = LocalDate.of(year, month, start.lengthOfMonth())
-            CalendarSet(
-                id = month,
-                name = "${month}${context.getString(R.string.common_month)}",
-                startDate = start,
-                endDate = end
-            )
-        }
     }
 }
