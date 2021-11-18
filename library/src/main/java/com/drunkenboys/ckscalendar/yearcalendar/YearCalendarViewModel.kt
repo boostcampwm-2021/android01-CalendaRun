@@ -19,7 +19,8 @@ class YearCalendarViewModel: ViewModel() {
     private var initYear = LocalDate.now().year
     private var currentYear = initYear
 
-    val yearList: MutableList<List<CalendarSet>> = mutableListOf(createCalendarSets(currentYear))
+    private var _calendar = mutableStateOf(createCalendarSets(currentYear))
+    val calendar: State<List<CalendarSet>> = _calendar
 
     private val _clickedDay = mutableStateOf<CalendarDate?>(CalendarDate(LocalDate.now(), DayType.WEEKDAY))
     val clickedDay: State<CalendarDate?> = _clickedDay
@@ -97,12 +98,12 @@ class YearCalendarViewModel: ViewModel() {
     }
 
     fun fetchNextCalendarSet() {
-        yearList.add(createCalendarSets(++currentYear))
+        _calendar.value = _calendar.value.plus(createCalendarSets(++currentYear))
         recomposeScope?.invalidate()
     }
 
     fun fetchPrevCalendarSet() {
-        yearList.add(0, createCalendarSets(--initYear))
+        _calendar.value = createCalendarSets(--initYear).plus(_calendar.value)
         recomposeScope?.invalidate()
     }
 
