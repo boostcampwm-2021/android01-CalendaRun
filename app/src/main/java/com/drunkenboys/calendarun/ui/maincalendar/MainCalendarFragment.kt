@@ -44,6 +44,7 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         collectCheckPointList()
         collectScheduleList()
         collectDaySecondClickListener()
+        collectCalendarDesignObject()
     }
 
     private fun setupCalendarView() {
@@ -198,6 +199,18 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
                         val calendarId = mainCalendarViewModel.calendar.value?.id ?: throw IllegalStateException("calendarId is null")
                         val action = MainCalendarFragmentDirections.toDayScheduleDialog(calendarId, date.toString())
                         navController.navigateSafe(action)
+                    }
+            }
+        }
+    }
+
+    private fun collectCalendarDesignObject() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                mainCalendarViewModel.fetchCalendarDesignObject()
+                    .collect {
+                        binding.calendarMonth.setDesign(it)
+                        binding.calendarYear.setTheme(it)
                     }
             }
         }
