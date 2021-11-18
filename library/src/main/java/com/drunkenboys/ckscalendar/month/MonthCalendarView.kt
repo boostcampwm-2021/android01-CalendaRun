@@ -103,9 +103,10 @@ class MonthCalendarView @JvmOverloads constructor(
     fun setupDefaultCalendarSet() {
         calendarList = CalendarSet.generateCalendarOfYear(context, today.year)
         pageAdapter.setItems(calendarList, true)
-        
+
         calendarList.forEachIndexed { index, calendarSet -> //오늘 날짜로 이동
             if (calendarSet.startDate.monthValue == today.monthValue) {
+                binding.tvMonthCalendarViewCurrentMonth.text = calendarSet.name
                 binding.vpMonthPage.setCurrentItem(Int.MAX_VALUE / 2 + index, false)
                 return@forEachIndexed
             }
