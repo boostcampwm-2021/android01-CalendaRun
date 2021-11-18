@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -237,6 +238,7 @@
                         android:visibility="gone"
                         app:themeColorType="@{ThemeColorType.DAY_BACKGROUND}"
                         app:viewModel="@{viewModel}" />
+
                 </com.drunkenboys.calendarun.view.ExpandableLinearLayout>
 
                 <TextView
@@ -251,6 +253,122 @@
                     android:layout_marginTop="4dp"
                     android:background="@color/divider" />
 
+                <com.drunkenboys.calendarun.view.ExpandableLinearLayout
+                    android:id="@+id/layout_theme_textSize"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/tv_theme_textSize"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:drawablePadding="8dp"
+                            android:gravity="center_vertical"
+                            android:paddingVertical="16dp"
+                            android:text="@string/textSize"
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
+                            app:drawableStartCompat="@drawable/ic_text_fields" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical|end"
+                            android:text="@{viewModel.textSize.toString()}"
+                            android:textColor="?colorOnSurface"
+                            android:textSize="16sp" />
+
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:gravity="center_vertical"
+                            android:onClick="@{() -> viewModel.setTextSize(10)}"
+                            android:paddingHorizontal="16dp"
+                            android:paddingVertical="8dp"
+                            android:text="@string/smallText"
+                            android:textColor="?colorOnSurface"
+                            android:textSize="10sp"
+                            tools:ignore="SmallSp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:gravity="center_vertical"
+                            android:onClick="@{() -> viewModel.setTextSize(14)}"
+                            android:paddingHorizontal="16dp"
+                            android:paddingVertical="8dp"
+                            android:text="@string/mediumText"
+                            android:textColor="?colorOnSurface"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:gravity="center_vertical"
+                            android:onClick="@{() -> viewModel.setTextSize(18)}"
+                            android:paddingHorizontal="16dp"
+                            android:paddingVertical="8dp"
+                            android:text="@string/largeText"
+                            android:textColor="?colorOnSurface"
+                            android:textSize="18sp" />
+
+                    </LinearLayout>
+
+                </com.drunkenboys.calendarun.view.ExpandableLinearLayout>
+
+                <com.drunkenboys.calendarun.view.ExpandableLinearLayout
+                    android:id="@+id/layout_theme_textAlign"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_theme_textAlign"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:paddingVertical="16dp"
+                        android:text="@string/alignLocation"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        app:drawableStartCompat="@drawable/ic_text_fields" />
+
+                </com.drunkenboys.calendarun.view.ExpandableLinearLayout>
+
+                <com.drunkenboys.calendarun.view.ExpandableLinearLayout
+                    android:id="@+id/layout_theme_languageType"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_theme_languageType"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:paddingVertical="16dp"
+                        android:text="@string/language"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        app:drawableStartCompat="@drawable/ic_text_fields" />
+
+                </com.drunkenboys.calendarun.view.ExpandableLinearLayout>
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -262,6 +380,26 @@
                     android:layout_height="0.5dp"
                     android:layout_marginTop="4dp"
                     android:background="@color/divider" />
+
+                <com.drunkenboys.calendarun.view.ExpandableLinearLayout
+                    android:id="@+id/layout_theme_visibleScheduleCount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_theme_visibleScheduleCount"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:paddingVertical="16dp"
+                        android:text="@string/maxDisplayCount"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        app:drawableStartCompat="@drawable/ic_list" />
+
+                </com.drunkenboys.calendarun.view.ExpandableLinearLayout>
 
             </LinearLayout>
 

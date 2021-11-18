@@ -81,14 +81,19 @@ class ThemeViewModel @Inject constructor(
             ThemeColorType.DAY_BACKGROUND -> _backgroundColor
         }
 
-        viewModelScope.launch {
-            colorState.emit(color)
-            updateTheme()
-        }
+        colorState.value = color
+        updateTheme()
     }
 
-    private suspend fun updateTheme() {
-        calendarThemeDataSource.updateCalendarTheme(createCalendarTheme())
+    fun setTextSize(textSize: Int) {
+        _textSize.value = textSize
+        updateTheme()
+    }
+
+    private fun updateTheme() {
+        viewModelScope.launch {
+            calendarThemeDataSource.updateCalendarTheme(createCalendarTheme())
+        }
     }
 
     private fun createCalendarTheme() = CalendarTheme(
