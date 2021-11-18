@@ -49,9 +49,9 @@ class YearCalendarViewModel: ViewModel() {
         _design.value = CalendarDesignObject()
     }
 
+    // FIXME: 체크포인트 속에서 오늘의 날짜 찾기
     fun getDayItemIndex(day: LocalDate = LocalDate.now()): Int {
-        // (월 달력 12개 + 년 헤더 1개) + 이번달
-        return day.monthValue + 13
+        return day.monthValue + 12
     }
 
     fun setWeekSchedules(
@@ -117,5 +117,16 @@ class YearCalendarViewModel: ViewModel() {
         }
 
         return calendarMonth
+    }
+
+    fun setCheckPoints(checkPoints: List<CalendarSet>) {
+        _calendar.value = checkPoints
+    }
+
+    fun resetCheckPoint() {
+        initYear = LocalDate.now().year
+        currentYear = initYear
+
+        _calendar.value = createCalendarSets(currentYear)
     }
 }
