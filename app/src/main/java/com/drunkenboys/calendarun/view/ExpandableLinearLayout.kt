@@ -1,7 +1,6 @@
 package com.drunkenboys.calendarun.view
 
 import android.animation.ObjectAnimator
-import android.animation.ValueAnimator
 import android.content.Context
 import android.util.AttributeSet
 import android.view.GestureDetector
@@ -14,10 +13,13 @@ import androidx.core.animation.addListener
 import androidx.core.view.GestureDetectorCompat
 import androidx.core.view.get
 import androidx.core.view.isVisible
+import androidx.core.view.size
 import com.drunkenboys.calendarun.util.extensions.setAnimationListener
 
 class ExpandableLinearLayout @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null, defStyle: Int = 0
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyle: Int = 0
 ) : LinearLayout(context, attrs, defStyle) {
 
     private val mDetector = GestureDetectorCompat(context, SingleTapListener())
@@ -28,9 +30,6 @@ class ExpandableLinearLayout @JvmOverloads constructor(
     private val collapseHeight by lazy { measuredHeight }
     private val contentHeight by lazy { getMeasuredHeightOf(get(1)) }
     private val expandHeight by lazy { collapseHeight + contentHeight }
-
-    private lateinit var layoutAnimation: Animation
-    private lateinit var alphaAnimation: ValueAnimator
 
     init {
         isClickable = true
@@ -43,7 +42,7 @@ class ExpandableLinearLayout @JvmOverloads constructor(
     }
 
     private fun expand() {
-        if (isExpand) return
+        if (size != 2) return
         isAnimationEnd = false
 
         val contentView = get(1)
@@ -64,7 +63,7 @@ class ExpandableLinearLayout @JvmOverloads constructor(
     }
 
     private fun collapse() {
-        if (!isExpand) return
+        if (size != 2) return
         isAnimationEnd = false
 
         val contentView = get(1)
