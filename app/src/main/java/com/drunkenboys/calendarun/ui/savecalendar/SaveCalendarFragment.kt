@@ -6,7 +6,6 @@ import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
-import androidx.navigation.ui.setupWithNavController
 import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.databinding.FragmentSaveCalendarBinding
 import com.drunkenboys.calendarun.ui.base.BaseFragment
@@ -45,7 +44,7 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
 
             val dateTime = LocalDate.ofEpochDay(dateInMillis / 1000 / 60 / 60 / 24)
 
-            checkPointItem.date.emit(dateTime)
+            checkPointItem.startDate.emit(dateTime)
         }
     }
 
@@ -81,7 +80,7 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
 
     private fun collectCheckPointItemList() {
         stateCollect(saveCalendarViewModel.checkPointItemList) { list ->
-            saveCalendarAdapter.submitList(list.sortedWith(compareBy(nullsFirst(reverseOrder())) { it.date.value }))
+            saveCalendarAdapter.submitList(list.sortedWith(compareBy(nullsFirst(reverseOrder())) { it.startDate.value }))
             delay(300)
             binding.svSaveCalendar.smoothScrollTo(0, binding.tvSaveCalendarSaveCalendar.bottom)
         }

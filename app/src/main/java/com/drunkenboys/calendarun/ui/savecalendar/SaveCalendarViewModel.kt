@@ -60,7 +60,7 @@ class SaveCalendarViewModel @Inject constructor(
                     CheckPointItem(
                         id = checkPoint.id,
                         name = MutableStateFlow(checkPoint.name),
-                        date = MutableStateFlow(checkPoint.startDate)
+                        startDate = MutableStateFlow(checkPoint.startDate)
                     )
                 )
             }
@@ -115,7 +115,7 @@ class SaveCalendarViewModel @Inject constructor(
         if (!_checkPointItemList.value.isNullOrEmpty()) {
             _checkPointItemList.value.forEach { item ->
                 if (item.name.value.isEmpty()) return false
-                val date = item.date.value ?: return false
+                val date = item.startDate.value ?: return false
                 if (!isValidateCheckPointDate(date, startDate, endDate)) return false
             }
         }
@@ -131,13 +131,16 @@ class SaveCalendarViewModel @Inject constructor(
             _checkPointItemList.value.forEach { item ->
                 val id = item.id
                 val checkPointName = item.name.value
-                val date = item.date.value ?: return@launch
+                val startDate = item.startDate.value ?: return@launch
+                val endDate = item.endDate.value ?: return@launch
+
                 checkPointLocalDataSource.insertCheckPoint(
                     CheckPoint(
                         id = id,
                         calendarId = calendarId,
                         name = checkPointName,
-                        startDate = date
+                        startDate = startDate,
+                        endDate = endDate
                     )
                 )
             }
