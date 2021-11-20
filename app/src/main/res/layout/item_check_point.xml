@@ -25,46 +25,75 @@
             android:id="@+id/tv_checkPoint_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
             android:text="@string/check_point_name"
-            app:layout_constraintEnd_toStartOf="@id/tv_checkPoint_date"
+            android:textSize="18dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/tv_checkPoint_date"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:text="@string/check_point_date"
-            app:layout_constraintEnd_toStartOf="@+id/cb_checkPoint_select"
-            app:layout_constraintStart_toEndOf="@id/tv_checkPoint_name"
-            app:layout_constraintTop_toTopOf="@id/tv_checkPoint_name" />
 
         <EditText
             android:id="@+id/et_checkPoint_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@={item.name}"
-            app:layout_constraintEnd_toEndOf="@id/tv_checkPoint_name"
-            app:layout_constraintStart_toStartOf="@id/tv_checkPoint_name"
-            app:layout_constraintTop_toBottomOf="@id/tv_checkPoint_name"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_checkPoint_name"
+            app:layout_constraintEnd_toEndOf="@+id/tv_checkPoint_startDatePicker"
+            app:layout_constraintStart_toStartOf="@+id/tv_checkPoint_startDatePicker"
+            app:layout_constraintTop_toTopOf="@+id/tv_checkPoint_name"
             tools:text="3월 모의고사" />
 
         <TextView
-            android:id="@+id/tv_checkPoint_datePicker"
+            android:id="@+id/tv_checkPoint_startDate"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:gravity="center_vertical"
+            android:layout_marginTop="16dp"
+            android:text="@string/check_point_startDate"
+            android:textSize="18dp"
+            app:layout_constraintStart_toStartOf="@+id/tv_checkPoint_name"
+            app:layout_constraintTop_toBottomOf="@+id/tv_checkPoint_name" />
+
+        <TextView
+            android:id="@+id/tv_checkPoint_startDatePicker"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             android:onClick="@{() -> adapter.onClick.invoke(item)}"
             android:text="@{DateConverterKt.localDateToString(item.startDate)}"
             android:textSize="18sp"
-            app:layout_constraintEnd_toEndOf="@+id/tv_checkPoint_date"
-            app:layout_constraintStart_toStartOf="@+id/tv_checkPoint_date"
-            app:layout_constraintTop_toBottomOf="@id/tv_checkPoint_date"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_checkPoint_startDate"
+            app:layout_constraintEnd_toStartOf="@+id/cb_checkPoint_select"
+            app:layout_constraintStart_toEndOf="@+id/tv_checkPoint_startDate"
+            app:layout_constraintTop_toTopOf="@+id/tv_checkPoint_startDate"
             tools:text="2021.03.19" />
+
+        <TextView
+            android:id="@+id/tv_checkPoint_endDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:text="@string/check_point_endDate"
+            android:textSize="18dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_checkPoint_startDate" />
+
+        <TextView
+            android:id="@+id/tv_checkPoint_endDatePicker"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:onClick="@{() -> adapter.onClick.invoke(item)}"
+            android:text="@{DateConverterKt.localDateToString(item.endDate)}"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_checkPoint_endDate"
+            app:layout_constraintEnd_toEndOf="@+id/tv_checkPoint_startDatePicker"
+            app:layout_constraintStart_toStartOf="@+id/tv_checkPoint_startDatePicker"
+            app:layout_constraintTop_toTopOf="@+id/tv_checkPoint_endDate"
+            tools:text="2021.03.19" />
+
 
         <com.google.android.material.checkbox.MaterialCheckBox
             android:id="@+id/cb_checkPoint_select"
@@ -82,9 +111,9 @@
             android:layout_height="1dp"
             android:layout_marginTop="3dp"
             android:background="@color/black"
-            app:layout_constraintEnd_toEndOf="@id/tv_checkPoint_datePicker"
-            app:layout_constraintStart_toStartOf="@id/tv_checkPoint_datePicker"
-            app:layout_constraintTop_toBottomOf="@id/tv_checkPoint_datePicker" />
+            app:layout_constraintEnd_toEndOf="@id/tv_checkPoint_startDatePicker"
+            app:layout_constraintStart_toStartOf="@id/tv_checkPoint_startDatePicker"
+            app:layout_constraintTop_toBottomOf="@id/tv_checkPoint_startDatePicker" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
