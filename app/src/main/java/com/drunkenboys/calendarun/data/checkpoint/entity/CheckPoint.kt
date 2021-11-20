@@ -21,7 +21,6 @@ data class CheckPoint(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val calendarId: Long,
     val name: String,
-    val startDate: LocalDate,
-    val endDate: LocalDate
+    val date: LocalDate
 )
 
