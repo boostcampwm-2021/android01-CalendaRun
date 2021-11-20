@@ -60,7 +60,7 @@ class SaveCalendarViewModel @Inject constructor(
                     CheckPointItem(
                         id = checkPoint.id,
                         name = MutableStateFlow(checkPoint.name),
-                        date = MutableStateFlow(checkPoint.date)
+                        date = MutableStateFlow(checkPoint.startDate)
                     )
                 )
             }
@@ -137,7 +137,7 @@ class SaveCalendarViewModel @Inject constructor(
                         id = id,
                         calendarId = calendarId,
                         name = checkPointName,
-                        date = date
+                        startDate = date
                     )
                 )
             }

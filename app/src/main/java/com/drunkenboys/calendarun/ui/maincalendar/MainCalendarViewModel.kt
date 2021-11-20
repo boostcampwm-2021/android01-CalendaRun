@@ -68,7 +68,8 @@ class MainCalendarViewModel @Inject constructor(
 
     private fun fetchCheckPointList(calendarId: Long): Job {
         return viewModelScope.launch {
-            _checkPointList.emit(checkPointLocalDataSource.fetchCalendarCheckPoints(calendarId).sortedBy { checkPoint -> checkPoint.date })
+            _checkPointList.emit(
+                checkPointLocalDataSource.fetchCalendarCheckPoints(calendarId).sortedBy { checkPoint -> checkPoint.startDate })
         }
     }
 
@@ -143,7 +144,7 @@ class MainCalendarViewModel @Inject constructor(
     private fun createCalendarSetDateList(): Pair<List<LocalDate>, List<LocalDate>>? {
         val startDate = _calendar.value?.startDate ?: return null
         val endDate = _calendar.value?.endDate ?: return null
-        val checkPointDateList = _checkPointList.value.map { checkPoint -> checkPoint.date }
+        val checkPointDateList = _checkPointList.value.map { checkPoint -> checkPoint.startDate }
         val calendarStartDateList = mutableListOf<LocalDate>()
         val calendarEndDateList = mutableListOf<LocalDate>()
 
