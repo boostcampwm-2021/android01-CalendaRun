@@ -13,7 +13,8 @@ import java.time.LocalDate
             entity = Calendar::class,
             parentColumns = ["id"],
             childColumns = ["calendarId"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
+            onUpdate = ForeignKey.CASCADE
         )
     ]
 )
