@@ -32,22 +32,6 @@ abstract class Database : RoomDatabase() {
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL(
                     """
-                        CREATE TABLE new_calendar (
-                            id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-                            name TEXT NOT NULL
-                        )
-                    """.trimIndent()
-                )
-                database.execSQL(
-                    """
-                        INSERT INTO new_calendar (id, name)
-                        SELECT id, name FROM calendar
-                    """.trimIndent()
-                )
-                database.execSQL("DROP TABLE Calendar")
-                database.execSQL("ALTER TABLE new_calendar RENAME TO Calendar")
-                database.execSQL(
-                    """
                         CREATE TABLE new_checkpoint (
                             id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
                             calendarId INTEGER NOT NULL,

@@ -37,7 +37,7 @@ class SaveCalendarViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            val calendar = calendarLocalDataSource.fetchCalendar(calendarId)
+            val calendar = calendarLocalDataSource.fetchCalendar(calendarId) ?: return@launch
 
             calendarName.emit(calendar.name)
 
