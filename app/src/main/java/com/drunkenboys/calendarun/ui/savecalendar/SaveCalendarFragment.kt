@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
+import androidx.navigation.ui.setupWithNavController
 import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.databinding.FragmentSaveCalendarBinding
 import com.drunkenboys.calendarun.ui.base.BaseFragment
@@ -34,7 +35,6 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
         setupRecyclerView()
         setupToolbarMenuOnItemClickListener()
         collectCheckPointItemList()
-        collectPickDateTimeEvent()
         collectSaveCalendarEvent()
     }
 
@@ -83,16 +83,6 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
             saveCalendarAdapter.submitList(list.sortedWith(compareBy(nullsFirst(reverseOrder())) { it.startDate.value }))
             delay(300)
             binding.svSaveCalendar.smoothScrollTo(0, binding.tvSaveCalendarSaveCalendar.bottom)
-        }
-    }
-
-    private fun collectPickDateTimeEvent() {
-        sharedCollect(saveCalendarViewModel.pickDateEvent) { dateType ->
-            val dateInMillis = pickDateInMillis() ?: return@sharedCollect
-
-            val date = LocalDate.ofEpochDay(dateInMillis / 1000 / 60 / 60 / 24)
-
-            saveCalendarViewModel.updateDate(date, dateType)
         }
     }
 
