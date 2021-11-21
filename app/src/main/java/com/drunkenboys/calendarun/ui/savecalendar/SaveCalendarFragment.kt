@@ -11,6 +11,7 @@ import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.databinding.FragmentSaveCalendarBinding
 import com.drunkenboys.calendarun.ui.base.BaseFragment
 import com.drunkenboys.calendarun.ui.savecalendar.model.CheckPointItem
+import com.drunkenboys.calendarun.ui.saveschedule.model.DateType
 import com.drunkenboys.calendarun.util.extensions.pickDateInMillis
 import com.drunkenboys.calendarun.util.extensions.sharedCollect
 import com.drunkenboys.calendarun.util.extensions.stateCollect
@@ -38,13 +39,17 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
         collectSaveCalendarEvent()
     }
 
-    private fun onCheckPointClick(checkPointItem: CheckPointItem) {
+    private fun onCheckPointClick(checkPointItem: CheckPointItem, dateType: DateType) {
         lifecycleScope.launch {
             val dateInMillis = pickDateInMillis() ?: return@launch
 
             val dateTime = LocalDate.ofEpochDay(dateInMillis / 1000 / 60 / 60 / 24)
 
-            checkPointItem.startDate.emit(dateTime)
+            when (dateType) {
+                DateType.START -> checkPointItem.startDate.emit(dateTime)
+                DateType.END -> checkPointItem.endDate.emit(dateTime)
+            }
+
         }
     }
 

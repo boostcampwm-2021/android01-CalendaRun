@@ -8,10 +8,11 @@ import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.databinding.ItemCheckPointBinding
 import com.drunkenboys.calendarun.ui.base.BaseViewHolder
 import com.drunkenboys.calendarun.ui.savecalendar.model.CheckPointItem
+import com.drunkenboys.calendarun.ui.saveschedule.model.DateType
 
 class SaveCalendarAdapter(
     private val viewLifecycleOwner: LifecycleOwner,
-    val onClick: (CheckPointItem) -> Unit
+    val onClick: (CheckPointItem, DateType) -> Unit
 ) : ListAdapter<CheckPointItem, BaseViewHolder<ItemCheckPointBinding>>(CheckPointItem.diffUtil) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<ItemCheckPointBinding> =
