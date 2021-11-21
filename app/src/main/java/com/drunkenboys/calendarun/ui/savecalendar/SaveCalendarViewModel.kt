@@ -27,7 +27,7 @@ class SaveCalendarViewModel @Inject constructor(
 
     private val calendarId = savedStateHandle[KEY_CALENDAR_ID] ?: 0L
 
-    private val _checkPointItemList = MutableStateFlow<List<CheckPointItem>>(mutableListOf())
+    private val _checkPointItemList = MutableStateFlow(listOf(CheckPointItem()))
     val checkPointItemList: StateFlow<List<CheckPointItem>> = _checkPointItemList
 
     val calendarName = MutableStateFlow("")
@@ -68,7 +68,7 @@ class SaveCalendarViewModel @Inject constructor(
             val newList = mutableListOf<CheckPointItem>()
             newList.addAll(checkPointItemList.value)
             newList.add(CheckPointItem())
-            _checkPointItemList.emit(newList)
+            _checkPointItemList.emit(newList.toList())
         }
     }
 
