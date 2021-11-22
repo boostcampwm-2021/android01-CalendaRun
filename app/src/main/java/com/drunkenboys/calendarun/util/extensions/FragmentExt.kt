@@ -10,6 +10,7 @@ import com.drunkenboys.calendarun.util.toSecondLong
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
@@ -70,6 +71,18 @@ inline fun <T> Fragment.sharedCollect(sharedFlow: SharedFlow<T>, crossinline blo
     viewLifecycleOwner.lifecycleScope.launch {
         sharedFlow.collectLatest {
             block(it)
+        }
+    }
+}
+
+// from iosched(https://github.com/google/iosched)
+inline fun Fragment.launchAndRepeatWithViewLifecycle(
+    state: Lifecycle.State = Lifecycle.State.STARTED,
+    crossinline block: suspend CoroutineScope.() -> Unit
+) {
+    viewLifecycleOwner.lifecycleScope.launch {
+        viewLifecycleOwner.lifecycle.repeatOnLifecycle(state) {
+            block()
         }
     }
 }
