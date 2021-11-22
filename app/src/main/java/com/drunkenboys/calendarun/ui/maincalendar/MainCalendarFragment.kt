@@ -135,9 +135,9 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         stateCollect(mainCalendarViewModel.calendarList) { calendarList ->
             setupNavigationView(calendarList)
 
-            val menuItemOrder = mainCalendarViewModel.menuItemOrder.value
+            val index = mainCalendarViewModel.selectedCalendarIndex.value
             if (calendarList.isEmpty()) return@stateCollect
-            val calendar = calendarList[menuItemOrder]
+            val calendar = calendarList.getOrNull(index) ?: calendarList[0]
             mainCalendarViewModel.setCalendar(calendar)
         }
     }
@@ -152,10 +152,10 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         val drawerHeaderBinding = DrawerHeaderBinding.bind(navView.getHeaderView(FIRST_HEADER))
         layoutDrawer.addDrawerListener(object : DrawerLayout.DrawerListener {
             override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
-                val menuItemOrder = this@MainCalendarFragment.mainCalendarViewModel.menuItemOrder.value
+                val index = this@MainCalendarFragment.mainCalendarViewModel.selectedCalendarIndex.value
                 if (binding.navView.menu.isEmpty()) return
-                binding.navView.menu[menuItemOrder].isChecked = true
-                drawerHeaderBinding.tvDrawerHeaderTitle.text = binding.navView.menu[menuItemOrder].title
+                binding.navView.menu[index].isChecked = true
+                drawerHeaderBinding.tvDrawerHeaderTitle.text = binding.navView.menu[index].title
             }
 
             override fun onDrawerOpened(drawerView: View) {}

@@ -38,8 +38,8 @@ class MainCalendarViewModel @Inject constructor(
     private val _calendarSetList = MutableStateFlow<List<CalendarSet>>(emptyList())
     val calendarSetList: StateFlow<List<CalendarSet>> = _calendarSetList
 
-    private val _menuItemOrder = MutableStateFlow(0)
-    val menuItemOrder: StateFlow<Int> = _menuItemOrder
+    private val _selectedCalendarIndex = MutableStateFlow(0)
+    val selectedCalendarIndex: StateFlow<Int> = _selectedCalendarIndex
 
     private val _fabClickEvent = MutableSharedFlow<Long>()
     val fabClickEvent: SharedFlow<Long> = _fabClickEvent
@@ -73,7 +73,7 @@ class MainCalendarViewModel @Inject constructor(
 
     fun setMenuItemOrder(order: Int) {
         viewModelScope.launch {
-            _menuItemOrder.emit(order)
+            _selectedCalendarIndex.emit(order)
         }
     }
 
