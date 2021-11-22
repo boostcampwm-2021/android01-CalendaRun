@@ -12,8 +12,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import com.drunkenboys.ckscalendar.yearcalendar.CustomTheme
 import com.drunkenboys.ckscalendar.yearcalendar.YearCalendarViewModel
 
@@ -31,7 +33,9 @@ fun AnimatedMonthHeader(
     )
 
     Card(
-        modifier = Modifier.alpha(density),
+        modifier = Modifier
+            .alpha(density)
+            .zIndex(10f),
         elevation = 10.dp
     ) {
         Text(
