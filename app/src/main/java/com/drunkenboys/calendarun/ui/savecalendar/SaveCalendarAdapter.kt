@@ -11,6 +11,7 @@ import com.drunkenboys.calendarun.ui.base.BaseViewHolder
 import com.drunkenboys.calendarun.ui.savecalendar.model.CheckPointItem
 import com.drunkenboys.calendarun.ui.saveschedule.model.DateType
 import com.drunkenboys.calendarun.view.ErrorGuideEditText
+import com.drunkenboys.calendarun.view.ErrorGuideTextView
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -28,14 +29,33 @@ class SaveCalendarAdapter(
             setVariable(BR.adapter, this@SaveCalendarAdapter)
             lifecycleOwner = viewLifecycleOwner
 
-            collectCalendarNameBlank(currentList[position], etCheckPointName)
+            collectNameBlank(currentList[position], holder.binding.etCheckPointName)
+            collectStartBlank(currentList[position], holder.binding.tvCheckPointStartDatePicker)
+            collectEndBlank(currentList[position], holder.binding.tvCheckPointEndDatePicker)
         }
     }
 
-    private fun collectCalendarNameBlank(item: CheckPointItem, editText: ErrorGuideEditText) {
+    private fun collectNameBlank(item: CheckPointItem, view: ErrorGuideEditText) {
         viewLifecycleOwner.lifecycleScope.launch {
-            item.isBlank.collectLatest {
-                editText.isError = true
+            item.isNameBlank.collectLatest {
+                view.isError = true
+            }
+
+        }
+    }
+
+    private fun collectStartBlank(item: CheckPointItem, view: ErrorGuideTextView) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            item.isStartDateBlank.collectLatest {
+                view.isError = true
+            }
+        }
+    }
+
+    private fun collectEndBlank(item: CheckPointItem, view: ErrorGuideTextView) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            item.isEndDateBlank.collectLatest {
+                view.isError = true
             }
         }
     }
