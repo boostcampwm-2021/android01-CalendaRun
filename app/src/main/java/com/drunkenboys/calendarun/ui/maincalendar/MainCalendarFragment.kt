@@ -69,6 +69,7 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
                     mainCalendarViewModel.setMenuItemOrder(index)
                     mainCalendarViewModel.setCalendar(calendar)
                     binding.layoutDrawer.closeDrawer(GravityCompat.START)
+                    LoadingDialog().show(childFragmentManager, this::class.simpleName)
                     true
                 }
         }
