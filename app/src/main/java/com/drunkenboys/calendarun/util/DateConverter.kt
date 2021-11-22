@@ -2,6 +2,7 @@ package com.drunkenboys.calendarun.util
 
 import java.time.Instant
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
@@ -17,3 +18,6 @@ fun LocalDate.toSecondLong() = toEpochDay() * 24 * 60 * 60 * 1000
 fun LocalDate.toLong() = toEpochDay()
 
 fun LocalDate.nextDay(): LocalDate = LocalDate.ofEpochDay(toLong() + 1L)
+
+val LocalDateTime.amPm: String
+    get() = if (hour < 12) "오전" else "오후"
