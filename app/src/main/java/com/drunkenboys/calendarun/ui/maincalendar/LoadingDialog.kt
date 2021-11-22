@@ -14,7 +14,7 @@ import com.drunkenboys.calendarun.databinding.DialogLoadingBinding
 
 /*
 * @params isWaiting
-* ture : 따로 Dismiss()를 호출 할 때까지 무한 반복
+* tre : 따로 Dismiss()를 호출 할 때까지 무한 반복
 * false : 60frame 실행 후 자동 종료
 * */
 class LoadingDialog(private var isWaiting: Boolean = false) : DialogFragment() {
