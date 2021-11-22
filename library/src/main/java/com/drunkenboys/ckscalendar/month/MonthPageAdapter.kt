@@ -126,7 +126,6 @@ class MonthPageAdapter : RecyclerView.Adapter<MonthPageAdapter.Holder>() {
             binding.rvMonthCalendar.adapter = monthAdapter
             binding.rvMonthCalendar.itemAnimator = null
             binding.rvMonthCalendar.layoutManager = GridLayoutManager(itemView.context, 7)
-            binding.rvMonthCalendar.setBackgroundColor(calendarDesign.backgroundColor)
         }
 
         fun bind(
@@ -134,6 +133,7 @@ class MonthPageAdapter : RecyclerView.Adapter<MonthPageAdapter.Holder>() {
             onDayClick: OnDayClickListener?,
             onDaySecondClick: OnDaySecondClickListener?
         ) {
+            binding.rvMonthCalendar.setBackgroundColor(calendarDesign.backgroundColor)
             CoroutineScope(Dispatchers.Default).launch {
                 val dates = mutableListOf<CalendarDate>()
 
