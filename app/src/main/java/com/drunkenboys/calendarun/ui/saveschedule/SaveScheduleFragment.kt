@@ -149,14 +149,14 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
     }
 
     private fun collectSaveScheduleEvent() {
-        sharedCollect(saveScheduleViewModel.saveScheduleEvent) { schedule ->
-            saveNotification(schedule)
+        sharedCollect(saveScheduleViewModel.saveScheduleEvent) { (schedule, calendarName) ->
+            saveNotification(schedule, calendarName)
             showToast(getString(R.string.toast_schedule_saved))
             navController.navigateUp()
         }
     }
 
-    private fun saveNotification(schedule: Schedule) {
+    private fun saveNotification(schedule: Schedule, calendarName: String) {
         val alarmManager = requireContext().getSystemService<AlarmManager>() ?: return
 
         val triggerAtMillis = schedule.notificationDateTimeMillis()
@@ -165,22 +165,22 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
         alarmManager.set(
             AlarmManager.RTC_WAKEUP,
             triggerAtMillis,
-            ScheduleAlarmReceiver.createPendingIntent(requireContext(), schedule)
+            ScheduleAlarmReceiver.createPendingIntent(requireContext(), schedule, calendarName)
         )
     }
 
     private fun collectDeleteScheduleEvent() {
-        sharedCollect(saveScheduleViewModel.deleteScheduleEvent) { schedule ->
-            deleteNotification(schedule)
+        sharedCollect(saveScheduleViewModel.deleteScheduleEvent) { (schedule, calendarName) ->
+            deleteNotification(schedule, calendarName)
             showToast(getString(R.string.toast_schedule_deleted))
             navController.navigateUp()
         }
     }
 
-    private fun deleteNotification(schedule: Schedule) {
+    private fun deleteNotification(schedule: Schedule, calendarName: String) {
         val alarmManager = requireContext().getSystemService<AlarmManager>() ?: return
 
-        alarmManager.cancel(ScheduleAlarmReceiver.createPendingIntent(requireContext(), schedule))
+        alarmManager.cancel(ScheduleAlarmReceiver.createPendingIntent(requireContext(), schedule, calendarName))
     }
 
     private fun collectBlankTitleEvent() {
