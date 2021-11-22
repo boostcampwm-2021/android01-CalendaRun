@@ -9,9 +9,10 @@ import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.databinding.FragmentSearchScheduleBinding
 import com.drunkenboys.calendarun.ui.base.BaseFragment
 import com.drunkenboys.calendarun.util.HorizontalInsetDividerDecoration
-import com.drunkenboys.calendarun.util.extensions.sharedCollect
-import com.drunkenboys.calendarun.util.extensions.stateCollect
+import com.drunkenboys.calendarun.util.extensions.launchAndRepeatWithViewLifecycle
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SearchScheduleFragment : BaseFragment<FragmentSearchScheduleBinding>(R.layout.fragment_search_schedule) {
@@ -26,8 +27,11 @@ class SearchScheduleFragment : BaseFragment<FragmentSearchScheduleBinding>(R.lay
 
         setupToolbar()
         setupRecyclerView()
-        collectListItem()
-        collectScheduleClickEvent()
+
+        launchAndRepeatWithViewLifecycle {
+            launch { collectListItem() }
+            launch { collectScheduleClickEvent() }
+        }
 
         searchScheduleViewModel.fetchScheduleList()
     }
@@ -48,14 +52,14 @@ class SearchScheduleFragment : BaseFragment<FragmentSearchScheduleBinding>(R.lay
         binding.rvSearchSchedule.addItemDecoration(itemDecoration)
     }
 
-    private fun collectListItem() {
-        stateCollect(searchScheduleViewModel.listItem) { listItem ->
+    private suspend fun collectListItem() {
+        searchScheduleViewModel.listItem.collect { listItem ->
             searchScheduleAdapter.submitList(listItem)
         }
     }
 
-    private fun collectScheduleClickEvent() {
-        sharedCollect(searchScheduleViewModel.scheduleClickEvent) { schedule ->
+    private suspend fun collectScheduleClickEvent() {
+        searchScheduleViewModel.scheduleClickEvent.collect { schedule ->
             val action = SearchScheduleFragmentDirections.toSaveSchedule(schedule.calendarId, schedule.id)
             navController.navigate(action)
         }
