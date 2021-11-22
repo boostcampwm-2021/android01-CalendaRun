@@ -19,6 +19,7 @@
     <string name="check_point_name">이름</string>
     <string name="check_point_startDate">시작일</string>
     <string name="check_point_endDate">종료일</string>
+    <string name="check_point_pickDate">날짜 선택</string>
 
     <!-- view_check_point_footer-->
     <string name="check_point_footer_save">추가</string>
