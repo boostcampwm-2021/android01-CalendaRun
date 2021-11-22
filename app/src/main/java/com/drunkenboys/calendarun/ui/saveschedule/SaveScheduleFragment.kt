@@ -46,6 +46,7 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
         collectIsPickTagColorPopupVisible()
         collectSaveScheduleEvent()
         collectDeleteScheduleEvent()
+        collectBlankTitleEvent()
     }
 
     private fun setupToolbar() = with(binding) {
@@ -180,5 +181,11 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
         val alarmManager = requireContext().getSystemService<AlarmManager>() ?: return
 
         alarmManager.cancel(ScheduleAlarmReceiver.createPendingIntent(requireContext(), schedule))
+    }
+
+    private fun collectBlankTitleEvent() {
+        sharedCollect(saveScheduleViewModel.blankTitleEvent) {
+            binding.etSaveScheduleTitleInput.isError = true
+        }
     }
 }

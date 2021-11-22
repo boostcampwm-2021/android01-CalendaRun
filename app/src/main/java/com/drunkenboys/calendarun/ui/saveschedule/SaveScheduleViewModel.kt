@@ -70,6 +70,9 @@ class SaveScheduleViewModel @Inject constructor(
     private val _deleteScheduleEvent = MutableSharedFlow<Schedule>()
     val deleteScheduleEvent: SharedFlow<Schedule> = _deleteScheduleEvent
 
+    private val _blankTitleEvent = MutableSharedFlow<Unit>()
+    val blankTitleEvent: SharedFlow<Unit> = _blankTitleEvent
+
     init {
         restoreScheduleData()
     }
@@ -146,9 +149,12 @@ class SaveScheduleViewModel @Inject constructor(
     }
 
     fun saveSchedule() {
-        if (isInvalidInput()) return
-
         viewModelScope.launch {
+            if (title.value.isBlank()) {
+                _blankTitleEvent.emit(Unit)
+                return@launch
+            }
+
             val schedule = createScheduleInstance()
 
             if (isUpdateSchedule) {
@@ -159,13 +165,6 @@ class SaveScheduleViewModel @Inject constructor(
                 _saveScheduleEvent.emit(schedule.copy(id = rowId))
             }
         }
-    }
-
-    private fun isInvalidInput(): Boolean {
-        if (title.value.isEmpty()) return true
-        if (calendarName.value.isEmpty()) return true
-
-        return false
     }
 
     private fun createScheduleInstance() = Schedule(
