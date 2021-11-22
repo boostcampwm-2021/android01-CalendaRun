@@ -11,10 +11,6 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import java.time.LocalDate
@@ -55,24 +51,6 @@ suspend fun Fragment.pickTime(localTime: LocalTime? = null) = suspendCancellable
     }
 
     timePicker.show(parentFragmentManager, timePicker::class.simpleName)
-}
-
-inline fun <T> Fragment.stateCollect(stateFlow: StateFlow<T>, crossinline block: suspend (T) -> Unit) {
-    viewLifecycleOwner.lifecycleScope.launch {
-        viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-            stateFlow.collect {
-                block(it)
-            }
-        }
-    }
-}
-
-inline fun <T> Fragment.sharedCollect(sharedFlow: SharedFlow<T>, crossinline block: suspend (T) -> Unit) {
-    viewLifecycleOwner.lifecycleScope.launch {
-        sharedFlow.collectLatest {
-            block(it)
-        }
-    }
 }
 
 // from iosched(https://github.com/google/iosched)
