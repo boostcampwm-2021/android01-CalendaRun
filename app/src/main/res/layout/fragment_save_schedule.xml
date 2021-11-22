@@ -44,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="16dp">
 
-                <EditText
+                <com.drunkenboys.calendarun.view.ErrorGuideEditText
                     android:id="@+id/et_saveSchedule_titleInput"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"

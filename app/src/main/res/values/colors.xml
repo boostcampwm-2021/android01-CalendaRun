@@ -10,4 +10,6 @@
     <color name="dark_grey">#4D4D4D</color>
     <color name="light_pink">#FBC4FF</color>
     <color name="dark_pink">#FB60C4</color>
+
+    <color name="onError">#e20000</color>
 </resources>
