@@ -8,8 +8,10 @@ import androidx.navigation.ui.setupWithNavController
 import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.databinding.FragmentThemeBinding
 import com.drunkenboys.calendarun.ui.base.BaseFragment
-import com.drunkenboys.calendarun.util.extensions.stateCollect
+import com.drunkenboys.calendarun.util.extensions.launchAndRepeatWithViewLifecycle
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class ThemeFragment : BaseFragment<FragmentThemeBinding>(R.layout.fragment_theme) {
@@ -21,7 +23,10 @@ class ThemeFragment : BaseFragment<FragmentThemeBinding>(R.layout.fragment_theme
         binding.viewModel = themeViewModel
 
         setupToolbar()
-        collectTextAlign()
+
+        launchAndRepeatWithViewLifecycle {
+            launch { collectTextAlign() }
+        }
     }
 
     private fun setupToolbar() {
@@ -41,8 +46,8 @@ class ThemeFragment : BaseFragment<FragmentThemeBinding>(R.layout.fragment_theme
         navController.navigate(action)
     }
 
-    private fun collectTextAlign() {
-        stateCollect(themeViewModel.textAlign) { align ->
+    private suspend fun collectTextAlign() {
+        themeViewModel.textAlign.collect { align ->
             when (align) {
                 Gravity.START -> binding.tvThemeTextAlignContent.setText(R.string.start)
                 Gravity.CENTER_VERTICAL -> binding.tvThemeTextAlignContent.setText(R.string.center)

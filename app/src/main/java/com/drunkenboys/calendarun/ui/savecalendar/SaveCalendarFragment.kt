@@ -12,11 +12,11 @@ import com.drunkenboys.calendarun.databinding.FragmentSaveCalendarBinding
 import com.drunkenboys.calendarun.ui.base.BaseFragment
 import com.drunkenboys.calendarun.ui.savecalendar.model.CheckPointItem
 import com.drunkenboys.calendarun.ui.saveschedule.model.DateType
+import com.drunkenboys.calendarun.util.extensions.launchAndRepeatWithViewLifecycle
 import com.drunkenboys.calendarun.util.extensions.pickDateInMillis
-import com.drunkenboys.calendarun.util.extensions.sharedCollect
-import com.drunkenboys.calendarun.util.extensions.stateCollect
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -35,8 +35,11 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
         setupDataBinding()
         setupRecyclerView()
         setupToolbarMenuOnItemClickListener()
-        collectCheckPointItemList()
-        collectSaveCalendarEvent()
+
+        launchAndRepeatWithViewLifecycle {
+            launch { collectCheckPointItemList() }
+            launch { collectSaveCalendarEvent() }
+        }
     }
 
     private fun onCheckPointClick(checkPointItem: CheckPointItem, dateType: DateType) {
@@ -83,16 +86,16 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
         }
     }
 
-    private fun collectCheckPointItemList() {
-        stateCollect(saveCalendarViewModel.checkPointItemList) { list ->
+    private suspend fun collectCheckPointItemList() {
+        saveCalendarViewModel.checkPointItemList.collect { list ->
             saveCalendarAdapter.submitList(list.sortedWith(compareBy(nullsFirst(reverseOrder())) { it.startDate.value }))
             delay(300)
             binding.svSaveCalendar.smoothScrollTo(0, binding.tvSaveCalendarSaveCalendar.bottom)
         }
     }
 
-    private fun collectSaveCalendarEvent() {
-        sharedCollect(saveCalendarViewModel.saveCalendarEvent) { isSaved ->
+    private suspend fun collectSaveCalendarEvent() {
+        saveCalendarViewModel.saveCalendarEvent.collect { isSaved ->
             if (isSaved) {
                 navController.navigateUp()
             } else {

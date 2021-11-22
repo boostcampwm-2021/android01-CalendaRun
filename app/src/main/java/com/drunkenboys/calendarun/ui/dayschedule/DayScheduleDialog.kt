@@ -11,9 +11,10 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.databinding.DialogDayScheduleBinding
-import com.drunkenboys.calendarun.util.extensions.sharedCollect
-import com.drunkenboys.calendarun.util.extensions.stateCollect
+import com.drunkenboys.calendarun.util.extensions.launchAndRepeatWithViewLifecycle
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 @AndroidEntryPoint
@@ -41,8 +42,11 @@ class DayScheduleDialog : DialogFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         setupRvDaySchedule()
         setupImgAddSchedule()
-        collectListItem()
-        collectScheduleClickEvent()
+
+        launchAndRepeatWithViewLifecycle {
+            launch { collectListItem() }
+            launch { collectScheduleClickEvent() }
+        }
 
         dayScheduleViewModel.fetchScheduleList(LocalDate.parse(args.localDate))
 
@@ -60,14 +64,14 @@ class DayScheduleDialog : DialogFragment() {
         }
     }
 
-    private fun collectListItem() {
-        stateCollect(dayScheduleViewModel.listItem) { listItem ->
+    private suspend fun collectListItem() {
+        dayScheduleViewModel.listItem.collect { listItem ->
             dayScheduleAdapter.submitList(listItem)
         }
     }
 
-    private fun collectScheduleClickEvent() {
-        sharedCollect(dayScheduleViewModel.scheduleClickEvent) { schedule ->
+    private suspend fun collectScheduleClickEvent() {
+        dayScheduleViewModel.scheduleClickEvent.collect { schedule ->
             val action = DayScheduleDialogDirections.toSaveSchedule(schedule.calendarId, schedule.id)
             navController.navigate(action)
         }

@@ -19,6 +19,8 @@ import com.drunkenboys.calendarun.ui.base.BaseFragment
 import com.drunkenboys.calendarun.util.*
 import com.drunkenboys.calendarun.util.extensions.*
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.util.*
@@ -39,14 +41,17 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
 
         setupToolbar()
         setupNotificationPopupWindow()
-        collectPickDateTimeEvent()
-        collectPickNotificationTypeEvent()
-        collectNotificationType()
-        collectTagColor()
-        collectIsPickTagColorPopupVisible()
-        collectSaveScheduleEvent()
-        collectDeleteScheduleEvent()
-        collectBlankTitleEvent()
+
+        launchAndRepeatWithViewLifecycle {
+            launch { collectPickDateTimeEvent() }
+            launch { collectPickNotificationTypeEvent() }
+            launch { collectNotificationType() }
+            launch { collectTagColor() }
+            launch { collectIsPickTagColorPopupVisible() }
+            launch { collectSaveScheduleEvent() }
+            launch { collectDeleteScheduleEvent() }
+            launch { collectBlankTitleEvent() }
+        }
     }
 
     private fun setupToolbar() = with(binding) {
@@ -92,11 +97,11 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
         }
     }
 
-    private fun collectPickDateTimeEvent() {
-        sharedCollect(saveScheduleViewModel.pickDateTimeEvent) { (dateType, localDateTime) ->
-            val dateInMillis = pickDateInMillis(localDateTime.toLocalDate()) ?: return@sharedCollect
+    private suspend fun collectPickDateTimeEvent() {
+        saveScheduleViewModel.pickDateTimeEvent.collect { (dateType, localDateTime) ->
+            val dateInMillis = pickDateInMillis(localDateTime.toLocalDate()) ?: return@collect
 
-            val (hour, minute) = pickTime(localDateTime.toLocalTime()) ?: return@sharedCollect
+            val (hour, minute) = pickTime(localDateTime.toLocalTime()) ?: return@collect
 
             val dateTime = LocalDateTime.ofEpochSecond(dateInMillis / 1000, 0, ZoneOffset.UTC)
                 .withHour(hour)
@@ -106,14 +111,14 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
         }
     }
 
-    private fun collectPickNotificationTypeEvent() {
-        sharedCollect(saveScheduleViewModel.pickNotificationTypeEvent) {
+    private suspend fun collectPickNotificationTypeEvent() {
+        saveScheduleViewModel.pickNotificationTypeEvent.collect {
             notificationPopupWidow?.show()
         }
     }
 
-    private fun collectNotificationType() {
-        stateCollect(saveScheduleViewModel.notificationType) { type ->
+    private suspend fun collectNotificationType() {
+        saveScheduleViewModel.notificationType.collect { type ->
             binding.tvSaveScheduleNotification.text = when (type) {
                 Schedule.NotificationType.NONE -> getString(R.string.saveSchedule_notificationNone)
                 Schedule.NotificationType.TEN_MINUTES_AGO -> getString(R.string.saveSchedule_notificationTenMinutesAgo)
@@ -123,14 +128,14 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
         }
     }
 
-    private fun collectTagColor() {
-        stateCollect(saveScheduleViewModel.tagColor) { color ->
+    private suspend fun collectTagColor() {
+        saveScheduleViewModel.tagColor.collect { color ->
             binding.viewSaveScheduleTagColor.backgroundTintList = ColorStateList.valueOf(color)
         }
     }
 
-    private fun collectIsPickTagColorPopupVisible() {
-        stateCollect(saveScheduleViewModel.isPickTagColorPopupVisible) { isVisible ->
+    private suspend fun collectIsPickTagColorPopupVisible() {
+        saveScheduleViewModel.isPickTagColorPopupVisible.collect { isVisible ->
             togglePickTagColorPopup(isVisible)
         }
     }
@@ -148,8 +153,8 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
         }
     }
 
-    private fun collectSaveScheduleEvent() {
-        sharedCollect(saveScheduleViewModel.saveScheduleEvent) { (schedule, calendarName) ->
+    private suspend fun collectSaveScheduleEvent() {
+        saveScheduleViewModel.saveScheduleEvent.collect { (schedule, calendarName) ->
             saveNotification(schedule, calendarName)
             showToast(getString(R.string.toast_schedule_saved))
             navController.navigateUp()
@@ -169,8 +174,8 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
         )
     }
 
-    private fun collectDeleteScheduleEvent() {
-        sharedCollect(saveScheduleViewModel.deleteScheduleEvent) { (schedule, calendarName) ->
+    private suspend fun collectDeleteScheduleEvent() {
+        saveScheduleViewModel.deleteScheduleEvent.collect { (schedule, calendarName) ->
             deleteNotification(schedule, calendarName)
             showToast(getString(R.string.toast_schedule_deleted))
             navController.navigateUp()
@@ -183,8 +188,8 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
         alarmManager.cancel(ScheduleAlarmReceiver.createPendingIntent(requireContext(), schedule, calendarName))
     }
 
-    private fun collectBlankTitleEvent() {
-        sharedCollect(saveScheduleViewModel.blankTitleEvent) {
+    private suspend fun collectBlankTitleEvent() {
+        saveScheduleViewModel.blankTitleEvent.collect {
             binding.etSaveScheduleTitleInput.isError = true
         }
     }
