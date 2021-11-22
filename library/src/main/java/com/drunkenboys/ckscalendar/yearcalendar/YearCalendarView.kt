@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
+import androidx.compose.foundation.layout.Column
 import androidx.databinding.BindingMethod
 import androidx.databinding.BindingMethods
 import com.drunkenboys.ckscalendar.databinding.LayoutYearCalendarBinding
@@ -42,16 +43,15 @@ class YearCalendarView
 
     init {
         binding.composeYearCalendarViewYearCalendar.setContent {
-            //
             CustomTheme(design = viewModel.design.value) {
-                // 위 -> 아래가 아닌 안 -> 밖으로 생성.
-                // 요일 표시가 가장 바깥에 오지 않으면 날짜에 가려진다.
-                CalendarLazyColumn(
-                    onDayClickListener = onDateClickListener,
-                    onDaySecondClickListener = onDateSecondClickListener,
-                    viewModel = viewModel
-                )
-                WeekHeader(viewModel = viewModel)
+                Column {
+                    WeekHeader(viewModel = viewModel)
+                    CalendarLazyColumn(
+                        onDayClickListener = onDateClickListener,
+                        onDaySecondClickListener = onDateSecondClickListener,
+                        viewModel = viewModel
+                    )
+                }
             }
         }
     }
@@ -86,7 +86,15 @@ class YearCalendarView
         // TODO: 원하는 날짜로 클릭
     }
 
-    fun findClickedDay(): LocalDate? = viewModel.clickedDay.value?.date
+    fun findClickedDay(): LocalDate? = viewModel.clickedDay.value
 
     fun getDaySchedules(day: LocalDate): List<CalendarScheduleObject> = viewModel.getDaySchedules(day)
+
+    fun setCalendarSetList(calendarSetList: List<CalendarSet>) {
+        viewModel.setCalendarSetList(calendarSetList)
+    }
+
+    fun setupDefaultCalendarSet() {
+        viewModel.setupDefaultCalendarSet()
+    }
 }

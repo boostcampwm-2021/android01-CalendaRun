@@ -14,7 +14,7 @@ import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
 import com.drunkenboys.ckscalendar.data.*
 import com.drunkenboys.ckscalendar.utils.GravityMapper
-import com.drunkenboys.ckscalendar.utils.toCalendarDatesList
+import com.drunkenboys.ckscalendar.utils.calendarSetToCalendarDatesList
 import com.drunkenboys.ckscalendar.yearcalendar.YearCalendarViewModel
 import java.time.LocalDate
 
@@ -25,7 +25,7 @@ fun MonthCalendar(
     dayColumnModifier: (CalendarDate) -> Modifier,
     viewModel: YearCalendarViewModel
 ) {
-    val weeks = month.toCalendarDatesList()
+    val weeks = calendarSetToCalendarDatesList(month)
     var weekSchedules: Array<Array<CalendarScheduleObject?>> // 1주 스케줄
 
     weeks.forEach { week ->
@@ -37,8 +37,8 @@ fun MonthCalendar(
         ) {
             weekSchedules = Array(7) { Array(viewModel.design.value.visibleScheduleCount) { null } }
             // 월 표시
-            if (viewModel.isFirstWeek(week, month.id))
-                AnimatedMonthHeader(listState = listState, month = month.id)
+            if (viewModel.isFirstWeek(week, month))
+                AnimatedMonthHeader(listState = listState, monthName = month.name)
 
             week.forEach { day ->
                 when (day.dayType) {

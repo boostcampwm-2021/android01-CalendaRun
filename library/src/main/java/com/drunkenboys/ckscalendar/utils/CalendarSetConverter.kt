@@ -3,14 +3,17 @@ package com.drunkenboys.ckscalendar.utils
 import com.drunkenboys.ckscalendar.data.CalendarDate
 import com.drunkenboys.ckscalendar.data.CalendarSet
 import com.drunkenboys.ckscalendar.data.DayType
+import com.drunkenboys.ckscalendar.utils.TimeUtils.dayValue
 import java.time.DayOfWeek
+import java.time.LocalDate
+import java.time.temporal.ChronoUnit
 
-fun CalendarSet.toCalendarDatesList(): List<List<CalendarDate>> {
+fun calendarSetToCalendarDatesList(calendarSet: CalendarSet): List<List<CalendarDate>> {
     // n주
     val weekList = mutableListOf<MutableList<CalendarDate>>()
-    var oneDay = this.startDate
-    var paddingPrev = this.startDate
-    var paddingNext = this.endDate
+    var oneDay = calendarSet.startDate
+    var paddingPrev = calendarSet.startDate
+    var paddingNext = calendarSet.endDate
 
     // 앞쪽 패딩
     if (paddingPrev.dayOfWeek != DayOfWeek.SUNDAY) weekList.add(mutableListOf())
@@ -19,12 +22,13 @@ fun CalendarSet.toCalendarDatesList(): List<List<CalendarDate>> {
         weekList.last().add(CalendarDate(paddingPrev, DayType.PADDING))
     }
 
-    // n주일 추가
-    repeat(this.startDate.lengthOfMonth()) {
+    // n일 추가
+    while (oneDay <= calendarSet.endDate) {
+
         // 일요일에는 1주일 갱신
         if (oneDay.dayOfWeek == DayOfWeek.SUNDAY) weekList.add(mutableListOf())
 
-        // 1주일 추가
+        // 1일 추가
         weekList.last().add(CalendarDate(oneDay, TimeUtils.parseDayWeekToDayType(oneDay.dayOfWeek)))
 
         oneDay = oneDay.plusDays(1L)

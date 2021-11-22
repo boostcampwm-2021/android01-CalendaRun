@@ -16,13 +16,11 @@ class YearCalendarViewModel: ViewModel() {
     private val _design = mutableStateOf(CalendarDesignObject())
     val design: State<CalendarDesignObject> = _design
 
-    private var initYear = LocalDate.now().year
-    private var currentYear = initYear
+    private var _calendar = mutableStateOf(createCalendarSets(LocalDate.now().year))
+    val calendar: State<List<CalendarSet>> = _calendar
 
-    val yearList: MutableList<List<CalendarSet>> = mutableListOf(createCalendarSets(currentYear))
-
-    private val _clickedDay = mutableStateOf<CalendarDate?>(CalendarDate(LocalDate.now(), DayType.WEEKDAY))
-    val clickedDay: State<CalendarDate?> = _clickedDay
+    private val _clickedDay = mutableStateOf<LocalDate?>(LocalDate.now())
+    val clickedDay: State<LocalDate?> = _clickedDay
 
     private var recomposeScope: RecomposeScope? = null
 
@@ -48,9 +46,9 @@ class YearCalendarViewModel: ViewModel() {
         _design.value = CalendarDesignObject()
     }
 
+    // FIXME: 체크포인트 속에서 오늘의 날짜 찾기
     fun getDayItemIndex(day: LocalDate = LocalDate.now()): Int {
-        // (월 달력 12개 + 년 헤더 1개) + 이번달
-        return day.monthValue + 13
+        return day.monthValue
     }
 
     fun setWeekSchedules(
@@ -84,12 +82,12 @@ class YearCalendarViewModel: ViewModel() {
         isStart || ((isSunday || isFirstOfMonth) && (isDateInScheduleRange))
     }
 
-    fun isFirstWeek(week: List<CalendarDate>, monthId: Int) = week.any { day ->
-        day.date.dayOfMonth == 1 && monthId == day.date.monthValue
+    fun isFirstWeek(week: List<CalendarDate>, month: CalendarSet) = week.any { day ->
+        day.date == month.startDate && day.dayType != DayType.PADDING
     }
 
     fun clickDay(day: CalendarDate) {
-        _clickedDay.value = day
+        _clickedDay.value = day.date
     }
 
     fun getDaySchedules(day: LocalDate) = schedules.value.filter { schedule ->
@@ -97,13 +95,21 @@ class YearCalendarViewModel: ViewModel() {
     }
 
     fun fetchNextCalendarSet() {
-        yearList.add(createCalendarSets(++currentYear))
-        recomposeScope?.invalidate()
+        // FIXME: 기본 캘린더와 생성된 캘린더를 구분짓는 로직 하드코딩
+        if (_calendar.value.all { month -> month.name.contains("월") || _calendar.value.isEmpty()}) {
+            val nextYear = _calendar.value.last().endDate.year + 1
+
+            _calendar.value = _calendar.value.plus(createCalendarSets(nextYear))
+        }
     }
 
     fun fetchPrevCalendarSet() {
-        yearList.add(0, createCalendarSets(--initYear))
-        recomposeScope?.invalidate()
+        // FIXME: 기본 캘린더와 생성된 캘린더를 구분짓는 로직 하드코딩
+        if (_calendar.value.all { month -> month.name.contains("월") || _calendar.value.isEmpty() }) {
+            val prevYear = _calendar.value.first().startDate.year - 1
+
+            _calendar.value = createCalendarSets(prevYear).plus(_calendar.value)
+        }
     }
 
     private fun createCalendarSets(year: Int): List<CalendarSet> {
@@ -120,7 +126,20 @@ class YearCalendarViewModel: ViewModel() {
         return calendarMonth
     }
 
-    companion object {
-        const val INIT_YEAR = 0
+    fun setCalendarSetList(calendarSetList: List<CalendarSet>) {
+        if (calendarSetList.isEmpty()) setupDefaultCalendarSet()
+        else _calendar.value = calendarSetList
+    }
+
+    fun setupDefaultCalendarSet() {
+        // 앞 뒤로 여유 1년씩 추가
+        fetchPrevCalendarSet()
+        _calendar.value = createCalendarSets(LocalDate.now().year)
+        fetchNextCalendarSet()
+
+        // 오늘 선택
+        _clickedDay.value = LocalDate.now()
+
+        // TODO: 스크롤
     }
 }

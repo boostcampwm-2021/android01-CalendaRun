@@ -25,6 +25,7 @@ import com.drunkenboys.ckscalendar.utils.ShouldNextScroll
 import com.drunkenboys.ckscalendar.utils.ShouldPrevScroll
 import com.drunkenboys.ckscalendar.yearcalendar.CustomTheme
 import com.drunkenboys.ckscalendar.yearcalendar.YearCalendarViewModel
+import java.time.LocalDate
 
 @Composable
 fun CalendarLazyColumn(
@@ -35,11 +36,12 @@ fun CalendarLazyColumn(
     // RecyclerView의 상태를 관찰
     val listState = rememberLazyListState()
 
+    val calendar by remember { viewModel.calendar }
     val clickedDay by remember { viewModel.clickedDay }
     val clickedEdge = { day: CalendarDate ->
         BorderStroke(
             width = 2.dp,
-            color = if (clickedDay?.date == day.date) Color(viewModel.design.value.selectedFrameColor) else Color.Transparent
+            color = if (clickedDay == day.date) Color(viewModel.design.value.selectedFrameColor) else Color.Transparent
         )
     }
 
@@ -52,7 +54,7 @@ fun CalendarLazyColumn(
             .layoutId(day.date.toString())
             .border(clickedEdge(day))
             .clickable(onClick = {
-                if (clickedDay != day) onDayClickListener?.onDayClick(day.date, 0)
+                if (clickedDay != day.date) onDayClickListener?.onDayClick(day.date, 0)
                 else onDaySecondClickListener?.onDayClick(day.date, 0)
                 viewModel.clickDay(day)
             })
@@ -60,27 +62,25 @@ fun CalendarLazyColumn(
 
     // RecyclerView와 유사
     LazyColumn(state = listState) {
-        viewModel.yearList.forEach { year ->
-            // 달력
-            item {
+        items(calendar, key = { slice -> slice.startDate }) { slice ->
+            val firstOfYear = LocalDate.of(slice.endDate.year, 1, 1)
+
+            if (firstOfYear in slice.startDate..slice.endDate)
                 Text(
-                    text = "${year[0].startDate.year}년",
+                    text = "${firstOfYear.year}년",
                     color = MaterialTheme.colors.primary,
                     modifier = Modifier
                         .background(color = MaterialTheme.colors.background)
                         .fillMaxWidth(),
                     textAlign = TextAlign.Center
                 )
-            }
 
-            items(year, key = {month -> month.startDate}) { month ->
-                MonthCalendar(
-                    month = month,
-                    listState = listState,
-                    dayColumnModifier = dayColumnModifier,
-                    viewModel = viewModel
-                )
-            }
+            MonthCalendar(
+                month = slice,
+                listState = listState,
+                dayColumnModifier = dayColumnModifier,
+                viewModel = viewModel
+            )
         }
     }
 
