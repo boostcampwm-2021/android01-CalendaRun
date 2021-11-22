@@ -43,8 +43,9 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         setupMonthCalendar()
         collectFabClickEvent()
         collectDaySecondClickListener()
-        mainCalendarViewModel.fetchCalendarList()
         collectCalendarDesignObject()
+        mainCalendarViewModel.fetchCalendar()
+        mainCalendarViewModel.fetchCalendarList()
     }
 
     private fun setupCalendarView() {
@@ -66,7 +67,7 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
                 .setIcon(R.drawable.ic_favorite_24)
                 .setCheckable(true)
                 .setOnMenuItemClickListener {
-                    mainCalendarViewModel.setMenuItemOrder(index)
+                    mainCalendarViewModel.setSelectedCalendarIndex(index)
                     mainCalendarViewModel.setCalendar(calendar)
                     binding.layoutDrawer.closeDrawer(GravityCompat.START)
                     LoadingDialog().show(childFragmentManager, this::class.simpleName)
@@ -92,10 +93,7 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         manageMenu.add(getString(R.string.drawer_theme_setting))
             .setIcon(R.drawable.ic_palette)
             .setOnMenuItemClickListener {
-                // TODO: 2021-11-11 테마 설정 화면으로 이동
-                val action = MainCalendarFragmentDirections.toThemeFragment()
-                navController.navigate(action)
-                binding.layoutDrawer.closeDrawer(GravityCompat.START)
+                navigateToThemeFragment()
                 true
             }
     }
@@ -108,6 +106,12 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
 
     private fun navigateToManageCalendar() {
         val action = MainCalendarFragmentDirections.toManageCalendar()
+        navController.navigate(action)
+        binding.layoutDrawer.closeDrawer(GravityCompat.START)
+    }
+
+    private fun navigateToThemeFragment() {
+        val action = MainCalendarFragmentDirections.toThemeFragment()
         navController.navigate(action)
         binding.layoutDrawer.closeDrawer(GravityCompat.START)
     }
@@ -132,11 +136,6 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
     private fun collectCalendarList() {
         stateCollect(mainCalendarViewModel.calendarList) { calendarList ->
             setupNavigationView(calendarList)
-
-            val menuItemOrder = mainCalendarViewModel.menuItemOrder.value
-            if (calendarList.isEmpty()) return@stateCollect
-            val calendar = calendarList[menuItemOrder]
-            mainCalendarViewModel.setCalendar(calendar)
         }
     }
 
@@ -150,10 +149,10 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         val drawerHeaderBinding = DrawerHeaderBinding.bind(navView.getHeaderView(FIRST_HEADER))
         layoutDrawer.addDrawerListener(object : DrawerLayout.DrawerListener {
             override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
-                val menuItemOrder = this@MainCalendarFragment.mainCalendarViewModel.menuItemOrder.value
+                val index = this@MainCalendarFragment.mainCalendarViewModel.selectCalendarIndex.value
                 if (binding.navView.menu.isEmpty()) return
-                binding.navView.menu[menuItemOrder].isChecked = true
-                drawerHeaderBinding.tvDrawerHeaderTitle.text = binding.navView.menu[menuItemOrder].title
+                binding.navView.menu[index].isChecked = true
+                drawerHeaderBinding.tvDrawerHeaderTitle.text = binding.navView.menu[index].title
             }
 
             override fun onDrawerOpened(drawerView: View) {}

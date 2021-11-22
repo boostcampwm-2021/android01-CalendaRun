@@ -81,12 +81,13 @@ class SaveCalendarViewModel @Inject constructor(
 
     private fun saveCalendar(): Boolean {
         val calendarName = calendarName.value
+        val checkPointList = _checkPointItemList.value
 
-        var calendarStartDate = _checkPointItemList.value[0].startDate.value ?: return false
-        var calendarEndDate = _checkPointItemList.value[0].endDate.value ?: return false
+        var calendarStartDate = checkPointList.getOrNull(0)?.startDate?.value ?: return false
+        var calendarEndDate = checkPointList.getOrNull(0)?.endDate?.value ?: return false
 
-        if (!_checkPointItemList.value.isNullOrEmpty()) {
-            _checkPointItemList.value.forEach { item ->
+        if (!checkPointList.isNullOrEmpty()) {
+            checkPointList.forEach { item ->
                 if (item.name.value.isEmpty()) return false
                 val startDate = item.startDate.value ?: return false
                 val endDate = item.endDate.value ?: return false
@@ -108,7 +109,7 @@ class SaveCalendarViewModel @Inject constructor(
                 endDate = calendarEndDate
             )
             val calendarId = calendarLocalDataSource.insertCalendar(newCalender)
-            _checkPointItemList.value.forEach { item ->
+            checkPointList.forEach { item ->
                 val id = item.id
                 val checkPointName = item.name.value
                 val startDate = item.startDate.value ?: return@launch
