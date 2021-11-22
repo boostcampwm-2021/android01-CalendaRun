@@ -13,6 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.drunkenboys.ckscalendar.yearcalendar.CustomTheme
+import com.drunkenboys.ckscalendar.yearcalendar.YearCalendarViewModel
 
 @Composable
 fun AnimatedMonthHeader(
@@ -39,9 +41,13 @@ fun AnimatedMonthHeader(
 @Preview
 @Composable
 fun PreviewMonthHeader() {
-    Text(
-        text = "1월",
-        color = MaterialTheme.colors.primary,
-        modifier = Modifier.padding(start = 5.dp)
-    )
+    val viewModel = YearCalendarViewModel()
+
+    CustomTheme(design = viewModel.design.value) {
+        Text(
+            text = "1월",
+            color = MaterialTheme.colors.primary,
+            modifier = Modifier.padding(start = 5.dp)
+        )
+    }
 }
