@@ -43,8 +43,8 @@ class YearCalendarViewModel: ViewModel() {
         _design.value = design
     }
 
-    fun resetDesign() {
-        _design.value = CalendarDesignObject()
+    fun setDefaultDesign() {
+        _design.value = CalendarDesignObject.getDefaultDesign()
     }
 
     // FIXME: 체크포인트 속에서 오늘의 날짜 찾기

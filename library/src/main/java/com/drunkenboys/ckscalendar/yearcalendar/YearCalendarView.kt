@@ -78,7 +78,7 @@ class YearCalendarView
     }
 
     fun resetTheme() {
-        viewModel.resetDesign()
+        viewModel.setDefaultDesign()
     }
 
     fun moveToDay(day: LocalDate) {
