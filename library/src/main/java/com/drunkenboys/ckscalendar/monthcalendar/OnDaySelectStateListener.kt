@@ -1,4 +1,4 @@
-package com.drunkenboys.ckscalendar.month
+package com.drunkenboys.ckscalendar.monthcalendar
 
 fun interface OnDaySelectStateListener {
 

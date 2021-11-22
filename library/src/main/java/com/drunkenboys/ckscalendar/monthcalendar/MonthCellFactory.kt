@@ -1,4 +1,4 @@
-package com.drunkenboys.ckscalendar.month
+package com.drunkenboys.ckscalendar.monthcalendar
 
 import com.drunkenboys.ckscalendar.data.CalendarDate
 import com.drunkenboys.ckscalendar.data.CalendarSet
