@@ -11,7 +11,9 @@ data class CheckPointItem(
     val startDate: MutableStateFlow<LocalDate?> = MutableStateFlow(null),
     val endDate: MutableStateFlow<LocalDate?> = MutableStateFlow(null),
     var check: Boolean = false,
-    val isBlank: MutableSharedFlow<Unit> = MutableSharedFlow(),
+    val isNameBlank: MutableSharedFlow<Unit> = MutableSharedFlow(),
+    val isStartDateBlank: MutableSharedFlow<Unit> = MutableSharedFlow(),
+    val isEndDateBlank: MutableSharedFlow<Unit> = MutableSharedFlow()
 ) : Comparable<CheckPointItem> {
 
     override fun compareTo(other: CheckPointItem): Int =
