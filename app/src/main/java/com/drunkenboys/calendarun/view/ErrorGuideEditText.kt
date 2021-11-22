@@ -56,13 +56,14 @@ class ErrorGuideEditText @JvmOverloads constructor(
         )
 
         AnimatorSet().apply {
-            duration = 300
+            duration = DURATION
             play(hintTextColorAnimator).with(translationAnimator)
         }.start()
     }
 
     companion object {
 
+        private const val DURATION = 300L
         private const val HINT_TEXT_COLOR = "hintTextColor"
     }
 }
