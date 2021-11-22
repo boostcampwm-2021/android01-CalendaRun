@@ -90,11 +90,11 @@ class YearCalendarView
 
     fun getDaySchedules(day: LocalDate): List<CalendarScheduleObject> = viewModel.getDaySchedules(day)
 
-    fun setCheckPoints(checkPoints: List<CalendarSet>) {
-        viewModel.setCheckPoints(checkPoints)
+    fun setCalendarSetList(calendarSetList: List<CalendarSet>) {
+        viewModel.setCalendarSetList(calendarSetList)
     }
 
-    fun resetCheckPoint() {
-        viewModel.resetCheckPoint()
+    fun setupDefaultCalendarSet() {
+        viewModel.setupDefaultCalendarSet()
     }
 }

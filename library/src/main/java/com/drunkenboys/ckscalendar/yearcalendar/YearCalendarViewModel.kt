@@ -126,12 +126,12 @@ class YearCalendarViewModel: ViewModel() {
         return calendarMonth
     }
 
-    fun setCheckPoints(checkPoints: List<CalendarSet>) {
-        if (checkPoints.isEmpty()) resetCheckPoint()
+    fun setCalendarSetList(checkPoints: List<CalendarSet>) {
+        if (checkPoints.isEmpty()) setupDefaultCalendarSet()
         else _calendar.value = checkPoints
     }
 
-    fun resetCheckPoint() {
+    fun setupDefaultCalendarSet() {
         // 앞 뒤로 여유 1년씩 추가
         fetchPrevCalendarSet()
         _calendar.value = createCalendarSets(LocalDate.now().year)
