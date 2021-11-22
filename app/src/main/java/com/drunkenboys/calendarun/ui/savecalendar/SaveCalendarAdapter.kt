@@ -2,6 +2,7 @@ package com.drunkenboys.calendarun.ui.savecalendar
 
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ListAdapter
 import com.drunkenboys.calendarun.BR
 import com.drunkenboys.calendarun.R
@@ -9,6 +10,9 @@ import com.drunkenboys.calendarun.databinding.ItemCheckPointBinding
 import com.drunkenboys.calendarun.ui.base.BaseViewHolder
 import com.drunkenboys.calendarun.ui.savecalendar.model.CheckPointItem
 import com.drunkenboys.calendarun.ui.saveschedule.model.DateType
+import com.drunkenboys.calendarun.view.ErrorGuideEditText
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class SaveCalendarAdapter(
     private val viewLifecycleOwner: LifecycleOwner,
@@ -23,6 +27,16 @@ class SaveCalendarAdapter(
             setVariable(BR.item, currentList[position])
             setVariable(BR.adapter, this@SaveCalendarAdapter)
             lifecycleOwner = viewLifecycleOwner
+
+            collectCalendarNameBlank(currentList[position], etCheckPointName)
+        }
+    }
+
+    private fun collectCalendarNameBlank(item: CheckPointItem, editText: ErrorGuideEditText) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            item.isBlank.collectLatest {
+                editText.isError = true
+            }
         }
     }
 }

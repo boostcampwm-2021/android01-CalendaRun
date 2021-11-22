@@ -37,6 +37,9 @@ class SaveCalendarViewModel @Inject constructor(
     private val _saveCalendarEvent = MutableSharedFlow<Boolean>()
     val saveCalendarEvent: SharedFlow<Boolean> = _saveCalendarEvent
 
+    private val _blankTitleEvent = MutableSharedFlow<Unit>()
+    val blankTitleEvent: SharedFlow<Unit> = _blankTitleEvent
+
     init {
         viewModelScope.launch {
             val calendar = calendarLocalDataSource.fetchCalendar(calendarId) ?: return@launch
@@ -86,7 +89,9 @@ class SaveCalendarViewModel @Inject constructor(
         val calendarName = calendarName.value
 
         if (calendarName.isEmpty()) {
-            return false
+            viewModelScope.launch {
+                _blankTitleEvent.emit(Unit)
+            }
         }
 
         if (useDefaultCalendar) {
@@ -104,14 +109,19 @@ class SaveCalendarViewModel @Inject constructor(
         }
 
         val checkPointList = _checkPointItemList.value
-        var calendarStartDate = checkPointList.getOrNull(0)?.startDate?.value ?: return false
-        var calendarEndDate = checkPointList.getOrNull(0)?.endDate?.value ?: return false
+        var calendarStartDate = checkPointList.getOrNull(0)?.startDate?.value ?: LocalDate.now()
+        var calendarEndDate = checkPointList.getOrNull(0)?.endDate?.value ?: LocalDate.now()
 
         if (!checkPointList.isNullOrEmpty()) {
             checkPointList.forEach { item ->
-                if (item.name.value.isEmpty()) return false
-                val startDate = item.startDate.value ?: return false
-                val endDate = item.endDate.value ?: return false
+                viewModelScope.launch {
+                    if (item.name.value.isBlank()) {
+                        item.isBlank.emit(Unit)
+                    }
+                }
+
+                val startDate = item.startDate.value ?: LocalDate.now()
+                val endDate = item.endDate.value ?: LocalDate.now()
                 if (!isValidateCheckPointDate(startDate, endDate)) return false
                 if (calendarStartDate.isAfter(startDate)) {
                     calendarStartDate = startDate

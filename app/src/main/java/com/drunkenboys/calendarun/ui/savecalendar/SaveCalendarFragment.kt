@@ -2,7 +2,6 @@ package com.drunkenboys.calendarun.ui.savecalendar
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
@@ -38,6 +37,7 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
         collectCheckPointItemList()
         collectSaveCalendarEvent()
         collectUseDefaultCalendar()
+        collectBlankTitleEvent()
     }
 
     private fun onCheckPointClick(checkPointItem: CheckPointItem, dateType: DateType) {
@@ -110,9 +110,13 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
         sharedCollect(saveCalendarViewModel.saveCalendarEvent) { isSaved ->
             if (isSaved) {
                 navController.navigateUp()
-            } else {
-                Toast.makeText(context, "입력 값이 이상해요", Toast.LENGTH_LONG).show()
             }
+        }
+    }
+
+    private fun collectBlankTitleEvent() {
+        sharedCollect(saveCalendarViewModel.blankTitleEvent) {
+            binding.etSaveCalendarCalendarName.isError = true
         }
     }
 }
