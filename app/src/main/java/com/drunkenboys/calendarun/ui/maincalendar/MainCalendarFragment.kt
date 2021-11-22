@@ -121,9 +121,7 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
 
     private fun collectCalendarSet() {
         stateCollect(mainCalendarViewModel.calendarSetList) { calendarSetList ->
-            if (calendarSetList.isEmpty()) return@stateCollect
-
-            if (calendarSetList.firstOrNull()?.id == -1) { // CalendarSet 기본캘린더 ID에 대한 Unique 값이 필요함
+            if (calendarSetList.isEmpty()) {
                 binding.calendarMonth.setupDefaultCalendarSet()
             } else {
                 binding.calendarMonth.setCalendarSetList(calendarSetList)

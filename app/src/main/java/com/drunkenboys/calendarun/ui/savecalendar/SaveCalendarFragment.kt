@@ -11,6 +11,7 @@ import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.databinding.FragmentSaveCalendarBinding
 import com.drunkenboys.calendarun.ui.base.BaseFragment
 import com.drunkenboys.calendarun.ui.savecalendar.model.CheckPointItem
+import com.drunkenboys.calendarun.ui.saveschedule.model.DateType
 import com.drunkenboys.calendarun.util.extensions.pickDateInMillis
 import com.drunkenboys.calendarun.util.extensions.sharedCollect
 import com.drunkenboys.calendarun.util.extensions.stateCollect
@@ -35,17 +36,20 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
         setupRecyclerView()
         setupToolbarMenuOnItemClickListener()
         collectCheckPointItemList()
-        collectPickDateTimeEvent()
         collectSaveCalendarEvent()
     }
 
-    private fun onCheckPointClick(checkPointItem: CheckPointItem) {
+    private fun onCheckPointClick(checkPointItem: CheckPointItem, dateType: DateType) {
         lifecycleScope.launch {
             val dateInMillis = pickDateInMillis() ?: return@launch
 
             val dateTime = LocalDate.ofEpochDay(dateInMillis / 1000 / 60 / 60 / 24)
 
-            checkPointItem.date.emit(dateTime)
+            when (dateType) {
+                DateType.START -> checkPointItem.startDate.emit(dateTime)
+                DateType.END -> checkPointItem.endDate.emit(dateTime)
+            }
+
         }
     }
 
@@ -81,19 +85,9 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
 
     private fun collectCheckPointItemList() {
         stateCollect(saveCalendarViewModel.checkPointItemList) { list ->
-            saveCalendarAdapter.submitList(list.sortedWith(compareBy(nullsFirst(reverseOrder())) { it.date.value }))
+            saveCalendarAdapter.submitList(list.sortedWith(compareBy(nullsFirst(reverseOrder())) { it.startDate.value }))
             delay(300)
             binding.svSaveCalendar.smoothScrollTo(0, binding.tvSaveCalendarSaveCalendar.bottom)
-        }
-    }
-
-    private fun collectPickDateTimeEvent() {
-        sharedCollect(saveCalendarViewModel.pickDateEvent) { dateType ->
-            val dateInMillis = pickDateInMillis() ?: return@sharedCollect
-
-            val date = LocalDate.ofEpochDay(dateInMillis / 1000 / 60 / 60 / 24)
-
-            saveCalendarViewModel.updateDate(date, dateType)
         }
     }
 

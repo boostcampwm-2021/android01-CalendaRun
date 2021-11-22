@@ -13,10 +13,13 @@ import androidx.core.animation.addListener
 import androidx.core.view.GestureDetectorCompat
 import androidx.core.view.get
 import androidx.core.view.isVisible
+import androidx.core.view.size
 import com.drunkenboys.calendarun.util.extensions.setAnimationListener
 
 class ExpandableLinearLayout @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null, defStyle: Int = 0
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyle: Int = 0
 ) : LinearLayout(context, attrs, defStyle) {
 
     private val mDetector = GestureDetectorCompat(context, SingleTapListener())
@@ -24,7 +27,9 @@ class ExpandableLinearLayout @JvmOverloads constructor(
     private var isExpand = false
     private var isAnimationEnd = true
 
-    private var originalHeight = 0
+    private val collapseHeight by lazy { measuredHeight }
+    private val contentHeight by lazy { getMeasuredHeightOf(get(1)) }
+    private val expandHeight by lazy { collapseHeight + contentHeight }
 
     init {
         isClickable = true
@@ -37,15 +42,12 @@ class ExpandableLinearLayout @JvmOverloads constructor(
     }
 
     private fun expand() {
-        if (isExpand) return
+        if (size != 2) return
         isAnimationEnd = false
 
         val contentView = get(1)
 
-        originalHeight = height
-        val contentViewHeight = getMeasuredHeightOf(contentView)
-
-        val anim = ExpandAnimation(contentViewHeight)
+        val anim = ExpandAnimation(height, expandHeight - height)
         anim.setAnimationListener(onEnd = {
             contentView.isVisible = true
             contentView.alpha = 0f
@@ -61,15 +63,12 @@ class ExpandableLinearLayout @JvmOverloads constructor(
     }
 
     private fun collapse() {
-        if (!isExpand) return
+        if (size != 2) return
         isAnimationEnd = false
 
         val contentView = get(1)
 
-        originalHeight = height
-        val contentViewHeight = contentView.height
-
-        val anim = CollapseAnimation(contentViewHeight)
+        val anim = CollapseAnimation(height, height - collapseHeight)
         anim.setAnimationListener(onEnd = {
             contentView.isVisible = false
             isExpand = false
@@ -89,28 +88,28 @@ class ExpandableLinearLayout @JvmOverloads constructor(
         return view.measuredHeight
     }
 
-    private inner class ExpandAnimation(private val targetHeight: Int) : Animation() {
+    private inner class ExpandAnimation(private val height: Int, private val additionalHeight: Int) : Animation() {
 
         init {
             duration = DEFAULT_ANIMATION_DURATION
         }
 
         override fun applyTransformation(interpolatedTime: Float, t: Transformation?) {
-            val diff = targetHeight * interpolatedTime
-            layoutParams.height = (originalHeight + diff).toInt()
+            val diff = additionalHeight * interpolatedTime
+            layoutParams.height = (height + diff).toInt()
             requestLayout()
         }
     }
 
-    private inner class CollapseAnimation(private val targetHeight: Int) : Animation() {
+    private inner class CollapseAnimation(private val height: Int, private val additionalHeight: Int) : Animation() {
 
         init {
             duration = DEFAULT_ANIMATION_DURATION
         }
 
         override fun applyTransformation(interpolatedTime: Float, t: Transformation?) {
-            val diff = targetHeight * interpolatedTime
-            layoutParams.height = (originalHeight - diff).toInt()
+            val diff = additionalHeight * interpolatedTime
+            layoutParams.height = (height - diff).toInt()
             requestLayout()
         }
     }
