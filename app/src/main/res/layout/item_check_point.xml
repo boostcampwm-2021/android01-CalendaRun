@@ -34,10 +34,12 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <EditText
+        <com.drunkenboys.calendarun.view.ErrorGuideEditText
             android:id="@+id/et_checkPoint_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:hint="@string/check_point_name"
+            android:inputType="text"
             android:text="@={item.name}"
             app:layout_constraintBottom_toBottomOf="@+id/tv_checkPoint_name"
             app:layout_constraintEnd_toEndOf="@+id/tv_checkPoint_startDatePicker"
