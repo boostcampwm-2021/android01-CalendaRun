@@ -158,7 +158,7 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
                 }
             }
             // 보여줄 갯수만 뽑아서 반환 SCHEDULE_CONTAINER_SIZE 보다 크면 안됨
-            return scheduleListContainer.sliceArray(0 until MAX_VISIBLE_SCHEDULE_SIZE)
+            return scheduleListContainer.sliceArray(0 until calendarDesign.visibleScheduleCount)
         }
 
         private fun mappingScheduleTextView(it: CalendarScheduleObject, isFirstShowSchedule: Boolean): TextView {
@@ -225,7 +225,5 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
 
         //TODO : 10개넘어가는 일정이 있으면 오류 가능성 있음
         private const val SCHEDULE_CONTAINER_SIZE = 10
-
-        private const val MAX_VISIBLE_SCHEDULE_SIZE = 3
     }
 }
