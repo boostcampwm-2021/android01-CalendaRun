@@ -1,6 +1,7 @@
 package com.drunkenboys.calendarun.ui.maincalendar
 
 import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -47,20 +48,11 @@ class LoadingDialog(private var isWaiting: Boolean = false) : DialogFragment() {
             binding.lottieLoading.repeatCount = LottieDrawable.INFINITE
         }
         binding.lottieLoading.playAnimation()
-        binding.lottieLoading.addAnimatorListener(object : Animator.AnimatorListener {
-            override fun onAnimationStart(animation: Animator?) {
-            }
-
+        binding.lottieLoading.addAnimatorListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator?) {
                 if (!isWaiting) {
                     dismiss()
                 }
-            }
-
-            override fun onAnimationCancel(animation: Animator?) {
-            }
-
-            override fun onAnimationRepeat(animation: Animator?) {
             }
         })
     }
