@@ -91,4 +91,34 @@ class YearCalendarViewModelTest {
         // Then 일정이 비어 있어야 한다.
         assertTrue(viewModel.schedules.value.isEmpty())
     }
+
+    @Test
+    fun `0년 까지의 무한스크롤 테스트`() {
+        // Given 기본 캘린더
+        viewModel.setupDefaultCalendarSet()
+
+        // When 0년까지 스크롤
+        repeat(today.year) {
+            viewModel.fetchPrevCalendarSet()
+        }
+
+        // Then 캘린더의 첫 인덱스가 0년
+        val startDate = viewModel.calendar.value.first().startDate
+        assertEquals(0, startDate.year)
+    }
+
+    @Test
+    fun `0년 이전의 무한스크롤 테스트`() {
+        // Given 기본 캘린더
+        viewModel.setupDefaultCalendarSet()
+
+        // When 기원전 1000년까지 스크롤
+        repeat(today.year + 1000) {
+            viewModel.fetchPrevCalendarSet()
+        }
+
+        // Then 캘린더 첫 인덱스가 마이너스 1000년
+        val startDate = viewModel.calendar.value.first().startDate
+        assertEquals(-1000, startDate.year)
+    }
 }
