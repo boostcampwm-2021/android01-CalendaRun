@@ -101,8 +101,8 @@ class SaveScheduleViewModelTest {
             viewModel.saveSchedule()
             val result = awaitItem()
 
-            assertEquals(title, result.name)
-            assertEquals(memo, result.memo)
+            assertEquals(title, result.first.name)
+            assertEquals(memo, result.first.memo)
             cancelAndConsumeRemainingEvents()
         }
     }
@@ -119,7 +119,7 @@ class SaveScheduleViewModelTest {
             viewModel.deleteSchedule()
             val result = awaitItem()
 
-            assertEquals(schedule, result)
+            assertEquals(schedule, result.first)
             cancelAndConsumeRemainingEvents()
         }
     }
