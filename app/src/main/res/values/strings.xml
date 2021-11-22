@@ -12,6 +12,7 @@
     <string name="saveCalendar_start_date">시작일</string>
     <string name="saveCalendar_end_date">종료일</string>
     <string name="saveCalendar_save">저장</string>
+    <string name="saveCalendar_defaultCalendar">기본 캘린더</string>
     <string name="menuSaveCalendarToolbar_delete">삭제</string>
 
     <!-- view_check_point -->
