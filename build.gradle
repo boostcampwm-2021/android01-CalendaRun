@@ -16,6 +16,7 @@ buildscript {
         hilt_version = "2.40"
         retrofit_version = "2.9.0"
         coroutine_version = "1.5.2"
+        lottieVersion = "4.2.1"
     }
 
     repositories {
