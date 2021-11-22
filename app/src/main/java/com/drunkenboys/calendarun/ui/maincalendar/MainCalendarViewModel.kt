@@ -1,7 +1,9 @@
 package com.drunkenboys.calendarun.ui.maincalendar
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.drunkenboys.calendarun.KEY_CALENDAR_ID
 import com.drunkenboys.calendarun.data.calendar.entity.Calendar
 import com.drunkenboys.calendarun.data.calendar.local.CalendarLocalDataSource
 import com.drunkenboys.calendarun.data.calendartheme.local.CalendarThemeLocalDataSource
@@ -20,11 +22,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainCalendarViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
     private val calendarLocalDataSource: CalendarLocalDataSource,
     private val checkPointLocalDataSource: CheckPointLocalDataSource,
     private val scheduleLocalDataSource: ScheduleLocalDataSource,
     private val calendarThemeDataSource: CalendarThemeLocalDataSource
 ) : ViewModel() {
+
+    private var calendarId = savedStateHandle[KEY_CALENDAR_ID] ?: 1L
 
     private val _calendar = MutableStateFlow<Calendar?>(null)
     val calendar: StateFlow<Calendar?> = _calendar
@@ -39,7 +44,7 @@ class MainCalendarViewModel @Inject constructor(
     val calendarSetList: StateFlow<List<CalendarSet>> = _calendarSetList
 
     private val _selectedCalendarIndex = MutableStateFlow(0)
-    val selectedCalendarIndex: StateFlow<Int> = _selectedCalendarIndex
+    val selectCalendarIndex: StateFlow<Int> = _selectedCalendarIndex
 
     private val _fabClickEvent = MutableSharedFlow<Long>()
     val fabClickEvent: SharedFlow<Long> = _fabClickEvent
@@ -47,9 +52,22 @@ class MainCalendarViewModel @Inject constructor(
     private val _daySecondClickEvent = MutableSharedFlow<LocalDate>()
     val daySecondClickEvent: SharedFlow<LocalDate> = _daySecondClickEvent
 
+    fun fetchCalendar() {
+        viewModelScope.launch {
+            var currentCalendar = calendarLocalDataSource.fetchCalendar(calendarId)
+            if (currentCalendar == null) {
+                calendarId = 1L
+                _selectedCalendarIndex.emit(0)
+                currentCalendar = calendarLocalDataSource.fetchCalendar(calendarId)
+            }
+            setCalendar(currentCalendar)
+        }
+    }
+
     fun setCalendar(calendar: Calendar) {
         viewModelScope.launch {
             _calendar.emit(calendar)
+            calendarId = calendar.id
             createCalendarSetList(calendar.id, fetchCheckPointList(calendar.id))
             fetchScheduleList(calendar.id)
         }
@@ -68,12 +86,6 @@ class MainCalendarViewModel @Inject constructor(
             scheduleLocalDataSource.fetchCalendarSchedules(calendarId)
                 .map { schedule -> schedule.mapToCalendarScheduleObject() }
                 .let { _scheduleList.emit(it) }
-        }
-    }
-
-    fun setMenuItemOrder(order: Int) {
-        viewModelScope.launch {
-            _selectedCalendarIndex.emit(order)
         }
     }
 
@@ -113,6 +125,12 @@ class MainCalendarViewModel @Inject constructor(
             }
 
             _calendarSetList.emit(calendarSetList.toList())
+        }
+    }
+
+    fun setSelectedCalendarIndex(index: Int) {
+        viewModelScope.launch {
+            _selectedCalendarIndex.emit(index)
         }
     }
 
