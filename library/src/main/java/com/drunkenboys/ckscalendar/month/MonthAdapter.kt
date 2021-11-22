@@ -103,12 +103,7 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
             if (item.dayType != DayType.PADDING) {
                 binding.tvMonthDay.text = item.date.dayOfMonth.toString()
             }
-            val textColor = when (item.dayType) {
-                DayType.HOLIDAY, DayType.SUNDAY -> holidayColor
-                DayType.SATURDAY -> saturdayColor
-                else -> weekDayColor
-            }
-            binding.tvMonthDay.setTextColor(textColor)
+            setTextCellDesign(item)
 
             CoroutineScope(Dispatchers.Default).launch {
                 val scheduleContainer = makePaddingScheduleList(item, schedules)
@@ -123,6 +118,17 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
                     }
                 }
             }
+        }
+
+        private fun setTextCellDesign(item: CalendarDate) {
+            val textColor = when (item.dayType) {
+                DayType.HOLIDAY, DayType.SUNDAY -> holidayColor
+                DayType.SATURDAY -> saturdayColor
+                else -> weekDayColor
+            }
+            binding.tvMonthDay.setTextColor(textColor)
+            binding.tvMonthDay.gravity = calendarDesign.textAlign
+            binding.tvMonthDay.setTextSize(TypedValue.COMPLEX_UNIT_DIP, calendarDesign.textSize)
         }
 
         // make sorted schedule list with white padding

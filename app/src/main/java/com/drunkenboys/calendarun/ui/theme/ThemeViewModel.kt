@@ -39,7 +39,7 @@ class ThemeViewModel @Inject constructor(
     val backgroundColor: StateFlow<Int> = _backgroundColor
 
     private val _textSize = MutableStateFlow(defaultDesign.textSize)
-    val textSize: StateFlow<Int> = _textSize
+    val textSize: StateFlow<Float> = _textSize
 
     private val _textAlign = MutableStateFlow(defaultDesign.textAlign)
     val textAlign: StateFlow<Int> = _textAlign
@@ -89,7 +89,7 @@ class ThemeViewModel @Inject constructor(
         updateTheme()
     }
 
-    fun setTextSize(textSize: Int) {
+    fun setTextSize(textSize: Float) {
         _textSize.value = textSize
         updateTheme()
     }
