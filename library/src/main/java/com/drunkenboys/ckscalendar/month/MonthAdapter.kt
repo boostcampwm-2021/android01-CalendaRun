@@ -103,7 +103,7 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
             if (item.dayType != DayType.PADDING) {
                 binding.tvMonthDay.text = item.date.dayOfMonth.toString()
             }
-            setTextCellDesign(item)
+            setDateCellTextDesign(item)
 
             CoroutineScope(Dispatchers.Default).launch {
                 val scheduleContainer = makePaddingScheduleList(item, schedules)
@@ -120,7 +120,7 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
             }
         }
 
-        private fun setTextCellDesign(item: CalendarDate) {
+        private fun setDateCellTextDesign(item: CalendarDate) {
             val textColor = when (item.dayType) {
                 DayType.HOLIDAY, DayType.SUNDAY -> holidayColor
                 DayType.SATURDAY -> saturdayColor

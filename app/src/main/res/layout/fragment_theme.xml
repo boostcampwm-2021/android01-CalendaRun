@@ -388,7 +388,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="40dp"
                             android:gravity="center_vertical"
-                            android:onClick="@{() -> viewModel.setTextAlign(Gravity.CENTER_VERTICAL)}"
+                            android:onClick="@{() -> viewModel.setTextAlign(Gravity.CENTER)}"
                             android:paddingHorizontal="16dp"
                             android:paddingVertical="8dp"
                             android:text="@string/center"
