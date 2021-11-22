@@ -13,6 +13,7 @@ import com.drunkenboys.ckscalendar.listener.OnDayClickListener
 import com.drunkenboys.ckscalendar.listener.OnDaySecondClickListener
 import com.drunkenboys.ckscalendar.yearcalendar.composeView.*
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 @BindingMethods(
     value = [
@@ -88,7 +89,7 @@ class YearCalendarView
 
     fun findClickedDay(): LocalDate? = viewModel.clickedDay.value
 
-    fun getDaySchedules(day: LocalDate): List<CalendarScheduleObject> = viewModel.getDaySchedules(day)
+    fun getDaySchedules(day: LocalDateTime): List<CalendarScheduleObject> = viewModel.getDaySchedules(day)
 
     fun setCalendarSetList(calendarSetList: List<CalendarSet>) {
         viewModel.setCalendarSetList(calendarSetList)
