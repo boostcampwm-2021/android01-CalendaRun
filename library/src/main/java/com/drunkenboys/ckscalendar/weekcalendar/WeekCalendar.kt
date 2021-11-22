@@ -15,7 +15,7 @@ import com.drunkenboys.ckscalendar.data.CalendarDate
 import com.drunkenboys.ckscalendar.data.CalendarScheduleObject
 import com.drunkenboys.ckscalendar.data.CalendarSet
 import com.drunkenboys.ckscalendar.data.DayType
-import com.drunkenboys.ckscalendar.utils.toCalendarDatesList
+import com.drunkenboys.ckscalendar.utils.calendarSetToCalendarDatesList
 import com.drunkenboys.ckscalendar.yearcalendar.YearCalendarViewModel
 import com.drunkenboys.ckscalendar.yearcalendar.composeView.DayText
 import com.drunkenboys.ckscalendar.yearcalendar.composeView.PaddingText
@@ -29,7 +29,7 @@ private val currentMonth = CalendarSet(
     endDate = LocalDate.now().withDayOfMonth(LocalDate.now().dayOfMonth)
 )
 
-private val currentWeeks = currentMonth.toCalendarDatesList()
+private val currentWeeks = calendarSetToCalendarDatesList(currentMonth)
 
 @Composable
 fun WeekCalendar(

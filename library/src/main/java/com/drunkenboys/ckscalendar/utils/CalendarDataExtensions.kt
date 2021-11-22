@@ -8,12 +8,12 @@ import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 
-fun CalendarSet.toCalendarDatesList(): List<List<CalendarDate>> {
+fun calendarSetToCalendarDatesList(calendarSet: CalendarSet): List<List<CalendarDate>> {
     // n주
     val weekList = mutableListOf<MutableList<CalendarDate>>()
-    var oneDay = startDate
-    var paddingPrev = startDate
-    var paddingNext = endDate
+    var oneDay = calendarSet.startDate
+    var paddingPrev = calendarSet.startDate
+    var paddingNext = calendarSet.endDate
 
     // 앞쪽 패딩
     if (paddingPrev.dayOfWeek != DayOfWeek.SUNDAY) weekList.add(mutableListOf())
@@ -23,7 +23,7 @@ fun CalendarSet.toCalendarDatesList(): List<List<CalendarDate>> {
     }
 
     // n일 추가
-    while (oneDay <= endDate) {
+    while (oneDay <= calendarSet.endDate) {
 
         // 일요일에는 1주일 갱신
         if (oneDay.dayOfWeek == DayOfWeek.SUNDAY) weekList.add(mutableListOf())
