@@ -11,6 +11,7 @@ import com.drunkenboys.calendarun.MainActivity
 import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import com.drunkenboys.calendarun.util.extensions.PendingIntentExt
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 class ScheduleAlarmReceiver : BroadcastReceiver() {
@@ -21,16 +22,23 @@ class ScheduleAlarmReceiver : BroadcastReceiver() {
         notificationManager = context.getSystemService() ?: return
         val title = intent.getStringExtra(KEY_SCHEDULE_NOTIFICATION_TITLE) ?: return
         val text = intent.getStringExtra(KEY_SCHEDULE_NOTIFICATION_TEXT) ?: return
-        val time = intent.getStringExtra(KEY_SCHEDULE_NOTIFICATION_SCHEDULE_START_DATE) ?: return
+        val startDateTime = intent.getStringExtra(KEY_SCHEDULE_NOTIFICATION_SCHEDULE_START_DATE) ?: return
         val calendarId = intent.getLongExtra(KEY_SCHEDULE_NOTIFICATION_CALENDAR_ID, 0)
         val scheduleId = intent.getLongExtra(KEY_SCHEDULE_NOTIFICATION_SCHEDULE_ID, 0)
 
-        val contentPendingIntent = MainActivity.createNavigationPendingIntent(context, calendarId, scheduleId)
+        val timeFormat = DateTimeFormatter.ofPattern("hh:mm")
+        val dateTime = LocalDateTime.parse(startDateTime)
+
+        val contentPendingIntent = MainActivity.createNavigationPendingIntent(
+            context,
+            calendarId,
+            dateTime.toLocalDate().toString()
+        )
 
         val builder = NotificationCompat.Builder(context, SCHEDULE_NOTIFICATION_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_calendar_today)
             .setContentTitle(title)
-            .setContentText("$time $text")
+            .setContentText("${dateTime.format(timeFormat)} $text")
             .setContentIntent(contentPendingIntent)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
@@ -49,14 +57,12 @@ class ScheduleAlarmReceiver : BroadcastReceiver() {
         const val SCHEDULE_NOTIFICATION_CHANNEL_NAME = "일정 알림 채널"
 
         fun createPendingIntent(context: Context, schedule: Schedule, calendarName: String): PendingIntent {
-            val timeFormat = DateTimeFormatter.ofPattern("hh:mm")
-
             val intent = Intent(context, ScheduleAlarmReceiver::class.java).apply {
                 putExtra(KEY_SCHEDULE_NOTIFICATION_TITLE, calendarName)
                 putExtra(KEY_SCHEDULE_NOTIFICATION_TEXT, schedule.name)
                 putExtra(KEY_SCHEDULE_NOTIFICATION_CALENDAR_ID, schedule.calendarId)
                 putExtra(KEY_SCHEDULE_NOTIFICATION_SCHEDULE_ID, schedule.id)
-                putExtra(KEY_SCHEDULE_NOTIFICATION_SCHEDULE_START_DATE, schedule.startDate.format(timeFormat))
+                putExtra(KEY_SCHEDULE_NOTIFICATION_SCHEDULE_START_DATE, schedule.startDate.toString())
             }
 
             return PendingIntent.getBroadcast(

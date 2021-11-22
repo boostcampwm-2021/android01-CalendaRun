@@ -1,8 +1,6 @@
 package com.drunkenboys.calendarun
 
-import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.GestureDetector
@@ -12,10 +10,10 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.core.content.getSystemService
 import androidx.core.view.GestureDetectorCompat
+import androidx.navigation.NavDeepLinkBuilder
 import com.drunkenboys.calendarun.databinding.ActivityMainBinding
-import com.drunkenboys.calendarun.receiver.ScheduleAlarmReceiver
 import com.drunkenboys.calendarun.ui.base.BaseViewActivity
-import com.drunkenboys.calendarun.util.extensions.PendingIntentExt
+import com.drunkenboys.calendarun.ui.maincalendar.MainCalendarFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -71,20 +69,10 @@ class MainActivity : BaseViewActivity<ActivityMainBinding>(ActivityMainBinding::
 
     companion object {
 
-        private const val CODE_SCHEDULE_NOTIFICATION = 1000
-
-        fun createNavigationPendingIntent(context: Context, calendarId: Long, scheduleId: Long): PendingIntent {
-            val contentIntent = Intent(context, MainActivity::class.java).apply {
-                putExtra(ScheduleAlarmReceiver.KEY_SCHEDULE_NOTIFICATION_CALENDAR_ID, calendarId)
-                putExtra(ScheduleAlarmReceiver.KEY_SCHEDULE_NOTIFICATION_SCHEDULE_ID, scheduleId)
-            }
-
-            return PendingIntent.getActivity(
-                context,
-                CODE_SCHEDULE_NOTIFICATION,
-                contentIntent,
-                PendingIntentExt.FLAG_UPDATE_CURRENT
-            )
-        }
+        fun createNavigationPendingIntent(context: Context, calendarId: Long, startDate: String) = NavDeepLinkBuilder(context)
+            .setGraph(R.navigation.nav_main)
+            .setDestination(R.id.dayScheduleDialog)
+            .setArguments(MainCalendarFragmentDirections.toDayScheduleDialog(calendarId, startDate).arguments)
+            .createPendingIntent()
     }
 }
