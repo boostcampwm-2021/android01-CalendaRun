@@ -126,9 +126,9 @@ class YearCalendarViewModel: ViewModel() {
         return calendarMonth
     }
 
-    fun setCalendarSetList(checkPoints: List<CalendarSet>) {
-        if (checkPoints.isEmpty()) setupDefaultCalendarSet()
-        else _calendar.value = checkPoints
+    fun setCalendarSetList(calendarSetList: List<CalendarSet>) {
+        if (calendarSetList.isEmpty()) setupDefaultCalendarSet()
+        else _calendar.value = calendarSetList
     }
 
     fun setupDefaultCalendarSet() {
