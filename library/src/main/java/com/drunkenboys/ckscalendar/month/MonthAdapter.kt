@@ -103,12 +103,7 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
             if (item.dayType != DayType.PADDING) {
                 binding.tvMonthDay.text = item.date.dayOfMonth.toString()
             }
-            val textColor = when (item.dayType) {
-                DayType.HOLIDAY, DayType.SUNDAY -> holidayColor
-                DayType.SATURDAY -> saturdayColor
-                else -> weekDayColor
-            }
-            binding.tvMonthDay.setTextColor(textColor)
+            setDateCellTextDesign(item)
 
             CoroutineScope(Dispatchers.Default).launch {
                 val scheduleContainer = makePaddingScheduleList(item, schedules)
@@ -123,6 +118,17 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
                     }
                 }
             }
+        }
+
+        private fun setDateCellTextDesign(item: CalendarDate) {
+            val textColor = when (item.dayType) {
+                DayType.HOLIDAY, DayType.SUNDAY -> holidayColor
+                DayType.SATURDAY -> saturdayColor
+                else -> weekDayColor
+            }
+            binding.tvMonthDay.setTextColor(textColor)
+            binding.tvMonthDay.gravity = calendarDesign.textAlign
+            binding.tvMonthDay.setTextSize(TypedValue.COMPLEX_UNIT_DIP, calendarDesign.textSize)
         }
 
         // make sorted schedule list with white padding
@@ -152,7 +158,7 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
                 }
             }
             // 보여줄 갯수만 뽑아서 반환 SCHEDULE_CONTAINER_SIZE 보다 크면 안됨
-            return scheduleListContainer.sliceArray(0 until MAX_VISIBLE_SCHEDULE_SIZE)
+            return scheduleListContainer.sliceArray(0 until calendarDesign.visibleScheduleCount)
         }
 
         private fun mappingScheduleTextView(it: CalendarScheduleObject, isFirstShowSchedule: Boolean): TextView {
@@ -219,7 +225,5 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
 
         //TODO : 10개넘어가는 일정이 있으면 오류 가능성 있음
         private const val SCHEDULE_CONTAINER_SIZE = 10
-
-        private const val MAX_VISIBLE_SCHEDULE_SIZE = 3
     }
 }

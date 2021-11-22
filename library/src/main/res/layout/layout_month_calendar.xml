@@ -24,7 +24,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="@string/sunday"
+        android:text="@string/calendar_sunday"
         app:layout_constraintEnd_toStartOf="@id/tv_monthCalendarView_monday"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_monthCalendarView_currentMonth" />
@@ -34,7 +34,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="@string/monday"
+        android:text="@string/calendar_monday"
         app:layout_constraintEnd_toStartOf="@id/tv_monthCalendarView_tuesday"
         app:layout_constraintStart_toEndOf="@id/tv_monthCalendarView_sunday"
         app:layout_constraintTop_toTopOf="@+id/tv_monthCalendarView_sunday" />
@@ -44,7 +44,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="@string/tuesday"
+        android:text="@string/calendar_tuesday"
         app:layout_constraintEnd_toStartOf="@id/tv_monthCalendarView_wednesday"
         app:layout_constraintStart_toEndOf="@id/tv_monthCalendarView_monday"
         app:layout_constraintTop_toTopOf="@+id/tv_monthCalendarView_monday" />
@@ -54,7 +54,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="@string/wednesday"
+        android:text="@string/calendar_wednesday"
         app:layout_constraintEnd_toStartOf="@id/tv_monthCalendarView_thursday"
         app:layout_constraintStart_toEndOf="@id/tv_monthCalendarView_tuesday"
         app:layout_constraintTop_toTopOf="@+id/tv_monthCalendarView_tuesday" />
@@ -64,7 +64,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="@string/thursday"
+        android:text="@string/calendar_thursday"
         app:layout_constraintEnd_toStartOf="@id/tv_monthCalendarView_friday"
         app:layout_constraintStart_toEndOf="@id/tv_monthCalendarView_wednesday"
         app:layout_constraintTop_toTopOf="@+id/tv_monthCalendarView_wednesday" />
@@ -74,7 +74,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="@string/friday"
+        android:text="@string/calendar_friday"
         app:layout_constraintEnd_toStartOf="@id/tv_monthCalendarView_saturday"
         app:layout_constraintStart_toEndOf="@id/tv_monthCalendarView_thursday"
         app:layout_constraintTop_toTopOf="@+id/tv_monthCalendarView_thursday" />
@@ -84,7 +84,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="@string/saturday"
+        android:text="@string/calendar_saturday"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/tv_monthCalendarView_friday"
         app:layout_constraintTop_toTopOf="@+id/tv_monthCalendarView_friday" />

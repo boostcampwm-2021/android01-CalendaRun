@@ -17,7 +17,7 @@ data class CalendarDesignObject(
     @ColorInt var selectedFrameColor: Int = ScheduleColorType.GRAY.color,
     @ColorInt var backgroundColor: Int = Color.WHITE,
     @DrawableRes var selectedFrameDrawable: Int = R.drawable.bg_month_date_selected,
-    var textSize: Int = 10,
+    var textSize: Float = 10f,
     var textAlign: Int = Gravity.CENTER_VERTICAL,
     val weekSimpleStringSet: List<String> = listOf("일", "월", "화", "수", "목", "금", "토"),
     val weekFullStringSet: List<String> = listOf("일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"),

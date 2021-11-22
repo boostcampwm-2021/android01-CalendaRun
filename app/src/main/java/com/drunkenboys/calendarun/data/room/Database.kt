@@ -14,7 +14,7 @@ import com.drunkenboys.calendarun.data.checkpoint.local.CheckPointDao
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import com.drunkenboys.calendarun.data.schedule.local.ScheduleDao
 
-@Database(entities = [Calendar::class, CheckPoint::class, Schedule::class, CalendarTheme::class], version = 3)
+@Database(entities = [Calendar::class, CheckPoint::class, Schedule::class, CalendarTheme::class], version = 4)
 @TypeConverters(Converters::class)
 abstract class Database : RoomDatabase() {
 
@@ -27,6 +27,58 @@ abstract class Database : RoomDatabase() {
     abstract fun calendarThemeDao(): CalendarThemeDao
 
     companion object {
+
+        // CalendarTheme TextSize 데이터 타입 변경 Int -> Float
+        val MIGRATION_3_4 = object : Migration(3, 4) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL(
+                    "CREATE TABLE `CalendarTheme_tmp` (" +
+                            "`id` INTEGER NOT NULL, " +
+                            "`weekDayTextColor` INTEGER NOT NULL, " +
+                            "`holidayTextColor` INTEGER NOT NULL, " +
+                            "`saturdayTextColor` INTEGER NOT NULL, " +
+                            "`sundayTextColor` INTEGER NOT NULL, " +
+                            "`selectedFrameColor` INTEGER NOT NULL, " +
+                            "`backgroundColor` INTEGER NOT NULL, " +
+                            "`textSize` FlOAT NOT NULL, " +
+                            "`textAlign` INTEGER NOT NULL, " +
+                            "`languageType` TEXT NOT NULL, " +
+                            "`visibleScheduleCount` INTEGER NOT NULL, " +
+                            "PRIMARY KEY(`id`))"
+                )
+                database.execSQL(
+                    """INSERT INTO CalendarTheme_tmp(
+                         id,
+                         weekDayTextColor,
+                         holidayTextColor,
+                         saturdayTextColor,
+                         sundayTextColor,
+                         selectedFrameColor,
+                         backgroundColor,
+                         textSize,
+                         textAlign,
+                         languageType,
+                         visibleScheduleCount
+                        ) 
+                        SELECT 
+                             id,
+                             weekDayTextColor,
+                             holidayTextColor,
+                             saturdayTextColor,
+                             sundayTextColor,
+                             selectedFrameColor,
+                             backgroundColor,
+                             textSize,
+                             textAlign,
+                             languageType,
+                             visibleScheduleCount 
+                       FROM CalendarTheme
+                           """.trimMargin()
+                )
+                database.execSQL("DROP TABLE CalendarTheme");
+                database.execSQL("ALTER TABLE CalendarTheme_tmp RENAME TO CalendarTheme");
+            }
+        }
 
         val MIGRATION_2_3 = object : Migration(2, 3) {
             override fun migrate(database: SupportSQLiteDatabase) {
