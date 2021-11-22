@@ -37,6 +37,7 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
         setupToolbarMenuOnItemClickListener()
         collectCheckPointItemList()
         collectSaveCalendarEvent()
+        collectUseDefaultCalendar()
     }
 
     private fun onCheckPointClick(checkPointItem: CheckPointItem, dateType: DateType) {
@@ -49,7 +50,6 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
                 DateType.START -> checkPointItem.startDate.emit(dateTime)
                 DateType.END -> checkPointItem.endDate.emit(dateTime)
             }
-
         }
     }
 
@@ -88,6 +88,21 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
             saveCalendarAdapter.submitList(list.sortedWith(compareBy(nullsFirst(reverseOrder())) { it.startDate.value }))
             delay(300)
             binding.svSaveCalendar.smoothScrollTo(0, binding.tvSaveCalendarSaveCalendar.bottom)
+        }
+    }
+
+    private fun collectUseDefaultCalendar() {
+        stateCollect(saveCalendarViewModel.useDefaultCalendar) { checked ->
+            when (checked) {
+                true -> {
+                    binding.rvSaveCalendarCheckPointList.visibility = View.GONE
+                    binding.tvSaveCalendarAddCheckPointView.visibility = View.GONE
+                }
+                false -> {
+                    binding.rvSaveCalendarCheckPointList.visibility = View.VISIBLE
+                    binding.tvSaveCalendarAddCheckPointView.visibility = View.VISIBLE
+                }
+            }
         }
     }
 
