@@ -20,10 +20,6 @@ import com.drunkenboys.ckscalendar.listener.OnDaySecondClickListener
 import com.drunkenboys.ckscalendar.utils.context
 import com.drunkenboys.ckscalendar.utils.dp2px
 import com.drunkenboys.ckscalendar.utils.tintStroke
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : RecyclerView.Adapter<MonthAdapter.Holder>() {
 
@@ -105,18 +101,14 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
             }
             setDateCellTextDesign(item)
 
-            CoroutineScope(Dispatchers.Default).launch {
-                val scheduleContainer = makePaddingScheduleList(item, schedules)
-                val hasAnySchedule = scheduleContainer.any { it != null }
-                if (hasAnySchedule) {
-                    withContext(Dispatchers.Main) {
-                        binding.layoutMonthSchedule.removeAllViews()
-                        scheduleContainer.map { it ?: makeDefaultScheduleTextView() }
-                            .forEach {
-                                binding.layoutMonthSchedule.addView(it)
-                            }
+            val scheduleContainer = makePaddingScheduleList(item, schedules)
+            val hasAnySchedule = scheduleContainer.any { it != null }
+            if (hasAnySchedule) {
+                binding.layoutMonthSchedule.removeAllViews()
+                scheduleContainer.map { it ?: makeDefaultScheduleTextView() }
+                    .forEach {
+                        binding.layoutMonthSchedule.addView(it)
                     }
-                }
             }
         }
 
