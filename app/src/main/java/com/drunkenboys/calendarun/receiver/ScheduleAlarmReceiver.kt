@@ -33,7 +33,7 @@ class ScheduleAlarmReceiver : BroadcastReceiver() {
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
 
-        notificationManager.notify(getNotificationId(calendarId, scheduleId), builder.build())
+        notificationManager.notify(scheduleId.toInt(), builder.build())
     }
 
     companion object {
@@ -55,12 +55,10 @@ class ScheduleAlarmReceiver : BroadcastReceiver() {
 
             return PendingIntent.getBroadcast(
                 context,
-                getNotificationId(schedule.calendarId, schedule.id),
+                schedule.id.toInt(),
                 intent,
                 PendingIntentExt.FLAG_UPDATE_CURRENT
             )
         }
-
-        fun getNotificationId(calendarId: Long, scheduleId: Long) = (calendarId * 1000000 + scheduleId).toInt()
     }
 }
