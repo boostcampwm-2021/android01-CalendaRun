@@ -140,7 +140,5 @@ class YearCalendarViewModel: ViewModel() {
 
         // 오늘 선택
         _clickedDay.value = LocalDate.now()
-
-        // TODO: 스크롤
     }
 }
