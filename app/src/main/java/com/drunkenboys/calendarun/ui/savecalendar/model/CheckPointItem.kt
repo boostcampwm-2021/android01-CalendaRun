@@ -1,6 +1,7 @@
 package com.drunkenboys.calendarun.ui.savecalendar.model
 
 import androidx.recyclerview.widget.DiffUtil
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.time.LocalDate
 
@@ -9,12 +10,12 @@ data class CheckPointItem(
     val name: MutableStateFlow<String> = MutableStateFlow(""),
     val startDate: MutableStateFlow<LocalDate?> = MutableStateFlow(null),
     val endDate: MutableStateFlow<LocalDate?> = MutableStateFlow(null),
-    var check: Boolean = false
+    var check: Boolean = false,
+    val isBlank: MutableSharedFlow<Unit> = MutableSharedFlow(),
 ) : Comparable<CheckPointItem> {
 
     override fun compareTo(other: CheckPointItem): Int =
         compareValuesBy(this, other) { checkPoint -> checkPoint.startDate.value }
-
 
     companion object {
         val diffUtil by lazy {
