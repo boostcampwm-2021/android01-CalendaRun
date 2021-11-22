@@ -6,7 +6,7 @@ import org.junit.Assert.*
 import org.junit.Test
 import java.time.LocalDate
 
-class CalendarDataExtensionsTest {
+class CalendarSetConverterTest {
     private val id = 0
     private val name = "test"
 
@@ -29,7 +29,7 @@ class CalendarDataExtensionsTest {
         )
 
         // When 변환
-        val calendarDateList = calendarSet.toCalendarDatesList()
+        val calendarDateList = calendarSetToCalendarDatesList(calendarSet)
 
         assertEquals(6, calendarDateList.size)
     }
@@ -45,7 +45,7 @@ class CalendarDataExtensionsTest {
         )
 
         // When convert
-        val calendarDateList = calendarSet.toCalendarDatesList()
+        val calendarDateList = calendarSetToCalendarDatesList(calendarSet)
 
         // Then 6줄
         assertEquals(6, calendarDateList.size)
@@ -62,7 +62,7 @@ class CalendarDataExtensionsTest {
         )
 
         // When convert
-        val calendarDateList = calendarSet.toCalendarDatesList()
+        val calendarDateList = calendarSetToCalendarDatesList(calendarSet)
 
         // Then list is not empty
         assertEquals(1, calendarDateList.size)
