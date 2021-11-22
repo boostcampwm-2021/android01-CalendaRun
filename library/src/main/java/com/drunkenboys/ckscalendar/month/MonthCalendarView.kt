@@ -126,16 +126,22 @@ class MonthCalendarView @JvmOverloads constructor(
     }
 
     fun setDesign(calendarDesign: CalendarDesignObject) {
-        calendarDesign.weekDayTextColor.let {
-            binding.tvMonthCalendarViewCurrentMonth.setTextColor(it)
-            binding.tvMonthCalendarViewSunday.setTextColor(it)
-            binding.tvMonthCalendarViewMonday.setTextColor(it)
-            binding.tvMonthCalendarViewThursday.setTextColor(it)
-            binding.tvMonthCalendarViewWednesday.setTextColor(it)
-            binding.tvMonthCalendarViewTuesday.setTextColor(it)
-            binding.tvMonthCalendarViewFriday.setTextColor(it)
-            binding.tvMonthCalendarViewSaturday.setTextColor(it)
+        val weekTextViews = listOf(
+            binding.tvMonthCalendarViewSunday,
+            binding.tvMonthCalendarViewMonday,
+            binding.tvMonthCalendarViewThursday,
+            binding.tvMonthCalendarViewWednesday,
+            binding.tvMonthCalendarViewTuesday,
+            binding.tvMonthCalendarViewFriday,
+            binding.tvMonthCalendarViewSaturday,
+        )
+
+        binding.tvMonthCalendarViewCurrentMonth.setTextColor(calendarDesign.weekDayTextColor)
+        weekTextViews.forEachIndexed { index, textView ->
+            textView.setTextColor(calendarDesign.weekDayTextColor)
+            textView.text = calendarDesign.weekSimpleStringSet[index]
         }
+
         binding.root.setBackgroundColor(calendarDesign.backgroundColor)
         pageAdapter.setDesign(calendarDesign)
     }
