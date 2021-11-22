@@ -18,7 +18,7 @@ class ErrorGuideEditText @JvmOverloads constructor(
 ) : AppCompatEditText(context, attrs, defStyle) {
 
     private val defaultHintTextColor = currentHintTextColor
-    private val errorColor = ContextCompat.getColor(context, R.color.dark_pink)
+    private val errorColor = ContextCompat.getColor(context, R.color.onError)
 
     var isError = false
         set(value) {
