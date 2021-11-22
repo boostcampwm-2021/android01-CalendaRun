@@ -72,12 +72,12 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/tv_saveCalendar_calendarName" />
 
-                <EditText
+                <com.drunkenboys.calendarun.view.ErrorGuideEditText
                     android:id="@+id/et_saveCalendar_calendarName"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:ems="10"
+                    android:hint="@string/saveCalendar_title"
                     android:inputType="text"
                     android:text="@={saveCalendarViewModel.calendarName}"
                     app:layout_constraintEnd_toEndOf="@+id/switch_saveCalendar_defaultCalendar"
