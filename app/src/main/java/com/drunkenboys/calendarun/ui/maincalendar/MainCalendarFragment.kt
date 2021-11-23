@@ -1,5 +1,6 @@
 package com.drunkenboys.calendarun.ui.maincalendar
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.GravityCompat
@@ -15,6 +16,7 @@ import com.drunkenboys.calendarun.databinding.DrawerHeaderBinding
 import com.drunkenboys.calendarun.databinding.FragmentMainCalendarBinding
 import com.drunkenboys.calendarun.ui.base.BaseFragment
 import com.drunkenboys.calendarun.util.extensions.*
+import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -40,6 +42,7 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
             launch { collectFabClickEvent() }
             launch { collectDaySecondClickListener() }
             launch { collectCalendarDesignObject() }
+            launch { collectLicenseClickEvent() }
         }
         mainCalendarViewModel.fetchCalendar()
         mainCalendarViewModel.fetchCalendarList()
@@ -91,6 +94,13 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
             .setIcon(R.drawable.ic_palette)
             .setOnMenuItemClickListener {
                 navigateToThemeFragment()
+                true
+            }
+
+        manageMenu.add(getString(R.string.drawer_license))
+            .setIcon(R.drawable.ic_license)
+            .setOnMenuItemClickListener {
+                startActivity(Intent(this@MainCalendarFragment.context, OssLicensesMenuActivity::class.java))
                 true
             }
     }
@@ -150,6 +160,10 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
                 if (binding.navView.menu.isEmpty()) return
                 binding.navView.menu[index].isChecked = true
                 drawerHeaderBinding.tvDrawerHeaderTitle.text = binding.navView.menu[index].title
+                drawerHeaderBinding.tvDrawerHeaderSetting.setOnClickListener {
+                    this@MainCalendarFragment.mainCalendarViewModel.emitLicenseClickEvent()
+                    binding.layoutDrawer.closeDrawer(GravityCompat.START)
+                }
             }
 
             override fun onDrawerOpened(drawerView: View) {}
@@ -206,6 +220,15 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
             binding.calendarMonth.setDesign(it)
             binding.calendarYear.setTheme(it)
         }
+    }
+
+    private suspend fun collectLicenseClickEvent() {
+        mainCalendarViewModel.licenseClickEvent
+            .throttleFirst(DEFAULT_TOUCH_THROTTLE_PERIOD)
+            .collect {
+                startActivity(Intent(this@MainCalendarFragment.context, OssLicensesMenuActivity::class.java))
+                binding.layoutDrawer.closeDrawer(GravityCompat.START)
+            }
     }
 
     companion object {
