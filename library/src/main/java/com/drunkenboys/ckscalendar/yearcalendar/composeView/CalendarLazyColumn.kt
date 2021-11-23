@@ -7,6 +7,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.MaterialTheme
@@ -75,6 +76,16 @@ fun CalendarLazyColumn(
                     textAlign = TextAlign.Center
                 )
 
+            if (!viewModel.isDefaultCalendar())
+                Text(
+                    text = "${slice.startDate.monthValue}월",
+                    color = MaterialTheme.colors.primary,
+                    modifier = Modifier
+                        .background(color = MaterialTheme.colors.background)
+                        .fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
+
             MonthCalendar(
                 month = slice,
                 listState = listState,
@@ -107,6 +118,16 @@ fun PreviewCalendar() {
     viewModel.setDesign(CalendarDesignObject(
         textAlign = Gravity.CENTER
     ))
+
+    // slice test
+    val newSlice = listOf(CalendarSet(
+        id = 0,
+        name = "슬라이스",
+        startDate = LocalDate.now().minusDays(30L),
+        endDate = LocalDate.now().plusDays(30L)
+    ))
+
+    viewModel.setCalendarSetList(newSlice)
 
     CustomTheme(design = viewModel.design.value) {
         CalendarLazyColumn(
