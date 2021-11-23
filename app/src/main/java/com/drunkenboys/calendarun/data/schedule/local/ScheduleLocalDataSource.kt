@@ -16,6 +16,6 @@ interface ScheduleLocalDataSource {
 
     suspend fun deleteSchedule(schedule: Schedule)
 
-    suspend fun fetchScheduleAfter(time: Long): List<Schedule>
+    suspend fun fetchMatchedScheduleAfter(word: String, time: Long): List<Schedule>
 
 }

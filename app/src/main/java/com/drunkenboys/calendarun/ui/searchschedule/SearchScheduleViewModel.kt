@@ -10,6 +10,7 @@ import com.drunkenboys.calendarun.ui.searchschedule.model.ScheduleItem
 import com.drunkenboys.calendarun.util.seconds
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -39,16 +40,18 @@ class SearchScheduleViewModel @Inject constructor(
     private var debounceJob: Job = Job()
 
     init {
-        fetchScheduleList()
+        searchSchedule()
     }
 
-    fun fetchScheduleList() {
-        viewModelScope.launch {
+    fun searchSchedule(word: String = "") {
+        debounceJob.cancel()
+        debounceJob = viewModelScope.launch {
             _isSearching.value = true
+            delay(DEBOUNCE_DURATION)
 
             val today = LocalDate.now()
 
-            _listItem.value = scheduleDataSource.fetchScheduleAfter(today.seconds)
+            _listItem.value = scheduleDataSource.fetchMatchedScheduleAfter(word, today.seconds)
                 .map { schedule -> ScheduleItem(schedule) { emitScheduleClickEvent(schedule) } }
                 .groupBy { scheduleItem -> scheduleItem.schedule.startDate.toLocalDate() }
                 .flatMap { (localDate, scheduleList) -> listOf(DateItem(localDate)) + scheduleList }
@@ -60,22 +63,6 @@ class SearchScheduleViewModel @Inject constructor(
     private fun emitScheduleClickEvent(schedule: Schedule) {
         viewModelScope.launch {
             _scheduleClickEvent.emit(schedule)
-        }
-    }
-
-    fun searchSchedule(word: String) {
-        debounceJob.cancel()
-        debounceJob = Job()
-        if (word.isEmpty()) {
-            fetchScheduleList()
-            return
-        }
-
-        viewModelScope.launch(debounceJob) {
-//            _isSearching.emit(true)
-//
-//
-//            _isSearching.emit(false)
         }
     }
 

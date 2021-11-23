@@ -35,7 +35,7 @@ class ScheduleLocalDataSourceImpl @Inject constructor(
         scheduleDao.deleteSchedule(schedule)
     }
 
-    override suspend fun fetchScheduleAfter(time: Long) = withContext(dispatcher) {
-        scheduleDao.fetchScheduleAfter(time)
+    override suspend fun fetchMatchedScheduleAfter(word: String, time: Long) = withContext(dispatcher) {
+        scheduleDao.fetchMatchedScheduleAfter(word, time)
     }
 }
