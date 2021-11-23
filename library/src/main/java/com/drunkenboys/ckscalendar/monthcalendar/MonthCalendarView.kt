@@ -2,10 +2,11 @@ package com.drunkenboys.ckscalendar.monthcalendar
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Color
+import android.content.res.Configuration
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.databinding.BindingMethod
 import androidx.databinding.BindingMethods
 import androidx.viewpager2.widget.ViewPager2
@@ -70,19 +71,26 @@ class MonthCalendarView @JvmOverloads constructor(
 
         setupDefaultCalendarSet()
 
-        // xml에서 넘어온 attribute 값 적용
+        // xml에서 넘어온 attribute 값 적용 ContextCompat.getColor
         val attr = context.obtainStyledAttributes(attrs, R.styleable.MonthCalendarView)
-        val weekDayTextColor = attr.getColor(R.styleable.MonthCalendarView_weekDayTextColor, Color.BLACK)
+        val weekDayTextColor =
+            attr.getColor(R.styleable.MonthCalendarView_weekDayTextColor, ContextCompat.getColor(context, R.color.calendar_black))
         val holidayTextColor = attr.getColor(R.styleable.MonthCalendarView_holidayTextColor, ScheduleColorType.RED.color)
         val saturdayTextColor = attr.getColor(R.styleable.MonthCalendarView_saturdayTextColor, ScheduleColorType.BLUE.color)
         val sundayTextColor = attr.getColor(R.styleable.MonthCalendarView_sundayTextColor, ScheduleColorType.RED.color)
         val selectedFrameColor = attr.getColor(R.styleable.MonthCalendarView_selectedFrameColor, ScheduleColorType.ORANGE.color)
-        val backgroundColor = attr.getColor(R.styleable.MonthCalendarView_backgroundColor, Color.WHITE)
+        val backgroundColor =
+            attr.getColor(R.styleable.MonthCalendarView_backgroundColor, ContextCompat.getColor(context, R.color.calendar_white))
         val selectedFrameDrawable =
             attr.getResourceId(R.styleable.MonthCalendarView_selectedFrameDrawable, R.drawable.bg_month_date_selected)
         attr.recycle()
 
-        CalendarDesignObject.getDefaultDesign().apply {
+        val design = when (context.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
+            Configuration.UI_MODE_NIGHT_YES -> CalendarDesignObject.getDarkDesign()
+            else -> CalendarDesignObject.getDefaultDesign()
+        }
+
+        design.apply {
             this.weekDayTextColor = weekDayTextColor
             this.holidayTextColor = holidayTextColor
             this.saturdayTextColor = saturdayTextColor
