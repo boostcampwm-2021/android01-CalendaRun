@@ -32,7 +32,7 @@ fun DayText(
     }
 
     val text = if (isFirstOfCalendarSet) {
-        "${day.date.monthValue}."
+        "${day.date.monthValue}. "
     } else {
         ""
     } + "${day.date.dayOfMonth}"
