@@ -6,15 +6,16 @@ import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import com.drunkenboys.calendarun.data.schedule.local.ScheduleLocalDataSource
 import com.drunkenboys.calendarun.ui.searchschedule.model.DateItem
 import com.drunkenboys.calendarun.ui.searchschedule.model.DateScheduleItem
+import com.drunkenboys.calendarun.ui.searchschedule.model.ScheduleItem
+import com.drunkenboys.calendarun.util.seconds
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import java.time.LocalDateTime
+import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,8 +25,10 @@ class SearchScheduleViewModel @Inject constructor(
 
     val word = MutableStateFlow("")
 
-    private val _listItem = MutableStateFlow<List<DateItem>>(emptyList())
-    val listItem: StateFlow<List<DateItem>> = _listItem
+    private val scheduleList = MutableStateFlow<List<ScheduleItem>>(emptyList())
+
+    private val _listItem = MutableStateFlow<List<DateScheduleItem>>(emptyList())
+    val listItem: StateFlow<List<DateScheduleItem>> = _listItem
 
     private val _scheduleClickEvent = MutableSharedFlow<Schedule>()
     val scheduleClickEvent: SharedFlow<Schedule> = _scheduleClickEvent
@@ -35,33 +38,24 @@ class SearchScheduleViewModel @Inject constructor(
 
     private var debounceJob: Job = Job()
 
-    fun fetchScheduleList() {
-        viewModelScope.launch {
-            if (word.value.isEmpty()) {
-                _isSearching.emit(true)
-
-                val today = LocalDateTime.now()
-
-                scheduleDataSource.fetchAllSchedule()
-                    .filter { schedule -> schedule.startDate >= today }
-                    .mapToDateItem()
-                    .let { _listItem.emit(it) }
-
-                _isSearching.emit(false)
-            } else {
-                searchSchedule(word.value)
-            }
-        }
+    init {
+        fetchScheduleList()
     }
 
-    private fun List<Schedule>.mapToDateItem() = groupBy { schedule -> schedule.startDate.toLocalDate() }
-        .map { (localDate, scheduleList) ->
-            val dateScheduleList = scheduleList.map { schedule ->
-                DateScheduleItem(schedule) { emitScheduleClickEvent(schedule) }
-            }
-            DateItem(localDate, dateScheduleList)
+    fun fetchScheduleList() {
+        viewModelScope.launch {
+            _isSearching.value = true
+
+            val today = LocalDate.now()
+
+            _listItem.value = scheduleDataSource.fetchScheduleAfter(today.seconds)
+                .map { schedule -> ScheduleItem(schedule) { emitScheduleClickEvent(schedule) } }
+                .groupBy { scheduleItem -> scheduleItem.schedule.startDate.toLocalDate() }
+                .flatMap { (localDate, scheduleList) -> listOf(DateItem(localDate)) + scheduleList }
+
+            _isSearching.value = false
         }
-        .sortedBy { dateItem -> dateItem.date }
+    }
 
     private fun emitScheduleClickEvent(schedule: Schedule) {
         viewModelScope.launch {
@@ -78,15 +72,10 @@ class SearchScheduleViewModel @Inject constructor(
         }
 
         viewModelScope.launch(debounceJob) {
-            _isSearching.emit(true)
-
-            delay(DEBOUNCE_DURATION)
-            scheduleDataSource.fetchAllSchedule()
-                .filter { schedule -> word in schedule.name }
-                .mapToDateItem()
-                .let { _listItem.emit(it) }
-
-            _isSearching.emit(false)
+//            _isSearching.emit(true)
+//
+//
+//            _isSearching.emit(false)
         }
     }
 

@@ -32,8 +32,6 @@ class SearchScheduleFragment : BaseFragment<FragmentSearchScheduleBinding>(R.lay
             launch { collectListItem() }
             launch { collectScheduleClickEvent() }
         }
-
-        searchScheduleViewModel.fetchScheduleList()
     }
 
     private fun setupToolbar() {
