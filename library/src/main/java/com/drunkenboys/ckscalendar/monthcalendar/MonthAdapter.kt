@@ -23,7 +23,7 @@ import com.drunkenboys.ckscalendar.utils.tintStroke
 
 class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : RecyclerView.Adapter<MonthAdapter.Holder>() {
 
-    private val schedules = mutableListOf<CalendarScheduleObject>()
+    private var schedules = listOf<CalendarScheduleObject>()
 
     private val currentList = mutableListOf<CalendarDate>()
 
@@ -53,8 +53,7 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
         this.lineIndex.clear()
         this.calendarDesign = calendarDesign
         this.currentPagePosition = currentPagePosition
-        this.schedules.clear()
-        this.schedules.addAll(schedules)
+        this.schedules = schedules
         this.currentList.clear()
         this.currentList.addAll(list)
         notifyDataSetChanged()
