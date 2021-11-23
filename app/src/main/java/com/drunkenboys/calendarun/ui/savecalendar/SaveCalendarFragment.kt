@@ -2,6 +2,7 @@ package com.drunkenboys.calendarun.ui.savecalendar
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
@@ -93,16 +94,8 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
 
     private fun collectUseDefaultCalendar() {
         stateCollect(saveCalendarViewModel.useDefaultCalendar) { checked ->
-            when (checked) {
-                true -> {
-                    binding.rvSaveCalendarCheckPointList.visibility = View.GONE
-                    binding.tvSaveCalendarAddCheckPointView.visibility = View.GONE
-                }
-                false -> {
-                    binding.rvSaveCalendarCheckPointList.visibility = View.VISIBLE
-                    binding.tvSaveCalendarAddCheckPointView.visibility = View.VISIBLE
-                }
-            }
+            binding.rvSaveCalendarCheckPointList.isVisible = !checked
+            binding.tvSaveCalendarAddCheckPointView.isVisible = !checked
         }
     }
 
