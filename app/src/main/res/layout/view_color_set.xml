@@ -110,8 +110,7 @@
             <View
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:background="@drawable/bg_tag_color"
-                android:backgroundTint="@color/black" />
+                android:background="@drawable/bg_tag_color_black_stroke_grey" />
 
         </FrameLayout>
 
@@ -199,7 +198,6 @@
             android:id="@+id/view_colorSet_white"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:clipToPadding="false"
             android:onClick="@{()->viewModel.setColorType(@color/white, themeColorType)}"
             android:padding="8dp"
             tools:ignore="MissingConstraints">
@@ -207,9 +205,7 @@
             <View
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:background="@drawable/bg_tag_color"
-                android:backgroundTint="@color/white"
-                android:elevation="4dp" />
+                android:background="@drawable/bg_tag_color_white_stroke_grey" />
 
         </FrameLayout>
 

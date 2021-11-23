@@ -38,11 +38,19 @@ class ColorIndicatorTextView @JvmOverloads constructor(
     }
 
     fun setIndicatorTint(color: Int) {
-        if (color == ContextCompat.getColor(context, R.color.white)) {
-            updateCompoundDrawablesRelativeWithIntrinsicBounds(end = ContextCompat.getDrawable(context, R.drawable.bg_tag_color_stroke))
-        } else {
-            updateCompoundDrawablesRelativeWithIntrinsicBounds(end = ContextCompat.getDrawable(context, R.drawable.bg_tag_color))
-            compoundDrawablesRelative[2].setTintList(ColorStateList.valueOf(color))
+        when (color) {
+            ContextCompat.getColor(context, R.color.white) -> {
+                val bg = ContextCompat.getDrawable(context, R.drawable.bg_tag_color_white_stroke_grey)
+                updateCompoundDrawablesRelativeWithIntrinsicBounds(end = bg)
+            }
+            ContextCompat.getColor(context, R.color.black) -> {
+                val bg = ContextCompat.getDrawable(context, R.drawable.bg_tag_color_black_stroke_grey)
+                updateCompoundDrawablesRelativeWithIntrinsicBounds(end = bg)
+            }
+            else -> {
+                updateCompoundDrawablesRelativeWithIntrinsicBounds(end = ContextCompat.getDrawable(context, R.drawable.bg_tag_color))
+                compoundDrawablesRelative[2].setTintList(ColorStateList.valueOf(color))
+            }
         }
     }
 }

@@ -13,6 +13,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="?colorSurface"
         android:orientation="vertical"
         android:padding="16dp"
         tools:context=".ui.dayschedule.DayScheduleDialog">
@@ -29,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@{viewModel.dateString}"
-            android:textColor="@color/black"
+            android:textColor="?colorOnSurface"
             android:textSize="24sp"
             tools:text="1월 27일" />
 

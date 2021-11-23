@@ -75,7 +75,7 @@
                         android:gravity="center_vertical"
                         android:paddingVertical="16dp"
                         android:text="@string/weekday"
-                        android:textColor="@color/black"
+                        android:textColor="?colorOnSurface"
                         android:textSize="16sp"
                         app:indicatorTint="@{viewModel.weekdayTextColor}" />
 
@@ -105,7 +105,7 @@
                         android:gravity="center_vertical"
                         android:paddingVertical="16dp"
                         android:text="@string/holiday"
-                        android:textColor="@color/black"
+                        android:textColor="?colorOnSurface"
                         android:textSize="16sp"
                         app:indicatorTint="@{viewModel.holidayTextColor}" />
 
@@ -134,7 +134,7 @@
                         android:gravity="center_vertical"
                         android:paddingVertical="16dp"
                         android:text="@string/saturday"
-                        android:textColor="@color/black"
+                        android:textColor="?colorOnSurface"
                         android:textSize="16sp"
                         app:indicatorTint="@{viewModel.saturdayTextColor}" />
 
@@ -163,7 +163,7 @@
                         android:gravity="center_vertical"
                         android:paddingVertical="16dp"
                         android:text="@string/sunday"
-                        android:textColor="@color/black"
+                        android:textColor="?colorOnSurface"
                         android:textSize="16sp"
                         app:indicatorTint="@{viewModel.sundayTextColor}" />
 
@@ -204,7 +204,7 @@
                         android:gravity="center_vertical"
                         android:paddingVertical="16dp"
                         android:text="@string/selectedDayStroke"
-                        android:textColor="@color/black"
+                        android:textColor="?colorOnSurface"
                         android:textSize="16sp"
                         app:indicatorTint="@{viewModel.selectedFrameColor}" />
 
@@ -233,7 +233,7 @@
                         android:gravity="center_vertical"
                         android:paddingVertical="16dp"
                         android:text="@string/dayBackgroundColor"
-                        android:textColor="@color/black"
+                        android:textColor="?colorOnSurface"
                         android:textSize="16sp"
                         app:indicatorTint="@{viewModel.backgroundColor}" />
 
@@ -277,7 +277,7 @@
                             android:gravity="center_vertical"
                             android:paddingVertical="16dp"
                             android:text="@string/textSize"
-                            android:textColor="@color/black"
+                            android:textColor="?colorOnSurface"
                             android:textSize="16sp"
                             app:drawableStartCompat="@drawable/ic_text_fields" />
 
@@ -353,7 +353,7 @@
                             android:gravity="center_vertical"
                             android:paddingVertical="16dp"
                             android:text="@string/alignLocation"
-                            android:textColor="@color/black"
+                            android:textColor="?colorOnSurface"
                             android:textSize="16sp"
                             app:drawableStartCompat="@drawable/ic_text_fields" />
 
@@ -426,7 +426,7 @@
                             android:gravity="center_vertical"
                             android:paddingVertical="16dp"
                             android:text="@string/language"
-                            android:textColor="@color/black"
+                            android:textColor="?colorOnSurface"
                             android:textSize="16sp"
                             app:drawableStartCompat="@drawable/ic_text_fields" />
 
@@ -501,7 +501,7 @@
                             android:gravity="center_vertical"
                             android:paddingVertical="16dp"
                             android:text="@string/maxDisplayCount"
-                            android:textColor="@color/black"
+                            android:textColor="?colorOnSurface"
                             android:textSize="16sp"
                             app:drawableStartCompat="@drawable/ic_list" />
 
