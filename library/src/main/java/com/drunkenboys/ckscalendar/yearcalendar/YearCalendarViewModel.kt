@@ -7,6 +7,7 @@ import com.drunkenboys.ckscalendar.utils.TimeUtils.dayValue
 import com.drunkenboys.ckscalendar.utils.TimeUtils.isSameWeek
 import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 class YearCalendarViewModel: ViewModel() {
 
@@ -42,8 +43,8 @@ class YearCalendarViewModel: ViewModel() {
         _design.value = design
     }
 
-    fun resetDesign() {
-        _design.value = CalendarDesignObject()
+    fun setDefaultDesign() {
+        _design.value = CalendarDesignObject.getDefaultDesign()
     }
 
     // FIXME: 체크포인트 속에서 오늘의 날짜 찾기
@@ -90,8 +91,8 @@ class YearCalendarViewModel: ViewModel() {
         _clickedDay.value = day.date
     }
 
-    fun getDaySchedules(day: LocalDate) = schedules.value.filter { schedule ->
-        day in schedule.startDate.toLocalDate()..schedule.endDate.toLocalDate()
+    fun getDaySchedules(day: LocalDateTime) = schedules.value.filter { schedule ->
+        day in schedule.startDate..schedule.endDate
     }
 
     fun fetchNextCalendarSet() {
@@ -139,7 +140,5 @@ class YearCalendarViewModel: ViewModel() {
 
         // 오늘 선택
         _clickedDay.value = LocalDate.now()
-
-        // TODO: 스크롤
     }
 }

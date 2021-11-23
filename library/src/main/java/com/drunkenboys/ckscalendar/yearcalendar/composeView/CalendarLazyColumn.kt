@@ -89,7 +89,7 @@ fun CalendarLazyColumn(
         listState.scrollToItem(index = viewModel.getDayItemIndex())
     }
 
-    listState.ShouldNextScroll() {
+    listState.ShouldNextScroll {
         viewModel.fetchNextCalendarSet()
     }
 
