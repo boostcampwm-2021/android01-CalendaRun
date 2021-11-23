@@ -1,11 +1,12 @@
 package com.drunkenboys.calendarun.ui.saveschedule
 
-import android.app.AlertDialog
 import android.os.Bundle
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
 import com.drunkenboys.calendarun.R
+import com.google.android.material.color.MaterialColors
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -23,4 +24,13 @@ class DeleteScheduleDialog : DialogFragment() {
         }
         .setNegativeButton(R.string.cancel) { _, _ -> }
         .create()
+
+    override fun onResume() {
+        super.onResume()
+
+        val dialog = (dialog as? AlertDialog) ?: return
+        val textColor = MaterialColors.getColor(requireContext(), R.attr.colorOnSurface, "")
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(textColor)
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(textColor)
+    }
 }
