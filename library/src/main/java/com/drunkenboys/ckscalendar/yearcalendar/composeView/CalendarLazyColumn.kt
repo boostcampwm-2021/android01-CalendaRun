@@ -61,17 +61,20 @@ fun CalendarLazyColumn(
     }
 
     // RecyclerView와 유사
-    LazyColumn(state = listState) {
+    LazyColumn(
+        state = listState,
+        modifier = Modifier.background(color = MaterialTheme.colors.background)
+    ) {
         items(calendar, key = { slice -> slice.startDate }) { slice ->
 
             val firstOfYear = LocalDate.of(slice.endDate.year, 1, 1)
+
+            // 해가 갱신될 때마다 상단에 연표시
             if (firstOfYear in slice.startDate..slice.endDate) {
                 Text(
                     text = "${firstOfYear.year}년",
                     color = MaterialTheme.colors.primary,
-                    modifier = Modifier
-                        .background(color = MaterialTheme.colors.background)
-                        .fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center
                 )
             }
@@ -80,9 +83,7 @@ fun CalendarLazyColumn(
                 Text(
                     text = "${slice.startDate.monthValue}월",
                     color = MaterialTheme.colors.primary,
-                    modifier = Modifier
-                        .background(color = MaterialTheme.colors.background)
-                        .fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center
                 )
             }
