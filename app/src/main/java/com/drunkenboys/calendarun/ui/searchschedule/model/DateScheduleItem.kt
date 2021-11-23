@@ -7,23 +7,25 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-sealed class DateScheduleItem
-
-data class DateItem(val date: LocalDate) : DateScheduleItem() {
-
-    override fun toString(): String = date.format(DateTimeFormatter.ofPattern("M월 d일"))
+sealed class DateScheduleItem {
 
     companion object {
 
         val diffUtil by lazy {
-            object : DiffUtil.ItemCallback<DateItem>() {
+            object : DiffUtil.ItemCallback<DateScheduleItem>() {
 
-                override fun areItemsTheSame(oldItem: DateItem, newItem: DateItem) = oldItem.hashCode() == newItem.hashCode()
+                override fun areItemsTheSame(oldItem: DateScheduleItem, newItem: DateScheduleItem) =
+                    oldItem.hashCode() == newItem.hashCode()
 
-                override fun areContentsTheSame(oldItem: DateItem, newItem: DateItem) = oldItem == newItem
+                override fun areContentsTheSame(oldItem: DateScheduleItem, newItem: DateScheduleItem) = oldItem == newItem
             }
         }
     }
+}
+
+data class DateItem(val date: LocalDate) : DateScheduleItem() {
+
+    override fun toString(): String = date.format(DateTimeFormatter.ofPattern("M월 d일"))
 }
 
 data class ScheduleItem(val schedule: Schedule, val onClick: () -> Unit) : DateScheduleItem() {
