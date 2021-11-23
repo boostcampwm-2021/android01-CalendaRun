@@ -23,6 +23,17 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name="com.google.android.gms.oss.licenses.OssLicensesMenuActivity"
+            android:exported="false"
+            android:label="@string/oss_license_title"
+            android:theme="@style/Theme.With.ActionBar">
+            <intent-filter>
+                <action android:name="ACTION_LICENSES" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
         <receiver
             android:name=".receiver.ScheduleAlarmReceiver"
             android:enabled="true"
