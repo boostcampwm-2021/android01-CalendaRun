@@ -114,7 +114,6 @@ class MonthPageAdapter : RecyclerView.Adapter<MonthPageAdapter.Holder>() {
             }
     }
 
-
     override fun getItemCount(): Int = if (isNormalCalendar) Int.MAX_VALUE else list.size
 
     inner class Holder(private val binding: ItemMonthPageBinding) : RecyclerView.ViewHolder(binding.root) {
@@ -157,12 +156,10 @@ class MonthPageAdapter : RecyclerView.Adapter<MonthPageAdapter.Holder>() {
                     monthAdapter.selectedPosition = -1
                 }
 
+                //TODO : isFirstToday가 notifyitemchanged일 때 무시되는 현상 존재
                 if (isFirstToday) {
-                    dates.find {
-                        it.date.monthValue == today.monthValue &&
-                                it.date.dayOfMonth == today.dayOfMonth &&
-                                it.dayType != DayType.PADDING
-                    }?.let {
+                    dates.find { it.date == today }
+                        ?.let {
                         it.isSelected = true
                         isFirstToday = false
                     }

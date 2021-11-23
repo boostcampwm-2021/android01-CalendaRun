@@ -62,7 +62,8 @@ class MonthCellFactory {
 
     private fun makePadding(paddingCount: Int): List<CalendarDate> {
         return (0..paddingCount).map {
-            CalendarDate(LocalDate.now(), DayType.PADDING)
+            // TODO: 기준 날짜를 추가 해 의미있는 날짜 주입 필요
+            CalendarDate(LocalDate.of(1970, 1, 1), DayType.PADDING)
         }
     }
 
