@@ -78,7 +78,9 @@ class DayScheduleDialog : DialogFragment() {
 
         val displayMetrics = resources.displayMetrics
         dialog?.window?.setBackgroundDrawableResource(R.drawable.bg_white_radius_24dp)
-        dialog?.window?.setLayout((displayMetrics.widthPixels * 0.9).toInt(), (displayMetrics.heightPixels * 0.7).toInt())
+        val (width, height) = (displayMetrics.widthPixels * 0.9).toInt() to (displayMetrics.heightPixels * 0.7).toInt()
+        dialog?.window?.setLayout(width, height)
+        binding.root.layoutParams.height = height
     }
 
     override fun onDestroyView() {
