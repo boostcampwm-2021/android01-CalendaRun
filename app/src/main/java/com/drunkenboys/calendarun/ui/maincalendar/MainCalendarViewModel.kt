@@ -52,6 +52,10 @@ class MainCalendarViewModel @Inject constructor(
     private val _daySecondClickEvent = MutableSharedFlow<LocalDate>()
     val daySecondClickEvent: SharedFlow<LocalDate> = _daySecondClickEvent
 
+
+    private val _licenseClickEvent = MutableSharedFlow<Unit>()
+    val licenseClickEvent: SharedFlow<Unit> = _licenseClickEvent
+
     fun fetchCalendar() {
         viewModelScope.launch {
             var currentCalendar = calendarLocalDataSource.fetchCalendar(calendarId)
@@ -136,4 +140,10 @@ class MainCalendarViewModel @Inject constructor(
 
     fun fetchCalendarDesignObject() = calendarThemeDataSource.fetchCalendarTheme()
         .map { it.toCalendarDesignObject() }
+
+    fun emitLicenseClickEvent() {
+        viewModelScope.launch {
+            _licenseClickEvent.emit(Unit)
+        }
+    }
 }
