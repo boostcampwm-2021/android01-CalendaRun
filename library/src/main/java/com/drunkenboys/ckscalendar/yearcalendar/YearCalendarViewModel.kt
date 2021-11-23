@@ -96,8 +96,7 @@ class YearCalendarViewModel: ViewModel() {
     }
 
     fun fetchNextCalendarSet() {
-        // FIXME: 기본 캘린더와 생성된 캘린더를 구분짓는 로직 하드코딩
-        if (_calendar.value.all { month -> month.name.contains("월") || _calendar.value.isEmpty()}) {
+        if (isDefaultCalendar()) {
             val nextYear = _calendar.value.last().endDate.year + 1
 
             _calendar.value = _calendar.value.plus(createCalendarSets(nextYear))
@@ -105,13 +104,14 @@ class YearCalendarViewModel: ViewModel() {
     }
 
     fun fetchPrevCalendarSet() {
-        // FIXME: 기본 캘린더와 생성된 캘린더를 구분짓는 로직 하드코딩
-        if (_calendar.value.all { month -> month.name.contains("월") || _calendar.value.isEmpty() }) {
+        if (isDefaultCalendar()) {
             val prevYear = _calendar.value.first().startDate.year - 1
 
             _calendar.value = createCalendarSets(prevYear).plus(_calendar.value)
         }
     }
+
+    fun isDefaultCalendar() = _calendar.value.all { month -> month.id < 0}
 
     private fun createCalendarSets(year: Int): List<CalendarSet> {
         val calendarMonth = mutableListOf<CalendarSet>()
@@ -121,7 +121,7 @@ class YearCalendarViewModel: ViewModel() {
         (1..12).forEach { month ->
             startOfMonth = LocalDate.of(year, month, 1)
             endOfMonth = startOfMonth.plusDays(startOfMonth.lengthOfMonth() - 1L)
-            calendarMonth.add(CalendarSet(month, "${month}월", startOfMonth, endOfMonth))
+            calendarMonth.add(CalendarSet(-month, "${month}월", startOfMonth, endOfMonth))
         }
 
         return calendarMonth
