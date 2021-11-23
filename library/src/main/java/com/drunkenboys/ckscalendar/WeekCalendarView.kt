@@ -85,11 +85,11 @@ class WeekCalendarView
         viewModel.setSchedules(schedules)
     }
 
-    fun setTheme(designObject: CalendarDesignObject) {
+    fun setDesign(designObject: CalendarDesignObject) {
         viewModel.setDesign(designObject)
     }
 
-    fun resetTheme() {
-        viewModel.resetDesign()
+    fun setDefaultDesign() {
+        viewModel.setDefaultDesign()
     }
 }
