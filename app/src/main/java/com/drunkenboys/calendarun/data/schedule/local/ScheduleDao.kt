@@ -24,4 +24,7 @@ interface ScheduleDao {
     @Delete
     suspend fun deleteSchedule(schedule: Schedule)
 
+    @Query("SELECT * FROM `schedule` WHERE startDate >= :time ORDER BY startDate ASC")
+    suspend fun fetchScheduleAfter(time: Long): List<Schedule>
+
 }
