@@ -43,14 +43,15 @@ class SearchScheduleViewModelTest {
         val localDateTime = LocalDateTime.now()
         initDataSource(dateList = arrayOf(localDateTime.minusDays(1), localDateTime.plusDays(1)))
 
-        viewModel.fetchScheduleList()
+        viewModel.searchSchedule()
+        advanceTimeBy(500)
         val result = viewModel.listItem.value
 
         if (result.isNullOrEmpty()) {
             fail("LiveData's value is null or empty")
             return@runBlockingTest
         }
-        assertEquals(1, result.size)
+        assertEquals(2, result.size)
     }
 
     @Test
@@ -58,7 +59,8 @@ class SearchScheduleViewModelTest {
         val localDateTime = LocalDateTime.now()
         initDataSource(dateList = arrayOf(localDateTime.minusDays(1), localDateTime.minusDays(1)))
 
-        viewModel.fetchScheduleList()
+        viewModel.searchSchedule()
+        advanceTimeBy(500)
         val result = viewModel.listItem.value
 
         assertEquals(0, result.size)
@@ -66,7 +68,7 @@ class SearchScheduleViewModelTest {
 
     @Test
     fun `검색_기능_테스트`() = testScope.runBlockingTest {
-        val date = LocalDateTime.now()
+        val date = LocalDateTime.now().plusDays(1)
         initDataSource(name = "foo", dateList = arrayOf(date, date, date))
         initDataSource(name = "bar", dateList = arrayOf(date, date, date, date))
         initDataSource(name = "quz", dateList = arrayOf(date, date))
@@ -75,9 +77,7 @@ class SearchScheduleViewModelTest {
         advanceTimeBy(500)
         val result = viewModel.listItem.value
 
-        assertEquals(1, result.size)
-        assertEquals(4, result[0].scheduleList.size)
-        assertTrue(result[0].scheduleList.all { it.schedule.name.startsWith("bar") })
+        assertEquals(5, result.size)
     }
 
     private suspend fun initDataSource(name: String = "name", vararg dateList: LocalDateTime) {
