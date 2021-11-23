@@ -1,6 +1,8 @@
 package com.drunkenboys.ckscalendar.monthcalendar
 
+import android.annotation.SuppressLint
 import android.graphics.Color
+import android.graphics.Typeface
 import android.text.TextUtils
 import android.util.TypedValue
 import android.view.Gravity
@@ -27,6 +29,8 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
 
     private val currentList = mutableListOf<CalendarDate>()
 
+    private val startDayWithMonthFlags = HashMap<Int, String>()
+
     private lateinit var calendarDesign: CalendarDesignObject
 
     var selectedPosition = -1
@@ -46,7 +50,9 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
         list.forEachIndexed { index, calendarDate ->
             if (calendarDate.isSelected) {
                 selectedPosition = index
-                return@forEachIndexed
+            }
+            if (calendarDate.dayType != DayType.PADDING && startDayWithMonthFlags[calendarDate.date.monthValue] == null) {
+                startDayWithMonthFlags[calendarDate.date.monthValue] = "${calendarDate.date}"
             }
         }
 
@@ -92,11 +98,18 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
             binding.viewMonthSelectFrame.tintStroke(calendarDesign.selectedFrameColor, 2.0f)
         }
 
+        @SuppressLint("SetTextI18n")
         fun bind(item: CalendarDate) {
             binding.layoutMonthCell.isSelected = item.isSelected
             binding.tvMonthDay.text = ""
             if (item.dayType != DayType.PADDING) {
-                binding.tvMonthDay.text = item.date.dayOfMonth.toString()
+                if (startDayWithMonthFlags[item.date.monthValue] == item.date.toString()) {
+                    binding.tvMonthDay.text = "${item.date.monthValue}. ${item.date.dayOfMonth}"
+                    binding.tvMonthDay.typeface = Typeface.DEFAULT_BOLD
+                } else {
+                    binding.tvMonthDay.text = "${item.date.dayOfMonth}"
+                    binding.tvMonthDay.typeface = Typeface.DEFAULT
+                }
             }
             setDateCellTextDesign(item)
 
