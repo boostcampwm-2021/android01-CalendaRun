@@ -22,6 +22,6 @@ class SearchScheduleAdapter : ListAdapter<DateScheduleItem, BaseViewHolder<ViewD
 
     override fun getItemViewType(position: Int) = when (currentList[position]) {
         is DateItem -> R.layout.item_date
-        is ScheduleItem -> R.layout.item_date_schedule
+        is ScheduleItem -> R.layout.item_schedule
     }
 }
