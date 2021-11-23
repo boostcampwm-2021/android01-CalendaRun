@@ -7,9 +7,9 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-sealed class SearchScheduleItem
+sealed class DateScheduleItem
 
-data class DateItem(val date: LocalDate) : SearchScheduleItem() {
+data class DateItem(val date: LocalDate) : DateScheduleItem() {
 
     override fun toString(): String = date.format(DateTimeFormatter.ofPattern("M월 d일"))
 
@@ -26,7 +26,7 @@ data class DateItem(val date: LocalDate) : SearchScheduleItem() {
     }
 }
 
-data class DateScheduleItem(val schedule: Schedule, val onClick: () -> Unit) : SearchScheduleItem() {
+data class ScheduleItem(val schedule: Schedule, val onClick: () -> Unit) : DateScheduleItem() {
 
     override fun toString(): String {
         val startDateFormat = DateTimeFormatter.ofPattern("${schedule.startDate.amPm} hh:mm")
@@ -47,11 +47,11 @@ data class DateScheduleItem(val schedule: Schedule, val onClick: () -> Unit) : S
     companion object {
 
         val diffUtil by lazy {
-            object : DiffUtil.ItemCallback<DateScheduleItem>() {
-                override fun areItemsTheSame(oldItem: DateScheduleItem, newItem: DateScheduleItem) =
+            object : DiffUtil.ItemCallback<ScheduleItem>() {
+                override fun areItemsTheSame(oldItem: ScheduleItem, newItem: ScheduleItem) =
                     oldItem.schedule.id == newItem.schedule.id
 
-                override fun areContentsTheSame(oldItem: DateScheduleItem, newItem: DateScheduleItem) = oldItem == newItem
+                override fun areContentsTheSame(oldItem: ScheduleItem, newItem: ScheduleItem) = oldItem == newItem
             }
         }
     }
