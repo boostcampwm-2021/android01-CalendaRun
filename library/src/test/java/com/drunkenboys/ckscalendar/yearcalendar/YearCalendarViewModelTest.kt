@@ -104,12 +104,12 @@ class YearCalendarViewModelTest {
         // Given 기본 캘린더
         viewModel.setupDefaultCalendarSet()
 
-        // When 기원전 1000년까지 스크롤
+        // When 기원전 1년까지 스크롤
         repeat(today.year + 1) {
             viewModel.fetchPrevCalendarSet()
         }
 
-        // Then 캘린더 첫 인덱스가 마이너스 1000년
+        // Then 캘린더 첫 인덱스가 마이너스 1년
         val startDate = viewModel.calendar.value.first().startDate
         assertEquals(-1, startDate.year)
     }
