@@ -99,5 +99,6 @@
     <string name="reset">초기화</string>
     <string name="resetTheme">테마 초기화</string>
     <string name="resetThemeMessage">테마를 초기화 하시겠습니까?\n\n변경된 내용은 저장되지 않습니다.</string>
+    <string name="drawer_license">라이브러리 라이센스</string>
 
 </resources>
