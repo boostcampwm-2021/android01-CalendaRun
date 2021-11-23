@@ -49,7 +49,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/layout_mainCalendar_toolbar" />
 
-            <com.drunkenboys.ckscalendar.month.MonthCalendarView
+            <com.drunkenboys.ckscalendar.monthcalendar.MonthCalendarView
                 android:id="@+id/calendar_month"
                 android:layout_width="0dp"
                 android:layout_height="0dp"

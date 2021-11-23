@@ -1,5 +1,6 @@
-package com.drunkenboys.ckscalendar.month
+package com.drunkenboys.ckscalendar.monthcalendar
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
@@ -63,42 +64,6 @@ class MonthPageAdapter : RecyclerView.Adapter<MonthPageAdapter.Holder>() {
         notifyDataSetChanged()
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
-        return Holder(ItemMonthPageBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-    }
-
-    override fun onBindViewHolder(holder: Holder, position: Int) {
-        val calendarSet = if (isNormalCalendar) {
-            // hash key != position
-            val preCalendarSet = infinityCalendar[position - 1]
-            val nextCalendarSet = infinityCalendar[position + 1]
-            //현재가 1월
-            if (preCalendarSet == null) {
-                val currentSet = (infinityCalendar[position]?.startDate?.year ?: today.year) - 1
-                CalendarSet.generateCalendarOfYear(holder.context(), currentSet)
-                    .forEachIndexed { index, calendarSet ->
-                        infinityCalendar[position - 12 + index] = calendarSet
-                    }
-            }
-            // 현재가 12월
-            if (nextCalendarSet == null) {
-                val currentSet = (infinityCalendar[position]?.startDate?.year ?: today.year) + 1
-                CalendarSet.generateCalendarOfYear(holder.context(), currentSet)
-                    .forEachIndexed { index, calendarSet ->
-                        infinityCalendar[position + 1 + index] = calendarSet
-                    }
-            }
-            infinityCalendar.get(position)
-
-        } else {
-            list[position]
-        }
-        holder.bind(calendarSet!!, onDayClickListener, onDaySecondClickListener)
-    }
-
-    override fun getItemCount(): Int = if (isNormalCalendar) Int.MAX_VALUE else list.size
-
-
     fun setSchedule(schedules: List<CalendarScheduleObject>) {
         this.schedules.clear()
         this.schedules.addAll(schedules)
@@ -109,6 +74,47 @@ class MonthPageAdapter : RecyclerView.Adapter<MonthPageAdapter.Holder>() {
         this.calendarDesign = calendarDesign
         notifyDataSetChanged()
     }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
+        return Holder(ItemMonthPageBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+    }
+
+    override fun onBindViewHolder(holder: Holder, position: Int) {
+        val calendarSet = if (isNormalCalendar) {
+            // hash key != position
+            val preCalendarSet = infinityCalendar[position - 1]
+            val nextCalendarSet = infinityCalendar[position + 1]
+            // 현재가 1월
+            if (preCalendarSet == null) {
+                fetchCalendarSet(position, holder.context(), -1, -12)
+            }
+            // 현재가 12월
+            if (nextCalendarSet == null) {
+                fetchCalendarSet(position, holder.context(), 1, 1)
+            }
+            infinityCalendar[position]
+        } else {
+            list[position]
+        }
+        calendarSet?.let {
+            holder.bind(it, onDayClickListener, onDaySecondClickListener)
+        }
+    }
+
+    private fun fetchCalendarSet(
+        position: Int,
+        context: Context,
+        additionYear: Int,
+        positionPadding: Int
+    ) {
+        val currentSet = (infinityCalendar[position]?.startDate?.year ?: today.year) + additionYear
+        CalendarSet.generateCalendarOfYear(context, currentSet)
+            .forEachIndexed { index, calendarSet ->
+                infinityCalendar[position + positionPadding + index] = calendarSet
+            }
+    }
+
+    override fun getItemCount(): Int = if (isNormalCalendar) Int.MAX_VALUE else list.size
 
     inner class Holder(private val binding: ItemMonthPageBinding) : RecyclerView.ViewHolder(binding.root) {
 
@@ -150,12 +156,10 @@ class MonthPageAdapter : RecyclerView.Adapter<MonthPageAdapter.Holder>() {
                     monthAdapter.selectedPosition = -1
                 }
 
+                //TODO : isFirstToday가 notifyitemchanged일 때 무시되는 현상 존재
                 if (isFirstToday) {
-                    dates.find {
-                        it.date.monthValue == today.monthValue &&
-                                it.date.dayOfMonth == today.dayOfMonth &&
-                                it.dayType != DayType.PADDING
-                    }?.let {
+                    dates.find { it.date == today }
+                        ?.let {
                         it.isSelected = true
                         isFirstToday = false
                     }
