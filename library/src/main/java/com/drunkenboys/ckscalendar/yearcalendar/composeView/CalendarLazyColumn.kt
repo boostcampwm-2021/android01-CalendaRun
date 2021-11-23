@@ -79,15 +79,6 @@ fun CalendarLazyColumn(
                 )
             }
 
-            if (!viewModel.isDefaultCalendar()) {
-                Text(
-                    text = "${slice.startDate.monthValue}월",
-                    color = MaterialTheme.colors.primary,
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center
-                )
-            }
-
             MonthCalendar(
                 month = slice,
                 listState = listState,
