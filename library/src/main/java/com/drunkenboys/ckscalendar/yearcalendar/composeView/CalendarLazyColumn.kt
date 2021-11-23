@@ -64,9 +64,9 @@ fun CalendarLazyColumn(
     // RecyclerView와 유사
     LazyColumn(state = listState) {
         items(calendar, key = { slice -> slice.startDate }) { slice ->
-            val firstOfYear = LocalDate.of(slice.endDate.year, 1, 1)
 
-            if (firstOfYear in slice.startDate..slice.endDate)
+            val firstOfYear = LocalDate.of(slice.endDate.year, 1, 1)
+            if (firstOfYear in slice.startDate..slice.endDate) {
                 Text(
                     text = "${firstOfYear.year}년",
                     color = MaterialTheme.colors.primary,
@@ -75,8 +75,9 @@ fun CalendarLazyColumn(
                         .fillMaxWidth(),
                     textAlign = TextAlign.Center
                 )
+            }
 
-            if (!viewModel.isDefaultCalendar())
+            if (!viewModel.isDefaultCalendar()) {
                 Text(
                     text = "${slice.startDate.monthValue}월",
                     color = MaterialTheme.colors.primary,
@@ -85,6 +86,7 @@ fun CalendarLazyColumn(
                         .fillMaxWidth(),
                     textAlign = TextAlign.Center
                 )
+            }
 
             MonthCalendar(
                 month = slice,
