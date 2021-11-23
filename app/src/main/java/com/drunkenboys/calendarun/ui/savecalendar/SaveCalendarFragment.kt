@@ -2,6 +2,7 @@ package com.drunkenboys.calendarun.ui.savecalendar
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
@@ -13,8 +14,6 @@ import com.drunkenboys.calendarun.ui.savecalendar.model.CheckPointItem
 import com.drunkenboys.calendarun.ui.saveschedule.model.DateType
 import com.drunkenboys.calendarun.util.extensions.launchAndRepeatWithViewLifecycle
 import com.drunkenboys.calendarun.util.extensions.pickDateInMillis
-import com.drunkenboys.calendarun.util.extensions.sharedCollect
-import com.drunkenboys.calendarun.util.extensions.stateCollect
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
@@ -98,16 +97,8 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
 
     private suspend fun collectUseDefaultCalendar() {
         saveCalendarViewModel.useDefaultCalendar.collect { checked ->
-            when (checked) {
-                true -> {
-                    binding.rvSaveCalendarCheckPointList.visibility = View.GONE
-                    binding.tvSaveCalendarAddCheckPointView.visibility = View.GONE
-                }
-                false -> {
-                    binding.rvSaveCalendarCheckPointList.visibility = View.VISIBLE
-                    binding.tvSaveCalendarAddCheckPointView.visibility = View.VISIBLE
-                }
-            }
+            binding.rvSaveCalendarCheckPointList.isVisible = !checked
+            binding.tvSaveCalendarAddCheckPointView.isVisible = !checked
         }
     }
 
