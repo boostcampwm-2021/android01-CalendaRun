@@ -2,7 +2,6 @@ package com.drunkenboys.calendarun.ui.savecalendar
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
@@ -37,6 +36,8 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
         setupToolbarMenuOnItemClickListener()
         collectCheckPointItemList()
         collectSaveCalendarEvent()
+        collectUseDefaultCalendar()
+        collectBlankTitleEvent()
     }
 
     private fun onCheckPointClick(checkPointItem: CheckPointItem, dateType: DateType) {
@@ -49,7 +50,6 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
                 DateType.START -> checkPointItem.startDate.emit(dateTime)
                 DateType.END -> checkPointItem.endDate.emit(dateTime)
             }
-
         }
     }
 
@@ -91,13 +91,32 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
         }
     }
 
+    private fun collectUseDefaultCalendar() {
+        stateCollect(saveCalendarViewModel.useDefaultCalendar) { checked ->
+            when (checked) {
+                true -> {
+                    binding.rvSaveCalendarCheckPointList.visibility = View.GONE
+                    binding.tvSaveCalendarAddCheckPointView.visibility = View.GONE
+                }
+                false -> {
+                    binding.rvSaveCalendarCheckPointList.visibility = View.VISIBLE
+                    binding.tvSaveCalendarAddCheckPointView.visibility = View.VISIBLE
+                }
+            }
+        }
+    }
+
     private fun collectSaveCalendarEvent() {
         sharedCollect(saveCalendarViewModel.saveCalendarEvent) { isSaved ->
             if (isSaved) {
                 navController.navigateUp()
-            } else {
-                Toast.makeText(context, "입력 값이 이상해요", Toast.LENGTH_LONG).show()
             }
+        }
+    }
+
+    private fun collectBlankTitleEvent() {
+        sharedCollect(saveCalendarViewModel.blankTitleEvent) {
+            binding.etSaveCalendarCalendarName.isError = true
         }
     }
 }
