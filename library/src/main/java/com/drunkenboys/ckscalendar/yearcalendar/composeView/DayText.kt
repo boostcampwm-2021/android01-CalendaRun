@@ -20,7 +20,8 @@ import java.time.LocalDate
 @Composable
 fun DayText(
     day: CalendarDate,
-    viewModel: YearCalendarViewModel
+    viewModel: YearCalendarViewModel,
+    isFirstOfCalendarSet: Boolean
 ) {
     val color = when (day.dayType) { // FIXME: month 와 통합
         DayType.HOLIDAY -> Color(viewModel.design.value.holidayTextColor)
