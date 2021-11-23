@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:onClick="@{() -> item.onClick.invoke()}"
         android:paddingHorizontal="16dp"
-        android:paddingVertical="8dp">
+        android:paddingBottom="16dp">
 
         <View
             android:id="@+id/view_dateSchedule_tagColor"
