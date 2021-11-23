@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.drunkenboys.ckscalendar.data.CalendarDate
@@ -30,12 +31,19 @@ fun DayText(
         else -> MaterialTheme.colors.primary
     }
 
+    val text = if (isFirstOfCalendarSet) {
+        "${day.date.monthValue}."
+    } else {
+        ""
+    } + "${day.date.dayOfMonth}"
+
     Text(
-        text = "${day.date.dayOfMonth}",
+        text = text,
         color = color,
         modifier = Modifier.layoutId(day.date.toString()),
         textAlign = GravityMapper.toTextAlign(viewModel.design.value.textAlign),
-        fontSize = viewModel.design.value.textSize.dp()
+        fontSize = viewModel.design.value.textSize.dp(),
+        fontWeight = if (isFirstOfCalendarSet) FontWeight.Bold else null
     )
 }
 
@@ -44,6 +52,6 @@ fun DayText(
 fun PreviewDayText() {
     val viewModel = YearCalendarViewModel()
     CustomTheme(design = viewModel.design.value) {
-        DayText(day = CalendarDate(date = LocalDate.now(), dayType = DayType.WEEKDAY), viewModel = viewModel)
+        DayText(day = CalendarDate(date = LocalDate.now(), dayType = DayType.WEEKDAY), viewModel = viewModel, true)
     }
 }
