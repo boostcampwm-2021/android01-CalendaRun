@@ -32,8 +32,13 @@ class SaveCalendarViewModel @Inject constructor(
 
     val calendarName = MutableStateFlow("")
 
+    val useDefaultCalendar = MutableStateFlow(false)
+
     private val _saveCalendarEvent = MutableSharedFlow<Boolean>()
     val saveCalendarEvent: SharedFlow<Boolean> = _saveCalendarEvent
+
+    private val _blankTitleEvent = MutableSharedFlow<Unit>()
+    val blankTitleEvent: SharedFlow<Unit> = _blankTitleEvent
 
     init {
         viewModelScope.launch {
@@ -79,27 +84,73 @@ class SaveCalendarViewModel @Inject constructor(
         }
     }
 
+    private fun emitBlankTitleEvent() {
+        viewModelScope.launch {
+            _blankTitleEvent.emit(Unit)
+        }
+    }
+
     private fun saveCalendar(): Boolean {
+        val useDefaultCalendar = useDefaultCalendar.value
         val calendarName = calendarName.value
+        var canSave = true
+
+        if (calendarName.isEmpty()) {
+            emitBlankTitleEvent()
+            canSave = false
+        }
+
+        if (useDefaultCalendar && canSave) {
+            viewModelScope.launch {
+                calendarLocalDataSource.insertCalendar(
+                    Calendar(
+                        id = calendarId,
+                        name = calendarName,
+                        startDate = LocalDate.now(),
+                        endDate = LocalDate.now()
+                    )
+                )
+            }
+        }
+
         val checkPointList = _checkPointItemList.value
+        var calendarStartDate = checkPointList.getOrNull(0)?.startDate?.value ?: LocalDate.now()
+        var calendarEndDate = checkPointList.getOrNull(0)?.endDate?.value ?: LocalDate.now()
 
-        var calendarStartDate = checkPointList.getOrNull(0)?.startDate?.value ?: return false
-        var calendarEndDate = checkPointList.getOrNull(0)?.endDate?.value ?: return false
+        checkPointList.forEach { item ->
+            val name = item.name.value
+            val startDate = item.startDate.value
+            val endDate = item.endDate.value
 
-        if (!checkPointList.isNullOrEmpty()) {
-            checkPointList.forEach { item ->
-                if (item.name.value.isEmpty()) return false
-                val startDate = item.startDate.value ?: return false
-                val endDate = item.endDate.value ?: return false
-                if (!isValidateCheckPointDate(startDate, endDate)) return false
-                if (calendarStartDate.isAfter(startDate)) {
-                    calendarStartDate = startDate
+            if (name.isBlank()) {
+                emitBlankSliceNameEvent(item)
+                canSave = false
+            }
+            if (startDate == null) {
+                emitBlankSliceStartDateEvent(item)
+                canSave = false
+            }
+            if (endDate == null) {
+                emitBlankSliceEndDateEvent(item)
+                canSave = false
+            }
+
+            if (!isValidateCheckPointDate(startDate, endDate)) return false
+
+            startDate?.let {
+                if (calendarStartDate.isAfter(it)) {
+                    calendarStartDate = it
                 }
-                if (calendarEndDate.isBefore(endDate)) {
-                    calendarEndDate = endDate
+            }
+
+            endDate?.let {
+                if (calendarEndDate.isBefore(it)) {
+                    calendarEndDate = it
                 }
             }
         }
+
+        if (!canSave) return false
 
         viewModelScope.launch() {
             val newCalender = Calendar(
@@ -129,5 +180,23 @@ class SaveCalendarViewModel @Inject constructor(
         return true
     }
 
-    private fun isValidateCheckPointDate(startDate: LocalDate, endDate: LocalDate) = startDate.isBefore(endDate)
+    private fun emitBlankSliceNameEvent(item: CheckPointItem) {
+        viewModelScope.launch {
+            item.isNameBlank.emit(Unit)
+        }
+    }
+
+    private fun emitBlankSliceStartDateEvent(item: CheckPointItem) {
+        viewModelScope.launch {
+            item.isStartDateBlank.emit(Unit)
+        }
+    }
+
+    private fun emitBlankSliceEndDateEvent(item: CheckPointItem) {
+        viewModelScope.launch {
+            item.isEndDateBlank.emit(Unit)
+        }
+    }
+
+    private fun isValidateCheckPointDate(startDate: LocalDate?, endDate: LocalDate?) = startDate?.isBefore(endDate) ?: true
 }

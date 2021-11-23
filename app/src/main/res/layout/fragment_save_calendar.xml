@@ -58,19 +58,30 @@
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="32dp"
                     android:text="@string/saveCalendar_title"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/switch_saveCalendar_defaultCalendar"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <EditText
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/switch_saveCalendar_defaultCalendar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:checked="@={saveCalendarViewModel.useDefaultCalendar}"
+                    android:text="@string/saveCalendar_defaultCalendar"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_saveCalendar_calendarName"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/tv_saveCalendar_calendarName" />
+
+                <com.drunkenboys.calendarun.view.ErrorGuideEditText
                     android:id="@+id/et_saveCalendar_calendarName"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:ems="10"
+                    android:hint="@string/saveCalendar_title"
                     android:inputType="text"
                     android:text="@={saveCalendarViewModel.calendarName}"
-                    app:layout_constraintEnd_toEndOf="@+id/tv_saveCalendar_calendarName"
+                    app:layout_constraintEnd_toEndOf="@+id/switch_saveCalendar_defaultCalendar"
                     app:layout_constraintStart_toStartOf="@id/tv_saveCalendar_calendarName"
                     app:layout_constraintTop_toBottomOf="@id/tv_saveCalendar_calendarName"
                     tools:text="수능 캘린더" />
@@ -82,7 +93,7 @@
                     android:nestedScrollingEnabled="false"
                     android:overScrollMode="never"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    app:layout_constraintEnd_toEndOf="@id/tv_saveCalendar_calendarName"
+                    app:layout_constraintEnd_toEndOf="@+id/switch_saveCalendar_defaultCalendar"
                     app:layout_constraintStart_toStartOf="@id/tv_saveCalendar_calendarName"
                     app:layout_constraintTop_toBottomOf="@+id/et_saveCalendar_calendarName"
                     app:reverseLayout="true"

@@ -64,11 +64,11 @@ class SaveScheduleViewModel @Inject constructor(
     private val _pickNotificationTypeEvent = MutableSharedFlow<Unit>()
     val pickNotificationTypeEvent: SharedFlow<Unit> = _pickNotificationTypeEvent
 
-    private val _saveScheduleEvent = MutableSharedFlow<Schedule>()
-    val saveScheduleEvent: SharedFlow<Schedule> = _saveScheduleEvent
+    private val _saveScheduleEvent = MutableSharedFlow<Pair<Schedule, String>>()
+    val saveScheduleEvent: SharedFlow<Pair<Schedule, String>> = _saveScheduleEvent
 
-    private val _deleteScheduleEvent = MutableSharedFlow<Schedule>()
-    val deleteScheduleEvent: SharedFlow<Schedule> = _deleteScheduleEvent
+    private val _deleteScheduleEvent = MutableSharedFlow<Pair<Schedule, String>>()
+    val deleteScheduleEvent: SharedFlow<Pair<Schedule, String>> = _deleteScheduleEvent
 
     private val _blankTitleEvent = MutableSharedFlow<Unit>()
     val blankTitleEvent: SharedFlow<Unit> = _blankTitleEvent
@@ -159,10 +159,10 @@ class SaveScheduleViewModel @Inject constructor(
 
             if (isUpdateSchedule) {
                 scheduleDataSource.updateSchedule(schedule)
-                _saveScheduleEvent.emit(schedule)
+                _saveScheduleEvent.emit(schedule to calendarName.value)
             } else {
                 val rowId = scheduleDataSource.insertSchedule(schedule)
-                _saveScheduleEvent.emit(schedule.copy(id = rowId))
+                _saveScheduleEvent.emit(schedule.copy(id = rowId) to calendarName.value)
             }
         }
     }
@@ -185,7 +185,7 @@ class SaveScheduleViewModel @Inject constructor(
             val deleteSchedule = scheduleDataSource.fetchSchedule(scheduleId)
             scheduleDataSource.deleteSchedule(deleteSchedule)
 
-            _deleteScheduleEvent.emit(deleteSchedule)
+            _deleteScheduleEvent.emit(deleteSchedule to calendarName.value)
         }
     }
 }

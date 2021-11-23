@@ -45,7 +45,7 @@ class ThemeFragment : BaseFragment<FragmentThemeBinding>(R.layout.fragment_theme
         stateCollect(themeViewModel.textAlign) { align ->
             when (align) {
                 Gravity.START -> binding.tvThemeTextAlignContent.setText(R.string.start)
-                Gravity.CENTER_VERTICAL -> binding.tvThemeTextAlignContent.setText(R.string.center)
+                Gravity.CENTER -> binding.tvThemeTextAlignContent.setText(R.string.center)
                 Gravity.END -> binding.tvThemeTextAlignContent.setText(R.string.end)
             }
         }

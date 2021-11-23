@@ -3,16 +3,21 @@ package com.drunkenboys.ckscalendar.yearcalendar.composeView
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
+import com.drunkenboys.ckscalendar.yearcalendar.CustomTheme
+import com.drunkenboys.ckscalendar.yearcalendar.YearCalendarViewModel
 
 @Composable
 fun AnimatedMonthHeader(
@@ -27,21 +32,46 @@ fun AnimatedMonthHeader(
         )
     )
 
-    Text(
-        text = monthName,
-        color = MaterialTheme.colors.primary,
+    Card(
         modifier = Modifier
             .alpha(density)
-            .padding(start = (density * 5).dp)
-    )
+            .zIndex(10f),
+        elevation = 10.dp
+    ) {
+        Text(
+            text = monthName,
+            color = MaterialTheme.colors.primary,
+            modifier = Modifier
+                .padding(
+                    start = 20.dp,
+                    end = 20.dp,
+                    top = 5.dp,
+                    bottom = 5.dp
+                )
+        )
+    }
 }
 
 @Preview
 @Composable
 fun PreviewMonthHeader() {
-    Text(
-        text = "1월",
-        color = MaterialTheme.colors.primary,
-        modifier = Modifier.padding(start = 5.dp)
-    )
+    val viewModel = YearCalendarViewModel()
+    CustomTheme(design = viewModel.design.value) {
+        Card(
+            modifier = Modifier.wrapContentSize(),
+            elevation = 200.dp
+        ) {
+            Text(
+                text = "1월",
+                color = MaterialTheme.colors.primary,
+                modifier = Modifier
+                    .padding(
+                        start = 20.dp,
+                        end = 20.dp,
+                        top = 5.dp,
+                        bottom = 5.dp
+                    )
+            )
+        }
+    }
 }

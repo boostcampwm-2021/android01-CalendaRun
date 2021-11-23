@@ -20,10 +20,6 @@ import com.drunkenboys.ckscalendar.listener.OnDaySecondClickListener
 import com.drunkenboys.ckscalendar.utils.context
 import com.drunkenboys.ckscalendar.utils.dp2px
 import com.drunkenboys.ckscalendar.utils.tintStroke
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : RecyclerView.Adapter<MonthAdapter.Holder>() {
 
@@ -103,26 +99,28 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
             if (item.dayType != DayType.PADDING) {
                 binding.tvMonthDay.text = item.date.dayOfMonth.toString()
             }
+            setDateCellTextDesign(item)
+
+            val scheduleContainer = makePaddingScheduleList(item, schedules)
+            val hasAnySchedule = scheduleContainer.any { it != null }
+            if (hasAnySchedule) {
+                binding.layoutMonthSchedule.removeAllViews()
+                scheduleContainer.map { it ?: makeDefaultScheduleTextView() }
+                    .forEach {
+                        binding.layoutMonthSchedule.addView(it)
+                    }
+            }
+        }
+
+        private fun setDateCellTextDesign(item: CalendarDate) {
             val textColor = when (item.dayType) {
                 DayType.HOLIDAY, DayType.SUNDAY -> holidayColor
                 DayType.SATURDAY -> saturdayColor
                 else -> weekDayColor
             }
             binding.tvMonthDay.setTextColor(textColor)
-
-            CoroutineScope(Dispatchers.Default).launch {
-                val scheduleContainer = makePaddingScheduleList(item, schedules)
-                val hasAnySchedule = scheduleContainer.any { it != null }
-                if (hasAnySchedule) {
-                    withContext(Dispatchers.Main) {
-                        binding.layoutMonthSchedule.removeAllViews()
-                        scheduleContainer.map { it ?: makeDefaultScheduleTextView() }
-                            .forEach {
-                                binding.layoutMonthSchedule.addView(it)
-                            }
-                    }
-                }
-            }
+            binding.tvMonthDay.gravity = calendarDesign.textAlign
+            binding.tvMonthDay.setTextSize(TypedValue.COMPLEX_UNIT_DIP, calendarDesign.textSize)
         }
 
         // make sorted schedule list with white padding
@@ -152,7 +150,7 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
                 }
             }
             // 보여줄 갯수만 뽑아서 반환 SCHEDULE_CONTAINER_SIZE 보다 크면 안됨
-            return scheduleListContainer.sliceArray(0 until MAX_VISIBLE_SCHEDULE_SIZE)
+            return scheduleListContainer.sliceArray(0 until calendarDesign.visibleScheduleCount)
         }
 
         private fun mappingScheduleTextView(it: CalendarScheduleObject, isFirstShowSchedule: Boolean): TextView {
@@ -219,7 +217,5 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
 
         //TODO : 10개넘어가는 일정이 있으면 오류 가능성 있음
         private const val SCHEDULE_CONTAINER_SIZE = 10
-
-        private const val MAX_VISIBLE_SCHEDULE_SIZE = 3
     }
 }

@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import androidx.core.content.getSystemService
+import com.drunkenboys.calendarun.data.calendar.local.CalendarLocalDataSource
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import com.drunkenboys.calendarun.data.schedule.local.ScheduleLocalDataSource
 import dagger.hilt.android.AndroidEntryPoint
@@ -17,8 +18,8 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class BootReceiver : BroadcastReceiver() {
 
-    @Inject
-    lateinit var scheduleDataSource: ScheduleLocalDataSource
+    @Inject lateinit var calendarDataSource: CalendarLocalDataSource
+    @Inject lateinit var scheduleDataSource: ScheduleLocalDataSource
 
     private val job = Job()
     private val coroutineScope = CoroutineScope(job)
@@ -38,18 +39,27 @@ class BootReceiver : BroadcastReceiver() {
 
     private fun setNotifications(context: Context) {
         coroutineScope.launch {
+            val calendarMap = calendarDataSource.fetchAllCalendar()
+                .associate { it.id to it.name }
+
             scheduleDataSource.fetchAllSchedule()
-                .forEach { schedule -> setAlarmIfScheduleInFuture(schedule, context) }
+                .forEach { schedule ->
+                    setAlarmIfScheduleInFuture(
+                        schedule,
+                        context,
+                        calendarMap.getOrDefault(schedule.id, "null")
+                    )
+                }
         }
     }
 
-    private fun setAlarmIfScheduleInFuture(schedule: Schedule, context: Context) {
+    private fun setAlarmIfScheduleInFuture(schedule: Schedule, context: Context, calendarName: String) {
         if (schedule.startDate > today) {
             val triggerAtMillis = schedule.notificationDateTimeMillis()
             alarmManager.set(
                 AlarmManager.RTC_WAKEUP,
                 triggerAtMillis,
-                ScheduleAlarmReceiver.createPendingIntent(context, schedule)
+                ScheduleAlarmReceiver.createPendingIntent(context, schedule, calendarName)
             )
         }
     }

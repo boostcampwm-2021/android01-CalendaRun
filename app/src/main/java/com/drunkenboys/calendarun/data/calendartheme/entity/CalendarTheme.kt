@@ -12,7 +12,7 @@ data class CalendarTheme(
     val sundayTextColor: Int,
     val selectedFrameColor: Int,
     val backgroundColor: Int,
-    val textSize: Int,
+    val textSize: Float,
     val textAlign: Int,
     val languageType: LanguageType,
     val visibleScheduleCount: Int
