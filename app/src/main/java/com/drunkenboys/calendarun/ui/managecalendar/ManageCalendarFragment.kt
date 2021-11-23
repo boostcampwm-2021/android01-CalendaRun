@@ -10,9 +10,10 @@ import com.drunkenboys.calendarun.databinding.FragmentManageCalendarBinding
 import com.drunkenboys.calendarun.ui.base.BaseFragment
 import com.drunkenboys.calendarun.ui.managecalendar.model.CalendarItem
 import com.drunkenboys.calendarun.util.HorizontalInsetDividerDecoration
-import com.drunkenboys.calendarun.util.extensions.sharedCollect
-import com.drunkenboys.calendarun.util.extensions.stateCollect
+import com.drunkenboys.calendarun.util.extensions.launchAndRepeatWithViewLifecycle
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class ManageCalendarFragment : BaseFragment<FragmentManageCalendarBinding>(R.layout.fragment_manage_calendar) {
@@ -29,8 +30,11 @@ class ManageCalendarFragment : BaseFragment<FragmentManageCalendarBinding>(R.lay
         setupAdapter()
         setupFabClickListener()
         setupToolbarMenuItemOnClickListener()
-        collectCalendarItemList()
-        collectDeleteCalendar()
+
+        launchAndRepeatWithViewLifecycle {
+            launch { collectCalendarItemList() }
+            launch { collectDeleteCalendar() }
+        }
     }
 
     private fun onCalendarItemClickListener(calendarItem: CalendarItem) {
@@ -73,14 +77,14 @@ class ManageCalendarFragment : BaseFragment<FragmentManageCalendarBinding>(R.lay
         }
     }
 
-    private fun collectCalendarItemList() {
-        stateCollect(manageCalendarViewModel.calendarItemList) { calendarItemList ->
+    private suspend fun collectCalendarItemList() {
+        manageCalendarViewModel.calendarItemList.collect { calendarItemList ->
             manageCalendarAdapter.submitList(calendarItemList)
         }
     }
 
-    private fun collectDeleteCalendar() {
-        sharedCollect(manageCalendarViewModel.deleteCalendarEvent) {
+    private suspend fun collectDeleteCalendar() {
+        manageCalendarViewModel.deleteCalendarEvent.collect {
             val currentCalendarItemList = manageCalendarAdapter.currentList
             manageCalendarViewModel.deleteCalendarItem(currentCalendarItemList)
         }
