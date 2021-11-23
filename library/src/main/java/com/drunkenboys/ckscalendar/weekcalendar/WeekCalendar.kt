@@ -53,7 +53,7 @@ fun WeekCalendar(
 
                 // 1일
                 else -> Column(modifier = dayModifier(day).layoutId(day.date.toString()), horizontalAlignment = Alignment.CenterHorizontally) {
-                    DayText(day = day, viewModel = viewModel)
+                    DayText(day = day, viewModel = viewModel, false)
                     ScheduleText(today = day.date, weekSchedules, viewModel = viewModel)
                 }
             }

@@ -5,9 +5,9 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.MaterialTheme
@@ -62,28 +62,20 @@ fun CalendarLazyColumn(
     }
 
     // RecyclerView와 유사
-    LazyColumn(state = listState) {
+    LazyColumn(
+        state = listState,
+        modifier = Modifier.background(color = MaterialTheme.colors.background).fillMaxHeight()
+    ) {
         items(calendar, key = { slice -> slice.startDate }) { slice ->
 
             val firstOfYear = LocalDate.of(slice.endDate.year, 1, 1)
+
+            // 해가 갱신될 때마다 상단에 연표시
             if (firstOfYear in slice.startDate..slice.endDate) {
                 Text(
                     text = "${firstOfYear.year}년",
                     color = MaterialTheme.colors.primary,
-                    modifier = Modifier
-                        .background(color = MaterialTheme.colors.background)
-                        .fillMaxWidth(),
-                    textAlign = TextAlign.Center
-                )
-            }
-
-            if (!viewModel.isDefaultCalendar()) {
-                Text(
-                    text = "${slice.startDate.monthValue}월",
-                    color = MaterialTheme.colors.primary,
-                    modifier = Modifier
-                        .background(color = MaterialTheme.colors.background)
-                        .fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center
                 )
             }

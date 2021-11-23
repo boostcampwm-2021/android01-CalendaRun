@@ -27,6 +27,9 @@ fun MonthCalendar(
 ) {
     val weeks = calendarSetToCalendarDatesList(month)
     var weekSchedules: Array<Array<CalendarScheduleObject?>> // 1주 스케줄
+    val isFirstOfCalendarSet = { day: CalendarDate ->
+        month.id > 0 && (day.date.dayOfMonth == 1 || day.date == month.startDate)
+    }
 
     weeks.forEach { week ->
         // 1주일
@@ -50,8 +53,17 @@ fun MonthCalendar(
                         modifier = dayColumnModifier(day),
                         horizontalAlignment = GravityMapper.toColumnAlign(viewModel.design.value.textAlign)
                     ) {
-                        DayText(day = day, viewModel = viewModel)
-                        ScheduleText(today = day.date, weekSchedules, viewModel = viewModel)
+                        DayText(
+                            day = day,
+                            viewModel = viewModel,
+                            isFirstOfCalendarSet = isFirstOfCalendarSet(day)
+                        )
+
+                        ScheduleText(
+                            today = day.date,
+                            weekScheduleList = weekSchedules,
+                            viewModel = viewModel
+                        )
                     }
                 }
             }
