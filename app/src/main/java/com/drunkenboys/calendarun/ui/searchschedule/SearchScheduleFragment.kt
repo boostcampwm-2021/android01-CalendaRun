@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.navigation.ui.setupWithNavController
+import androidx.recyclerview.widget.RecyclerView
 import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.databinding.FragmentSearchScheduleBinding
 import com.drunkenboys.calendarun.ui.base.BaseFragment
@@ -39,6 +40,18 @@ class SearchScheduleFragment : BaseFragment<FragmentSearchScheduleBinding>(R.lay
     private fun setupRecyclerView() {
         binding.rvSearchSchedule.adapter = searchScheduleAdapter
         binding.rvSearchSchedule.addItemDecoration(SearchScheduleDivider(requireContext()))
+        binding.rvSearchSchedule.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                if (!recyclerView.canScrollVertically(-1)) {
+                    searchScheduleViewModel.tryFetchPrev()
+                }
+                if (!recyclerView.canScrollVertically(1)) {
+                    searchScheduleViewModel.tryFetchNext()
+                }
+            }
+        })
     }
 
     private suspend fun collectListItem() {
