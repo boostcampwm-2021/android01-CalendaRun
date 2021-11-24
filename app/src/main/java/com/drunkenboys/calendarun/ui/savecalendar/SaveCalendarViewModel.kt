@@ -59,6 +59,7 @@ class SaveCalendarViewModel @Inject constructor(
                 )
             }
             _checkPointItemList.emit(checkPointItemList)
+            setUseDefaultCalendar()
         }
     }
 
@@ -90,6 +91,12 @@ class SaveCalendarViewModel @Inject constructor(
         }
     }
 
+    private fun setUseDefaultCalendar() {
+        viewModelScope.launch {
+            useDefaultCalendar.emit(checkPointItemList.value.isEmpty())
+        }
+    }
+
     private fun saveCalendar(): Boolean {
         val useDefaultCalendar = useDefaultCalendar.value
         val calendarName = calendarName.value
@@ -111,6 +118,7 @@ class SaveCalendarViewModel @Inject constructor(
                     )
                 )
             }
+            return true
         }
 
         val checkPointList = _checkPointItemList.value
