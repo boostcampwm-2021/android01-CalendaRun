@@ -6,6 +6,8 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="mainCalendarViewModel"
             type="com.drunkenboys.calendarun.ui.maincalendar.MainCalendarViewModel" />
@@ -43,7 +45,7 @@
                 android:id="@+id/calendar_year"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:visibility="gone"
+                android:visibility="@{mainCalendarViewModel.isMonthCalendar() ? View.GONE : View.VISIBLE}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -53,6 +55,7 @@
                 android:id="@+id/calendar_month"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
+                android:visibility="@{mainCalendarViewModel.isMonthCalendar() ? View.VISIBLE : View.GONE}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

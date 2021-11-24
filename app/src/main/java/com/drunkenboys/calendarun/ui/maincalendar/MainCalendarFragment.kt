@@ -6,7 +6,6 @@ import android.view.View
 import androidx.core.view.GravityCompat
 import androidx.core.view.get
 import androidx.core.view.isEmpty
-import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.viewModels
 import androidx.navigation.ui.setupWithNavController
@@ -25,12 +24,10 @@ import kotlinx.coroutines.launch
 class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.fragment_main_calendar) {
 
     private val mainCalendarViewModel by viewModels<MainCalendarViewModel>()
-    private var isMonthCalendar = true
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupCalendarView()
         setupDataBinding()
         setupToolbar()
         setupMonthCalendar()
@@ -44,12 +41,6 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
             launch { collectCalendarDesignObject() }
             launch { collectLicenseClickEvent() }
         }
-    }
-
-    private fun setupCalendarView() {
-        // TODO: CalendarView 내부로 전환
-        binding.calendarMonth.isVisible = isMonthCalendar
-        binding.calendarYear.isVisible = !isMonthCalendar
     }
 
     private fun setupDataBinding() {
@@ -175,10 +166,7 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
     private fun setupOnMenuItemClickListener() {
         binding.toolbarMainCalendar.setOnMenuItemClickListener { item ->
             when (item.itemId) {
-                R.id.menu_main_calendar_calendar -> {
-                    isMonthCalendar = !isMonthCalendar
-                    setupCalendarView()
-                }
+                R.id.menu_main_calendar_calendar -> mainCalendarViewModel.toggleCalendar()
                 R.id.menu_main_calendar_search -> navigateToSearchSchedule()
                 else -> return@setOnMenuItemClickListener false
             }

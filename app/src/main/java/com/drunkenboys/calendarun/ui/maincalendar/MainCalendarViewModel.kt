@@ -50,6 +50,9 @@ class MainCalendarViewModel @Inject constructor(
     private val _selectedCalendarIndex = MutableStateFlow(0)
     val selectCalendarIndex: StateFlow<Int> = _selectedCalendarIndex
 
+    private val _isMonthCalendar = MutableStateFlow(true)
+    val isMonthCalendar: StateFlow<Boolean> = _isMonthCalendar
+
     private val _fabClickEvent = MutableSharedFlow<Long>()
     val fabClickEvent: SharedFlow<Long> = _fabClickEvent
 
@@ -143,5 +146,9 @@ class MainCalendarViewModel @Inject constructor(
 
     fun setCalendarId(calendarId: Long) {
         savedStateHandle.set(KEY_CALENDAR_ID, calendarId)
+    }
+
+    fun toggleCalendar() {
+        _isMonthCalendar.value = !_isMonthCalendar.value
     }
 }
