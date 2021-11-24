@@ -2,6 +2,7 @@ package com.drunkenboys.calendarun.data.calendar.local
 
 import androidx.room.*
 import com.drunkenboys.calendarun.data.calendar.entity.Calendar
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CalendarDao {
@@ -10,7 +11,7 @@ interface CalendarDao {
     suspend fun insertCalendar(calendar: Calendar): Long
 
     @Query("SELECT * FROM `calendar`")
-    suspend fun fetchAllCalendar(): List<Calendar>
+    fun fetchAllCalendar(): Flow<List<Calendar>>
 
     @Query("SELECT * FROM `calendar` WHERE id != 1")
     suspend fun fetchCustomCalendar(): List<Calendar>
