@@ -90,9 +90,17 @@ class SaveCalendarViewModel @Inject constructor(
         }
     }
 
+
+    private fun deleteCheckPointList(calendarId: Long) {
+        viewModelScope.launch {
+            checkPointLocalDataSource.deleteCheckPointList(calendarId)
+        }
+    }
+
     private fun saveCalendarInfo(): Boolean {
         val useDefaultCalendar = useDefaultCalendar.value
         val calendarName = calendarName.value
+        val checkPointList = _checkPointItemList.value
         var canSave = true
 
         if (calendarName.isBlank()) {
@@ -102,10 +110,10 @@ class SaveCalendarViewModel @Inject constructor(
 
         if (useDefaultCalendar && canSave) {
             saveCalendar(calendarId, calendarName)
+            deleteCheckPointList(calendarId)
             return true
         }
 
-        val checkPointList = _checkPointItemList.value
         var calendarStartDate = checkPointList.getOrNull(0)?.startDate?.value ?: LocalDate.now()
         var calendarEndDate = checkPointList.getOrNull(0)?.endDate?.value ?: LocalDate.now()
 
