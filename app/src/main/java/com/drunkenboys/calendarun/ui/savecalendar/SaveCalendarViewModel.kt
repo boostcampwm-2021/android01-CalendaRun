@@ -59,6 +59,7 @@ class SaveCalendarViewModel @Inject constructor(
                 )
             }
             _checkPointItemList.emit(checkPointItemList)
+            setUseDefaultCalendar()
         }
     }
 
@@ -87,6 +88,16 @@ class SaveCalendarViewModel @Inject constructor(
     private fun emitBlankTitleEvent() {
         viewModelScope.launch {
             _blankTitleEvent.emit(Unit)
+        }
+    }
+
+    private fun setUseDefaultCalendar() {
+        viewModelScope.launch {
+            if (checkPointItemList.value.isEmpty()) {
+                useDefaultCalendar.emit(true)
+            } else {
+                useDefaultCalendar.emit(false)
+            }
         }
     }
 
