@@ -23,5 +23,8 @@ interface CheckPointDao {
 
     @Update
     suspend fun updateCheckPoint(checkPoint: CheckPoint)
-    
+
+    @Query("DELETE FROM `checkpoint` WHERE calendarId == :calendarId")
+    suspend fun deleteCheckPointList(calendarId: Long)
+
 }
