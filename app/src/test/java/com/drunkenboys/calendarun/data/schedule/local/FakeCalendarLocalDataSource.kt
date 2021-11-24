@@ -26,4 +26,7 @@ class FakeCalendarLocalDataSource : CalendarLocalDataSource {
         TODO("Not yet implemented")
     }
 
+    override suspend fun updateCalendar(calendar: Calendar) {
+        TODO("Not yet implemented")
+    }
 }
