@@ -25,7 +25,7 @@ class SearchScheduleViewModel @Inject constructor(
 
     val word = MutableStateFlow("")
 
-    private val scheduleList = MutableStateFlow<List<ScheduleItem>>(emptyList())
+    private var scheduleList: List<Schedule> = emptyList()
 
     private val _listItem = MutableStateFlow<List<DateScheduleItem>>(emptyList())
     val listItem: StateFlow<List<DateScheduleItem>> = _listItem
@@ -41,21 +41,25 @@ class SearchScheduleViewModel @Inject constructor(
 
     private var debounceJob: Job = Job()
 
+    private var prevKey: LocalDate?
+    private var nextKey: LocalDate?
+
     init {
+        val today = LocalDate.now()
+        prevKey = today
+        nextKey = today
         collectSearchEvent()
         searchSchedule()
     }
 
     fun tryFetchPrev() {
         viewModelScope.launch {
-            Log.d("SearchScheduleViewModel", "tryFetchPrev: ")
             searchPrevEvent.emit(Unit)
         }
     }
 
     fun tryFetchNext() {
         viewModelScope.launch {
-            Log.d("SearchScheduleViewModel", "tryFetchNext: ")
             searchNextEvent.emit(Unit)
         }
     }
@@ -64,7 +68,7 @@ class SearchScheduleViewModel @Inject constructor(
         viewModelScope.launch {
             launch {
                 searchPrevEvent.throttleFirst(600)
-                    .collect { Log.d("SearchScheduleViewModel", "collectSearchEvent prev") }
+                    .collect { searchSchedule(action = SearchAction.PREV) }
             }
             launch {
                 searchNextEvent.throttleFirst(600)
@@ -73,16 +77,28 @@ class SearchScheduleViewModel @Inject constructor(
         }
     }
 
-    fun searchSchedule(word: String = "") {
+    fun searchSchedule(word: String = "", action: SearchAction = SearchAction.NEXT) {
         debounceJob.cancel()
         debounceJob = viewModelScope.launch {
             _isSearching.value = true
             delay(DEBOUNCE_DURATION)
 
-            val today = LocalDate.now()
+            if (action == SearchAction.PREV) {
+                prevKey?.let { key ->
+                    val newList = scheduleDataSource.fetchMatchedScheduleBefore(word, key.seconds)
+                    if (newList.size == 1) {
+                        prevKey = null
+                        return@let
+                    }
+                    scheduleList = newList + scheduleList.take(30)
+                    prevKey = scheduleList.firstOrNull()?.startDate?.toLocalDate()
+                    nextKey = scheduleList.lastOrNull()?.startDate?.toLocalDate()
+                }
+            } else if (action == SearchAction.NEXT) {
+                
+            }
 
-            _listItem.value = scheduleDataSource.fetchMatchedScheduleAfter(word, today.seconds)
-                .map { schedule -> ScheduleItem(schedule) { emitScheduleClickEvent(schedule) } }
+            _listItem.value = scheduleList.map { schedule -> ScheduleItem(schedule) { emitScheduleClickEvent(schedule) } }
                 .groupBy { scheduleItem -> scheduleItem.schedule.startDate.toLocalDate() }
                 .flatMap { (localDate, scheduleList) -> listOf(DateItem(localDate)) + scheduleList }
 
@@ -100,4 +116,8 @@ class SearchScheduleViewModel @Inject constructor(
 
         private const val DEBOUNCE_DURATION = 500L
     }
+}
+
+enum class SearchAction {
+    PREV, NEXT
 }

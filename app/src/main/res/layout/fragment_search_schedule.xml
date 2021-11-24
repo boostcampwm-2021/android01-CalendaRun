@@ -8,6 +8,8 @@
 
         <import type="android.view.View" />
 
+        <import type="com.drunkenboys.calendarun.ui.searchschedule.SearchAction" />
+
         <variable
             name="viewModel"
             type="com.drunkenboys.calendarun.ui.searchschedule.SearchScheduleViewModel" />
@@ -36,7 +38,7 @@
                     android:id="@+id/et_searchSchedule_toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:afterTextChanged="@{(text) -> viewModel.searchSchedule(text.toString())}"
+                    android:afterTextChanged="@{(text) -> viewModel.searchSchedule(text.toString(), SearchAction.NEXT)}"
                     android:backgroundTint="@color/white_alpha_50"
                     android:hint="@string/searchSchedule_toolbarHint"
                     android:importantForAutofill="no"
