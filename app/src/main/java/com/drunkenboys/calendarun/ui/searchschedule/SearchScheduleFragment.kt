@@ -44,10 +44,10 @@ class SearchScheduleFragment : BaseFragment<FragmentSearchScheduleBinding>(R.lay
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
 
-                if (!recyclerView.canScrollVertically(-1)) {
+                if (!recyclerView.canScrollVertically(SCROLL_NEGATIVE)) {
                     searchScheduleViewModel.trySearchPrev()
                 }
-                if (!recyclerView.canScrollVertically(1)) {
+                if (!recyclerView.canScrollVertically(SCROLL_POSITIVE)) {
                     searchScheduleViewModel.trySearchNext()
                 }
             }
@@ -66,5 +66,11 @@ class SearchScheduleFragment : BaseFragment<FragmentSearchScheduleBinding>(R.lay
             val action = SearchScheduleFragmentDirections.toSaveSchedule(schedule.calendarId, schedule.id)
             navController.navigate(action)
         }
+    }
+
+    companion object {
+
+        private const val SCROLL_NEGATIVE = -1
+        private const val SCROLL_POSITIVE = 1
     }
 }
