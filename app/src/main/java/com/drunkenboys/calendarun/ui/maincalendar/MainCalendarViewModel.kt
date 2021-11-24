@@ -27,7 +27,7 @@ class MainCalendarViewModel @Inject constructor(
     private val calendarLocalDataSource: CalendarLocalDataSource,
     private val checkPointLocalDataSource: CheckPointLocalDataSource,
     private val scheduleLocalDataSource: ScheduleLocalDataSource,
-    private val calendarThemeDataSource: CalendarThemeLocalDataSource
+    calendarThemeDataSource: CalendarThemeLocalDataSource
 ) : ViewModel() {
 
     val calendarId = savedStateHandle.getLiveData<Long>(KEY_CALENDAR_ID)
@@ -52,6 +52,10 @@ class MainCalendarViewModel @Inject constructor(
 
     private val _isMonthCalendar = MutableStateFlow(true)
     val isMonthCalendar: StateFlow<Boolean> = _isMonthCalendar
+
+    val calendarDesignObject = calendarThemeDataSource.fetchCalendarTheme()
+        .map { it.toCalendarDesignObject() }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private val _fabClickEvent = MutableSharedFlow<Long>()
     val fabClickEvent: SharedFlow<Long> = _fabClickEvent
@@ -134,9 +138,6 @@ class MainCalendarViewModel @Inject constructor(
             _selectedCalendarIndex.emit(index)
         }
     }
-
-    fun fetchCalendarDesignObject() = calendarThemeDataSource.fetchCalendarTheme()
-        .map { it.toCalendarDesignObject() }
 
     fun emitLicenseClickEvent() {
         viewModelScope.launch {

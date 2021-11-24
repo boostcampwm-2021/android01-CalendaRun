@@ -195,9 +195,10 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
     }
 
     private suspend fun collectCalendarDesignObject() {
-        mainCalendarViewModel.fetchCalendarDesignObject().collect {
-            binding.calendarMonth.setDesign(it)
-            binding.calendarYear.setTheme(it)
+        mainCalendarViewModel.calendarDesignObject.collect { designObj ->
+            designObj ?: return@collect
+            binding.calendarMonth.setDesign(designObj)
+            binding.calendarYear.setTheme(designObj)
         }
     }
 
