@@ -44,7 +44,6 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
             launch { collectCalendarDesignObject() }
             launch { collectLicenseClickEvent() }
         }
-        mainCalendarViewModel.fetchCalendarList()
     }
 
     private fun setupCalendarView() {

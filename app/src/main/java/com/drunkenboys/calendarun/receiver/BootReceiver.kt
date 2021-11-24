@@ -11,6 +11,7 @@ import com.drunkenboys.calendarun.data.schedule.local.ScheduleLocalDataSource
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import javax.inject.Inject
@@ -39,8 +40,8 @@ class BootReceiver : BroadcastReceiver() {
 
     private fun setNotifications(context: Context) {
         coroutineScope.launch {
-            val calendarMap = calendarDataSource.fetchAllCalendar()
-                .associate { it.id to it.name }
+            val calendarMap = calendarDataSource.fetchAllCalendar().firstOrNull()
+                ?.associate { it.id to it.name } ?: return@launch
 
             scheduleDataSource.fetchAllSchedule()
                 .forEach { schedule ->

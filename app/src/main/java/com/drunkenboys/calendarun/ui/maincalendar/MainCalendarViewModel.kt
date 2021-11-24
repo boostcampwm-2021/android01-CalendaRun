@@ -38,8 +38,8 @@ class MainCalendarViewModel @Inject constructor(
         calendarLocalDataSource.fetchCalendar(it).name
     }.stateIn(viewModelScope, SharingStarted.Eagerly, "")
 
-    private val _calendarList = MutableStateFlow<List<Calendar>>(emptyList())
-    val calendarList: StateFlow<List<Calendar>> = _calendarList
+    val calendarList = calendarLocalDataSource.fetchAllCalendar()
+        .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     private val _scheduleList = MutableStateFlow<List<CalendarScheduleObject>>(emptyList())
     val scheduleList: StateFlow<List<CalendarScheduleObject>> = _scheduleList
@@ -61,7 +61,6 @@ class MainCalendarViewModel @Inject constructor(
 
     init {
         fetchCalendar()
-        fetchCalendarList()
     }
 
     fun fetchCalendar() {
@@ -75,12 +74,6 @@ class MainCalendarViewModel @Inject constructor(
         viewModelScope.launch {
             createCalendarSetList(calendar.id, fetchCheckPointList(calendar.id))
             fetchScheduleList(calendar.id)
-        }
-    }
-
-    fun fetchCalendarList() {
-        viewModelScope.launch {
-            _calendarList.emit(calendarLocalDataSource.fetchAllCalendar())
         }
     }
 
