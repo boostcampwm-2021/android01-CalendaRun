@@ -6,7 +6,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.drunkenboys.calendarun.R
-import com.drunkenboys.calendarun.util.toSecondLong
+import com.drunkenboys.calendarun.util.milliseconds
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
@@ -24,7 +24,7 @@ fun Fragment.showToast(message: String) {
 suspend fun Fragment.pickDateInMillis(localDate: LocalDate? = null) = suspendCancellableCoroutine<Long?> { cont ->
     val datePicker = MaterialDatePicker.Builder.datePicker()
         .setTitleText(getString(R.string.saveSchedule_pickDate))
-        .setSelection(localDate?.toSecondLong() ?: MaterialDatePicker.todayInUtcMilliseconds())
+        .setSelection(localDate?.milliseconds ?: MaterialDatePicker.todayInUtcMilliseconds())
         .build()
     datePicker.apply {
         addOnPositiveButtonClickListener { timeInMillis -> cont.resume(timeInMillis) }

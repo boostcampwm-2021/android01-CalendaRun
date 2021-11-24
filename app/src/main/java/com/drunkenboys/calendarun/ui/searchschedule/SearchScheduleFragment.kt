@@ -4,11 +4,9 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.navigation.ui.setupWithNavController
-import androidx.recyclerview.widget.RecyclerView
 import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.databinding.FragmentSearchScheduleBinding
 import com.drunkenboys.calendarun.ui.base.BaseFragment
-import com.drunkenboys.calendarun.util.HorizontalInsetDividerDecoration
 import com.drunkenboys.calendarun.util.extensions.launchAndRepeatWithViewLifecycle
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
@@ -32,8 +30,6 @@ class SearchScheduleFragment : BaseFragment<FragmentSearchScheduleBinding>(R.lay
             launch { collectListItem() }
             launch { collectScheduleClickEvent() }
         }
-
-        searchScheduleViewModel.fetchScheduleList()
     }
 
     private fun setupToolbar() {
@@ -42,14 +38,7 @@ class SearchScheduleFragment : BaseFragment<FragmentSearchScheduleBinding>(R.lay
 
     private fun setupRecyclerView() {
         binding.rvSearchSchedule.adapter = searchScheduleAdapter
-        val itemDecoration = HorizontalInsetDividerDecoration(
-            context = requireContext(),
-            orientation = RecyclerView.VERTICAL,
-            leftInset = 16f,
-            rightInset = 16f,
-            ignoreLast = true
-        )
-        binding.rvSearchSchedule.addItemDecoration(itemDecoration)
+        binding.rvSearchSchedule.addItemDecoration(SearchScheduleDivider(requireContext()))
     }
 
     private suspend fun collectListItem() {

@@ -34,4 +34,8 @@ class ScheduleLocalDataSourceImpl @Inject constructor(
     override suspend fun deleteSchedule(schedule: Schedule) = withContext(dispatcher) {
         scheduleDao.deleteSchedule(schedule)
     }
+
+    override suspend fun fetchMatchedScheduleAfter(word: String, time: Long) = withContext(dispatcher) {
+        scheduleDao.fetchMatchedScheduleAfter(word, time)
+    }
 }
