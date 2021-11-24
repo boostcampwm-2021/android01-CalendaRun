@@ -3,6 +3,7 @@ package com.drunkenboys.calendarun.view
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.Context
+import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.View
 import androidx.appcompat.widget.AppCompatTextView
@@ -27,13 +28,19 @@ class ErrorGuideTextView @JvmOverloads constructor(
         }
 
     init {
-        doOnTextChanged { _, _, _, _ ->
+        doOnTextChanged() { _, _, _, _ ->
             if (isError) {
                 setHintTextColor(defaultHintTextColor)
                 isError = false
             }
         }
     }
+
+    override fun onFocusChanged(focused: Boolean, direction: Int, previouslyFocusedRect: Rect?) {
+        super.onFocusChanged(focused, direction, previouslyFocusedRect)
+        if (focused) performClick()
+    }
+
 
     private fun startErrorAnimation() {
         val leftTranslationX = context.dp2px(-2f)
