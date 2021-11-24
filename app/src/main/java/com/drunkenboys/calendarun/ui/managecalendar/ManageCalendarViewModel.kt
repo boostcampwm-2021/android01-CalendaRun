@@ -23,9 +23,9 @@ class ManageCalendarViewModel @Inject constructor(
     private val _deleteCalendarEvent = MutableSharedFlow<Unit>()
     val deleteCalendarEvent: SharedFlow<Unit> = _deleteCalendarEvent
 
-    fun fetchCalendarList() {
+    fun fetchCustomCalendarList() {
         viewModelScope.launch {
-            val calendarList = calendarLocalDataSource.fetchAllCalendar()
+            val calendarList = calendarLocalDataSource.fetchCustomCalendar()
             val newCalendarItemList = mutableListOf<CalendarItem>()
             calendarList.forEach { calendar ->
                 newCalendarItemList.add(
@@ -50,7 +50,7 @@ class ManageCalendarViewModel @Inject constructor(
                         calendarItem.toCalendar()
                     )
                 }
-            fetchCalendarList()
+            fetchCustomCalendarList()
         }
     }
 
