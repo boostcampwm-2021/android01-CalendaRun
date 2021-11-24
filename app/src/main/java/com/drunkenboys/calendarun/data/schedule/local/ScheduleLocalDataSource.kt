@@ -18,4 +18,6 @@ interface ScheduleLocalDataSource {
 
     suspend fun fetchMatchedScheduleAfter(word: String, time: Long): List<Schedule>
 
+    suspend fun fetchMatchedScheduleBefore(word: String, time: Long): List<Schedule>
+
 }
