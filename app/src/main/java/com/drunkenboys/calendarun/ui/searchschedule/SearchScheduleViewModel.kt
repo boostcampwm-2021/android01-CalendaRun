@@ -1,6 +1,5 @@
 package com.drunkenboys.calendarun.ui.searchschedule
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
@@ -72,7 +71,7 @@ class SearchScheduleViewModel @Inject constructor(
             }
             launch {
                 searchNextEvent.throttleFirst(600)
-                    .collect { Log.d("SearchScheduleViewModel", "collectSearchEvent next") }
+                    .collect { searchSchedule(action = SearchAction.NEXT) }
             }
         }
     }
@@ -95,7 +94,16 @@ class SearchScheduleViewModel @Inject constructor(
                     nextKey = scheduleList.lastOrNull()?.startDate?.toLocalDate()
                 }
             } else if (action == SearchAction.NEXT) {
-                
+                nextKey?.let { key ->
+                    val newList = scheduleDataSource.fetchMatchedScheduleAfter(word, key.seconds)
+                    if (newList.size == 1) {
+                        nextKey = null
+                        return@let
+                    }
+                    scheduleList = scheduleList.takeLast(30) + newList
+                    prevKey = scheduleList.firstOrNull()?.startDate?.toLocalDate()
+                    nextKey = scheduleList.lastOrNull()?.startDate?.toLocalDate()
+                }
             }
 
             _listItem.value = scheduleList.map { schedule -> ScheduleItem(schedule) { emitScheduleClickEvent(schedule) } }
