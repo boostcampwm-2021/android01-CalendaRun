@@ -134,8 +134,10 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         mainCalendarViewModel.calendarSetList.collect { calendarSetList ->
             if (calendarSetList.isEmpty()) {
                 binding.calendarMonth.setupDefaultCalendarSet()
+                binding.calendarYear.setupDefaultCalendarSet()
             } else {
                 binding.calendarMonth.setCalendarSetList(calendarSetList)
+                binding.calendarYear.setCalendarSetList(calendarSetList)
             }
         }
     }
