@@ -35,6 +35,10 @@ class FakeScheduleLocalDataSource : ScheduleLocalDataSource {
     }
 
     override suspend fun fetchMatchedScheduleAfter(word: String, time: Long): List<Schedule> {
-        return database.filter { it.startDate.toEpochSecond(defaultZoneOffset) >= time && word in it.name }
+        return database.filter { it.startDate.toEpochSecond(defaultZoneOffset) > time && word in it.name }
+    }
+
+    override suspend fun fetchMatchedScheduleBefore(word: String, time: Long): List<Schedule> {
+        return database.filter { it.startDate.toEpochSecond(defaultZoneOffset) < time && word in it.name }
     }
 }
