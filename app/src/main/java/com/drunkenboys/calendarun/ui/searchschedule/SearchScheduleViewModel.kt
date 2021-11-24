@@ -69,11 +69,11 @@ class SearchScheduleViewModel @Inject constructor(
     private fun collectSearchEvent() {
         viewModelScope.launch {
             launch {
-                searchPrevEvent.throttleFirst(600)
+                searchPrevEvent.throttleFirst(PAGING_THROTTLE_DURATION)
                     .collect { prevKey?.let { searchPrev(it) } }
             }
             launch {
-                searchNextEvent.throttleFirst(600)
+                searchNextEvent.throttleFirst(PAGING_THROTTLE_DURATION)
                     .collect { nextKey?.let { searchNext(it) } }
             }
         }
@@ -137,5 +137,6 @@ class SearchScheduleViewModel @Inject constructor(
     companion object {
 
         private const val DEBOUNCE_DURATION = 500L
+        private const val PAGING_THROTTLE_DURATION = 600L
     }
 }
