@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -45,7 +46,7 @@ fun ScheduleText(
             maxLines = 1,
             modifier = Modifier
                 .fillMaxWidth()
-                .background(color = color(schedule)),
+                .background(color = color(schedule)).padding(4.dp),
             overflow = TextOverflow.Ellipsis,
             fontSize = viewModel.design.value.textSize.dp(),
             color = Color.White
