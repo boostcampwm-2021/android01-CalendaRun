@@ -111,6 +111,7 @@ class SaveCalendarViewModel @Inject constructor(
                     )
                 )
             }
+            return true
         }
 
         val checkPointList = _checkPointItemList.value
