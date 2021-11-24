@@ -23,9 +23,12 @@ class CheckPointLocalDataSourceImpl @Inject constructor(
         checkPointDao.fetchCheckPoint(id)
     }
 
-    override suspend fun fetchCalendarCheckPoints(calendarId: Long): List<CheckPoint> {
-        return withContext(dispatcher) {
-            checkPointDao.fetchCalendarCheckPoints(calendarId)
-        }
+    override suspend fun fetchCalendarCheckPoints(calendarId: Long) = withContext(dispatcher) {
+        checkPointDao.fetchCalendarCheckPoints(calendarId)
+    }
+
+
+    override suspend fun updateCheckPoint(checkPoint: CheckPoint) {
+        checkPointDao.updateCheckPoint(checkPoint)
     }
 }
