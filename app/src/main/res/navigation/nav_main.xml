@@ -43,6 +43,9 @@
         <action
             android:id="@+id/to_themeFragment"
             app:destination="@id/themeFragment" />
+        <argument
+            android:name="calendarId"
+            app:argType="long" />
     </fragment>
 
     <fragment

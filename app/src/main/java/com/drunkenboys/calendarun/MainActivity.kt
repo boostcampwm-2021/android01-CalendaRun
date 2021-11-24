@@ -11,8 +11,10 @@ import android.widget.EditText
 import androidx.core.content.getSystemService
 import androidx.core.view.GestureDetectorCompat
 import androidx.navigation.NavDeepLinkBuilder
+import androidx.navigation.fragment.NavHostFragment
 import com.drunkenboys.calendarun.databinding.ActivityMainBinding
 import com.drunkenboys.calendarun.ui.base.BaseViewActivity
+import com.drunkenboys.calendarun.ui.maincalendar.MainCalendarFragmentArgs
 import com.drunkenboys.calendarun.ui.maincalendar.MainCalendarFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -23,12 +25,25 @@ class MainActivity : BaseViewActivity<ActivityMainBinding>(ActivityMainBinding::
 
     private var prevFocus: View? = null
 
+    private val calendarId by lazy {
+        val pref = getSharedPreferences(CALENDAR_ID_PREF, Context.MODE_PRIVATE)
+        pref.getLong(KEY_CALENDAR_ID, 1)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mDetector = GestureDetectorCompat(this, SingleTapListener())
+
+        setupNavHostFragment()
     }
 
-    // TODO: 2021-11-09 알림 클릭 시 Fragment 내비게이션 구현
+    private fun setupNavHostFragment() {
+        val navHost = NavHostFragment.create(R.navigation.nav_main, MainCalendarFragmentArgs(calendarId).toBundle())
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.layout_main_container, navHost)
+            .setPrimaryNavigationFragment(navHost)
+            .commit()
+    }
 
     // 터치 영역에 따라 키보드를 숨기기 위해 구현
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
@@ -68,6 +83,8 @@ class MainActivity : BaseViewActivity<ActivityMainBinding>(ActivityMainBinding::
     }
 
     companion object {
+
+        const val CALENDAR_ID_PREF = "calendar_id_pref"
 
         fun createNavigationPendingIntent(context: Context, calendarId: Long, startDate: String) = NavDeepLinkBuilder(context)
             .setGraph(R.navigation.nav_main)
