@@ -3,6 +3,7 @@ package com.drunkenboys.ckscalendar.monthcalendar
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Configuration
+import android.os.Parcelable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -47,6 +48,10 @@ class MonthCalendarView @JvmOverloads constructor(
 
     private val today = LocalDate.now()
 
+    private var hasRestore = false
+    private var lastPagePosition = -1
+    private var lastPageName = ""
+
     private val onPageChange = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
             super.onPageScrolled(position, positionOffset, positionOffsetPixels)
@@ -55,8 +60,10 @@ class MonthCalendarView @JvmOverloads constructor(
         @SuppressLint("SetTextI18n")
         override fun onPageSelected(position: Int) {
             super.onPageSelected(position)
+            lastPagePosition = position
             pageAdapter.getCalendarSetName(position)?.let {
                 binding.tvMonthCalendarViewCurrentMonth.text = it.name
+                lastPageName = it.name
             }
         }
 
@@ -68,8 +75,6 @@ class MonthCalendarView @JvmOverloads constructor(
     init {
         binding.vpMonthPage.adapter = pageAdapter
         binding.vpMonthPage.registerOnPageChangeCallback(onPageChange)
-
-        setupDefaultCalendarSet()
 
         // xml에서 넘어온 attribute 값 적용 ContextCompat.getColor
         val attr = context.obtainStyledAttributes(attrs, R.styleable.MonthCalendarView)
@@ -106,17 +111,25 @@ class MonthCalendarView @JvmOverloads constructor(
         this.calendarList = calendarList
         pageAdapter.setItems(calendarList, false)
         binding.tvMonthCalendarViewCurrentMonth.text = calendarList.first().name
+        hasRestore = false
     }
 
     fun setupDefaultCalendarSet() {
         calendarList = CalendarSet.generateCalendarOfYear(context, today.year)
         pageAdapter.setItems(calendarList, true)
 
-        calendarList.forEachIndexed { index, calendarSet -> //오늘 날짜로 이동
-            if (calendarSet.startDate.monthValue == today.monthValue) {
-                binding.tvMonthCalendarViewCurrentMonth.text = calendarSet.name
-                binding.vpMonthPage.setCurrentItem(Int.MAX_VALUE / 2 + index, false)
-                return@forEachIndexed
+        if (hasRestore) {
+            hasRestore = false
+            binding.vpMonthPage.setCurrentItem(lastPagePosition, false)
+            binding.tvMonthCalendarViewCurrentMonth.text = lastPageName
+
+        } else {
+            calendarList.forEachIndexed { index, calendarSet -> //오늘 날짜로 이동
+                if (calendarSet.startDate.monthValue == today.monthValue) {
+                    binding.tvMonthCalendarViewCurrentMonth.text = calendarSet.name
+                    binding.vpMonthPage.setCurrentItem(Int.MAX_VALUE / 2 + index, false)
+                    return@forEachIndexed
+                }
             }
         }
     }
@@ -152,5 +165,24 @@ class MonthCalendarView @JvmOverloads constructor(
 
         binding.root.setBackgroundColor(calendarDesign.backgroundColor)
         pageAdapter.setDesign(calendarDesign)
+    }
+
+    override fun onSaveInstanceState(): Parcelable? {
+        val parcelable = super.onSaveInstanceState()
+        if (parcelable == null) {
+            return parcelable
+        }
+
+        return MonthState(parcelable, lastPageName, lastPagePosition)
+    }
+
+    override fun onRestoreInstanceState(state: Parcelable?) {
+        if (state is MonthState) {
+            super.onRestoreInstanceState(state.superState)
+            lastPagePosition = state.lastPagePosition
+            lastPageName = state.lastPageName
+            hasRestore = true
+        }
+        super.onRestoreInstanceState(state)
     }
 }
