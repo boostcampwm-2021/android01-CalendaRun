@@ -28,7 +28,7 @@ class ErrorGuideTextView @JvmOverloads constructor(
         }
 
     init {
-        doOnTextChanged() { _, _, _, _ ->
+        doOnTextChanged { _, _, _, _ ->
             if (isError) {
                 setHintTextColor(defaultHintTextColor)
                 isError = false

@@ -93,11 +93,7 @@ class SaveCalendarViewModel @Inject constructor(
 
     private fun setUseDefaultCalendar() {
         viewModelScope.launch {
-            if (checkPointItemList.value.isEmpty()) {
-                useDefaultCalendar.emit(true)
-            } else {
-                useDefaultCalendar.emit(false)
-            }
+            useDefaultCalendar.emit(checkPointItemList.value.isEmpty())
         }
     }
 
