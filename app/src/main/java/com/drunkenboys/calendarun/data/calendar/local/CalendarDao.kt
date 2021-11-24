@@ -1,9 +1,6 @@
 package com.drunkenboys.calendarun.data.calendar.local
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
 import com.drunkenboys.calendarun.data.calendar.entity.Calendar
 
 @Dao
@@ -23,5 +20,8 @@ interface CalendarDao {
 
     @Delete
     suspend fun deleteCalendar(calendar: Calendar)
+
+    @Update
+    suspend fun updateCalendar(calendar: Calendar)
 
 }
