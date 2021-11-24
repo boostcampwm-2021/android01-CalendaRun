@@ -6,6 +6,8 @@ import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
+import com.drunkenboys.ckscalendar.R
 import com.drunkenboys.ckscalendar.data.CalendarDesignObject
 
 @Composable
@@ -15,11 +17,11 @@ fun CustomTheme(
     content: @Composable () -> Unit
 ) {
     val darkColors = darkColors(
-        primary = Color.White,
+        primary = colorResource(id = R.color.calendar_white),
         primaryVariant = Color(design.selectedFrameColor),
         secondary = Color(design.saturdayTextColor),
         secondaryVariant = Color(design.sundayTextColor),
-        background = Color.Black,
+        background = colorResource(id = R.color.calendar_black),
     )
 
     val lightColors = lightColors(
@@ -31,7 +33,7 @@ fun CustomTheme(
     )
 
     MaterialTheme(
-        colors = if (darkTheme) darkColors else lightColors,
+        colors = if (darkTheme && design == CalendarDesignObject.getDefaultDesign()) darkColors else lightColors,
         content = content
     )
 }
