@@ -3,7 +3,6 @@ package com.drunkenboys.calendarun.ui.maincalendar
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import androidx.core.view.GravityCompat
 import androidx.core.view.get
 import androidx.core.view.isEmpty
 import androidx.drawerlayout.widget.DrawerLayout
@@ -47,69 +46,55 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
     }
 
     private fun setupNavigationView(calendarList: List<Calendar>) {
+        addCalendarMenu(calendarList)
+        inflateDrawerMenu()
+    }
+
+    private fun addCalendarMenu(calendarList: List<Calendar>) {
         val menu = binding.navView.menu
         menu.clear()
-
         calendarList.forEachIndexed { index, calendar ->
             menu.add(calendar.name)
                 .setIcon(R.drawable.ic_favorite_24)
                 .setCheckable(true)
                 .setOnMenuItemClickListener {
 //                    mainCalendarViewModel.setSelectedCalendarIndex(index)
-//                    mainCalendarViewModel.setCalendar(calendar)
+                    mainCalendarViewModel.setCalendar(calendar)
                     mainCalendarViewModel.setCalendarId(calendar.id)
-                    binding.layoutDrawer.closeDrawer(GravityCompat.START)
+                    binding.layoutDrawer.close()
                     LoadingDialog().show(childFragmentManager, this::class.simpleName)
                     true
                 }
         }
+    }
 
-        menu.add(getString(R.string.calendar_add))
-            .setIcon(R.drawable.ic_add)
-            .setOnMenuItemClickListener {
-                navigateToSaveCalendar()
-                true
+    private fun inflateDrawerMenu() {
+        binding.navView.inflateMenu(R.menu.menu_main_calendar_nav_drawer)
+        binding.navView.setNavigationItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.menu_mainCalendar_addCalendar -> navigateToSaveCalendar()
+                R.id.menu_mainCalendar_calendarManage -> navigateToManageCalendar()
+                R.id.menu_mainCalendar_themeSetting -> navigateToThemeFragment()
+                R.id.menu_mainCalendar_license -> mainCalendarViewModel.emitLicenseClickEvent()
             }
-
-        val manageMenu = menu.addSubMenu(getString(R.string.drawer_calendar_manage))
-        manageMenu.add(getString(R.string.drawer_calendar_manage))
-            .setIcon(R.drawable.ic_calendar_today)
-            .setOnMenuItemClickListener {
-                navigateToManageCalendar()
-                true
-            }
-
-        manageMenu.add(getString(R.string.drawer_theme_setting))
-            .setIcon(R.drawable.ic_palette)
-            .setOnMenuItemClickListener {
-                navigateToThemeFragment()
-                true
-            }
-
-        manageMenu.add(getString(R.string.drawer_license))
-            .setIcon(R.drawable.ic_license)
-            .setOnMenuItemClickListener {
-                mainCalendarViewModel.emitLicenseClickEvent()
-                true
-            }
+            binding.layoutDrawer.close()
+            true
+        }
     }
 
     private fun navigateToSaveCalendar() {
         val action = MainCalendarFragmentDirections.toSaveCalendar()
         navController.navigate(action)
-        binding.layoutDrawer.closeDrawer(GravityCompat.START)
     }
 
     private fun navigateToManageCalendar() {
         val action = MainCalendarFragmentDirections.toManageCalendar()
         navController.navigate(action)
-        binding.layoutDrawer.closeDrawer(GravityCompat.START)
     }
 
     private fun navigateToThemeFragment() {
         val action = MainCalendarFragmentDirections.toThemeFragment()
         navController.navigate(action)
-        binding.layoutDrawer.closeDrawer(GravityCompat.START)
     }
 
     private suspend fun collectScheduleList() {
@@ -206,7 +191,6 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         mainCalendarViewModel.licenseClickEvent
             .throttleFirst(DEFAULT_TOUCH_THROTTLE_PERIOD)
             .collect {
-                binding.layoutDrawer.closeDrawer(GravityCompat.START)
                 startActivity(Intent(this@MainCalendarFragment.context, OssLicensesMenuActivity::class.java))
             }
     }
