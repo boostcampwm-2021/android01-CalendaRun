@@ -37,10 +37,10 @@ class SearchScheduleFragment : BaseFragment<FragmentSearchScheduleBinding>(R.lay
         binding.toolbarSearchSchedule.setupWithNavController(navController)
     }
 
-    private fun setupRecyclerView() {
-        binding.rvSearchSchedule.adapter = searchScheduleAdapter
-        binding.rvSearchSchedule.addItemDecoration(SearchScheduleDivider(requireContext()))
-        binding.rvSearchSchedule.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+    private fun setupRecyclerView() = with(binding.rvSearchSchedule) {
+        adapter = searchScheduleAdapter
+        addItemDecoration(SearchScheduleDivider(requireContext()))
+        addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
 
@@ -52,6 +52,7 @@ class SearchScheduleFragment : BaseFragment<FragmentSearchScheduleBinding>(R.lay
                 }
             }
         })
+        itemAnimator = null
     }
 
     private suspend fun collectListItem() {
