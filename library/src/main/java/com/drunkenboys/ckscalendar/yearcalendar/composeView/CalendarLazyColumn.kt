@@ -1,6 +1,7 @@
 package com.drunkenboys.ckscalendar.yearcalendar.composeView
 
 import android.view.Gravity
+import android.view.RoundedCorner
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -53,7 +55,7 @@ fun CalendarLazyColumn(
     val dayColumnModifier = { day: CalendarDate ->
         Modifier
             .layoutId(day.date.toString())
-            .border(clickedEdge(day))
+            .border(clickedEdge(day), shape = RoundedCornerShape(6.dp))
             .clickable(onClick = {
                 if (clickedDay != day.date) onDayClickListener?.onDayClick(day.date, 0)
                 else onDaySecondClickListener?.onDayClick(day.date, 0)
