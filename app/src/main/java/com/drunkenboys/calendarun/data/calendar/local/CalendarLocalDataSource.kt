@@ -14,4 +14,6 @@ interface CalendarLocalDataSource {
 
     suspend fun deleteCalendar(calendar: Calendar)
 
+    suspend fun updateCalendar(calendar: Calendar)
+
 }
