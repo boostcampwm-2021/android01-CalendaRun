@@ -24,10 +24,10 @@ interface ScheduleDao {
     @Delete
     suspend fun deleteSchedule(schedule: Schedule)
 
-    @Query("SELECT * FROM `schedule` WHERE startDate >= :time AND `name` LIKE '%' || :word || '%' ORDER BY startDate ASC LIMIT $SCHEDULE_PAGING_SIZE")
+    @Query("SELECT * FROM `schedule` WHERE startDate > :time AND `name` LIKE '%' || :word || '%' ORDER BY startDate ASC LIMIT $SCHEDULE_PAGING_SIZE")
     suspend fun fetchMatchedScheduleAfter(word: String, time: Long): List<Schedule>
 
-    @Query("SELECT * FROM `schedule` WHERE startDate <= :time AND `name` LIKE '%' || :word || '%' ORDER BY startDate ASC LIMIT $SCHEDULE_PAGING_SIZE")
+    @Query("SELECT * FROM (SELECT * FROM `schedule` WHERE startDate < :time AND `name` LIKE '%' || :word || '%' ORDER BY startDate DESC LIMIT $SCHEDULE_PAGING_SIZE) A ORDER BY A.startDate ASC")
     suspend fun fetchMatchedScheduleBefore(word: String, time: Long): List<Schedule>
 
     companion object {
