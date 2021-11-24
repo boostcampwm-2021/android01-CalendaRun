@@ -197,6 +197,10 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         binding.calendarMonth.setOnDaySecondClickListener { date, _ ->
             mainCalendarViewModel.emitDaySecondClickEvent(date)
         }
+
+        binding.calendarYear.setOnDaySecondClickListener { date, _ ->
+            mainCalendarViewModel.emitDaySecondClickEvent(date)
+        }
     }
 
     private suspend fun collectFabClickEvent() {
