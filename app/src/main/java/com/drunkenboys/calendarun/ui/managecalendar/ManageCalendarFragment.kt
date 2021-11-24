@@ -25,7 +25,7 @@ class ManageCalendarFragment : BaseFragment<FragmentManageCalendarBinding>(R.lay
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        manageCalendarViewModel.fetchCalendarList()
+        manageCalendarViewModel.fetchCustomCalendarList()
         setupToolbar()
         setupAdapter()
         setupFabClickListener()

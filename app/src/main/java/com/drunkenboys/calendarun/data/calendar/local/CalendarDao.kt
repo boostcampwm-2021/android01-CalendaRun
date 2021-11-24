@@ -16,10 +16,13 @@ interface CalendarDao {
     @Query("SELECT * FROM `calendar`")
     suspend fun fetchAllCalendar(): List<Calendar>
 
+    @Query("SELECT * FROM `calendar` WHERE id != 1")
+    suspend fun fetchCustomCalendar(): List<Calendar>
+
     @Query("SELECT * FROM `calendar` WHERE id == :id")
     suspend fun fetchCalendar(id: Long): Calendar
 
     @Delete
     suspend fun deleteCalendar(calendar: Calendar)
-    
+
 }
