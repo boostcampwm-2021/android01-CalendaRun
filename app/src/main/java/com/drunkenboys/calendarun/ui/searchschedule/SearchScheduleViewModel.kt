@@ -54,13 +54,13 @@ class SearchScheduleViewModel @Inject constructor(
         searchSchedule()
     }
 
-    fun tryFetchPrev() {
+    fun trySearchPrev() {
         viewModelScope.launch {
             searchPrevEvent.emit(Unit)
         }
     }
 
-    fun tryFetchNext() {
+    fun trySearchNext() {
         viewModelScope.launch {
             searchNextEvent.emit(Unit)
         }

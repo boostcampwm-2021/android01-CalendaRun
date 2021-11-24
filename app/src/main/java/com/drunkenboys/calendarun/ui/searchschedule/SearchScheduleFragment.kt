@@ -45,10 +45,10 @@ class SearchScheduleFragment : BaseFragment<FragmentSearchScheduleBinding>(R.lay
                 super.onScrolled(recyclerView, dx, dy)
 
                 if (!recyclerView.canScrollVertically(-1)) {
-                    searchScheduleViewModel.tryFetchPrev()
+                    searchScheduleViewModel.trySearchPrev()
                 }
                 if (!recyclerView.canScrollVertically(1)) {
-                    searchScheduleViewModel.tryFetchNext()
+                    searchScheduleViewModel.trySearchNext()
                 }
             }
         })
