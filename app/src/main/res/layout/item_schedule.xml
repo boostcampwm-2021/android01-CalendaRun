@@ -7,14 +7,15 @@
 
         <variable
             name="item"
-            type="com.drunkenboys.calendarun.ui.searchschedule.model.DateScheduleItem" />
+            type="com.drunkenboys.calendarun.ui.searchschedule.model.ScheduleItem" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:onClick="@{() -> item.onClick.invoke()}">
+        android:onClick="@{() -> item.onClick.invoke()}"
+        android:paddingHorizontal="16dp"
+        android:paddingBottom="16dp">
 
         <View
             android:id="@+id/view_dateSchedule_tagColor"
@@ -45,7 +46,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="@{item.duration}"
+            android:text="@{item.toString()}"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/tv_dateSchedule_name"

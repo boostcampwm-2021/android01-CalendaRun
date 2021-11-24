@@ -3,16 +3,38 @@ package com.drunkenboys.calendarun.ui.searchschedule.model
 import androidx.recyclerview.widget.DiffUtil
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import com.drunkenboys.calendarun.util.amPm
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-data class DateScheduleItem(val schedule: Schedule, val onClick: () -> Unit) {
+sealed class DateScheduleItem {
 
-    val duration: String = run {
+    companion object {
+
+        val diffUtil by lazy {
+            object : DiffUtil.ItemCallback<DateScheduleItem>() {
+
+                override fun areItemsTheSame(oldItem: DateScheduleItem, newItem: DateScheduleItem) =
+                    oldItem.hashCode() == newItem.hashCode()
+
+                override fun areContentsTheSame(oldItem: DateScheduleItem, newItem: DateScheduleItem) = oldItem == newItem
+            }
+        }
+    }
+}
+
+data class DateItem(val date: LocalDate) : DateScheduleItem() {
+
+    override fun toString(): String = date.format(DateTimeFormatter.ofPattern("M월 d일"))
+}
+
+data class ScheduleItem(val schedule: Schedule, val onClick: () -> Unit) : DateScheduleItem() {
+
+    override fun toString(): String {
         val startDateFormat = DateTimeFormatter.ofPattern("${schedule.startDate.amPm} hh:mm")
         val endDateFormat = getEndDateFormat(schedule.startDate, schedule.endDate)
 
-        "${schedule.startDate.format(startDateFormat)} ~ ${schedule.endDate.format(endDateFormat)}"
+        return "${schedule.startDate.format(startDateFormat)} ~ ${schedule.endDate.format(endDateFormat)}"
     }
 
     private fun getEndDateFormat(startDate: LocalDateTime, endDate: LocalDateTime): DateTimeFormatter {
@@ -27,11 +49,11 @@ data class DateScheduleItem(val schedule: Schedule, val onClick: () -> Unit) {
     companion object {
 
         val diffUtil by lazy {
-            object : DiffUtil.ItemCallback<DateScheduleItem>() {
-                override fun areItemsTheSame(oldItem: DateScheduleItem, newItem: DateScheduleItem) =
+            object : DiffUtil.ItemCallback<ScheduleItem>() {
+                override fun areItemsTheSame(oldItem: ScheduleItem, newItem: ScheduleItem) =
                     oldItem.schedule.id == newItem.schedule.id
 
-                override fun areContentsTheSame(oldItem: DateScheduleItem, newItem: DateScheduleItem) = oldItem == newItem
+                override fun areContentsTheSame(oldItem: ScheduleItem, newItem: ScheduleItem) = oldItem == newItem
             }
         }
     }
