@@ -31,4 +31,8 @@ class CheckPointLocalDataSourceImpl @Inject constructor(
     override suspend fun updateCheckPoint(checkPoint: CheckPoint) {
         checkPointDao.updateCheckPoint(checkPoint)
     }
+
+    override suspend fun deleteCheckPointList(calendarId: Long) {
+        checkPointDao.deleteCheckPointList(calendarId)
+    }
 }
