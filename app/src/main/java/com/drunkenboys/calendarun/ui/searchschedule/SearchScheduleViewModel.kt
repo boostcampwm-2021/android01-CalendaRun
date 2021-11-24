@@ -3,10 +3,12 @@ package com.drunkenboys.calendarun.ui.searchschedule
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
+import com.drunkenboys.calendarun.data.schedule.local.ScheduleDao
 import com.drunkenboys.calendarun.data.schedule.local.ScheduleLocalDataSource
 import com.drunkenboys.calendarun.ui.searchschedule.model.DateItem
 import com.drunkenboys.calendarun.ui.searchschedule.model.DateScheduleItem
 import com.drunkenboys.calendarun.ui.searchschedule.model.ScheduleItem
+import com.drunkenboys.calendarun.util.defaultZoneOffset
 import com.drunkenboys.calendarun.util.extensions.throttleFirst
 import com.drunkenboys.calendarun.util.seconds
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,6 +17,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 @HiltViewModel
@@ -40,11 +43,11 @@ class SearchScheduleViewModel @Inject constructor(
 
     private var debounceJob: Job = Job()
 
-    private var prevKey: LocalDate?
-    private var nextKey: LocalDate?
+    private var prevKey: LocalDateTime?
+    private var nextKey: LocalDateTime?
 
     init {
-        val today = LocalDate.now()
+        val today = LocalDateTime.now()
         prevKey = today
         nextKey = today
         collectSearchEvent()
@@ -67,51 +70,62 @@ class SearchScheduleViewModel @Inject constructor(
         viewModelScope.launch {
             launch {
                 searchPrevEvent.throttleFirst(600)
-                    .collect { searchSchedule(action = SearchAction.PREV) }
+                    .collect { prevKey?.let { searchPrev(it) } }
             }
             launch {
                 searchNextEvent.throttleFirst(600)
-                    .collect { searchSchedule(action = SearchAction.NEXT) }
+                    .collect { nextKey?.let { searchNext(it) } }
             }
         }
     }
 
-    fun searchSchedule(word: String = "", action: SearchAction = SearchAction.NEXT) {
+    fun searchSchedule(word: String = this.word.value) {
         debounceJob.cancel()
         debounceJob = viewModelScope.launch {
             _isSearching.value = true
             delay(DEBOUNCE_DURATION)
 
-            if (action == SearchAction.PREV) {
-                prevKey?.let { key ->
-                    val newList = scheduleDataSource.fetchMatchedScheduleBefore(word, key.seconds)
-                    if (newList.size == 1) {
-                        prevKey = null
-                        return@let
-                    }
-                    scheduleList = newList + scheduleList.take(30)
-                    prevKey = scheduleList.firstOrNull()?.startDate?.toLocalDate()
-                    nextKey = scheduleList.lastOrNull()?.startDate?.toLocalDate()
-                }
-            } else if (action == SearchAction.NEXT) {
-                nextKey?.let { key ->
-                    val newList = scheduleDataSource.fetchMatchedScheduleAfter(word, key.seconds)
-                    if (newList.size == 1) {
-                        nextKey = null
-                        return@let
-                    }
-                    scheduleList = scheduleList.takeLast(30) + newList
-                    prevKey = scheduleList.firstOrNull()?.startDate?.toLocalDate()
-                    nextKey = scheduleList.lastOrNull()?.startDate?.toLocalDate()
-                }
-            }
+            val today = LocalDate.now()
 
-            _listItem.value = scheduleList.map { schedule -> ScheduleItem(schedule) { emitScheduleClickEvent(schedule) } }
-                .groupBy { scheduleItem -> scheduleItem.schedule.startDate.toLocalDate() }
-                .flatMap { (localDate, scheduleList) -> listOf(DateItem(localDate)) + scheduleList }
+            scheduleList = scheduleDataSource.fetchMatchedScheduleAfter(word, today.seconds - 1)
+            prevKey = if (scheduleList.isEmpty()) LocalDateTime.now() else scheduleList.firstOrNull()?.startDate
+            nextKey = scheduleList.lastOrNull()?.startDate
+            updateListItem()
 
             _isSearching.value = false
         }
+    }
+
+    private suspend fun searchPrev(key: LocalDateTime) {
+        val newList = scheduleDataSource.fetchMatchedScheduleBefore(word.value, key.toEpochSecond(defaultZoneOffset))
+        if (newList.isEmpty()) {
+            prevKey = null
+        } else {
+            scheduleList = newList + scheduleList.take(ScheduleDao.SCHEDULE_PAGING_SIZE)
+            prevKey = scheduleList.firstOrNull()?.startDate
+            nextKey = scheduleList.lastOrNull()?.startDate
+
+            updateListItem()
+        }
+    }
+
+    private suspend fun searchNext(key: LocalDateTime) {
+        val newList = scheduleDataSource.fetchMatchedScheduleAfter(word.value, key.toEpochSecond(defaultZoneOffset))
+        if (newList.isEmpty()) {
+            nextKey = null
+        } else {
+            scheduleList = scheduleList.takeLast(ScheduleDao.SCHEDULE_PAGING_SIZE) + newList
+            prevKey = scheduleList.firstOrNull()?.startDate
+            nextKey = scheduleList.lastOrNull()?.startDate
+
+            updateListItem()
+        }
+    }
+
+    private fun updateListItem() {
+        _listItem.value = scheduleList.map { schedule -> ScheduleItem(schedule) { emitScheduleClickEvent(schedule) } }
+            .groupBy { scheduleItem -> scheduleItem.schedule.startDate.toLocalDate() }
+            .flatMap { (localDate, scheduleList) -> listOf(DateItem(localDate)) + scheduleList }
     }
 
     private fun emitScheduleClickEvent(schedule: Schedule) {
@@ -124,8 +138,4 @@ class SearchScheduleViewModel @Inject constructor(
 
         private const val DEBOUNCE_DURATION = 500L
     }
-}
-
-enum class SearchAction {
-    PREV, NEXT
 }
