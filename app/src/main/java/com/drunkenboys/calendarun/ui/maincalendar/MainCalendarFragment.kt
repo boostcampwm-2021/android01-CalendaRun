@@ -44,7 +44,6 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
             launch { collectCalendarDesignObject() }
             launch { collectLicenseClickEvent() }
         }
-        mainCalendarViewModel.fetchCalendar()
         mainCalendarViewModel.fetchCalendarList()
     }
 
@@ -67,8 +66,9 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
                 .setIcon(R.drawable.ic_favorite_24)
                 .setCheckable(true)
                 .setOnMenuItemClickListener {
-                    mainCalendarViewModel.setSelectedCalendarIndex(index)
-                    mainCalendarViewModel.setCalendar(calendar)
+//                    mainCalendarViewModel.setSelectedCalendarIndex(index)
+//                    mainCalendarViewModel.setCalendar(calendar)
+                    mainCalendarViewModel.setCalendarId(calendar.id)
                     binding.layoutDrawer.closeDrawer(GravityCompat.START)
                     LoadingDialog().show(childFragmentManager, this::class.simpleName)
                     true
@@ -214,8 +214,7 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         mainCalendarViewModel.daySecondClickEvent
             .throttleFirst(DEFAULT_TOUCH_THROTTLE_PERIOD)
             .collect { date ->
-                val calendarId = mainCalendarViewModel.calendar.value?.id ?: throw IllegalStateException("calendarId is null")
-                val action = MainCalendarFragmentDirections.toDayScheduleDialog(calendarId, date.toString())
+                val action = MainCalendarFragmentDirections.toDayScheduleDialog(mainCalendarViewModel.calendarId.value, date.toString())
                 navController.navigateSafe(action)
             }
     }
