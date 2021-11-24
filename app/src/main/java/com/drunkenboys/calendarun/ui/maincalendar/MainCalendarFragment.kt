@@ -30,7 +30,6 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
 
         setupDataBinding()
         setupToolbar()
-        setupMonthCalendar()
 
         launchAndRepeatWithViewLifecycle {
             launch { collectScheduleList() }
@@ -177,17 +176,6 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
     private fun navigateToSearchSchedule() {
         val action = MainCalendarFragmentDirections.toSearchSchedule()
         navController.navigate(action)
-    }
-
-    private fun setupMonthCalendar() {
-        // TODO: 2021-11-16 이벤트를 발행하는 부분을 xml로 이동시킬 수 있으면 좋을듯
-        binding.calendarMonth.setOnDaySecondClickListener { date, _ ->
-            mainCalendarViewModel.emitDaySecondClickEvent(date)
-        }
-
-        binding.calendarYear.setOnDaySecondClickListener { date, _ ->
-            mainCalendarViewModel.emitDaySecondClickEvent(date)
-        }
     }
 
     private suspend fun collectFabClickEvent() {
