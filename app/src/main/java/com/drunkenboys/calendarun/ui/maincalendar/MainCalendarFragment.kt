@@ -34,9 +34,9 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
 
         launchAndRepeatWithViewLifecycle {
             launch { collectCalendarId() }
-            launch { collectScheduleList() }
-            launch { collectCalendarSet() }
             launch { collectCalendarList() }
+            launch { collectCalendarSet() }
+            launch { collectScheduleList() }
             launch { collectFabClickEvent() }
             launch { collectDaySecondClickListener() }
             launch { collectCalendarDesignObject() }
@@ -49,6 +49,42 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         val drawerHeaderBinding = DrawerHeaderBinding.bind(binding.navView.getHeaderView(FIRST_HEADER))
         drawerHeaderBinding.viewModel = mainCalendarViewModel
         drawerHeaderBinding.lifecycleOwner = viewLifecycleOwner
+    }
+
+    private fun setupToolbar() {
+        binding.toolbarMainCalendar.setupWithNavController(navController, binding.layoutDrawer)
+        setupOnMenuItemClickListener()
+    }
+
+    private fun setupOnMenuItemClickListener() {
+        binding.toolbarMainCalendar.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.menu_main_calendar_calendar -> mainCalendarViewModel.toggleCalendar()
+                R.id.menu_main_calendar_search -> navigateToSearchSchedule()
+                else -> return@setOnMenuItemClickListener false
+            }
+            true
+        }
+    }
+
+    private fun navigateToSearchSchedule() {
+        val action = MainCalendarFragmentDirections.toSearchSchedule()
+        navController.navigate(action)
+    }
+
+    private suspend fun collectCalendarId() {
+        mainCalendarViewModel.calendarId.collect { calendarId ->
+            val pref = requireContext().getSharedPreferences(MainActivity.CALENDAR_ID_PREF, Context.MODE_PRIVATE)
+            pref.edit()
+                .putLong(KEY_CALENDAR_ID, calendarId)
+                .apply()
+        }
+    }
+
+    private suspend fun collectCalendarList() {
+        mainCalendarViewModel.calendarList.collect { calendarList ->
+            setupNavigationView(calendarList)
+        }
     }
 
     private fun setupNavigationView(calendarList: List<Calendar>) {
@@ -103,22 +139,6 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         navController.navigate(action)
     }
 
-    private suspend fun collectCalendarId() {
-        mainCalendarViewModel.calendarId.collect { calendarId ->
-            val pref = requireContext().getSharedPreferences(MainActivity.CALENDAR_ID_PREF, Context.MODE_PRIVATE)
-            pref.edit()
-                .putLong(KEY_CALENDAR_ID, calendarId)
-                .apply()
-        }
-    }
-
-    private suspend fun collectScheduleList() {
-        mainCalendarViewModel.scheduleList.collect { scheduleList ->
-            binding.calendarMonth.setSchedules(scheduleList)
-            binding.calendarYear.setSchedules(scheduleList)
-        }
-    }
-
     private suspend fun collectCalendarSet() {
         mainCalendarViewModel.calendarSetList.collect { calendarSetList ->
             if (calendarSetList.isEmpty()) {
@@ -131,31 +151,11 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         }
     }
 
-    private suspend fun collectCalendarList() {
-        mainCalendarViewModel.calendarList.collect { calendarList ->
-            setupNavigationView(calendarList)
+    private suspend fun collectScheduleList() {
+        mainCalendarViewModel.scheduleList.collect { scheduleList ->
+            binding.calendarMonth.setSchedules(scheduleList)
+            binding.calendarYear.setSchedules(scheduleList)
         }
-    }
-
-    private fun setupToolbar() {
-        binding.toolbarMainCalendar.setupWithNavController(navController, binding.layoutDrawer)
-        setupOnMenuItemClickListener()
-    }
-
-    private fun setupOnMenuItemClickListener() {
-        binding.toolbarMainCalendar.setOnMenuItemClickListener { item ->
-            when (item.itemId) {
-                R.id.menu_main_calendar_calendar -> mainCalendarViewModel.toggleCalendar()
-                R.id.menu_main_calendar_search -> navigateToSearchSchedule()
-                else -> return@setOnMenuItemClickListener false
-            }
-            true
-        }
-    }
-
-    private fun navigateToSearchSchedule() {
-        val action = MainCalendarFragmentDirections.toSearchSchedule()
-        navController.navigate(action)
     }
 
     private suspend fun collectFabClickEvent() {
