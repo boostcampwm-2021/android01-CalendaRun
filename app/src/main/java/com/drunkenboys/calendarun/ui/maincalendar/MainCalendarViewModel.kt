@@ -42,22 +42,19 @@ class MainCalendarViewModel @Inject constructor(
     val calendarList = calendarLocalDataSource.fetchAllCalendar()
         .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    val scheduleList: StateFlow<List<CalendarScheduleObject>> = calendarId.flatMapLatest { calendarId ->
+    val scheduleList = calendarId.flatMapLatest { calendarId ->
         scheduleLocalDataSource.fetchCalendarSchedules(calendarId)
             .map { scheduleList ->
                 scheduleList.map { schedule -> schedule.mapToCalendarScheduleObject() }
             }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    val calendarSetList: StateFlow<List<CalendarSet>> = calendarId.flatMapLatest { calendarId ->
+    val calendarSetList = calendarId.flatMapLatest { calendarId ->
         checkPointLocalDataSource.fetchCalendarCheckPoints(calendarId)
             .map { checkPointList ->
                 checkPointList.map { checkPoint -> checkPoint.toCalendarSet() }
             }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
-
-    private val _selectedCalendarIndex = MutableStateFlow(0)
-    val selectCalendarIndex: StateFlow<Int> = _selectedCalendarIndex
 
     private val _isMonthCalendar = MutableStateFlow(true)
     val isMonthCalendar: StateFlow<Boolean> = _isMonthCalendar
@@ -101,12 +98,6 @@ class MainCalendarViewModel @Inject constructor(
         startDate = startDate,
         endDate = endDate
     )
-
-    fun setSelectedCalendarIndex(index: Int) {
-        viewModelScope.launch {
-            _selectedCalendarIndex.emit(index)
-        }
-    }
 
     fun emitLicenseClickEvent() {
         viewModelScope.launch {
