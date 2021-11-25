@@ -74,7 +74,7 @@ class MainCalendarViewModel @Inject constructor(
 
     fun setCalendar(calendar: Calendar) {
         viewModelScope.launch {
-            createCalendarSetList(calendar.id, fetchCheckPointList(calendar.id))
+//            createCalendarSetList(calendar.id, fetchCheckPointList(calendar.id))
         }
     }
 
