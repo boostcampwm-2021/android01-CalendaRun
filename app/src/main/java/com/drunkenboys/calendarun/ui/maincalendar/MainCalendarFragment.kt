@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.viewModels
+import androidx.navigation.navGraphViewModels
 import androidx.navigation.ui.setupWithNavController
 import com.drunkenboys.calendarun.KEY_CALENDAR_ID
 import com.drunkenboys.calendarun.MainActivity
@@ -24,7 +24,8 @@ import kotlinx.coroutines.launch
 @ExperimentalCoroutinesApi
 class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.fragment_main_calendar) {
 
-    private val mainCalendarViewModel by viewModels<MainCalendarViewModel>()
+    private val mainCalendarViewModel
+            by navGraphViewModels<MainCalendarViewModel>(R.id.mainCalendarFragment) { defaultViewModelProviderFactory }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

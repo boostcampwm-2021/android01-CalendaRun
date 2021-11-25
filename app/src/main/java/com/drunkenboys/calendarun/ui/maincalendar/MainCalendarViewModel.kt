@@ -22,7 +22,6 @@ import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
-@ExperimentalCoroutinesApi
 class MainCalendarViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val calendarLocalDataSource: CalendarLocalDataSource,
@@ -42,6 +41,7 @@ class MainCalendarViewModel @Inject constructor(
     val calendarList = calendarLocalDataSource.fetchAllCalendar()
         .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
+    @ExperimentalCoroutinesApi
     val calendarSetList = calendarId.flatMapLatest { calendarId ->
         checkPointLocalDataSource.fetchCalendarCheckPoints(calendarId)
             .map { checkPointList ->
@@ -49,6 +49,7 @@ class MainCalendarViewModel @Inject constructor(
             }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
+    @ExperimentalCoroutinesApi
     val scheduleList = calendarId.flatMapLatest { calendarId ->
         scheduleLocalDataSource.fetchCalendarSchedules(calendarId)
             .map { scheduleList ->
