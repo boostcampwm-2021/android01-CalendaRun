@@ -145,16 +145,15 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
 
             val scheduleListContainer = arrayOfNulls<TextView>(SCHEDULE_CONTAINER_SIZE)
             filteredScheduleList.forEach {
-                val isFirstShowSchedule = item.date == it.startDate.toLocalDate() || item.dayType == DayType.SUNDAY
                 val paddingKey = "${adapterPosition / CALENDAR_COLUMN_SIZE}:${it.id}"
                 val paddingLineIndex = lineIndex[paddingKey]
 
                 if (paddingLineIndex != null) {
-                    scheduleListContainer[paddingLineIndex] = mappingScheduleTextView(it, isFirstShowSchedule)
+                    scheduleListContainer[paddingLineIndex] = mappingScheduleTextView(it, false)
                 } else {
                     for (i in scheduleListContainer.indices) {
                         if (scheduleListContainer[i] == null) {
-                            scheduleListContainer[i] = mappingScheduleTextView(it, isFirstShowSchedule)
+                            scheduleListContainer[i] = mappingScheduleTextView(it, true)
                             lineIndex[paddingKey] = i
                             break
                         }
@@ -166,20 +165,22 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
         }
 
         private fun mappingScheduleTextView(it: CalendarScheduleObject, isFirstShowSchedule: Boolean): TextView {
-            val textView = makeDefaultScheduleTextView()
+            val startMargin = if (isFirstShowSchedule) 2f else 0f
+            val textView = makeDefaultScheduleTextView(startMargin)
+            textView.layoutParams
             textView.text = if (isFirstShowSchedule) it.text else ""
             textView.setTextColor(Color.WHITE)
             textView.setBackgroundColor(it.color)
             return textView
         }
 
-        private fun makeDefaultScheduleTextView(): TextView {
+        private fun makeDefaultScheduleTextView(startMargin: Float = 0f): TextView {
             val textView = TextView(itemView.context)
             val layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
             )
-            layoutParams.setMargins(0, 0, 0, context().dp2px(2.0f).toInt())
+            layoutParams.setMargins(context().dp2px(startMargin).toInt(), 0, 0, context().dp2px(2.0f).toInt())
             textView.includeFontPadding = false
             textView.isSingleLine = true
             textView.layoutParams = layoutParams
