@@ -10,6 +10,7 @@ import com.drunkenboys.calendarun.data.checkpoint.entity.CheckPoint
 import com.drunkenboys.calendarun.data.checkpoint.local.CheckPointLocalDataSource
 import com.drunkenboys.calendarun.ui.savecalendar.model.CheckPointItem
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -73,8 +74,8 @@ class SaveCalendarViewModel @Inject constructor(
             newList.add(CheckPointItem())
             _checkPointItemList.emit(newList.toList())
         }
-    }    
-    
+    }
+
     private fun deleteCheckPointList(calendarId: Long) {
         viewModelScope.launch {
             checkPointLocalDataSource.deleteCheckPointList(calendarId)
@@ -87,7 +88,7 @@ class SaveCalendarViewModel @Inject constructor(
             _checkPointItemList.emit(newCheckPointItemList.toMutableList())
         }
     }
-    
+
     private fun setUseDefaultCalendar() {
         viewModelScope.launch {
             useDefaultCalendar.emit(checkPointItemList.value.isEmpty())
@@ -100,8 +101,7 @@ class SaveCalendarViewModel @Inject constructor(
         }
     }
 
-
-    private fun saveCalendarInfo(): Boolean {
+    private suspend fun saveCalendarInfo(): Boolean {
         val useDefaultCalendar = useDefaultCalendar.value
         val calendarName = calendarName.value
         val checkPointList = _checkPointItemList.value
@@ -169,9 +169,15 @@ class SaveCalendarViewModel @Inject constructor(
         return true
     }
 
-    private fun saveCalendar(id: Long, name: String, startDate: LocalDate = LocalDate.now(), endDate: LocalDate = LocalDate.now()): Long {
+    private suspend fun saveCalendar(
+        id: Long,
+        name: String,
+        startDate: LocalDate = LocalDate.now(),
+        endDate: LocalDate = LocalDate.now()
+    ): Long {
         var calendarId = id
-        viewModelScope.launch {
+
+        calendarId = withContext(viewModelScope.coroutineContext) {
             val newCalendar = Calendar(
                 id = id,
                 name = name,
@@ -184,10 +190,11 @@ class SaveCalendarViewModel @Inject constructor(
             } else {
                 calendarId = calendarLocalDataSource.insertCalendar(newCalendar)
             }
+            calendarId
         }
+
         return calendarId
     }
-
 
     private fun saveCheckPoint(item: CheckPointItem, newCalendarId: Long) {
         val newCheckPoint = CheckPoint(
@@ -206,7 +213,7 @@ class SaveCalendarViewModel @Inject constructor(
             }
         }
     }
-    
+
     private fun emitBlankSliceNameEvent(item: CheckPointItem) {
         viewModelScope.launch {
             item.isNameBlank.emit(Unit)
