@@ -3,9 +3,6 @@ package com.drunkenboys.calendarun.ui.maincalendar
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import androidx.core.view.get
-import androidx.core.view.isEmpty
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.viewModels
 import androidx.navigation.ui.setupWithNavController
 import com.drunkenboys.calendarun.R
@@ -33,6 +30,7 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         setupToolbar()
 
         launchAndRepeatWithViewLifecycle {
+            launch { collectCalendarId() }
             launch { collectScheduleList() }
             launch { collectCalendarSet() }
             launch { collectCalendarList() }
@@ -58,19 +56,19 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
     private fun addCalendarMenu(calendarList: List<Calendar>) {
         val menu = binding.navView.menu
         menu.clear()
-        calendarList.forEachIndexed { index, calendar ->
-            menu.add(calendar.name)
+        calendarList.forEach { calendar ->
+            menu.add(0, calendar.id.toInt(), 0, calendar.name)
                 .setIcon(R.drawable.ic_favorite_24)
                 .setCheckable(true)
                 .setOnMenuItemClickListener {
-//                    mainCalendarViewModel.setSelectedCalendarIndex(index)
-//                    mainCalendarViewModel.setCalendar(calendar)
                     mainCalendarViewModel.setCalendarId(calendar.id)
                     binding.layoutDrawer.close()
                     LoadingDialog().show(childFragmentManager, this::class.simpleName)
                     true
                 }
         }
+        val currentCalendarId = mainCalendarViewModel.calendarId.value
+        binding.navView.menu.findItem(currentCalendarId.toInt()).isChecked = true
     }
 
     private fun inflateDrawerMenu() {
@@ -102,6 +100,12 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         navController.navigate(action)
     }
 
+    private suspend fun collectCalendarId() {
+        mainCalendarViewModel.calendarId.collect { calendarId ->
+            binding.navView.setCheckedItem(calendarId.toInt())
+        }
+    }
+
     private suspend fun collectScheduleList() {
         mainCalendarViewModel.scheduleList.collect { scheduleList ->
             binding.calendarMonth.setSchedules(scheduleList)
@@ -130,21 +134,6 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
     private fun setupToolbar() {
         binding.toolbarMainCalendar.setupWithNavController(navController, binding.layoutDrawer)
         setupOnMenuItemClickListener()
-//        setupAddDrawerListener()
-    }
-
-    private fun setupAddDrawerListener() = with(binding) {
-        layoutDrawer.addDrawerListener(object : DrawerLayout.DrawerListener {
-            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
-                val index = this@MainCalendarFragment.mainCalendarViewModel.selectCalendarIndex.value
-                if (binding.navView.menu.isEmpty()) return
-                binding.navView.menu[index].isChecked = true
-            }
-
-            override fun onDrawerOpened(drawerView: View) {}
-            override fun onDrawerClosed(drawerView: View) {}
-            override fun onDrawerStateChanged(newState: Int) {}
-        })
     }
 
     private fun setupOnMenuItemClickListener() {

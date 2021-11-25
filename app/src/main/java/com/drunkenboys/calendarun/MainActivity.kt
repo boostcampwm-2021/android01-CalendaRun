@@ -34,7 +34,9 @@ class MainActivity : BaseViewActivity<ActivityMainBinding>(ActivityMainBinding::
         super.onCreate(savedInstanceState)
         mDetector = GestureDetectorCompat(this, SingleTapListener())
 
-        setupNavHostFragment()
+        if (savedInstanceState == null) {
+            setupNavHostFragment()
+        }
     }
 
     private fun setupNavHostFragment() {
