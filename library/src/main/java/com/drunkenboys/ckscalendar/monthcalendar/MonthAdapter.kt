@@ -143,27 +143,28 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
                         item.date <= it.endDate.toLocalDate()
             }
 
-            val scheduleListContainer = arrayOfNulls<TextView>(SCHEDULE_CONTAINER_SIZE)
-            filteredScheduleList.forEach {
-                val paddingKey = "${adapterPosition / CALENDAR_COLUMN_SIZE}:${it.id}"
-                val paddingLineIndex = lineIndex[paddingKey]?.savedLineIndex
-                val lastSelectedPosition = lineIndex[paddingKey]?.lastSelectedPosition
-                val isFirstShowSchedule = item.date == it.startDate.toLocalDate() ||
-                        item.dayType == DayType.SUNDAY ||
-                        adapterPosition == lastSelectedPosition
+            val scheduleListContainer = arrayOfNulls<TextView>(calendarDesign.visibleScheduleCount)
+            filteredScheduleList.take(calendarDesign.visibleScheduleCount)
+                .forEach {
+                    val paddingKey = "${adapterPosition / CALENDAR_COLUMN_SIZE}:${it.id}"
+                    val paddingLineIndex = lineIndex[paddingKey]?.savedLineIndex
+                    val lastSelectedPosition = lineIndex[paddingKey]?.lastSelectedPosition
+                    val isFirstShowSchedule = item.date == it.startDate.toLocalDate() ||
+                            item.dayType == DayType.SUNDAY ||
+                            adapterPosition == lastSelectedPosition
 
-                if (paddingLineIndex != null) {
-                    scheduleListContainer[paddingLineIndex] = mappingScheduleTextView(it, isFirstShowSchedule)
-                } else {
-                    for (i in scheduleListContainer.indices) {
-                        if (scheduleListContainer[i] == null) {
-                            scheduleListContainer[i] = mappingScheduleTextView(it, true)
-                            lineIndex[paddingKey] = MonthCellPositionStore(i, adapterPosition)
-                            break
+                    if (paddingLineIndex != null) {
+                        scheduleListContainer[paddingLineIndex] = mappingScheduleTextView(it, isFirstShowSchedule)
+                    } else {
+                        for (i in scheduleListContainer.indices) {
+                            if (scheduleListContainer[i] == null) {
+                                scheduleListContainer[i] = mappingScheduleTextView(it, true)
+                                lineIndex[paddingKey] = MonthCellPositionStore(i, adapterPosition)
+                                break
+                            }
                         }
                     }
                 }
-            }
             // 보여줄 갯수만 뽑아서 반환 SCHEDULE_CONTAINER_SIZE 보다 크면 안됨
             return scheduleListContainer.sliceArray(0 until calendarDesign.visibleScheduleCount)
         }
@@ -221,18 +222,8 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
 
     companion object {
 
-        private val diffUtil = object : DiffUtil.ItemCallback<CalendarDate>() {
-
-            override fun areItemsTheSame(oldItem: CalendarDate, newItem: CalendarDate) = oldItem.date == newItem.date
-
-            override fun areContentsTheSame(oldItem: CalendarDate, newItem: CalendarDate) = oldItem == newItem
-        }
-
         private const val CALENDAR_COLUMN_SIZE = 7
 
         private const val SCHEDULE_HEIGHT_DIVIDE_RATIO = 10
-
-        //TODO : 10개넘어가는 일정이 있으면 오류 가능성 있음
-        private const val SCHEDULE_CONTAINER_SIZE = 10
     }
 }
