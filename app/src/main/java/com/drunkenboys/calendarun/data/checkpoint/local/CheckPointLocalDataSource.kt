@@ -12,4 +12,7 @@ interface CheckPointLocalDataSource {
 
     suspend fun fetchCalendarCheckPoints(calendarId: Long): List<CheckPoint>
 
+    suspend fun updateCheckPoint(checkPoint: CheckPoint)
+
+    suspend fun deleteCheckPointList(calendarId: Long)
 }

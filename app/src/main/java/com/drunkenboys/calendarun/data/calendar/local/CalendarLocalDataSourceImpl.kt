@@ -30,4 +30,8 @@ class CalendarLocalDataSourceImpl @Inject constructor(
     override suspend fun deleteCalendar(calendar: Calendar) {
         calendarDao.deleteCalendar(calendar)
     }
+
+    override suspend fun updateCalendar(calendar: Calendar) {
+        calendarDao.updateCalendar(calendar)
+    }
 }

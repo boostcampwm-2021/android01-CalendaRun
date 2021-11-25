@@ -65,7 +65,7 @@ class SaveCalendarViewModel @Inject constructor(
 
     fun emitSaveCalendar() {
         viewModelScope.launch {
-            _saveCalendarEvent.emit(saveCalendar())
+            _saveCalendarEvent.emit(saveCalendarInfo())
         }
     }
 
@@ -76,12 +76,24 @@ class SaveCalendarViewModel @Inject constructor(
             newList.add(CheckPointItem())
             _checkPointItemList.emit(newList.toList())
         }
+    }    
+    
+    private fun deleteCheckPointList(calendarId: Long) {
+        viewModelScope.launch {
+            checkPointLocalDataSource.deleteCheckPointList(calendarId)
+        }
     }
 
     fun deleteCheckPointItem(currentCheckPointItemList: List<CheckPointItem>) {
         viewModelScope.launch {
             val newCheckPointItemList = currentCheckPointItemList.filter { checkPointItem -> !checkPointItem.check }
             _checkPointItemList.emit(newCheckPointItemList.toMutableList())
+        }
+    }
+    
+    private fun setUseDefaultCalendar() {
+        viewModelScope.launch {
+            useDefaultCalendar.emit(checkPointItemList.value.isEmpty())
         }
     }
 
@@ -91,44 +103,31 @@ class SaveCalendarViewModel @Inject constructor(
         }
     }
 
-    private fun setUseDefaultCalendar() {
-        viewModelScope.launch {
-            useDefaultCalendar.emit(checkPointItemList.value.isEmpty())
-        }
-    }
 
-    private fun saveCalendar(): Boolean {
+    private fun saveCalendarInfo(): Boolean {
         val useDefaultCalendar = useDefaultCalendar.value
         val calendarName = calendarName.value
+        val checkPointList = _checkPointItemList.value
         var canSave = true
 
-        if (calendarName.isEmpty()) {
+        if (calendarName.isBlank()) {
             emitBlankTitleEvent()
             canSave = false
         }
 
         if (useDefaultCalendar && canSave) {
-            viewModelScope.launch {
-                calendarLocalDataSource.insertCalendar(
-                    Calendar(
-                        id = calendarId,
-                        name = calendarName,
-                        startDate = LocalDate.now(),
-                        endDate = LocalDate.now()
-                    )
-                )
-            }
+            saveCalendar(calendarId, calendarName)
+            deleteCheckPointList(calendarId)
             return true
         }
 
-        val checkPointList = _checkPointItemList.value
         var calendarStartDate = checkPointList.getOrNull(0)?.startDate?.value ?: LocalDate.now()
         var calendarEndDate = checkPointList.getOrNull(0)?.endDate?.value ?: LocalDate.now()
 
         checkPointList.forEach { item ->
             val name = item.name.value
-            val startDate = item.startDate.value
-            val endDate = item.endDate.value
+            var startDate = item.startDate.value
+            var endDate = item.endDate.value
 
             if (name.isBlank()) {
                 emitBlankSliceNameEvent(item)
@@ -143,7 +142,11 @@ class SaveCalendarViewModel @Inject constructor(
                 canSave = false
             }
 
-            if (!isValidateCheckPointDate(startDate, endDate)) return false
+            if (!isValidateCheckPointDate(startDate, endDate)) {
+                emitBlankSliceStartDateEvent(item)
+                emitBlankSliceEndDateEvent(item)
+                canSave = false
+            }
 
             startDate?.let {
                 if (calendarStartDate.isAfter(it)) {
@@ -160,34 +163,53 @@ class SaveCalendarViewModel @Inject constructor(
 
         if (!canSave) return false
 
-        viewModelScope.launch() {
-            val newCalender = Calendar(
-                id = calendarId,
-                name = calendarName,
-                startDate = calendarStartDate,
-                endDate = calendarEndDate
-            )
-            val calendarId = calendarLocalDataSource.insertCalendar(newCalender)
-            checkPointList.forEach { item ->
-                val id = item.id
-                val checkPointName = item.name.value
-                val startDate = item.startDate.value ?: return@launch
-                val endDate = item.endDate.value ?: return@launch
+        val newCalendarId = saveCalendar(calendarId, calendarName, calendarStartDate, calendarEndDate)
 
-                checkPointLocalDataSource.insertCheckPoint(
-                    CheckPoint(
-                        id = id,
-                        calendarId = calendarId,
-                        name = checkPointName,
-                        startDate = startDate,
-                        endDate = endDate
-                    )
-                )
-            }
+        checkPointList.forEach { item ->
+            saveCheckPoint(item, newCalendarId)
         }
+
         return true
     }
 
+    private fun saveCalendar(id: Long, name: String, startDate: LocalDate = LocalDate.now(), endDate: LocalDate = LocalDate.now()): Long {
+        var calendarId = id
+        viewModelScope.launch {
+            val newCalendar = Calendar(
+                id = id,
+                name = name,
+                startDate = startDate,
+                endDate = endDate
+            )
+
+            if (id != 0L) {
+                calendarLocalDataSource.updateCalendar(newCalendar)
+            } else {
+                calendarId = calendarLocalDataSource.insertCalendar(newCalendar)
+            }
+        }
+        return calendarId
+    }
+
+
+    private fun saveCheckPoint(item: CheckPointItem, newCalendarId: Long) {
+        val newCheckPoint = CheckPoint(
+            id = item.id,
+            calendarId = newCalendarId,
+            name = item.name.value,
+            startDate = item.startDate.value ?: return,
+            endDate = item.endDate.value ?: return
+        )
+
+        viewModelScope.launch {
+            if (item.id != 0L) {
+                checkPointLocalDataSource.updateCheckPoint(newCheckPoint)
+            } else {
+                checkPointLocalDataSource.insertCheckPoint(newCheckPoint)
+            }
+        }
+    }
+    
     private fun emitBlankSliceNameEvent(item: CheckPointItem) {
         viewModelScope.launch {
             item.isNameBlank.emit(Unit)
