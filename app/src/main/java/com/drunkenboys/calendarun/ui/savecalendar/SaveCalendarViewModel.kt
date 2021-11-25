@@ -11,10 +11,8 @@ import com.drunkenboys.calendarun.data.checkpoint.local.CheckPointLocalDataSourc
 import com.drunkenboys.calendarun.ui.savecalendar.model.CheckPointItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
 
@@ -47,7 +45,7 @@ class SaveCalendarViewModel @Inject constructor(
             calendarName.emit(calendar.name)
 
             val checkPointItemList = mutableListOf<CheckPointItem>()
-            val checkPointList = checkPointLocalDataSource.fetchCalendarCheckPoints(calendarId)
+            val checkPointList = checkPointLocalDataSource.fetchCalendarCheckPoints(calendarId).firstOrNull() ?: return@launch
             checkPointList.forEach { checkPoint ->
                 checkPointItemList.add(
                     CheckPointItem(
@@ -197,7 +195,6 @@ class SaveCalendarViewModel @Inject constructor(
 
         return calendarId
     }
-
 
     private fun saveCheckPoint(item: CheckPointItem, newCalendarId: Long) {
         val newCheckPoint = CheckPoint(

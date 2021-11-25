@@ -1,6 +1,7 @@
 package com.drunkenboys.calendarun.data.schedule.local
 
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
+import kotlinx.coroutines.flow.Flow
 
 interface ScheduleLocalDataSource {
 
@@ -10,7 +11,7 @@ interface ScheduleLocalDataSource {
 
     suspend fun fetchSchedule(id: Long): Schedule
 
-    suspend fun fetchCalendarSchedules(calendarId: Long): List<Schedule>
+    fun fetchCalendarSchedules(calendarId: Long): Flow<List<Schedule>>
 
     suspend fun updateSchedule(schedule: Schedule)
 
