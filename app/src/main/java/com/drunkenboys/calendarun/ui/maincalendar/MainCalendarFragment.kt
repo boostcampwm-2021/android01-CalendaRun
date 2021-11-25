@@ -16,10 +16,12 @@ import com.drunkenboys.calendarun.ui.base.BaseFragment
 import com.drunkenboys.calendarun.util.extensions.*
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
+@ExperimentalCoroutinesApi
 class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.fragment_main_calendar) {
 
     private val mainCalendarViewModel by viewModels<MainCalendarViewModel>()
@@ -59,7 +61,7 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
                 .setCheckable(true)
                 .setOnMenuItemClickListener {
 //                    mainCalendarViewModel.setSelectedCalendarIndex(index)
-                    mainCalendarViewModel.setCalendar(calendar)
+//                    mainCalendarViewModel.setCalendar(calendar)
                     mainCalendarViewModel.setCalendarId(calendar.id)
                     binding.layoutDrawer.close()
                     LoadingDialog().show(childFragmentManager, this::class.simpleName)

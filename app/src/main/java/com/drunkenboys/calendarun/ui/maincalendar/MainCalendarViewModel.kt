@@ -16,12 +16,14 @@ import com.drunkenboys.calendarun.ui.theme.toCalendarDesignObject
 import com.drunkenboys.ckscalendar.data.CalendarScheduleObject
 import com.drunkenboys.ckscalendar.data.CalendarSet
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
+@ExperimentalCoroutinesApi
 class MainCalendarViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val calendarLocalDataSource: CalendarLocalDataSource,
@@ -41,8 +43,12 @@ class MainCalendarViewModel @Inject constructor(
     val calendarList = calendarLocalDataSource.fetchAllCalendar()
         .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    private val _scheduleList = MutableStateFlow<List<CalendarScheduleObject>>(emptyList())
-    val scheduleList: StateFlow<List<CalendarScheduleObject>> = _scheduleList
+    val scheduleList: StateFlow<List<CalendarScheduleObject>> = calendarId.flatMapLatest { calendarId ->
+        scheduleLocalDataSource.fetchCalendarSchedules(calendarId)
+            .map { scheduleList ->
+                scheduleList.map { schedule -> schedule.mapToCalendarScheduleObject() }
+            }
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     private val _calendarSetList = MutableStateFlow<List<CalendarSet>>(emptyList())
     val calendarSetList: StateFlow<List<CalendarSet>> = _calendarSetList
@@ -66,33 +72,13 @@ class MainCalendarViewModel @Inject constructor(
     private val _licenseClickEvent = MutableSharedFlow<Unit>()
     val licenseClickEvent: SharedFlow<Unit> = _licenseClickEvent
 
-    init {
-        fetchCalendar()
-    }
-
-    fun fetchCalendar() {
-        viewModelScope.launch {
-            val currentCalendar = calendarLocalDataSource.fetchCalendar(calendarId.value)
-            setCalendar(currentCalendar)
-        }
-    }
-
     fun setCalendar(calendar: Calendar) {
         viewModelScope.launch {
             createCalendarSetList(calendar.id, fetchCheckPointList(calendar.id))
-            fetchScheduleList(calendar.id)
         }
     }
 
     private suspend fun fetchCheckPointList(calendarId: Long) = checkPointLocalDataSource.fetchCalendarCheckPoints(calendarId)
-
-    private fun fetchScheduleList(calendarId: Long) {
-        viewModelScope.launch {
-            scheduleLocalDataSource.fetchCalendarSchedules(calendarId)
-                .map { schedule -> schedule.mapToCalendarScheduleObject() }
-                .let { _scheduleList.emit(it) }
-        }
-    }
 
     private fun Schedule.mapToCalendarScheduleObject() = CalendarScheduleObject(
         id = id.toInt(),
