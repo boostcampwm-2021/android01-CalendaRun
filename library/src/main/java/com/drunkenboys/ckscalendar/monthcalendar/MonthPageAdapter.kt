@@ -89,7 +89,7 @@ class MonthPageAdapter : RecyclerView.Adapter<MonthPageAdapter.Holder>() {
         } else {
             list[position]
         }
-        calendarSet!!.let {
+        calendarSet?.let {
             holder.bind(it, onDayClickListener, onDaySecondClickListener)
         }
     }

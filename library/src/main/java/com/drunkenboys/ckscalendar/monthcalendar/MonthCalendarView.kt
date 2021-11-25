@@ -168,21 +168,19 @@ class MonthCalendarView @JvmOverloads constructor(
     }
 
     override fun onSaveInstanceState(): Parcelable? {
-        val parcelable = super.onSaveInstanceState()
-        if (parcelable == null) {
-            return parcelable
-        }
-
+        val parcelable = super.onSaveInstanceState() ?: return null
         return MonthState(parcelable, lastPageName, lastPagePosition)
     }
 
     override fun onRestoreInstanceState(state: Parcelable?) {
-        if (state is MonthState) {
-            super.onRestoreInstanceState(state.superState)
-            lastPagePosition = state.lastPagePosition
-            lastPageName = state.lastPageName
-            hasRestore = true
+        when (state) {
+            is MonthState -> {
+                super.onRestoreInstanceState(state.superState)
+                lastPagePosition = state.lastPagePosition
+                lastPageName = state.lastPageName
+                hasRestore = true
+            }
+            else -> super.onRestoreInstanceState(state)
         }
-        super.onRestoreInstanceState(state)
     }
 }
