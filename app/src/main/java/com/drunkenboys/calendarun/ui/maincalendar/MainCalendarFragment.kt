@@ -45,6 +45,9 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
 
     private fun setupDataBinding() {
         binding.mainCalendarViewModel = mainCalendarViewModel
+        val drawerHeaderBinding = DrawerHeaderBinding.bind(binding.navView.getHeaderView(FIRST_HEADER))
+        drawerHeaderBinding.viewModel = mainCalendarViewModel
+        drawerHeaderBinding.lifecycleOwner = viewLifecycleOwner
     }
 
     private fun setupNavigationView(calendarList: List<Calendar>) {
@@ -127,20 +130,15 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
     private fun setupToolbar() {
         binding.toolbarMainCalendar.setupWithNavController(navController, binding.layoutDrawer)
         setupOnMenuItemClickListener()
-        setupAddDrawerListener()
+//        setupAddDrawerListener()
     }
 
     private fun setupAddDrawerListener() = with(binding) {
-        val drawerHeaderBinding = DrawerHeaderBinding.bind(navView.getHeaderView(FIRST_HEADER))
         layoutDrawer.addDrawerListener(object : DrawerLayout.DrawerListener {
             override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
                 val index = this@MainCalendarFragment.mainCalendarViewModel.selectCalendarIndex.value
                 if (binding.navView.menu.isEmpty()) return
                 binding.navView.menu[index].isChecked = true
-                drawerHeaderBinding.tvDrawerHeaderTitle.text = binding.navView.menu[index].title
-                drawerHeaderBinding.tvDrawerHeaderSetting.setOnClickListener {
-                    this@MainCalendarFragment.mainCalendarViewModel.emitLicenseClickEvent()
-                }
             }
 
             override fun onDrawerOpened(drawerView: View) {}
