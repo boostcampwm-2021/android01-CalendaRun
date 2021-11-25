@@ -3,6 +3,7 @@ package com.drunkenboys.calendarun.ui.searchschedule.model
 import androidx.recyclerview.widget.DiffUtil
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import com.drunkenboys.calendarun.util.amPm
+import com.drunkenboys.calendarun.util.relativeDateFormat
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -25,25 +26,25 @@ sealed class DateScheduleItem {
 
 data class DateItem(val date: LocalDate) : DateScheduleItem() {
 
-    override fun toString(): String = date.format(DateTimeFormatter.ofPattern("M월 d일"))
+    override fun toString(): String = date.format(relativeDateFormat(LocalDate.now(), date))
 }
 
 data class ScheduleItem(val schedule: Schedule, val onClick: () -> Unit) : DateScheduleItem() {
 
     override fun toString(): String {
         val startDateFormat = DateTimeFormatter.ofPattern("${schedule.startDate.amPm} hh:mm")
-        val endDateFormat = getEndDateFormat(schedule.startDate, schedule.endDate)
+        val endDateFormat = relativeDateFormat(schedule.startDate, schedule.endDate)
 
         return "${schedule.startDate.format(startDateFormat)} ~ ${schedule.endDate.format(endDateFormat)}"
     }
 
-    private fun getEndDateFormat(startDate: LocalDateTime, endDate: LocalDateTime): DateTimeFormatter {
-        return when {
-            startDate.year < endDate.year -> DateTimeFormatter.ofPattern("yyyy년 M월 d일 ${endDate.amPm} hh:mm")
-            startDate.month < endDate.month -> DateTimeFormatter.ofPattern("M월 d일 ${endDate.amPm} hh:mm")
-            startDate.dayOfYear < endDate.dayOfYear -> DateTimeFormatter.ofPattern("d일 ${endDate.amPm} hh:mm")
-            else -> DateTimeFormatter.ofPattern("${endDate.amPm} hh:mm")
-        }
+    fun toString(baseDateTime: LocalDateTime?): String {
+        baseDateTime ?: return toString()
+
+        val startFormat = relativeDateFormat(baseDateTime, schedule.startDate)
+        val endFormat = relativeDateFormat(baseDateTime, schedule.endDate)
+
+        return "${schedule.startDate.format(startFormat)} ~ ${schedule.endDate.format(endFormat)}"
     }
 
     companion object {
