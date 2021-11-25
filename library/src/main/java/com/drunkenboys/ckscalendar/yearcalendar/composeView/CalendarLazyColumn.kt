@@ -1,5 +1,6 @@
 package com.drunkenboys.ckscalendar.yearcalendar.composeView
 
+import android.util.Log
 import android.view.Gravity
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -15,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -77,6 +79,11 @@ fun CalendarLazyColumn(
     // setSchedule 호출 시 recompose할 Scope 전달
     viewModel.setRecomposeScope(currentRecomposeScope)
 
+    // 종료를 감지
+
+//    viewModel.setScrollPosition(listState.layoutInfo.visibleItemsInfo.firstOrNull()?.index ?: 15)
+
+
     // RecyclerView와 유사
     LazyColumn(
         state = listState,
@@ -112,7 +119,7 @@ fun CalendarLazyColumn(
 
     // 뷰가 호출되면 오늘 날짜가 보이게 스크롤
     LaunchedEffect(listState) {
-        listState.scrollToItem(index = viewModel.getDayScrollPosition())
+        listState.scrollToItem(index = scrollPosition)
     }
 
     listState.ShouldNextScroll {

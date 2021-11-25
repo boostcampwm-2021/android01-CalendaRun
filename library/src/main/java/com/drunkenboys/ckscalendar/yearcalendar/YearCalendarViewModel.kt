@@ -1,7 +1,9 @@
 package com.drunkenboys.ckscalendar.yearcalendar
 
-import androidx.compose.foundation.lazy.LazyListState
+import android.util.Log
 import androidx.compose.runtime.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.drunkenboys.ckscalendar.data.*
 import com.drunkenboys.ckscalendar.utils.TimeUtils.dayValue
@@ -24,7 +26,7 @@ class YearCalendarViewModel: ViewModel() {
     private val _clickedDay = mutableStateOf<LocalDate?>(LocalDate.now())
     val clickedDay: State<LocalDate?> = _clickedDay
 
-    private val _scrollPosition = mutableStateOf(0)
+    private val _scrollPosition = mutableStateOf(12 + LocalDate.now().monthValue)
     val scrollPosition: State<Int> = _scrollPosition
 
     private var recomposeScope: RecomposeScope? = null
@@ -54,6 +56,10 @@ class YearCalendarViewModel: ViewModel() {
     // FIXME: 체크포인트 속에서 오늘의 날짜 찾기
     fun getDayScrollPosition(day: LocalDate = LocalDate.now()): Int {
         return day.monthValue
+    }
+
+    fun setScrollPosition(index: Int) {
+        _scrollPosition.value = index
     }
 
     fun setWeekSchedules(
