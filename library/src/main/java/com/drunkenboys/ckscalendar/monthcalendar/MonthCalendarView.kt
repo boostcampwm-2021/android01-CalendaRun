@@ -152,9 +152,9 @@ class MonthCalendarView @JvmOverloads constructor(
         val weekTextViews = listOf(
             binding.tvMonthCalendarViewSunday,
             binding.tvMonthCalendarViewMonday,
-            binding.tvMonthCalendarViewThursday,
-            binding.tvMonthCalendarViewWednesday,
             binding.tvMonthCalendarViewTuesday,
+            binding.tvMonthCalendarViewWednesday,
+            binding.tvMonthCalendarViewThursday,
             binding.tvMonthCalendarViewFriday,
             binding.tvMonthCalendarViewSaturday,
         )
