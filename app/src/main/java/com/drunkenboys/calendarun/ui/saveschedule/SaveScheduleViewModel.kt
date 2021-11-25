@@ -10,6 +10,8 @@ import com.drunkenboys.calendarun.data.calendar.local.CalendarLocalDataSource
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import com.drunkenboys.calendarun.data.schedule.local.ScheduleLocalDataSource
 import com.drunkenboys.calendarun.ui.saveschedule.model.DateType
+import com.drunkenboys.calendarun.util.DateFormatLimitType
+import com.drunkenboys.calendarun.util.relativeDateFormat
 import com.drunkenboys.ckscalendar.data.ScheduleColorType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -17,7 +19,6 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
-import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
@@ -116,12 +117,7 @@ class SaveScheduleViewModel @Inject constructor(
         }
     }
 
-    fun LocalDateTime.toFormatString(): String {
-        val amPm = if (hour < 12) "오전" else "오후"
-        val dateFormat = DateTimeFormatter.ofPattern("MM월 dd일 $amPm hh:mm")
-
-        return format(dateFormat)
-    }
+    fun LocalDateTime.toFormatString(): String = format(relativeDateFormat(LocalDateTime.now(), this, DateFormatLimitType.MONTH))
 
     fun emitPickNotificationTypeEvent() {
         viewModelScope.launch {
