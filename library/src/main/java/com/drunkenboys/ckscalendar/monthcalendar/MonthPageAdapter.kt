@@ -5,7 +5,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.drunkenboys.ckscalendar.data.*
+import com.drunkenboys.ckscalendar.data.CalendarDate
+import com.drunkenboys.ckscalendar.data.CalendarDesignObject
+import com.drunkenboys.ckscalendar.data.CalendarScheduleObject
+import com.drunkenboys.ckscalendar.data.CalendarSet
 import com.drunkenboys.ckscalendar.databinding.ItemMonthPageBinding
 import com.drunkenboys.ckscalendar.listener.OnDayClickListener
 import com.drunkenboys.ckscalendar.listener.OnDaySecondClickListener
@@ -81,17 +84,7 @@ class MonthPageAdapter : RecyclerView.Adapter<MonthPageAdapter.Holder>() {
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
         val calendarSet = if (isNormalCalendar) {
-            // hash key != position
-            val preCalendarSet = infinityCalendar[position - 1]
-            val nextCalendarSet = infinityCalendar[position + 1]
-            // 현재가 1월
-            if (preCalendarSet == null) {
-                fetchCalendarSet(position, holder.context(), -1, -12)
-            }
-            // 현재가 12월
-            if (nextCalendarSet == null) {
-                fetchCalendarSet(position, holder.context(), 1, 1)
-            }
+            fetchInfinityCalendar(position, holder)
             infinityCalendar[position]
         } else {
             list[position]
@@ -101,12 +94,39 @@ class MonthPageAdapter : RecyclerView.Adapter<MonthPageAdapter.Holder>() {
         }
     }
 
+    private fun fetchInfinityCalendar(position: Int, holder: Holder) {
+        // 아무것도 없는 중간으로 이동한 경우 현재년도 fetch
+        val currentCalendarSet = infinityCalendar[position]
+        if (currentCalendarSet == null) {
+            val originPosition = position - Int.MAX_VALUE / 2
+            val additionYear = originPosition / 12
+            val positionPadding = originPosition % 12
+            if (additionYear > 0) {
+                fetchCalendarSet(position - positionPadding - 1, holder.context(), additionYear)
+            } else {
+                fetchCalendarSet(position - positionPadding, holder.context(), additionYear - 1)
+            }
+        }
+
+        val preCalendarSet = infinityCalendar[position - 1]
+        val nextCalendarSet = infinityCalendar[position + 1]
+        // 현재가 1월 이전년도 fetch
+        if (preCalendarSet == null) {
+            fetchCalendarSet(position, holder.context(), -1)
+        }
+        // 현재가 12월 다음년도 fetch
+        if (nextCalendarSet == null) {
+            fetchCalendarSet(position, holder.context(), 1)
+        }
+    }
+
     private fun fetchCalendarSet(
         position: Int,
         context: Context,
         additionYear: Int,
-        positionPadding: Int
     ) {
+        val positionPadding: Int = if (additionYear > 0) MONTH_POSITION_PADDING_PLUS else MONTH_POSITION_PADDING_MINUS
+
         val currentSet = (infinityCalendar[position]?.startDate?.year ?: today.year) + additionYear
         CalendarSet.generateCalendarOfYear(context, currentSet)
             .forEachIndexed { index, calendarSet ->
@@ -160,9 +180,9 @@ class MonthPageAdapter : RecyclerView.Adapter<MonthPageAdapter.Holder>() {
                 if (isFirstToday) {
                     dates.find { it.date == today }
                         ?.let {
-                        it.isSelected = true
-                        isFirstToday = false
-                    }
+                            it.isSelected = true
+                            isFirstToday = false
+                        }
                 }
                 withContext(Dispatchers.Main) {
                     monthAdapter.setItems(dates, schedules, calendarDesign, adapterPosition)
@@ -171,5 +191,12 @@ class MonthPageAdapter : RecyclerView.Adapter<MonthPageAdapter.Holder>() {
                 }
             }
         }
+    }
+
+    companion object {
+
+        private const val MONTH_POSITION_PADDING_PLUS = 1
+
+        private const val MONTH_POSITION_PADDING_MINUS = -12
     }
 }
