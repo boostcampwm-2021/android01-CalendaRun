@@ -60,7 +60,7 @@ fun CalendarLazyColumn(
 
             else -> { Modifier.layoutId(day.date.toString())
                 .border(
-                    border = BorderStroke(width = 0.1f.dp, color = Color(viewModel.design.value.weekDayTextColor))
+                    border = BorderStroke(width = 0.1f.dp, color = Color(viewModel.design.value.weekDayTextColor).copy(alpha = 0.1f))
                 )
                 .clickable(onClick = {
                     onDayClickListener?.onDayClick(day.date, 0)
