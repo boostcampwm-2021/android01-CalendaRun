@@ -8,6 +8,10 @@
         <variable
             name="item"
             type="com.drunkenboys.calendarun.ui.searchschedule.model.ScheduleItem" />
+
+        <variable
+            name="time"
+            type="java.time.LocalDateTime" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -46,7 +50,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="@{item.toString()}"
+            android:text="@{item.toString(time)}"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/tv_dateSchedule_name"

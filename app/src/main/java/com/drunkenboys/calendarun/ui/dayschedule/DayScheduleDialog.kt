@@ -25,7 +25,7 @@ class DayScheduleDialog : DialogFragment() {
 
     private val dayScheduleViewModel by viewModels<DayScheduleViewModel>()
 
-    private val dayScheduleAdapter = DayScheduleAdapter()
+    private lateinit var dayScheduleAdapter: DayScheduleAdapter
 
     private val navController by lazy { findNavController() }
     private val args by navArgs<DayScheduleDialogArgs>()
@@ -34,6 +34,7 @@ class DayScheduleDialog : DialogFragment() {
         _binding = DialogDayScheduleBinding.inflate(layoutInflater)
         binding.viewModel = dayScheduleViewModel
         binding.lifecycleOwner = this
+        dayScheduleAdapter = DayScheduleAdapter(LocalDate.parse(args.localDate))
         return AlertDialog.Builder(requireContext())
             .setView(binding.root)
             .create()
