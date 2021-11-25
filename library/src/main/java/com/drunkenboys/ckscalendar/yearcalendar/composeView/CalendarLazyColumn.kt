@@ -11,12 +11,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,23 +42,32 @@ fun CalendarLazyColumn(
     val listState = rememberLazyListState()
     val calendar by remember { viewModel.calendar }
     val clickedDay by remember { viewModel.clickedDay }
-    val clickedEdge = { day: CalendarDate ->
-        BorderStroke(
-            width = 2.dp,
-            color = if (clickedDay == day.date) Color(viewModel.design.value.selectedFrameColor) else Color.Transparent
-        )
-    }
 
     // state hoisting
     val dayColumnModifier = { day: CalendarDate ->
-        Modifier
-            .layoutId(day.date.toString())
-            .border(clickedEdge(day), shape = RoundedCornerShape(6.dp))
-            .clickable(onClick = {
-                if (clickedDay != day.date) onDayClickListener?.onDayClick(day.date, 0)
-                else onDaySecondClickListener?.onDayClick(day.date, 0)
-                viewModel.clickDay(day)
-            })
+
+        when (clickedDay) {
+
+            day.date -> { Modifier.layoutId(day.date.toString())
+                .border(
+                    border = BorderStroke(width = 2.dp, color = Color(viewModel.design.value.selectedFrameColor)),
+                    shape = RoundedCornerShape(6.dp)
+                )
+                .clickable (onClick = {
+                    onDaySecondClickListener?.onDayClick(day.date, 0)
+                })
+            }
+
+            else -> { Modifier.layoutId(day.date.toString())
+                .border(
+                    border = BorderStroke(width = 0.1f.dp, color = Color(viewModel.design.value.weekDayTextColor))
+                )
+                .clickable(onClick = {
+                    onDayClickListener?.onDayClick(day.date, 0)
+                    viewModel.clickDay(day)
+                })
+            }
+        }
     }
 
     // setSchedule 호출 시 recompose할 Scope 전달
