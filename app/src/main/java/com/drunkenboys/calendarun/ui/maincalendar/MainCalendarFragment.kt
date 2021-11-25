@@ -1,10 +1,13 @@
 package com.drunkenboys.calendarun.ui.maincalendar
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.navigation.ui.setupWithNavController
+import com.drunkenboys.calendarun.KEY_CALENDAR_ID
+import com.drunkenboys.calendarun.MainActivity
 import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.data.calendar.entity.Calendar
 import com.drunkenboys.calendarun.databinding.DrawerHeaderBinding
@@ -68,7 +71,7 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
                 }
         }
         val currentCalendarId = mainCalendarViewModel.calendarId.value
-        binding.navView.menu.findItem(currentCalendarId.toInt()).isChecked = true
+        menu.findItem(currentCalendarId.toInt())?.isChecked = true
     }
 
     private fun inflateDrawerMenu() {
@@ -102,7 +105,10 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
 
     private suspend fun collectCalendarId() {
         mainCalendarViewModel.calendarId.collect { calendarId ->
-            binding.navView.setCheckedItem(calendarId.toInt())
+            val pref = requireContext().getSharedPreferences(MainActivity.CALENDAR_ID_PREF, Context.MODE_PRIVATE)
+            pref.edit()
+                .putLong(KEY_CALENDAR_ID, calendarId)
+                .apply()
         }
     }
 
