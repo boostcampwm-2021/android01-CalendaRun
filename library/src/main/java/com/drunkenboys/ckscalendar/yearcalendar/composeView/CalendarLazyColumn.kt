@@ -41,7 +41,7 @@ fun CalendarLazyColumn(
 ) {
     // RecyclerView의 상태를 관찰
     val listState = rememberLazyListState()
-    val calendar by rememberSaveable { viewModel.calendar }
+    val calendar by remember { viewModel.calendar }
     val clickedDay by rememberSaveable { viewModel.clickedDay }
     val scrollPosition by rememberSaveable { viewModel.scrollPosition }
 

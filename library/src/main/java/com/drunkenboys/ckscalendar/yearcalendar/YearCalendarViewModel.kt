@@ -1,9 +1,6 @@
 package com.drunkenboys.ckscalendar.yearcalendar
 
-import android.util.Log
 import androidx.compose.runtime.*
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.drunkenboys.ckscalendar.data.*
 import com.drunkenboys.ckscalendar.utils.TimeUtils.dayValue
