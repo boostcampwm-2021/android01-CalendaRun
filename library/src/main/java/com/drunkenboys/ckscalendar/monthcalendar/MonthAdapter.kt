@@ -39,7 +39,7 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
     var onDayClickListener: OnDayClickListener? = null
     var onDaySecondClickListener: OnDaySecondClickListener? = null
 
-    private val lineIndex = HashMap<String, Int>()
+    private val lineIndex = HashMap<String, MonthCellPositionStore>()
 
     fun setItems(
         list: List<CalendarDate>,
@@ -146,15 +146,19 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
             val scheduleListContainer = arrayOfNulls<TextView>(SCHEDULE_CONTAINER_SIZE)
             filteredScheduleList.forEach {
                 val paddingKey = "${adapterPosition / CALENDAR_COLUMN_SIZE}:${it.id}"
-                val paddingLineIndex = lineIndex[paddingKey]
+                val paddingLineIndex = lineIndex[paddingKey]?.savedLineIndex
+                val lastSelectedPosition = lineIndex[paddingKey]?.lastSelectedPosition
+                val isFirstShowSchedule = item.date == it.startDate.toLocalDate() ||
+                        item.dayType == DayType.SUNDAY ||
+                        adapterPosition == lastSelectedPosition
 
                 if (paddingLineIndex != null) {
-                    scheduleListContainer[paddingLineIndex] = mappingScheduleTextView(it, false)
+                    scheduleListContainer[paddingLineIndex] = mappingScheduleTextView(it, isFirstShowSchedule)
                 } else {
                     for (i in scheduleListContainer.indices) {
                         if (scheduleListContainer[i] == null) {
                             scheduleListContainer[i] = mappingScheduleTextView(it, true)
-                            lineIndex[paddingKey] = i
+                            lineIndex[paddingKey] = MonthCellPositionStore(i, adapterPosition)
                             break
                         }
                     }
