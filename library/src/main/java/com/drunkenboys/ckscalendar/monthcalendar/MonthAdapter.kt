@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.drunkenboys.ckscalendar.data.CalendarDate
 import com.drunkenboys.ckscalendar.data.CalendarDesignObject
@@ -47,6 +46,7 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
         calendarDesign: CalendarDesignObject,
         currentPagePosition: Int
     ) {
+        startDayWithMonthFlags.clear()
         list.forEachIndexed { index, calendarDate ->
             if (calendarDate.isSelected) {
                 selectedPosition = index
@@ -115,8 +115,8 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
 
             val scheduleContainer = makePaddingScheduleList(item, schedules)
             val hasAnySchedule = scheduleContainer.any { it != null }
+            binding.layoutMonthSchedule.removeAllViews()
             if (hasAnySchedule) {
-                binding.layoutMonthSchedule.removeAllViews()
                 scheduleContainer.map { it ?: makeDefaultScheduleTextView() }
                     .forEach {
                         binding.layoutMonthSchedule.addView(it)
