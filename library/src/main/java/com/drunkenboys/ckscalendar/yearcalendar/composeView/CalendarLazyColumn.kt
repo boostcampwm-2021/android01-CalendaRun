@@ -41,6 +41,7 @@ fun CalendarLazyColumn(
     val listState = rememberLazyListState()
     val calendar by rememberSaveable { viewModel.calendar }
     val clickedDay by rememberSaveable { viewModel.clickedDay }
+    val scrollPosition by rememberSaveable { viewModel.scrollPosition }
 
     // state hoisting
     val dayColumnModifier = { day: CalendarDate ->
@@ -111,7 +112,7 @@ fun CalendarLazyColumn(
 
     // 뷰가 호출되면 오늘 날짜가 보이게 스크롤
     LaunchedEffect(listState) {
-        listState.scrollToItem(index = viewModel.getDayItemIndex())
+        listState.scrollToItem(index = viewModel.getDayScrollPosition())
     }
 
     listState.ShouldNextScroll {
