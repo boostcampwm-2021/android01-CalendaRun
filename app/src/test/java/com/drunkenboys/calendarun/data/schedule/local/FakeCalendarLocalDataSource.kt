@@ -2,6 +2,7 @@ package com.drunkenboys.calendarun.data.schedule.local
 
 import com.drunkenboys.calendarun.data.calendar.entity.Calendar
 import com.drunkenboys.calendarun.data.calendar.local.CalendarLocalDataSource
+import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 
 class FakeCalendarLocalDataSource : CalendarLocalDataSource {
@@ -10,7 +11,7 @@ class FakeCalendarLocalDataSource : CalendarLocalDataSource {
         TODO("Not yet implemented")
     }
 
-    override suspend fun fetchAllCalendar(): List<Calendar> {
+    override fun fetchAllCalendar(): Flow<List<Calendar>> {
         TODO("Not yet implemented")
     }
 
@@ -18,8 +19,15 @@ class FakeCalendarLocalDataSource : CalendarLocalDataSource {
         return Calendar(0, "test calendar", LocalDate.now(), LocalDate.now())
     }
 
+    override suspend fun fetchCustomCalendar(): List<Calendar> {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun deleteCalendar(calendar: Calendar) {
         TODO("Not yet implemented")
     }
 
+    override suspend fun updateCalendar(calendar: Calendar) {
+        TODO("Not yet implemented")
+    }
 }

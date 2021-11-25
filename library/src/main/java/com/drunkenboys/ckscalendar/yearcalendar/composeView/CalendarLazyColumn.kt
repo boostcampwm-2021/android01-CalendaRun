@@ -7,9 +7,11 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -36,35 +38,49 @@ fun CalendarLazyColumn(
 ) {
     // RecyclerView의 상태를 관찰
     val listState = rememberLazyListState()
-
     val calendar by remember { viewModel.calendar }
     val clickedDay by remember { viewModel.clickedDay }
-    val clickedEdge = { day: CalendarDate ->
-        BorderStroke(
-            width = 2.dp,
-            color = if (clickedDay == day.date) Color(viewModel.design.value.selectedFrameColor) else Color.Transparent
-        )
-    }
-
-    // viewModel의 recomposer를 LazyColumn으로 설정해서 setSchedule 호출 시 recompose
-    viewModel.setRecomposeScope(currentRecomposeScope)
 
     // state hoisting
     val dayColumnModifier = { day: CalendarDate ->
-        Modifier
-            .layoutId(day.date.toString())
-            .border(clickedEdge(day))
-            .clickable(onClick = {
-                if (clickedDay != day.date) onDayClickListener?.onDayClick(day.date, 0)
-                else onDaySecondClickListener?.onDayClick(day.date, 0)
-                viewModel.clickDay(day)
-            })
+
+        when (clickedDay) {
+
+            day.date -> {
+                Modifier
+                    .layoutId(day.date.toString())
+                    .border(
+                        border = BorderStroke(width = 2.dp, color = Color(viewModel.design.value.selectedFrameColor)),
+                        shape = RoundedCornerShape(6.dp)
+                    )
+                    .clickable(onClick = {
+                        onDaySecondClickListener?.onDayClick(day.date, 0)
+                    })
+            }
+
+            else -> {
+                Modifier
+                    .layoutId(day.date.toString())
+                    .border(
+                        border = BorderStroke(width = 0.1f.dp, color = Color(viewModel.design.value.weekDayTextColor).copy(alpha = 0.1f))
+                    )
+                    .clickable(onClick = {
+                        onDayClickListener?.onDayClick(day.date, 0)
+                        viewModel.clickDay(day)
+                    })
+            }
+        }
     }
+
+    // setSchedule 호출 시 recompose할 Scope 전달
+    viewModel.setRecomposeScope(currentRecomposeScope)
 
     // RecyclerView와 유사
     LazyColumn(
         state = listState,
-        modifier = Modifier.background(color = MaterialTheme.colors.background).fillMaxHeight()
+        modifier = Modifier
+            .background(color = MaterialTheme.colors.background)
+            .fillMaxHeight()
     ) {
         items(calendar, key = { slice -> slice.startDate }) { slice ->
 
@@ -72,10 +88,13 @@ fun CalendarLazyColumn(
 
             // 해가 갱신될 때마다 상단에 연표시
             if (firstOfYear in slice.startDate..slice.endDate) {
+
                 Text(
                     text = "${firstOfYear.year}년",
                     color = MaterialTheme.colors.primary,
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp, bottom = 16.dp),
                     textAlign = TextAlign.Center
                 )
             }
@@ -121,7 +140,7 @@ fun PreviewCalendar() {
         endDate = LocalDate.now().plusDays(30L)
     ))
 
-    viewModel.setCalendarSetList(newSlice)
+//    viewModel.setCalendarSetList(newSlice)
 
     CustomTheme(design = viewModel.design.value) {
         CalendarLazyColumn(

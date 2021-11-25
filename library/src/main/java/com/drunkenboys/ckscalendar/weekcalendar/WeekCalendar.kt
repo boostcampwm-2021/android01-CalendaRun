@@ -18,7 +18,6 @@ import com.drunkenboys.ckscalendar.data.DayType
 import com.drunkenboys.ckscalendar.utils.calendarSetToCalendarDatesList
 import com.drunkenboys.ckscalendar.yearcalendar.YearCalendarViewModel
 import com.drunkenboys.ckscalendar.yearcalendar.composeView.DayText
-import com.drunkenboys.ckscalendar.yearcalendar.composeView.PaddingText
 import com.drunkenboys.ckscalendar.yearcalendar.composeView.ScheduleText
 import java.time.LocalDate
 
@@ -49,7 +48,7 @@ fun WeekCalendar(
         week.forEach { day ->
             when (day.dayType) {
                 // 빈 날짜
-                DayType.PADDING -> PaddingText(day = day, viewModel = viewModel)
+                DayType.PADDING -> { }
 
                 // 1일
                 else -> Column(modifier = dayModifier(day).layoutId(day.date.toString()), horizontalAlignment = Alignment.CenterHorizontally) {

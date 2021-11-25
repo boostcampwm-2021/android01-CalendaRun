@@ -1,5 +1,6 @@
 package com.drunkenboys.ckscalendar.yearcalendar.composeView
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -7,10 +8,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
 import com.drunkenboys.ckscalendar.data.CalendarDate
-import com.drunkenboys.ckscalendar.data.CalendarDesignObject
 import com.drunkenboys.ckscalendar.data.DayType
 import com.drunkenboys.ckscalendar.utils.GravityMapper
 import com.drunkenboys.ckscalendar.utils.dp
@@ -40,7 +40,7 @@ fun DayText(
     Text(
         text = text,
         color = color,
-        modifier = Modifier.layoutId(day.date.toString()),
+        modifier = Modifier.layoutId(day.date.toString()).padding(start = 5.dp, end = 5.dp),
         textAlign = GravityMapper.toTextAlign(viewModel.design.value.textAlign),
         fontSize = viewModel.design.value.textSize.dp(),
         fontWeight = if (isFirstOfCalendarSet) FontWeight.Bold else null

@@ -6,12 +6,9 @@ import androidx.lifecycle.viewModelScope
 import com.drunkenboys.calendarun.KEY_CALENDAR_ID
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import com.drunkenboys.calendarun.data.schedule.local.ScheduleLocalDataSource
-import com.drunkenboys.calendarun.ui.searchschedule.model.DateScheduleItem
+import com.drunkenboys.calendarun.ui.searchschedule.model.ScheduleItem
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -28,8 +25,8 @@ class DayScheduleViewModel @Inject constructor(
     private val _dateString = MutableStateFlow("")
     val dateString: StateFlow<String> = _dateString
 
-    private val _listItem = MutableStateFlow<List<DateScheduleItem>>(emptyList())
-    val listItem: StateFlow<List<DateScheduleItem>> = _listItem
+    private val _listItem = MutableStateFlow<List<ScheduleItem>>(emptyList())
+    val listItem: StateFlow<List<ScheduleItem>> = _listItem
 
     private val _scheduleClickEvent = MutableSharedFlow<Schedule>()
     val scheduleClickEvent: SharedFlow<Schedule> = _scheduleClickEvent
@@ -38,13 +35,13 @@ class DayScheduleViewModel @Inject constructor(
         viewModelScope.launch {
             _dateString.emit(localDate.format(DateTimeFormatter.ofPattern("M월 d일")))
 
-            scheduleDataSource.fetchCalendarSchedules(calendarId)
-                .filter { localDate in it.startDate.toLocalDate()..it.endDate.toLocalDate() }
-                .map { schedule ->
-                    DateScheduleItem(schedule) { emitScheduleClickEvent(schedule) }
+            scheduleDataSource.fetchCalendarSchedules(calendarId).firstOrNull()
+                ?.filter { localDate in it.startDate.toLocalDate()..it.endDate.toLocalDate() }
+                ?.map { schedule ->
+                    ScheduleItem(schedule) { emitScheduleClickEvent(schedule) }
                 }
-                .sortedBy { dateScheduleItem -> dateScheduleItem.schedule.startDate }
-                .let { _listItem.emit(it) }
+                ?.sortedBy { dateScheduleItem -> dateScheduleItem.schedule.startDate }
+                ?.let { _listItem.emit(it) }
         }
     }
 

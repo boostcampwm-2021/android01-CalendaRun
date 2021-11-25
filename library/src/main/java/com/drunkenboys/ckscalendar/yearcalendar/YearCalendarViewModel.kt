@@ -75,12 +75,13 @@ class YearCalendarViewModel: ViewModel() {
     }
 
     private fun getStartSchedules(today: LocalDate) = schedules.value.filter { schedule ->
-        // TODO: 정렬
         val isStart = schedule.startDate.toLocalDate() == today
         val isSunday = today.dayOfWeek == DayOfWeek.SUNDAY
         val isFirstOfMonth = today.dayOfMonth == 1
         val isDateInScheduleRange = today in schedule.startDate.toLocalDate()..schedule.endDate.toLocalDate()
         isStart || ((isSunday || isFirstOfMonth) && (isDateInScheduleRange))
+    }.sortedBy { schedule ->
+        schedule.startDate
     }
 
     fun isFirstWeek(week: List<CalendarDate>, month: CalendarSet) = week.any { day ->

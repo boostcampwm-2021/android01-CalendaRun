@@ -1,6 +1,9 @@
 package com.drunkenboys.calendarun.data.schedule.local
 
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
+import com.drunkenboys.calendarun.util.defaultZoneOffset
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 class FakeScheduleLocalDataSource : ScheduleLocalDataSource {
 
@@ -19,8 +22,8 @@ class FakeScheduleLocalDataSource : ScheduleLocalDataSource {
         return database.find { it.id == id } ?: throw IllegalArgumentException()
     }
 
-    override suspend fun fetchCalendarSchedules(calendarId: Long): List<Schedule> {
-        return database.filter { it.calendarId == calendarId }
+    override fun fetchCalendarSchedules(calendarId: Long): Flow<List<Schedule>> {
+        return flow { database.filter { it.calendarId == calendarId } }
     }
 
     override suspend fun updateSchedule(schedule: Schedule) {
@@ -31,5 +34,13 @@ class FakeScheduleLocalDataSource : ScheduleLocalDataSource {
 
     override suspend fun deleteSchedule(schedule: Schedule) {
         database.remove(schedule)
+    }
+
+    override suspend fun fetchMatchedScheduleAfter(word: String, time: Long): List<Schedule> {
+        return database.filter { it.startDate.toEpochSecond(defaultZoneOffset) > time && word in it.name }
+    }
+
+    override suspend fun fetchMatchedScheduleBefore(word: String, time: Long): List<Schedule> {
+        return database.filter { it.startDate.toEpochSecond(defaultZoneOffset) < time && word in it.name }
     }
 }
