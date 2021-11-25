@@ -20,5 +20,12 @@ class DayScheduleAdapter(private val localDate: LocalDate) :
         holder.binding.item = currentList[position]
         holder.binding.time = LocalDateTime.of(localDate, LocalTime.MIN)
         holder.binding.executePendingBindings()
+        holder.binding.root.post {
+            val textLine = holder.binding.tvScheduleTime.lineCount
+            if (textLine == 2) {
+                val text = holder.binding.tvScheduleTime.text
+                holder.binding.tvScheduleTime.text = text.replace("~ ".toRegex(), "~\n")
+            }
+        }
     }
 }
