@@ -15,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
@@ -38,8 +39,8 @@ fun CalendarLazyColumn(
 ) {
     // RecyclerView의 상태를 관찰
     val listState = rememberLazyListState()
-    val calendar by remember { viewModel.calendar }
-    val clickedDay by remember { viewModel.clickedDay }
+    val calendar by rememberSaveable { viewModel.calendar }
+    val clickedDay by rememberSaveable { viewModel.clickedDay }
 
     // state hoisting
     val dayColumnModifier = { day: CalendarDate ->
