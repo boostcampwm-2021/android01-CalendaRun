@@ -2,6 +2,7 @@ package com.drunkenboys.calendarun.data.schedule.local
 
 import androidx.room.*
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ScheduleDao {
@@ -16,7 +17,7 @@ interface ScheduleDao {
     suspend fun fetchSchedule(id: Long): Schedule
 
     @Query("SELECT * FROM `schedule` WHERE calendarId == :calendarId")
-    suspend fun fetchCalendarSchedules(calendarId: Long): List<Schedule>
+    fun fetchCalendarSchedules(calendarId: Long): Flow<List<Schedule>>
 
     @Update
     suspend fun updateSchedule(schedule: Schedule)
