@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
 import com.drunkenboys.calendarun.KEY_CALENDAR_ID
-import com.drunkenboys.calendarun.data.calendar.entity.Calendar
 import com.drunkenboys.calendarun.data.calendar.local.CalendarLocalDataSource
 import com.drunkenboys.calendarun.data.calendartheme.local.CalendarThemeLocalDataSource
 import com.drunkenboys.calendarun.data.checkpoint.entity.CheckPoint
@@ -50,8 +49,12 @@ class MainCalendarViewModel @Inject constructor(
             }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    private val _calendarSetList = MutableStateFlow<List<CalendarSet>>(emptyList())
-    val calendarSetList: StateFlow<List<CalendarSet>> = _calendarSetList
+    val calendarSetList: StateFlow<List<CalendarSet>> = calendarId.flatMapLatest { calendarId ->
+        checkPointLocalDataSource.fetchCalendarCheckPoints(calendarId)
+            .map { checkPointList ->
+                checkPointList.map { checkPoint -> checkPoint.toCalendarSet() }
+            }
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     private val _selectedCalendarIndex = MutableStateFlow(0)
     val selectCalendarIndex: StateFlow<Int> = _selectedCalendarIndex
@@ -71,14 +74,6 @@ class MainCalendarViewModel @Inject constructor(
 
     private val _licenseClickEvent = MutableSharedFlow<Unit>()
     val licenseClickEvent: SharedFlow<Unit> = _licenseClickEvent
-
-    fun setCalendar(calendar: Calendar) {
-        viewModelScope.launch {
-//            createCalendarSetList(calendar.id, fetchCheckPointList(calendar.id))
-        }
-    }
-
-    private suspend fun fetchCheckPointList(calendarId: Long) = checkPointLocalDataSource.fetchCalendarCheckPoints(calendarId)
 
     private fun Schedule.mapToCalendarScheduleObject() = CalendarScheduleObject(
         id = id.toInt(),
@@ -100,24 +95,12 @@ class MainCalendarViewModel @Inject constructor(
         }
     }
 
-    private fun createCalendarSetList(id: Long, checkPointList: List<CheckPoint>) {
-        viewModelScope.launch {
-            val calendarSetList = mutableListOf<CalendarSet>()
-
-            checkPointList.forEach { checkPoint ->
-                calendarSetList.add(
-                    CalendarSet(
-                        id = id.toInt(),
-                        name = checkPoint.name,
-                        startDate = checkPoint.startDate,
-                        endDate = checkPoint.endDate
-                    )
-                )
-            }
-
-            _calendarSetList.emit(calendarSetList.toList())
-        }
-    }
+    private fun CheckPoint.toCalendarSet() = CalendarSet(
+        id = id.toInt(),
+        name = name,
+        startDate = startDate,
+        endDate = endDate
+    )
 
     fun setSelectedCalendarIndex(index: Int) {
         viewModelScope.launch {
