@@ -100,7 +100,7 @@ class MainCalendarViewModel @Inject constructor(
     }
 
     private fun CheckPoint.toCalendarSet() = CalendarSet(
-        id = id.toInt(),
+        id = this@MainCalendarViewModel.calendarId.value.toInt(),
         name = name,
         startDate = startDate,
         endDate = endDate
