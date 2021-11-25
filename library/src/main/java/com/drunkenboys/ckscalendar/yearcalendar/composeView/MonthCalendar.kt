@@ -1,14 +1,20 @@
 package com.drunkenboys.ckscalendar.yearcalendar.composeView
 
 import android.view.Gravity
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
+import android.widget.Space
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.Dimension
@@ -46,7 +52,18 @@ fun MonthCalendar(
             week.forEach { day ->
                 when (day.dayType) {
                     // 빈 날짜
-                    DayType.PADDING -> PaddingText(day = day, viewModel = viewModel)
+                    DayType.PADDING -> Column(
+                        modifier = Modifier.layoutId(day.date.toString())
+                            .border(border = BorderStroke(
+                                width = 0.1f.dp,
+                                color = Color(viewModel.design.value.weekDayTextColor).copy(alpha = 0.1f)
+                            )
+                        )
+                    ) {
+                        repeat(viewModel.design.value.visibleScheduleCount + 1) {
+                            Text(text = " ")
+                        }
+                    }
 
                     // 1일
                     else -> Column(
