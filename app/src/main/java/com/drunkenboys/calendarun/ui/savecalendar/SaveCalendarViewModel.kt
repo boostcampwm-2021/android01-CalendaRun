@@ -139,7 +139,7 @@ class SaveCalendarViewModel @Inject constructor(
                 canSave = false
             }
 
-            if (!isValidateCheckPointDate(startDate, endDate)) {
+            if (startDate != null && endDate != null && !isValidateCheckPointDate(startDate, endDate)) {
                 emitBlankSliceStartDateEvent(item)
                 emitBlankSliceEndDateEvent(item)
                 canSave = false
