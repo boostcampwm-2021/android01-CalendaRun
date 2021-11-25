@@ -26,7 +26,7 @@ sealed class DateScheduleItem {
 
 data class DateItem(val date: LocalDate) : DateScheduleItem() {
 
-    override fun toString(): String = date.format(DateTimeFormatter.ofPattern("M월 d일"))
+    override fun toString(): String = date.format(relativeDateFormat(LocalDate.now(), date))
 }
 
 data class ScheduleItem(val schedule: Schedule, val onClick: () -> Unit) : DateScheduleItem() {
@@ -43,7 +43,7 @@ data class ScheduleItem(val schedule: Schedule, val onClick: () -> Unit) : DateS
 
         val startFormat = relativeDateFormat(baseDateTime, schedule.startDate)
         val endFormat = relativeDateFormat(baseDateTime, schedule.endDate)
-        
+
         return "${schedule.startDate.format(startFormat)} ~ ${schedule.endDate.format(endFormat)}"
     }
 
