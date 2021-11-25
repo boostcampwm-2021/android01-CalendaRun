@@ -38,7 +38,6 @@ fun CalendarLazyColumn(
 ) {
     // RecyclerView의 상태를 관찰
     val listState = rememberLazyListState()
-
     val calendar by remember { viewModel.calendar }
     val clickedDay by remember { viewModel.clickedDay }
     val clickedEdge = { day: CalendarDate ->
@@ -47,9 +46,6 @@ fun CalendarLazyColumn(
             color = if (clickedDay == day.date) Color(viewModel.design.value.selectedFrameColor) else Color.Transparent
         )
     }
-
-    // viewModel의 recomposer를 LazyColumn으로 설정해서 setSchedule 호출 시 recompose
-    viewModel.setRecomposeScope(currentRecomposeScope)
 
     // state hoisting
     val dayColumnModifier = { day: CalendarDate ->
@@ -62,6 +58,9 @@ fun CalendarLazyColumn(
                 viewModel.clickDay(day)
             })
     }
+
+    // setSchedule 호출 시 recompose할 Scope 전달
+    viewModel.setRecomposeScope(currentRecomposeScope)
 
     // RecyclerView와 유사
     LazyColumn(
