@@ -42,13 +42,6 @@ class MainCalendarViewModel @Inject constructor(
     val calendarList = calendarLocalDataSource.fetchAllCalendar()
         .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    val scheduleList = calendarId.flatMapLatest { calendarId ->
-        scheduleLocalDataSource.fetchCalendarSchedules(calendarId)
-            .map { scheduleList ->
-                scheduleList.map { schedule -> schedule.mapToCalendarScheduleObject() }
-            }
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
-
     val calendarSetList = calendarId.flatMapLatest { calendarId ->
         checkPointLocalDataSource.fetchCalendarCheckPoints(calendarId)
             .map { checkPointList ->
@@ -56,12 +49,19 @@ class MainCalendarViewModel @Inject constructor(
             }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    private val _isMonthCalendar = MutableStateFlow(true)
-    val isMonthCalendar: StateFlow<Boolean> = _isMonthCalendar
+    val scheduleList = calendarId.flatMapLatest { calendarId ->
+        scheduleLocalDataSource.fetchCalendarSchedules(calendarId)
+            .map { scheduleList ->
+                scheduleList.map { schedule -> schedule.toCalendarScheduleObject() }
+            }
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     val calendarDesignObject = calendarThemeDataSource.fetchCalendarTheme()
         .map { it.toCalendarDesignObject() }
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    private val _isMonthCalendar = MutableStateFlow(true)
+    val isMonthCalendar: StateFlow<Boolean> = _isMonthCalendar
 
     private val _fabClickEvent = MutableSharedFlow<Long>()
     val fabClickEvent: SharedFlow<Long> = _fabClickEvent
@@ -72,13 +72,13 @@ class MainCalendarViewModel @Inject constructor(
     private val _licenseClickEvent = MutableSharedFlow<Unit>()
     val licenseClickEvent: SharedFlow<Unit> = _licenseClickEvent
 
-    private fun Schedule.mapToCalendarScheduleObject() = CalendarScheduleObject(
-        id = id.toInt(),
-        color = color,
-        text = name,
-        startDate = startDate,
-        endDate = endDate
-    )
+    fun setCalendarId(calendarId: Long) {
+        savedStateHandle.set(KEY_CALENDAR_ID, calendarId)
+    }
+
+    fun toggleCalendar() {
+        _isMonthCalendar.value = !_isMonthCalendar.value
+    }
 
     fun emitFabClickEvent() {
         viewModelScope.launch {
@@ -92,6 +92,12 @@ class MainCalendarViewModel @Inject constructor(
         }
     }
 
+    fun emitLicenseClickEvent() {
+        viewModelScope.launch {
+            _licenseClickEvent.emit(Unit)
+        }
+    }
+
     private fun CheckPoint.toCalendarSet() = CalendarSet(
         id = id.toInt(),
         name = name,
@@ -99,17 +105,11 @@ class MainCalendarViewModel @Inject constructor(
         endDate = endDate
     )
 
-    fun emitLicenseClickEvent() {
-        viewModelScope.launch {
-            _licenseClickEvent.emit(Unit)
-        }
-    }
-
-    fun setCalendarId(calendarId: Long) {
-        savedStateHandle.set(KEY_CALENDAR_ID, calendarId)
-    }
-
-    fun toggleCalendar() {
-        _isMonthCalendar.value = !_isMonthCalendar.value
-    }
+    private fun Schedule.toCalendarScheduleObject() = CalendarScheduleObject(
+        id = id.toInt(),
+        color = color,
+        text = name,
+        startDate = startDate,
+        endDate = endDate
+    )
 }
