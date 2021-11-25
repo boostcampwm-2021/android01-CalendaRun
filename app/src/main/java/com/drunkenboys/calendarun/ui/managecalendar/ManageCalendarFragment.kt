@@ -90,8 +90,10 @@ class ManageCalendarFragment : BaseFragment<FragmentManageCalendarBinding>(R.lay
             val currentCalendarItemList = manageCalendarAdapter.currentList
             manageCalendarViewModel.deleteCalendarItem(currentCalendarItemList)
 
+            // TODO: 2021-11-25 로직의 위치를 옮기고 싶네요
             val currentCalendarId = mainCalendarViewModel.calendarId.value
-            if (currentCalendarId in currentCalendarItemList.map { it.id }) {
+            val checkedList = currentCalendarItemList.filter { it.check }
+            if (checkedList.any { it.id == currentCalendarId }) {
                 mainCalendarViewModel.setCalendarId(1)
             }
         }
