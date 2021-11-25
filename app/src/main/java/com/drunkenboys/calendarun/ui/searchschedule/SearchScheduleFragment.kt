@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.navigation.ui.setupWithNavController
+import androidx.recyclerview.widget.RecyclerView
 import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.databinding.FragmentSearchScheduleBinding
 import com.drunkenboys.calendarun.ui.base.BaseFragment
@@ -36,9 +37,22 @@ class SearchScheduleFragment : BaseFragment<FragmentSearchScheduleBinding>(R.lay
         binding.toolbarSearchSchedule.setupWithNavController(navController)
     }
 
-    private fun setupRecyclerView() {
-        binding.rvSearchSchedule.adapter = searchScheduleAdapter
-        binding.rvSearchSchedule.addItemDecoration(SearchScheduleDivider(requireContext()))
+    private fun setupRecyclerView() = with(binding.rvSearchSchedule) {
+        adapter = searchScheduleAdapter
+        addItemDecoration(SearchScheduleDivider(requireContext()))
+        addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                if (!recyclerView.canScrollVertically(SCROLL_NEGATIVE)) {
+                    searchScheduleViewModel.trySearchPrev()
+                }
+                if (!recyclerView.canScrollVertically(SCROLL_POSITIVE)) {
+                    searchScheduleViewModel.trySearchNext()
+                }
+            }
+        })
+        itemAnimator = null
     }
 
     private suspend fun collectListItem() {
@@ -52,5 +66,11 @@ class SearchScheduleFragment : BaseFragment<FragmentSearchScheduleBinding>(R.lay
             val action = SearchScheduleFragmentDirections.toSaveSchedule(schedule.calendarId, schedule.id)
             navController.navigate(action)
         }
+    }
+
+    companion object {
+
+        private const val SCROLL_NEGATIVE = -1
+        private const val SCROLL_POSITIVE = 1
     }
 }
