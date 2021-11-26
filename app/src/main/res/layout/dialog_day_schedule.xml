@@ -36,12 +36,19 @@
             android:textSize="24sp"
             tools:text="1월 27일" />
 
-        <androidx.recyclerview.widget.RecyclerView
+        <com.drunkenboys.calendarun.view.RecyclerViewEmptySupport
             android:id="@+id/rv_daySchedule"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/item_schedule" />
+
+        <TextView
+            android:id="@+id/tv_empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="No Data" />
 
     </LinearLayout>
 
