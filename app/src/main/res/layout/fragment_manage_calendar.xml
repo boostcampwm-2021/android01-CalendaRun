@@ -29,7 +29,7 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
+        <com.drunkenboys.calendarun.view.RecyclerViewEmptySupport
             android:id="@+id/rv_manageCalendar"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -42,6 +42,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/layout_manageCalendar_toolbar"
             tools:listitem="@layout/item_calendar" />
+
+        <TextView
+            android:id="@+id/tv_empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No Data"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/layout_manageCalendar_toolbar" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_managerCalender_addCalendar"
