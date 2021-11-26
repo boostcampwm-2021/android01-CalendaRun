@@ -59,6 +59,7 @@ class ManageCalendarFragment : BaseFragment<FragmentManageCalendarBinding>(R.lay
             ignoreLast = true
         )
         binding.rvManageCalendar.addItemDecoration(itemDecoration)
+        binding.rvManageCalendar.emptyView = binding.tvEmpty
     }
 
     private fun setupFabClickListener() {
@@ -81,7 +82,7 @@ class ManageCalendarFragment : BaseFragment<FragmentManageCalendarBinding>(R.lay
 
     private suspend fun collectCalendarItemList() {
         manageCalendarViewModel.calendarItemList.collect { calendarItemList ->
-            manageCalendarAdapter.submitList(calendarItemList)
+            manageCalendarAdapter.submitList(calendarItemList) { binding.rvManageCalendar.emptyObserver.onChanged() }
         }
     }
 
