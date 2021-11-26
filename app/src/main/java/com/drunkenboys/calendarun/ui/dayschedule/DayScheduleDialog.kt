@@ -35,6 +35,7 @@ class DayScheduleDialog : DialogFragment() {
         binding.viewModel = dayScheduleViewModel
         binding.lifecycleOwner = this
         dayScheduleAdapter = DayScheduleAdapter(LocalDate.parse(args.localDate))
+
         return AlertDialog.Builder(requireContext())
             .setView(binding.root)
             .create()
@@ -56,6 +57,7 @@ class DayScheduleDialog : DialogFragment() {
 
     private fun setupRvDaySchedule() {
         binding.rvDaySchedule.adapter = dayScheduleAdapter
+        binding.rvDaySchedule.emptyView = binding.tvEmpty
     }
 
     private fun setupImgAddSchedule() {
@@ -67,7 +69,7 @@ class DayScheduleDialog : DialogFragment() {
 
     private suspend fun collectListItem() {
         dayScheduleViewModel.listItem.collect { listItem ->
-            dayScheduleAdapter.submitList(listItem)
+            dayScheduleAdapter.submitList(listItem) { binding.rvDaySchedule.emptyObserver.onChanged() }
         }
     }
 
