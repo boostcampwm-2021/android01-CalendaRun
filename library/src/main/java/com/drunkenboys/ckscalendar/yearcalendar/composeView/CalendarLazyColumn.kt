@@ -1,6 +1,5 @@
 package com.drunkenboys.ckscalendar.yearcalendar.composeView
 
-import android.util.Log
 import android.view.Gravity
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -16,7 +15,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -42,14 +40,12 @@ fun CalendarLazyColumn(
     // RecyclerView의 상태를 관찰
     val listState = rememberLazyListState()
     val calendar by remember { viewModel.calendar }
-    val clickedDay by rememberSaveable { viewModel.clickedDay }
+    var clickedDay by rememberSaveable { mutableStateOf(LocalDate.now()) }
     val scrollPosition by rememberSaveable { viewModel.scrollPosition }
 
     // state hoisting
     val dayColumnModifier = { day: CalendarDate ->
-
         when (clickedDay) {
-
             day.date -> {
                 Modifier
                     .layoutId(day.date.toString())
@@ -70,7 +66,7 @@ fun CalendarLazyColumn(
                     )
                     .clickable(onClick = {
                         onDayClickListener?.onDayClick(day.date, 0)
-                        viewModel.clickDay(day)
+                        clickedDay = day.date
                     })
             }
         }
