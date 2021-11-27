@@ -9,7 +9,7 @@ import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-class YearCalendarViewModel: ViewModel() {
+class YearCalendarViewModel {
 
     private val _schedules = mutableStateOf<List<CalendarScheduleObject>>(emptyList())
     val schedules: State<List<CalendarScheduleObject>> = _schedules
@@ -19,9 +19,6 @@ class YearCalendarViewModel: ViewModel() {
 
     private var _calendar = mutableStateOf(createCalendarSets(LocalDate.now().year))
     val calendar: State<List<CalendarSet>> = _calendar
-
-    private val _clickedDay = mutableStateOf<LocalDate?>(LocalDate.now())
-    val clickedDay: State<LocalDate?> = _clickedDay
 
     private val _scrollPosition = mutableStateOf(12 + LocalDate.now().monthValue)
     val scrollPosition: State<Int> = _scrollPosition
@@ -95,10 +92,6 @@ class YearCalendarViewModel: ViewModel() {
         day.date == month.startDate && day.dayType != DayType.PADDING
     }
 
-    fun clickDay(day: CalendarDate) {
-        _clickedDay.value = day.date
-    }
-
     fun getDaySchedules(day: LocalDateTime) = schedules.value.filter { schedule ->
         day in schedule.startDate..schedule.endDate
     }
@@ -145,8 +138,5 @@ class YearCalendarViewModel: ViewModel() {
         fetchPrevCalendarSet()
         _calendar.value = createCalendarSets(LocalDate.now().year)
         fetchNextCalendarSet()
-
-        // 오늘 선택
-        _clickedDay.value = LocalDate.now()
     }
 }
