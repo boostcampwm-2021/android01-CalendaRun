@@ -119,7 +119,9 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
             val hasAnySchedule = scheduleContainer.any { it != null }
             binding.layoutMonthSchedule.removeAllViews()
             if (hasAnySchedule) {
-                scheduleContainer.map { it ?: makeDefaultScheduleTextView() }
+                val lastIndex = scheduleContainer.indexOfLast { it != null }
+                scheduleContainer.take(lastIndex + 1)
+                    .map { it ?: makeDefaultScheduleTextView() }
                     .forEach {
                         binding.layoutMonthSchedule.addView(it)
                     }
