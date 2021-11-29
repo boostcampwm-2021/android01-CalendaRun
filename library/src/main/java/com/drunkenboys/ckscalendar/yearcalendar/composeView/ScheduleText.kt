@@ -16,11 +16,13 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.drunkenboys.ckscalendar.data.CalendarScheduleObject
+import com.drunkenboys.ckscalendar.utils.TimeUtils
 import com.drunkenboys.ckscalendar.utils.TimeUtils.dayValue
 import com.drunkenboys.ckscalendar.utils.dp
 import com.drunkenboys.ckscalendar.yearcalendar.YearCalendarViewModel
 import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 @Composable
 fun ScheduleText(
@@ -55,4 +57,21 @@ fun ScheduleText(
         )
         Spacer(modifier = Modifier.height(2.dp))
     }
+}
+
+@Preview
+@Composable
+fun PreviewSchedule() {
+    val viewModel = YearCalendarViewModel()
+    ScheduleText(
+        today = LocalDate.now(),
+        weekScheduleList =  Array(7) { Array(viewModel.design.value.visibleScheduleCount) { CalendarScheduleObject(
+            id = 1,
+            color = TimeUtils.getColorInt(255, 0, 0),
+            text = "test",
+            startDate = LocalDateTime.now(),
+            endDate = LocalDateTime.now()
+        ) } },
+        viewModel = viewModel
+    )
 }
