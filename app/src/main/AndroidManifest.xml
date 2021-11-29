@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.달려달력">
         <service
-            android:name=".CalendaRunRemoteViewService"
+            android:name=".CalendaRunRemoteViewsService"
             android:enabled="true"
             android:exported="true"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
