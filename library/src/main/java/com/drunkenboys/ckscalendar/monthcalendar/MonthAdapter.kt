@@ -28,7 +28,7 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
 
     private val currentList = mutableListOf<CalendarDate>()
 
-    private val startDayWithMonthFlags = HashMap<Int, String>()
+    private val startDayWithMonthFlags = HashMap<String, String>()
 
     private lateinit var calendarDesign: CalendarDesignObject
 
@@ -51,8 +51,9 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
             if (calendarDate.isSelected) {
                 selectedPosition = index
             }
-            if (calendarDate.dayType != DayType.PADDING && startDayWithMonthFlags[calendarDate.date.monthValue] == null) {
-                startDayWithMonthFlags[calendarDate.date.monthValue] = "${calendarDate.date}"
+            val startDayWithDayKey = "${calendarDate.date.year}${calendarDate.date.monthValue}"
+            if (calendarDate.dayType != DayType.PADDING && startDayWithMonthFlags[startDayWithDayKey] == null) {
+                startDayWithMonthFlags[startDayWithDayKey] = "${calendarDate.date}"
             }
         }
 
@@ -103,7 +104,8 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
             binding.layoutMonthCell.isSelected = item.isSelected
             binding.tvMonthDay.text = ""
             if (item.dayType != DayType.PADDING) {
-                if (startDayWithMonthFlags[item.date.monthValue] == item.date.toString()) {
+                val startDayWithDayKey = "${item.date.year}${item.date.monthValue}"
+                if (startDayWithMonthFlags[startDayWithDayKey] == item.date.toString()) {
                     binding.tvMonthDay.text = "${item.date.monthValue}. ${item.date.dayOfMonth}"
                     binding.tvMonthDay.typeface = Typeface.DEFAULT_BOLD
                 } else {
