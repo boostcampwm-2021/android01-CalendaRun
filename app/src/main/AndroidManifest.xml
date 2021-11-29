@@ -12,6 +12,24 @@
         android:roundIcon="@mipmap/ic_main_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.달려달력">
+        <service
+            android:name=".CalendaRunRemoteViewService"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+        <receiver
+            android:name=".CalendaRunAppWidget"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="@string/ACTION_BTN_CLICK" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/calenda_run_app_widget_info" />
+        </receiver>
 
         <activity
             android:name=".MainActivity"
@@ -23,7 +41,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name="com.google.android.gms.oss.licenses.OssLicensesMenuActivity"
             android:exported="false"
@@ -31,6 +48,7 @@
             android:theme="@style/Theme.With.ActionBar">
             <intent-filter>
                 <action android:name="ACTION_LICENSES" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
