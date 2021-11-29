@@ -31,23 +31,18 @@ fun MonthCalendar(
     dayColumnModifier: (CalendarDate) -> Modifier,
     viewModel: YearCalendarViewModel
 ) {
-    val weeks = calendarSetToCalendarDatesList(month)
     var weekSchedules: Array<Array<CalendarScheduleObject?>> // 1주 스케줄
-    val isFirstOfCalendarSet = { day: CalendarDate ->
-        month.id > 0 && (day.date.dayOfMonth == 1 || day.date == month.startDate)
-    }
 
-    weeks.forEach { week ->
+    calendarSetToCalendarDatesList(month).forEach { week ->
+        weekSchedules = Array(7) { Array(viewModel.design.value.visibleScheduleCount) { null } }
         // 1주일
         // 연 표시
         ConstraintLayout(
             constraintSet = dayOfWeekConstraints(week.map { day -> day.date.toString() }),
             modifier = Modifier.fillMaxWidth()
         ) {
-            weekSchedules = Array(7) { Array(viewModel.design.value.visibleScheduleCount) { null } }
             // 월 표시
-            if (viewModel.isFirstWeek(week, month))
-                AnimatedMonthHeader(listState = listState, monthName = month.name)
+            if (viewModel.isFirstWeek(week, month)) AnimatedMonthHeader(listState = listState, monthName = month.name)
 
             week.forEach { day ->
                 when (day.dayType) {
@@ -73,7 +68,7 @@ fun MonthCalendar(
                         DayText(
                             day = day,
                             viewModel = viewModel,
-                            isFirstOfCalendarSet = isFirstOfCalendarSet(day)
+                            isFirstOfCalendarSet = month.id > 0 && (day.date.dayOfMonth == 1 || day.date == month.startDate)
                         )
 
                         ScheduleText(
