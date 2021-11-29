@@ -66,7 +66,8 @@ fun LazyListState.InitScroll(
         derivedStateOf {
             with(layoutInfo) {
                 val firstIndex = visibleItemsInfo.firstOrNull() ?: return@derivedStateOf 0
-                firstVisibleItemIndex + Period.between(firstIndex.key as LocalDate, clickedDay).months
+                val between = Period.between(firstIndex.key as LocalDate, clickedDay)
+                firstVisibleItemIndex +  between.months + between.years * 12
             }
         }
     }
