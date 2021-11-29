@@ -29,7 +29,7 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <com.drunkenboys.calendarun.view.RecyclerViewEmptySupport
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_manageCalendar"
             android:layout_width="0dp"
             android:layout_height="0dp"

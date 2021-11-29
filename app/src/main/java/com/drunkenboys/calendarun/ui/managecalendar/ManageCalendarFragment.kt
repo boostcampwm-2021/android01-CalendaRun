@@ -2,6 +2,7 @@ package com.drunkenboys.calendarun.ui.managecalendar
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.navigation.navGraphViewModels
 import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.RecyclerView
@@ -59,7 +60,6 @@ class ManageCalendarFragment : BaseFragment<FragmentManageCalendarBinding>(R.lay
             ignoreLast = true
         )
         binding.rvManageCalendar.addItemDecoration(itemDecoration)
-        binding.rvManageCalendar.emptyView = binding.tvEmpty
     }
 
     private fun setupFabClickListener() {
@@ -82,7 +82,9 @@ class ManageCalendarFragment : BaseFragment<FragmentManageCalendarBinding>(R.lay
 
     private suspend fun collectCalendarItemList() {
         manageCalendarViewModel.calendarItemList.collect { calendarItemList ->
-            manageCalendarAdapter.submitList(calendarItemList) { binding.rvManageCalendar.emptyObserver.onChanged() }
+            manageCalendarAdapter.submitList(calendarItemList)
+            binding.rvManageCalendar.isVisible = calendarItemList.isNotEmpty()
+            binding.tvEmpty.isVisible = calendarItemList.isEmpty()
         }
     }
 

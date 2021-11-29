@@ -36,7 +36,7 @@
             android:textSize="24sp"
             tools:text="1월 27일" />
 
-        <com.drunkenboys.calendarun.view.RecyclerViewEmptySupport
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_daySchedule"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
