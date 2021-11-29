@@ -1,16 +1,16 @@
 package com.drunkenboys.ckscalendar.yearcalendar.composeView
 
 import android.view.Gravity
-import android.widget.Space
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.tooling.preview.Preview
@@ -62,7 +62,19 @@ fun MonthCalendar(
 
                     // 1일
                     else -> Column(
-                        modifier = dayColumnModifier(day),
+                        modifier = Modifier.layoutId(day.date.toString())
+                            .then(dayColumnModifier(day))
+                            .drawBehind {
+                                drawLine(start = Offset(0f, 0f),
+                                    end = Offset(size.width, 0f),
+                                    color = Color.Black.copy(alpha = 0.1f))
+                                drawLine(start = Offset(size.width, 0f),
+                                    end = Offset(size.width, size.height),
+                                    color = Color.Black.copy(alpha = 0.1f))
+                                drawLine(start = Offset(size.width, size.height),
+                                    end = Offset(0f, size.height),
+                                    color = Color.Black.copy(alpha = 0.1f))
+                            },
                         horizontalAlignment = GravityMapper.toColumnAlign(viewModel.design.value.textAlign)
                     ) {
                         DayText(
