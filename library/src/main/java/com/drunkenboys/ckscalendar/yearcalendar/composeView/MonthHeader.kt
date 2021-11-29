@@ -3,6 +3,7 @@ package com.drunkenboys.ckscalendar.yearcalendar.composeView
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material.Card
@@ -36,6 +37,7 @@ fun AnimatedMonthHeader(
         modifier = Modifier
             .alpha(density)
             .zIndex(10f),
+        backgroundColor = MaterialTheme.colors.background,
         elevation = 10.dp
     ) {
         Text(
@@ -58,8 +60,8 @@ fun PreviewMonthHeader() {
     val viewModel = YearCalendarViewModel()
     CustomTheme(design = viewModel.design.value) {
         Card(
-            modifier = Modifier.wrapContentSize(),
-            elevation = 200.dp
+            modifier = Modifier.wrapContentSize().background(color = Color.Black),
+            elevation = 200.dp,
         ) {
             Text(
                 text = "1월",
