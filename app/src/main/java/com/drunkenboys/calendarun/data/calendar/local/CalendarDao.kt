@@ -14,7 +14,7 @@ interface CalendarDao {
     fun fetchAllCalendar(): Flow<List<Calendar>>
 
     @Query("SELECT * FROM `calendar` WHERE id != 1")
-    suspend fun fetchCustomCalendar(): List<Calendar>
+    fun fetchCustomCalendar(): Flow<List<Calendar>>
 
     @Query("SELECT * FROM `calendar` WHERE id == :id")
     suspend fun fetchCalendar(id: Long): Calendar
