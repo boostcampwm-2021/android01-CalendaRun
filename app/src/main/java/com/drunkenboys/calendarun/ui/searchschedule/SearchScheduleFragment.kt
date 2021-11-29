@@ -31,6 +31,10 @@ class SearchScheduleFragment : BaseFragment<FragmentSearchScheduleBinding>(R.lay
             launch { collectListItem() }
             launch { collectScheduleClickEvent() }
         }
+        navController.currentBackStackEntry
+            ?.savedStateHandle
+            ?.get<Long>(DELETE_SCHEDULE_ID)
+            ?.let { searchScheduleViewModel.deleteSchedule(it) }
     }
 
     private fun setupToolbar() {
@@ -72,5 +76,7 @@ class SearchScheduleFragment : BaseFragment<FragmentSearchScheduleBinding>(R.lay
 
         private const val SCROLL_NEGATIVE = -1
         private const val SCROLL_POSITIVE = 1
+
+        const val DELETE_SCHEDULE_ID = "deleteScheduleId"
     }
 }

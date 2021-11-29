@@ -16,6 +16,7 @@ import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import com.drunkenboys.calendarun.databinding.FragmentSaveScheduleBinding
 import com.drunkenboys.calendarun.receiver.ScheduleAlarmReceiver
 import com.drunkenboys.calendarun.ui.base.BaseFragment
+import com.drunkenboys.calendarun.ui.searchschedule.SearchScheduleFragment
 import com.drunkenboys.calendarun.util.*
 import com.drunkenboys.calendarun.util.extensions.*
 import dagger.hilt.android.AndroidEntryPoint
@@ -177,7 +178,7 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
     private suspend fun collectDeleteScheduleEvent() {
         saveScheduleViewModel.deleteScheduleEvent.collect { (schedule, calendarName) ->
             deleteNotification(schedule, calendarName)
-            showToast(getString(R.string.toast_schedule_deleted))
+            tryNotifyDeleteEvent(schedule.id)
             navController.navigateUp()
         }
     }
@@ -186,6 +187,14 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
         val alarmManager = requireContext().getSystemService<AlarmManager>() ?: return
 
         alarmManager.cancel(ScheduleAlarmReceiver.createPendingIntent(requireContext(), schedule, calendarName))
+    }
+
+    private fun tryNotifyDeleteEvent(id: Long) {
+        if (navController.previousBackStackEntry?.destination?.id == R.id.searchScheduleFragment) {
+            navController.previousBackStackEntry
+                ?.savedStateHandle
+                ?.set(SearchScheduleFragment.DELETE_SCHEDULE_ID, id)
+        }
     }
 
     private suspend fun collectBlankTitleEvent() {

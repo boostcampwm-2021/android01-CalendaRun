@@ -135,6 +135,11 @@ class SearchScheduleViewModel @Inject constructor(
         }
     }
 
+    fun deleteSchedule(id: Long) {
+        scheduleList = scheduleList.filter { it.id != id }
+        updateListItem()
+    }
+
     companion object {
 
         private const val DEBOUNCE_DURATION = 500L
