@@ -74,7 +74,7 @@ fun LazyListState.InitScroll(
 
     LaunchedEffect(scroll) {
         snapshotFlow { scroll.value }.collect { index ->
-            scrollToItem(index)
+            if (index > 0) scrollToItem(index)
         }
     }
 }
