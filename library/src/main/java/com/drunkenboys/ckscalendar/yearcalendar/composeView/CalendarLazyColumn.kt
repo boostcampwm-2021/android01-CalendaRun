@@ -15,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
@@ -24,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.drunkenboys.ckscalendar.data.*
 import com.drunkenboys.ckscalendar.listener.OnDayClickListener
 import com.drunkenboys.ckscalendar.listener.OnDaySecondClickListener
+import com.drunkenboys.ckscalendar.utils.InitScroll
 import com.drunkenboys.ckscalendar.utils.ShouldNextScroll
 import com.drunkenboys.ckscalendar.utils.ShouldPrevScroll
 import com.drunkenboys.ckscalendar.yearcalendar.CustomTheme
@@ -39,13 +41,11 @@ fun CalendarLazyColumn(
     // RecyclerView의 상태를 관찰
     val listState = rememberLazyListState()
     val calendar by remember { viewModel.calendar }
-    val clickedDay by remember { viewModel.clickedDay }
+    var clickedDay by rememberSaveable { mutableStateOf(LocalDate.now()) }
 
     // state hoisting
     val dayColumnModifier = { day: CalendarDate ->
-
         when (clickedDay) {
-
             day.date -> {
                 Modifier
                     .layoutId(day.date.toString())
@@ -66,7 +66,7 @@ fun CalendarLazyColumn(
                     )
                     .clickable(onClick = {
                         onDayClickListener?.onDayClick(day.date, 0)
-                        viewModel.clickDay(day)
+                        clickedDay = day.date
                     })
             }
         }
@@ -108,17 +108,16 @@ fun CalendarLazyColumn(
         }
     }
 
-    // 뷰가 호출되면 오늘 날짜가 보이게 스크롤
-    LaunchedEffect(listState) {
-        listState.scrollToItem(index = viewModel.getDayItemIndex())
-    }
+    with(listState) {
+        InitScroll(clickedDay = clickedDay)
 
-    listState.ShouldNextScroll {
-        viewModel.fetchNextCalendarSet()
-    }
+        ShouldNextScroll {
+            viewModel.fetchNextCalendarSet()
+        }
 
-    listState.ShouldPrevScroll {
-        viewModel.fetchPrevCalendarSet()
+        ShouldPrevScroll {
+            viewModel.fetchPrevCalendarSet()
+        }
     }
 }
 
