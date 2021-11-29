@@ -3,6 +3,8 @@ package com.drunkenboys.ckscalendar.utils
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.*
 import kotlinx.coroutines.flow.collect
+import java.time.LocalDate
+import java.time.Period
 
 // 참고: https://ichi.pro/ko/jetpack-compose-ui-muhan-moglog-peiji-moglog-194681336448872
 @Composable
@@ -52,6 +54,26 @@ fun LazyListState.ShouldPrevScroll(
         // collect
         snapshotFlow { shouldLoadMore.value }.collect { should ->
             if (should) { onLoadMore() }
+        }
+    }
+}
+
+@Composable
+fun LazyListState.InitScroll(
+    clickedDay: LocalDate
+) {
+    val scroll = remember {
+        derivedStateOf {
+            with(layoutInfo) {
+                val firstIndex = visibleItemsInfo.firstOrNull() ?: return@derivedStateOf 0
+                firstVisibleItemIndex + Period.between(firstIndex.key as LocalDate, clickedDay).months
+            }
+        }
+    }
+
+    LaunchedEffect(scroll) {
+        snapshotFlow { scroll.value }.collect { index ->
+            scrollToItem(index)
         }
     }
 }
