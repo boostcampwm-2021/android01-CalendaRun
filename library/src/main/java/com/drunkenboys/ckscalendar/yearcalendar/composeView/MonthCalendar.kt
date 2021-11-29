@@ -36,7 +36,6 @@ fun MonthCalendar(
     calendarSetToCalendarDatesList(month).forEach { week ->
         weekSchedules = Array(7) { Array(viewModel.design.value.visibleScheduleCount) { null } }
         // 1주일
-        // 연 표시
         ConstraintLayout(
             constraintSet = dayOfWeekConstraints(week.map { day -> day.date.toString() }),
             modifier = Modifier.fillMaxWidth()

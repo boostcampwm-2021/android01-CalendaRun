@@ -83,13 +83,12 @@ fun CalendarLazyColumn(
     ) {
         items(calendar, key = { slice -> slice.startDate }) { slice ->
 
-            val firstOfYear = LocalDate.of(slice.endDate.year, 1, 1)
+            val firstOfYear = LocalDate.of(slice.startDate.year, 1, 1)
 
             // 해가 갱신될 때마다 상단에 연표시
-            if (firstOfYear in slice.startDate..slice.endDate) {
-
+            if (firstOfYear in slice.startDate..slice.endDate || firstOfYear.plusYears(1L) in slice.startDate..slice.endDate) {
                 Text(
-                    text = "${firstOfYear.year}년",
+                    text = "${slice.startDate.year}년",
                     color = MaterialTheme.colors.primary,
                     modifier = Modifier
                         .fillMaxWidth()
