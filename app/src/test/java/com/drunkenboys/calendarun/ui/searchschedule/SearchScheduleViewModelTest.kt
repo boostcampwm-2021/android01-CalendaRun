@@ -63,7 +63,7 @@ class SearchScheduleViewModelTest {
         advanceTimeBy(500)
         val result = viewModel.listItem.value
 
-        assertEquals(0, result.size)
+        assertEquals(3, result.size)
     }
 
     @Test
