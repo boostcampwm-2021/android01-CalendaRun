@@ -88,7 +88,8 @@ class SearchScheduleViewModel @Inject constructor(
             val today = LocalDate.now()
 
             scheduleList = scheduleDataSource.fetchMatchedScheduleAfter(word, today.seconds - 1)
-            prevKey = if (scheduleList.isEmpty()) LocalDateTime.now() else scheduleList.firstOrNull()?.startDate
+            if (scheduleList.isEmpty()) scheduleList = scheduleDataSource.fetchMatchedScheduleBefore(word, today.seconds)
+            prevKey = scheduleList.firstOrNull()?.startDate
             nextKey = scheduleList.lastOrNull()?.startDate
             updateListItem()
 
