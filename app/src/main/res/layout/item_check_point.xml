@@ -9,8 +9,6 @@
 
         <import type="java.time.LocalDate" />
 
-        <import type="com.drunkenboys.calendarun.ui.saveschedule.model.DateType" />
-
         <variable
             name="item"
             type="com.drunkenboys.calendarun.ui.savecalendar.model.CheckPointItem" />
@@ -66,7 +64,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:hint="@string/check_point_pickDate"
-            android:onClick="@{() -> adapter.onClick.invoke(item, DateType.START)}"
+            android:onClick="@{() -> adapter.onClick.invoke(item)}"
             android:text="@{DateConverterKt.localDateToString(item.startDate)}"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="@+id/tv_checkPoint_startDate"
@@ -92,7 +90,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:hint="@string/check_point_pickDate"
-            android:onClick="@{() -> adapter.onClick.invoke(item, DateType.END)}"
+            android:onClick="@{() -> adapter.onClick.invoke(item)}"
             android:text="@{DateConverterKt.localDateToString(item.endDate)}"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="@+id/tv_checkPoint_endDate"

@@ -36,6 +36,28 @@ suspend fun Fragment.pickDateInMillis(localDate: LocalDate? = null) = suspendCan
     datePicker.show(parentFragmentManager, datePicker::class.simpleName)
 }
 
+suspend fun Fragment.pickRangeDateInMillis(startDate: LocalDate? = null, endDate: LocalDate? = null) =
+    suspendCancellableCoroutine<androidx.core.util.Pair<Long, Long>?> { cont ->
+        val datePicker = MaterialDatePicker.Builder.dateRangePicker()
+            .setTitleText(getString(R.string.saveSchedule_pickDate))
+            .setSelection(
+                androidx.core.util.Pair(
+                    startDate?.milliseconds ?: MaterialDatePicker.todayInUtcMilliseconds(),
+                    endDate?.milliseconds ?: MaterialDatePicker.todayInUtcMilliseconds()
+                )
+            )
+            .build()
+
+        datePicker.apply {
+            addOnPositiveButtonClickListener { timeInMills -> cont.resume(timeInMills) }
+            addOnCancelListener { if (cont.isActive) cont.resume(null) }
+            addOnDismissListener { if (cont.isActive) cont.resume(null) }
+            addOnNegativeButtonClickListener { if (cont.isActive) cont.resume(null) }
+        }
+
+        datePicker.show(parentFragmentManager, datePicker::class.simpleName)
+    }
+
 suspend fun Fragment.pickTime(localTime: LocalTime? = null) = suspendCancellableCoroutine<Pair<Int, Int>?> { cont ->
     val timePicker = MaterialTimePicker.Builder()
         .setTimeFormat(TimeFormat.CLOCK_12H)

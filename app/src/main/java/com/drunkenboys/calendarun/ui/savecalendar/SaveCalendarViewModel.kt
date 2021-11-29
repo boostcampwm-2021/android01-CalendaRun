@@ -130,16 +130,7 @@ class SaveCalendarViewModel @Inject constructor(
                 emitBlankSliceNameEvent(item)
                 canSave = false
             }
-            if (startDate == null) {
-                emitBlankSliceStartDateEvent(item)
-                canSave = false
-            }
-            if (endDate == null) {
-                emitBlankSliceEndDateEvent(item)
-                canSave = false
-            }
-
-            if (startDate != null && endDate != null && !isValidateCheckPointDate(startDate, endDate)) {
+            if (startDate == null || endDate == null) {
                 emitBlankSliceStartDateEvent(item)
                 emitBlankSliceEndDateEvent(item)
                 canSave = false
@@ -231,6 +222,4 @@ class SaveCalendarViewModel @Inject constructor(
             item.isEndDateBlank.emit(Unit)
         }
     }
-
-    private fun isValidateCheckPointDate(startDate: LocalDate?, endDate: LocalDate?) = startDate?.isBefore(endDate) ?: true
 }

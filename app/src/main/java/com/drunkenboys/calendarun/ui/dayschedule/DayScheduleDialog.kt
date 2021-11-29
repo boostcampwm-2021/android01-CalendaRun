@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -35,6 +36,7 @@ class DayScheduleDialog : DialogFragment() {
         binding.viewModel = dayScheduleViewModel
         binding.lifecycleOwner = this
         dayScheduleAdapter = DayScheduleAdapter(LocalDate.parse(args.localDate))
+
         return AlertDialog.Builder(requireContext())
             .setView(binding.root)
             .create()
@@ -68,6 +70,8 @@ class DayScheduleDialog : DialogFragment() {
     private suspend fun collectListItem() {
         dayScheduleViewModel.listItem.collect { listItem ->
             dayScheduleAdapter.submitList(listItem)
+            binding.rvDaySchedule.isVisible = listItem.isNotEmpty()
+            binding.tvEmpty.isVisible = listItem.isEmpty()
         }
     }
 
