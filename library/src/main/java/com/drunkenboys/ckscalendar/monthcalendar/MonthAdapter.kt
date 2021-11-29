@@ -29,6 +29,7 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
     private val currentList = mutableListOf<CalendarDate>()
 
     private val startDayWithMonthFlags = HashMap<String, String>()
+    val startDayWithYearFlags = HashMap<Int, Int>()
 
     private lateinit var calendarDesign: CalendarDesignObject
 
@@ -47,13 +48,20 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
         currentPagePosition: Int
     ) {
         startDayWithMonthFlags.clear()
+        startDayWithYearFlags.clear()
         list.forEachIndexed { index, calendarDate ->
             if (calendarDate.isSelected) {
                 selectedPosition = index
             }
+            // find FirstDay of Month
             val startDayWithDayKey = "${calendarDate.date.year}${calendarDate.date.monthValue}"
             if (calendarDate.dayType != DayType.PADDING && startDayWithMonthFlags[startDayWithDayKey] == null) {
                 startDayWithMonthFlags[startDayWithDayKey] = "${calendarDate.date}"
+            }
+
+            // find FirstDay of Year
+            if (list.size > 42 && calendarDate.date.year != 1970 && startDayWithYearFlags[calendarDate.date.year] == null) {
+                startDayWithYearFlags[calendarDate.date.year] = index
             }
         }
 

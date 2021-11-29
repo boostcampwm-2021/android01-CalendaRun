@@ -151,6 +151,7 @@ class MonthPageAdapter : RecyclerView.Adapter<MonthPageAdapter.Holder>() {
         init {
             binding.rvMonthCalendar.adapter = monthAdapter
             binding.rvMonthCalendar.itemAnimator = null
+            binding.rvMonthCalendar.addItemDecoration(MonthHeaderItemDecorator())
             binding.rvMonthCalendar.layoutManager = GridLayoutManager(itemView.context, 7)
         }
 
