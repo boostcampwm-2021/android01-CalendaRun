@@ -89,7 +89,7 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
 
     private suspend fun collectCheckPointItemList() {
         saveCalendarViewModel.checkPointItemList.collect { list ->
-            saveCalendarAdapter.submitList(list.sortedWith(compareBy(nullsFirst(reverseOrder())) { it.startDate.value }))
+            saveCalendarAdapter.submitList(list.sortedWith(compareBy(nullsLast()) { it.startDate.value }))
             delay(300)
             binding.svSaveCalendar.smoothScrollTo(0, binding.tvSaveCalendarSaveCalendar.bottom)
         }
