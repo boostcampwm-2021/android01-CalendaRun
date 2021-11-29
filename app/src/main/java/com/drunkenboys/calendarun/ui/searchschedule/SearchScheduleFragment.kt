@@ -26,6 +26,7 @@ class SearchScheduleFragment : BaseFragment<FragmentSearchScheduleBinding>(R.lay
 
         setupToolbar()
         setupRecyclerView()
+        checkIfScheduleDeleted()
 
         launchAndRepeatWithViewLifecycle {
             launch { collectListItem() }
@@ -55,6 +56,13 @@ class SearchScheduleFragment : BaseFragment<FragmentSearchScheduleBinding>(R.lay
         itemAnimator = null
     }
 
+    private fun checkIfScheduleDeleted() {
+        navController.currentBackStackEntry
+            ?.savedStateHandle
+            ?.get<Long>(DELETE_SCHEDULE_ID)
+            ?.let { searchScheduleViewModel.deleteSchedule(it) }
+    }
+
     private suspend fun collectListItem() {
         searchScheduleViewModel.listItem.collect { listItem ->
             searchScheduleAdapter.submitList(listItem)
@@ -72,5 +80,7 @@ class SearchScheduleFragment : BaseFragment<FragmentSearchScheduleBinding>(R.lay
 
         private const val SCROLL_NEGATIVE = -1
         private const val SCROLL_POSITIVE = 1
+
+        const val DELETE_SCHEDULE_ID = "deleteScheduleId"
     }
 }

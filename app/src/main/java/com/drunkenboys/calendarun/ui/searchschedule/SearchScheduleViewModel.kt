@@ -27,10 +27,13 @@ class SearchScheduleViewModel @Inject constructor(
 
     val word = MutableStateFlow("")
 
-    private var scheduleList: List<Schedule> = emptyList()
+    private val scheduleList = MutableStateFlow<List<Schedule>>(emptyList())
 
-    private val _listItem = MutableStateFlow<List<DateScheduleItem>>(emptyList())
-    val listItem: StateFlow<List<DateScheduleItem>> = _listItem
+    val listItem: StateFlow<List<DateScheduleItem>> = scheduleList.map { scheduleList ->
+        scheduleList.map { schedule -> ScheduleItem(schedule) { emitScheduleClickEvent(schedule) } }
+            .groupBy { scheduleItem -> scheduleItem.schedule.startDate.toLocalDate() }
+            .flatMap { (localDate, scheduleList) -> listOf(DateItem(localDate)) + scheduleList }
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     private val _isSearching = MutableStateFlow(false)
     val isSearching: StateFlow<Boolean> = _isSearching
@@ -87,10 +90,10 @@ class SearchScheduleViewModel @Inject constructor(
 
             val today = LocalDate.now()
 
-            scheduleList = scheduleDataSource.fetchMatchedScheduleAfter(word, today.seconds - 1)
-            prevKey = if (scheduleList.isEmpty()) LocalDateTime.now() else scheduleList.firstOrNull()?.startDate
-            nextKey = scheduleList.lastOrNull()?.startDate
-            updateListItem()
+            scheduleList.value = scheduleDataSource.fetchMatchedScheduleAfter(word, today.seconds - 1)
+            if (scheduleList.value.isEmpty()) scheduleList.value = scheduleDataSource.fetchMatchedScheduleBefore(word, today.seconds)
+            prevKey = scheduleList.value.firstOrNull()?.startDate
+            nextKey = scheduleList.value.lastOrNull()?.startDate
 
             _isSearching.value = false
         }
@@ -101,11 +104,9 @@ class SearchScheduleViewModel @Inject constructor(
         if (newList.isEmpty()) {
             prevKey = null
         } else {
-            scheduleList = newList + scheduleList.take(ScheduleDao.SCHEDULE_PAGING_SIZE)
-            prevKey = scheduleList.firstOrNull()?.startDate
-            nextKey = scheduleList.lastOrNull()?.startDate
-
-            updateListItem()
+            scheduleList.value = newList + scheduleList.value.take(ScheduleDao.SCHEDULE_PAGING_SIZE)
+            prevKey = scheduleList.value.firstOrNull()?.startDate
+            nextKey = scheduleList.value.lastOrNull()?.startDate
         }
     }
 
@@ -114,24 +115,20 @@ class SearchScheduleViewModel @Inject constructor(
         if (newList.isEmpty()) {
             nextKey = null
         } else {
-            scheduleList = scheduleList.takeLast(ScheduleDao.SCHEDULE_PAGING_SIZE) + newList
-            prevKey = scheduleList.firstOrNull()?.startDate
-            nextKey = scheduleList.lastOrNull()?.startDate
-
-            updateListItem()
+            scheduleList.value = scheduleList.value.takeLast(ScheduleDao.SCHEDULE_PAGING_SIZE) + newList
+            prevKey = scheduleList.value.firstOrNull()?.startDate
+            nextKey = scheduleList.value.lastOrNull()?.startDate
         }
-    }
-
-    private fun updateListItem() {
-        _listItem.value = scheduleList.map { schedule -> ScheduleItem(schedule) { emitScheduleClickEvent(schedule) } }
-            .groupBy { scheduleItem -> scheduleItem.schedule.startDate.toLocalDate() }
-            .flatMap { (localDate, scheduleList) -> listOf(DateItem(localDate)) + scheduleList }
     }
 
     private fun emitScheduleClickEvent(schedule: Schedule) {
         viewModelScope.launch {
             _scheduleClickEvent.emit(schedule)
         }
+    }
+
+    fun deleteSchedule(id: Long) {
+        scheduleList.value = scheduleList.value.filter { it.id != id }
     }
 
     companion object {
