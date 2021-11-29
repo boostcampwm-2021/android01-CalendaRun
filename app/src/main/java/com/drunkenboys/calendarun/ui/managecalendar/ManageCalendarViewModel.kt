@@ -5,10 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.drunkenboys.calendarun.data.calendar.local.CalendarLocalDataSource
 import com.drunkenboys.calendarun.ui.managecalendar.model.CalendarItem
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -17,29 +14,13 @@ class ManageCalendarViewModel @Inject constructor(
     private val calendarLocalDataSource: CalendarLocalDataSource
 ) : ViewModel() {
 
-    private val _calendarItemList = MutableStateFlow<List<CalendarItem>>(emptyList())
-    val calendarItemList: StateFlow<List<CalendarItem>> = _calendarItemList
+    val calendarItemList = calendarLocalDataSource.fetchCustomCalendar()
+        .map { calendarList ->
+            calendarList.map { calendar -> CalendarItem.from(calendar) }
+        }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     private val _deleteCalendarEvent = MutableSharedFlow<Unit>()
     val deleteCalendarEvent: SharedFlow<Unit> = _deleteCalendarEvent
-
-    fun fetchCustomCalendarList() {
-        viewModelScope.launch {
-            val calendarList = calendarLocalDataSource.fetchCustomCalendar()
-            val newCalendarItemList = mutableListOf<CalendarItem>()
-            calendarList.forEach { calendar ->
-                newCalendarItemList.add(
-                    CalendarItem(
-                        id = calendar.id,
-                        name = calendar.name,
-                        startDate = calendar.startDate,
-                        endDate = calendar.endDate
-                    )
-                )
-            }
-            _calendarItemList.emit(newCalendarItemList)
-        }
-    }
 
     fun deleteCalendarItem(currentCalendarItemList: List<CalendarItem>) {
         viewModelScope.launch {
@@ -50,7 +31,6 @@ class ManageCalendarViewModel @Inject constructor(
                         calendarItem.toCalendar()
                     )
                 }
-            fetchCustomCalendarList()
         }
     }
 
