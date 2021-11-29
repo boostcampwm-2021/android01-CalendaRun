@@ -20,9 +20,6 @@ class YearCalendarViewModel {
     private var _calendar = mutableStateOf(createCalendarSets(LocalDate.now().year))
     val calendar: State<List<CalendarSet>> = _calendar
 
-    private val _scrollPosition = mutableStateOf(12 + LocalDate.now().monthValue)
-    val scrollPosition: State<Int> = _scrollPosition
-
     private var recomposeScope: RecomposeScope? = null
 
     fun setRecomposeScope(recompose: RecomposeScope) {
@@ -45,15 +42,6 @@ class YearCalendarViewModel {
 
     fun setDefaultDesign() {
         _design.value = CalendarDesignObject.getDefaultDesign()
-    }
-
-    // FIXME: 체크포인트 속에서 오늘의 날짜 찾기
-    fun getDayScrollPosition(day: LocalDate = LocalDate.now()): Int {
-        return day.monthValue
-    }
-
-    fun setScrollPosition(index: Int) {
-        _scrollPosition.value = index
     }
 
     fun setWeekSchedules(
