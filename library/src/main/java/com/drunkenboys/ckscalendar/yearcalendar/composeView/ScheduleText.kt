@@ -24,29 +24,17 @@ fun ScheduleText(
     weekScheduleList: Array<Array<CalendarScheduleObject?>>,
     viewModel: YearCalendarViewModel
 ) {
-    val weekNum = (today.dayOfWeek.dayValue())
-
-    val scheduleText = { schedule: CalendarScheduleObject? ->
-        when {
-            schedule == null -> " "
-            schedule.startDate.toLocalDate() == today || today.dayOfWeek == DayOfWeek.SUNDAY -> schedule.text
-            else -> " "
-        }
-    }
-
-    val color = { schedule: CalendarScheduleObject? ->
-        if (schedule != null) Color(schedule.color) else Color.Transparent
-    }
-
     viewModel.setWeekSchedules(weekScheduleList, today)
 
-    weekScheduleList[weekNum].forEach { schedule ->
+    weekScheduleList[today.dayOfWeek.dayValue()].forEach { schedule ->
         Text(
-            text = scheduleText(schedule),
+            text = if (schedule != null && (schedule.startDate.toLocalDate() == today || today.dayOfWeek == DayOfWeek.SUNDAY))
+                schedule.text else " ",
             maxLines = 1,
             modifier = Modifier
                 .fillMaxWidth()
-                .background(color = color(schedule)).padding(4.dp),
+                .background(color = if (schedule != null) Color(schedule.color) else Color.Transparent)
+                .padding(4.dp),
             overflow = TextOverflow.Ellipsis,
             fontSize = viewModel.design.value.textSize.dp(),
             color = Color.White
