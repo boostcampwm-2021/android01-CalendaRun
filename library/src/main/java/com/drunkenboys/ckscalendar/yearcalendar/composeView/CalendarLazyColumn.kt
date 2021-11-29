@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.drunkenboys.ckscalendar.data.*
 import com.drunkenboys.ckscalendar.listener.OnDayClickListener
 import com.drunkenboys.ckscalendar.listener.OnDaySecondClickListener
+import com.drunkenboys.ckscalendar.utils.InitScroll
 import com.drunkenboys.ckscalendar.utils.ShouldNextScroll
 import com.drunkenboys.ckscalendar.utils.ShouldPrevScroll
 import com.drunkenboys.ckscalendar.yearcalendar.CustomTheme
@@ -41,7 +42,6 @@ fun CalendarLazyColumn(
     val listState = rememberLazyListState()
     val calendar by remember { viewModel.calendar }
     var clickedDay by rememberSaveable { mutableStateOf(LocalDate.now()) }
-    val scrollPosition by rememberSaveable { viewModel.scrollPosition }
 
     // state hoisting
     val dayColumnModifier = { day: CalendarDate ->
@@ -74,11 +74,6 @@ fun CalendarLazyColumn(
 
     // setSchedule 호출 시 recompose할 Scope 전달
     viewModel.setRecomposeScope(currentRecomposeScope)
-
-    // 종료를 감지
-
-//    viewModel.setScrollPosition(listState.layoutInfo.visibleItemsInfo.firstOrNull()?.index ?: 15)
-
 
     // RecyclerView와 유사
     LazyColumn(
@@ -113,17 +108,16 @@ fun CalendarLazyColumn(
         }
     }
 
-    // 뷰가 호출되면 오늘 날짜가 보이게 스크롤
-    LaunchedEffect(listState) {
-        listState.scrollToItem(index = scrollPosition)
-    }
+    with(listState) {
+        InitScroll(clickedDay = clickedDay)
 
-    listState.ShouldNextScroll {
-        viewModel.fetchNextCalendarSet()
-    }
+        ShouldNextScroll {
+            viewModel.fetchNextCalendarSet()
+        }
 
-    listState.ShouldPrevScroll {
-        viewModel.fetchPrevCalendarSet()
+        ShouldPrevScroll {
+            viewModel.fetchPrevCalendarSet()
+        }
     }
 }
 
