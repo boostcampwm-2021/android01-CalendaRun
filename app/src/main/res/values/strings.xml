@@ -103,5 +103,6 @@
     <string name="calendar_manage_no_data">😥 추가된 달력이 없습니다.\n 달력을 추가해 보세요!</string>
     <string name="calendar_list">달력 목록</string>
     <string name="calendar_slice">슬라이스</string>
+    <string name="schedule_no_data">📚 일정이 없습니다.</string>
 
 </resources>
