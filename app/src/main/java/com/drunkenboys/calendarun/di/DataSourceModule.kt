@@ -4,6 +4,8 @@ import com.drunkenboys.calendarun.data.calendar.local.CalendarLocalDataSource
 import com.drunkenboys.calendarun.data.calendar.local.CalendarLocalDataSourceImpl
 import com.drunkenboys.calendarun.data.calendartheme.local.CalendarThemeLocalDataSource
 import com.drunkenboys.calendarun.data.calendartheme.local.CalendarThemeLocalDataSourceImpl
+import com.drunkenboys.calendarun.data.holiday.local.HolidayLocalDataSource
+import com.drunkenboys.calendarun.data.holiday.local.HolidayLocalDataSourceImpl
 import com.drunkenboys.calendarun.data.schedule.local.ScheduleLocalDataSource
 import com.drunkenboys.calendarun.data.schedule.local.ScheduleLocalDataSourceImpl
 import com.drunkenboys.calendarun.data.slice.local.SliceLocalDataSource
@@ -29,4 +31,6 @@ abstract class DataSourceModule {
     @Binds
     abstract fun bindCalendarThemeDataSource(dataSource: CalendarThemeLocalDataSourceImpl): CalendarThemeLocalDataSource
 
+    @Binds
+    abstract fun bindHolidayDataSource(dataSource: HolidayLocalDataSourceImpl): HolidayLocalDataSource
 }
