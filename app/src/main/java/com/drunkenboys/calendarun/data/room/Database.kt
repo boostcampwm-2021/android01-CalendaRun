@@ -14,7 +14,7 @@ import com.drunkenboys.calendarun.data.schedule.local.ScheduleDao
 import com.drunkenboys.calendarun.data.slice.entity.Slice
 import com.drunkenboys.calendarun.data.slice.local.SliceDao
 
-@Database(entities = [Calendar::class, Slice::class, Schedule::class, CalendarTheme::class], version = 5)
+@Database(entities = [Calendar::class, Slice::class, Schedule::class, CalendarTheme::class], version = 6)
 @TypeConverters(Converters::class)
 abstract class Database : RoomDatabase() {
 
@@ -26,11 +26,28 @@ abstract class Database : RoomDatabase() {
 
     abstract fun calendarThemeDao(): CalendarThemeDao
 
+    abstract fun holidayDao(): HolidayDao
+
     companion object {
 
         val MIGRATION_4_5 = object : Migration(4, 5) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL("ALTER TABLE `CheckPoint` RENAME TO `Slice`")
+            }
+        }
+
+        val MIGRATION_5_6 = object : Migration(5, 6) {
+            // TODO: 2021-11-30 migration 코드 짜기
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL(
+                    """
+                        CREATE TABLE Holiday (
+                            id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                            name TEXT NOT NULL,
+                            date INTEGER NOT NULL
+                        )
+                    """.trimIndent()
+                )
             }
         }
 
