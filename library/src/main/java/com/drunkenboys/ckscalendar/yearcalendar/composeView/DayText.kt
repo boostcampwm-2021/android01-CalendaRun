@@ -1,6 +1,8 @@
 package com.drunkenboys.ckscalendar.yearcalendar.composeView
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -32,7 +34,15 @@ fun DayText(
             DayType.SUNDAY -> Color(viewModel.design.value.sundayTextColor)
             else -> MaterialTheme.colors.primary
         },
-        modifier = Modifier.layoutId(day.date.toString()).padding(start = 5.dp, end = 5.dp),
+        modifier = Modifier
+            .layoutId(day.date.toString())
+            .border(
+                width = 1.dp,
+                shape = CircleShape,
+                color = if (LocalDate.now() == day.date) MaterialTheme.colors.primary else Color.Transparent
+            )
+            .padding(5.dp)
+        ,
         textAlign = GravityMapper.toTextAlign(viewModel.design.value.textAlign),
         fontSize = viewModel.design.value.textSize.dp(),
         fontWeight = if (isFirstOfCalendarSet) FontWeight.Bold else null
