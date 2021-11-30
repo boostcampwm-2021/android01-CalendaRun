@@ -28,7 +28,7 @@ fun ScheduleText(
 
     weekScheduleList[today.dayOfWeek.dayValue()].forEach { schedule ->
         Row {
-            if (schedule != null && (schedule.startDate.toLocalDate() == today)) Spacer(modifier = Modifier.width(10.dp))
+            if (schedule != null && (schedule.startDate.toLocalDate() == today)) Spacer(modifier = Modifier.width(2.dp))
 
             Text(
                 text = if (schedule != null && (schedule.startDate.toLocalDate() == today || today.dayOfWeek == DayOfWeek.SUNDAY))
