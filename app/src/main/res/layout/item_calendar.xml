@@ -97,6 +97,7 @@
             android:layout_height="wrap_content"
             android:button="@drawable/selector_check_box_18"
             android:checked="@={item.check}"
+            android:onCheckedChanged="@{adapter.onCheckedChangeListener}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
