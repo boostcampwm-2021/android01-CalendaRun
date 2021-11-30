@@ -1,5 +1,6 @@
 package com.drunkenboys.calendarun.ui.maincalendar
 
+import android.graphics.Color
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asFlow
@@ -7,6 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.drunkenboys.calendarun.KEY_CALENDAR_ID
 import com.drunkenboys.calendarun.data.calendar.local.CalendarLocalDataSource
 import com.drunkenboys.calendarun.data.calendartheme.local.CalendarThemeLocalDataSource
+import com.drunkenboys.calendarun.data.holiday.entity.Holiday
+import com.drunkenboys.calendarun.data.holiday.local.HolidayLocalDataSource
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import com.drunkenboys.calendarun.data.schedule.local.ScheduleLocalDataSource
 import com.drunkenboys.calendarun.data.slice.entity.Slice
@@ -19,6 +22,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
 import javax.inject.Inject
 
 @HiltViewModel
@@ -27,6 +32,7 @@ class MainCalendarViewModel @Inject constructor(
     private val calendarLocalDataSource: CalendarLocalDataSource,
     private val sliceLocalDataSource: SliceLocalDataSource,
     private val scheduleLocalDataSource: ScheduleLocalDataSource,
+    private val holidayLocalDataSource: HolidayLocalDataSource,
     calendarThemeDataSource: CalendarThemeLocalDataSource
 ) : ViewModel() {
 
@@ -48,6 +54,12 @@ class MainCalendarViewModel @Inject constructor(
                 sliceList.map { slice -> slice.toCalendarSet() }
             }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
+    val holidayList = holidayLocalDataSource.fetchAllHoliday()
+        .map { holidayList ->
+            holidayList.map { holiday -> holiday.toCalendarScheduleObject() }
+        }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     @ExperimentalCoroutinesApi
     val scheduleList = calendarId.flatMapLatest { calendarId ->
@@ -112,5 +124,13 @@ class MainCalendarViewModel @Inject constructor(
         text = name,
         startDate = startDate,
         endDate = endDate
+    )
+
+    private fun Holiday.toCalendarScheduleObject() = CalendarScheduleObject(
+        id = id.toInt(),
+        color = Color.RED,
+        text = name,
+        startDate = LocalDateTime.of(date, LocalTime.MIN),
+        endDate = LocalDateTime.of(date, LocalTime.MIN)
     )
 }
