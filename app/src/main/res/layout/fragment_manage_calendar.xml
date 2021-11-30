@@ -33,8 +33,7 @@
             android:id="@+id/tv_manageCalendar_caption"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="16dp"
-            android:paddingTop="16dp"
+            android:padding="16dp"
             android:text="@string/calendar_list"
             android:textColor="?colorOnSurface"
             android:textSize="16dp"
@@ -43,10 +42,10 @@
             app:layout_constraintTop_toBottomOf="@id/layout_manageCalendar_toolbar" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:background="@color/light_grey"
             android:id="@+id/rv_manageCalendar"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:background="@color/light_grey"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

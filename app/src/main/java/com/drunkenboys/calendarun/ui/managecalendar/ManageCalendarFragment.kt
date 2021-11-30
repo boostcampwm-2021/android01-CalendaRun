@@ -51,14 +51,6 @@ class ManageCalendarFragment : BaseFragment<FragmentManageCalendarBinding>(R.lay
 
     private fun setupAdapter() {
         binding.rvManageCalendar.adapter = manageCalendarAdapter
-        val itemDecoration = HorizontalInsetDividerDecoration(
-            context = requireContext(),
-            orientation = RecyclerView.VERTICAL,
-            leftInset = 16f,
-            rightInset = 16f,
-            ignoreLast = true
-        )
-        binding.rvManageCalendar.addItemDecoration(itemDecoration)
     }
 
     private fun setupFabClickListener() {

@@ -21,16 +21,19 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:background="@color/white"
+        android:paddingHorizontal="18dp">
 
         <TextView
             android:id="@+id/tv_checkPoint_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:text="@string/check_point_name"
-            android:textSize="18dp"
+            android:textColor="?colorOnSurface"
+            android:textSize="14dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -41,6 +44,7 @@
             android:hint="@string/check_point_name"
             android:inputType="text"
             android:text="@={item.name}"
+            android:textSize="16dp"
             app:layout_constraintBottom_toBottomOf="@+id/tv_checkPoint_name"
             app:layout_constraintEnd_toEndOf="@+id/tv_checkPoint_startDatePicker"
             app:layout_constraintStart_toStartOf="@+id/tv_checkPoint_startDatePicker"
@@ -53,7 +57,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="@string/check_point_startDate"
-            android:textSize="18dp"
+            android:textColor="?colorOnSurface"
+            android:textSize="14dp"
             app:layout_constraintStart_toStartOf="@+id/tv_checkPoint_name"
             app:layout_constraintTop_toBottomOf="@+id/tv_checkPoint_name" />
 
@@ -66,7 +71,7 @@
             android:hint="@string/check_point_pickDate"
             android:onClick="@{() -> adapter.onClick.invoke(item)}"
             android:text="@{DateConverterKt.localDateToString(item.startDate)}"
-            android:textSize="18sp"
+            android:textSize="16dp"
             app:layout_constraintBottom_toBottomOf="@+id/tv_checkPoint_startDate"
             app:layout_constraintEnd_toStartOf="@+id/cb_checkPoint_select"
             app:layout_constraintStart_toEndOf="@+id/tv_checkPoint_startDate"
@@ -76,13 +81,13 @@
             android:id="@+id/tv_checkPoint_endDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
             android:text="@string/check_point_endDate"
-            android:textSize="18dp"
+            android:textColor="?colorOnSurface"
+            android:textSize="14dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/tv_checkPoint_startDate"
             app:layout_constraintTop_toBottomOf="@+id/tv_checkPoint_startDate" />
 
         <com.drunkenboys.calendarun.view.ErrorGuideTextView
@@ -92,7 +97,7 @@
             android:hint="@string/check_point_pickDate"
             android:onClick="@{() -> adapter.onClick.invoke(item)}"
             android:text="@{DateConverterKt.localDateToString(item.endDate)}"
-            android:textSize="18sp"
+            android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="@+id/tv_checkPoint_endDate"
             app:layout_constraintEnd_toEndOf="@+id/tv_checkPoint_startDatePicker"
             app:layout_constraintStart_toStartOf="@+id/tv_checkPoint_startDatePicker"
@@ -100,7 +105,7 @@
 
         <com.google.android.material.checkbox.MaterialCheckBox
             android:id="@+id/cb_checkPoint_select"
-            android:layout_width="wrap_content"
+            android:layout_width="32dp"
             android:layout_height="wrap_content"
             android:button="@drawable/selector_check_box_18"
             android:checked="@={item.check}"
