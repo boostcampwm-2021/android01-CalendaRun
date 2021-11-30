@@ -24,7 +24,7 @@
     <!-- view_check_point_footer-->
     <string name="check_point_footer_save">추가</string>
 
-    <string name="saveSchedule_title">제목</string>
+    <string name="saveSchedule_title">일정 제목</string>
     <string name="saveSchedule_start">시작</string>
     <string name="saveSchedule_end">종료</string>
     <string name="saveSchedule_memo">메모</string>
