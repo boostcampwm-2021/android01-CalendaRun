@@ -19,42 +19,56 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="@{() -> adapter.onClick.invoke(item)}">
+        android:layout_marginTop="6dp"
+        android:background="@color/background_white"
+        android:onClick="@{() -> adapter.onClick.invoke(item)}"
+        android:paddingVertical="16dp">
 
-        <TextView
-            android:id="@+id/tv_calendar_name"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="16dp"
-            android:text="@string/saveCalendar_title"
-            app:layout_constraintEnd_toStartOf="@+id/ch_calendar_select"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tv_calendar_nameValue"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginHorizontal="16dp"
             android:text="@{item.name}"
+            android:textColor="?colorOnSurface"
             android:textSize="18dp"
-            app:layout_constraintEnd_toEndOf="@+id/tv_calendar_name"
-            app:layout_constraintStart_toStartOf="@id/tv_calendar_name"
-            app:layout_constraintTop_toBottomOf="@id/tv_calendar_name"
+            app:layout_constraintEnd_toStartOf="@+id/ch_calendar_select"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             tools:text="모의고사" />
+
+        <View
+            android:layout_width="2dp"
+            android:layout_height="0dp"
+            android:layout_marginEnd="6dp"
+            android:background="@color/light_pink"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_startDate_name"
+            app:layout_constraintEnd_toStartOf="@+id/tv_startDate_name"
+            app:layout_constraintTop_toTopOf="@+id/tv_startDate_name" />
 
         <TextView
             android:id="@+id/tv_startDate_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
             android:text="@string/saveCalendar_start_date"
-            app:layout_constraintEnd_toStartOf="@+id/tv_endDate_name"
+            android:textColor="?colorOnSurface"
+            app:layout_constraintEnd_toStartOf="@+id/tv_startDate_nameValue"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="@+id/tv_calendar_nameValue"
             app:layout_constraintTop_toBottomOf="@id/tv_calendar_nameValue" />
+
+        <View
+            android:layout_width="2dp"
+            android:layout_height="0dp"
+            android:layout_marginEnd="6dp"
+            android:background="@color/dark_grey"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_endDate_name"
+            app:layout_constraintEnd_toStartOf="@+id/tv_endDate_name"
+            app:layout_constraintTop_toTopOf="@+id/tv_endDate_name" />
 
         <TextView
             android:id="@+id/tv_endDate_name"
@@ -62,44 +76,49 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="@string/saveCalendar_end_date"
-            app:layout_constraintEnd_toEndOf="@+id/tv_calendar_nameValue"
+            android:textColor="?colorOnSurface"
+            app:layout_constraintEnd_toEndOf="@+id/tv_startDate_name"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/tv_startDate_name"
-            app:layout_constraintTop_toBottomOf="@id/tv_calendar_nameValue" />
+            app:layout_constraintStart_toStartOf="@+id/tv_startDate_name"
+            app:layout_constraintTop_toBottomOf="@+id/tv_startDate_name" />
 
         <TextView
             android:id="@+id/tv_startDate_nameValue"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
             android:text="@{DateConverterKt.localDateToString(item.startDate)}"
-            android:textSize="18dp"
-            app:layout_constraintEnd_toEndOf="@+id/tv_startDate_name"
-            app:layout_constraintStart_toStartOf="@id/tv_startDate_name"
-            app:layout_constraintTop_toBottomOf="@id/tv_startDate_name"
+            android:textColor="?colorOnSurface"
+            android:textSize="14dp"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_startDate_name"
+            app:layout_constraintEnd_toEndOf="@+id/tv_calendar_nameValue"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/tv_startDate_name"
+            app:layout_constraintTop_toTopOf="@+id/tv_startDate_name"
             tools:text="2021.03.05" />
 
         <TextView
             android:id="@+id/tv_endDate_nameValue"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
             android:text="@{DateConverterKt.localDateToString(item.endDate)}"
-            android:textSize="18dp"
-            app:layout_constraintEnd_toEndOf="@id/tv_endDate_name"
-            app:layout_constraintStart_toStartOf="@id/tv_endDate_name"
-            app:layout_constraintTop_toBottomOf="@id/tv_endDate_name"
+            android:textColor="?colorOnSurface"
+            android:textSize="14dp"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_endDate_name"
+            app:layout_constraintEnd_toEndOf="@+id/tv_startDate_nameValue"
+            app:layout_constraintStart_toStartOf="@+id/tv_startDate_nameValue"
+            app:layout_constraintTop_toTopOf="@+id/tv_endDate_name"
             tools:text="2021.11.15" />
 
         <com.google.android.material.checkbox.MaterialCheckBox
             android:id="@+id/ch_calendar_select"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="1dp"
             android:button="@drawable/selector_check_box_18"
             android:checked="@={item.check}"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_endDate_nameValue"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@+id/tv_startDate_nameValue" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -58,8 +58,7 @@
                     android:textSize="24sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:text="해커톤" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <View
                     android:id="@+id/divider_saveSchedule_titleBottom"
@@ -74,8 +73,9 @@
                     android:id="@+id/tv_saveSchedule_scheduleStart"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
+                    android:layout_marginStart="8dp"
                     android:text="@string/saveSchedule_start"
+                    android:textColor="?colorOnSurface"
                     app:layout_constraintBottom_toTopOf="@id/tv_saveSchedule_scheduleEnd"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/divider_saveSchedule_titleBottom" />
@@ -84,8 +84,9 @@
                     android:id="@+id/tv_saveSchedule_scheduleEnd"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
+                    android:layout_marginStart="8dp"
                     android:text="@string/saveSchedule_end"
+                    android:textColor="?colorOnSurface"
                     app:layout_constraintBottom_toTopOf="@id/divider_saveSchedule_timeBottom"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_saveSchedule_scheduleStart" />
@@ -256,13 +257,12 @@
 
         </ScrollView>
 
-        <Button
+        <TextView
+            style="@style/ButtonTheme"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:layout_marginHorizontal="4dp"
             android:onClick="@{() -> viewModel.saveSchedule()}"
-            android:text="@string/saveSchedule_save"
-            app:backgroundTint="@color/black" />
+            android:text="@string/saveSchedule_save" />
 
     </LinearLayout>
 

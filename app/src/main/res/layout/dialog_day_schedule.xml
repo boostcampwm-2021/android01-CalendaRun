@@ -10,46 +10,66 @@
             type="com.drunkenboys.calendarun.ui.dayschedule.DayScheduleViewModel" />
     </data>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="?colorSurface"
-        android:orientation="vertical"
         tools:context=".ui.dayschedule.DayScheduleDialog">
 
         <ImageView
             android:id="@+id/img_daySchedule_addSchedule"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_gravity="end"
-            android:layout_margin="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?android:selectableItemBackgroundBorderless"
             android:contentDescription="@string/contentDescription_ivAddSchedule"
-            android:src="@drawable/ic_add" />
+            android:padding="24dp"
+            android:src="@drawable/ic_add"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:layout_width="match_parent"
+            android:id="@+id/textView"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="24dp"
             android:layout_marginBottom="16dp"
             android:text="@{viewModel.dateString}"
             android:textColor="?colorOnSurface"
             android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/img_daySchedule_addSchedule"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             tools:text="1월 27일" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_daySchedule"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView"
             tools:listitem="@layout/item_schedule" />
 
         <TextView
             android:id="@+id/tv_empty"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="No Data" />
+            android:text="@string/schedule_no_data"
+            app:layout_constraintBottom_toBottomOf="@id/rv_daySchedule"
+            app:layout_constraintEnd_toEndOf="@id/rv_daySchedule"
+            app:layout_constraintStart_toStartOf="@id/rv_daySchedule"
+            app:layout_constraintTop_toTopOf="@id/rv_daySchedule" />
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

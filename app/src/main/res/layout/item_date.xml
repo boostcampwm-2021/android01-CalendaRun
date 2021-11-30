@@ -12,7 +12,10 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp"
+        android:paddingStart="16dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="4dp"
         android:tag="DateItem"
         android:text="@{item.toString()}"
         android:textColor="?colorOnSurface"
