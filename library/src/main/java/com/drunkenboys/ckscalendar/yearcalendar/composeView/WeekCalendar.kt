@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -11,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -45,14 +47,26 @@ fun WeekCalendar(
 
         week.forEach { day ->
             when (day.dayType) {
-                // 빈 날짜
                 DayType.PADDING -> Column(
                     modifier = Modifier
                         .layoutId(day.date.toString())
                         .border(border = BorderStroke(width = 0.1f.dp, color = weekDayColor.copy(alpha = 0.1f)))
                 ) {
-                    repeat(viewModel.design.value.visibleScheduleCount + 1) {
-                        Text(text = " ")
+                    // 빈 날짜
+                    Text(
+                        text = "padding",
+                        modifier = Modifier.padding(5.dp),
+                        maxLines = 1,
+                        color = Color.Transparent,
+                    )
+
+                    // 빈 스케줄
+                    repeat(viewModel.design.value.visibleScheduleCount) {
+                        Text(
+                            text = "",
+                            modifier = Modifier,
+                            color = Color.Transparent
+                        )
                     }
                 }
 
