@@ -12,11 +12,9 @@ import com.drunkenboys.calendarun.data.schedule.local.ScheduleLocalDataSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.ObsoleteCoroutinesApi
-import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.test.*
 import org.junit.After
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import java.time.LocalDateTime
@@ -78,14 +76,11 @@ class SaveScheduleViewModelTest {
 
     @Test
     fun `제목_미입력_시_저장_테스트`() = testScope.runBlockingTest {
-        viewModel.saveScheduleEvent.test {
+        viewModel.blankTitleEvent.test {
             viewModel.saveSchedule()
+            val result = awaitItem()
 
-            try {
-                awaitItem()
-            } catch (e: Exception) {
-                assertTrue(e is TimeoutCancellationException)
-            }
+            assertEquals(Unit, result)
             cancelAndConsumeRemainingEvents()
         }
     }
