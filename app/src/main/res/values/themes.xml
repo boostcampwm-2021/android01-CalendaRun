@@ -38,4 +38,12 @@
         <item name="windowActionModeOverlay">false</item>
         <item name="windowNoTitle">false</item>
     </style>
+
+    <style name="Theme.달려달력.AppWidgetContainerParent" parent="@android:style/Theme.DeviceDefault">
+        <item name="appWidgetRadius">8dp</item>
+        <item name="appWidgetPadding">4dp</item>
+        <item name="appWidgetInnerRadius">4dp</item>
+    </style>
+
+    <style name="Theme.달려달력.AppWidgetContainer" parent="Theme.달려달력.AppWidgetContainerParent" />
 </resources>

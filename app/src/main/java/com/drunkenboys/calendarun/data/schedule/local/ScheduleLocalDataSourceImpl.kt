@@ -4,6 +4,7 @@ import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 class ScheduleLocalDataSourceImpl @Inject constructor(
@@ -40,4 +41,8 @@ class ScheduleLocalDataSourceImpl @Inject constructor(
     override suspend fun fetchMatchedScheduleBefore(word: String, time: Long) = withContext(dispatcher) {
         scheduleDao.fetchMatchedScheduleBefore(word, time)
     }
+
+    override fun fetchDateSchedule(date: LocalDateTime) =
+        scheduleDao.fetchDateSchedule(date)
+
 }

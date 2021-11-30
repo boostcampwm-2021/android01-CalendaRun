@@ -100,5 +100,10 @@
     <string name="resetTheme">테마 초기화</string>
     <string name="resetThemeMessage">테마를 초기화 하시겠습니까?\n\n변경된 내용은 저장되지 않습니다.</string>
     <string name="drawer_license">라이브러리 라이센스</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
+    <string name="app_widget_description">This is an app widget description</string>
+    <string name="ACTION_BTN_CLICK">update</string>
+
 
 </resources>
