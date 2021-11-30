@@ -121,9 +121,10 @@ class MainActivity : BaseViewActivity<ActivityMainBinding>(ActivityMainBinding::
             for (year in 2004 until 2024) {
                 for (month in monthList) {
                     try {
-                        val holidayItem = holidayRemoteDataSource.fetchHolidayOnMonth(year.toString(), month)
-
-                        holidayItem.response.body.items.item.forEach { item ->
+                        holidayRemoteDataSource.fetchHolidayListOnMonth(
+                            year.toString(),
+                            month
+                        ).response.body.items.item.forEach { item ->
                             holidayLocalDataSource.insertHoliday(
                                 Holiday(
                                     id = 0L,
@@ -133,7 +134,17 @@ class MainActivity : BaseViewActivity<ActivityMainBinding>(ActivityMainBinding::
                             )
                         }
                     } catch (e: JsonSyntaxException) {
-                        // Items가 List<Item>이 아닌 String인 경우 저장하지 않고 스킵
+                        try {
+                            val item = holidayRemoteDataSource.fetchHolidayOnMonth(year.toString(), month).response.body.items.item
+                            holidayLocalDataSource.insertHoliday(
+                                Holiday(
+                                    id = 0L,
+                                    name = item.dateName,
+                                    date = LocalDate.parse(item.localDate.toString(), formatter)
+                                )
+                            )
+                        } catch (e: JsonSyntaxException) {
+                        }
                     }
                 }
             }
