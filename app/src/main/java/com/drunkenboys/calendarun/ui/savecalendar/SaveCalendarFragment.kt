@@ -103,7 +103,7 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
                 if (checked) {
                     ContextCompat.getColor(requireContext(), R.color.light_grey)
                 } else {
-                    ContextCompat.getColor(requireContext(), R.color.black)
+                    ContextCompat.getColor(requireContext(), R.color.background_black)
                 }
             )
         }

@@ -4,6 +4,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="white_alpha_50">#80FFFFFF</color>
     <color name="background_white">#FFFFFFFF</color>
+    <color name="background_black">#FF000000</color>
 
     <color name="divider">#cccccc</color>
     <color name="searchSchedule_hint">@color/white_alpha_50</color>
