@@ -1,6 +1,6 @@
 package com.drunkenboys.calendarun.di
 
-import com.drunkenboys.calendarun.data.holiday.remote.HolidayService
+import com.drunkenboys.calendarun.data.holiday.remote.HolidayRemoteService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,6 +14,6 @@ object HolidayRetrofitServiceModule {
 
     @Provides
     @Singleton
-    fun provideHolidayService(retrofit: Retrofit): HolidayService =
-        retrofit.create(HolidayService::class.java)
+    fun provideHolidayService(retrofit: Retrofit): HolidayRemoteService =
+        retrofit.create(HolidayRemoteService::class.java)
 }
