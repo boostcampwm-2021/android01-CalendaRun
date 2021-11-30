@@ -28,7 +28,8 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
 
     private val currentList = mutableListOf<CalendarDate>()
 
-    private val startDayWithMonthFlags = HashMap<Int, String>()
+    private val startDayWithMonthFlags = HashMap<String, String>()
+    val startDayWithYearFlags = HashMap<Int, Int>()
 
     private lateinit var calendarDesign: CalendarDesignObject
 
@@ -47,12 +48,20 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
         currentPagePosition: Int
     ) {
         startDayWithMonthFlags.clear()
+        startDayWithYearFlags.clear()
         list.forEachIndexed { index, calendarDate ->
             if (calendarDate.isSelected) {
                 selectedPosition = index
             }
-            if (calendarDate.dayType != DayType.PADDING && startDayWithMonthFlags[calendarDate.date.monthValue] == null) {
-                startDayWithMonthFlags[calendarDate.date.monthValue] = "${calendarDate.date}"
+            // find FirstDay of Month
+            val startDayWithDayKey = "${calendarDate.date.year}${calendarDate.date.monthValue}"
+            if (calendarDate.dayType != DayType.PADDING && startDayWithMonthFlags[startDayWithDayKey] == null) {
+                startDayWithMonthFlags[startDayWithDayKey] = "${calendarDate.date}"
+            }
+
+            // find FirstDay of Year
+            if (list.size > 42 && calendarDate.date.year != 1970 && startDayWithYearFlags[calendarDate.date.year] == null) {
+                startDayWithYearFlags[calendarDate.date.year] = index
             }
         }
 
@@ -103,7 +112,8 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
             binding.layoutMonthCell.isSelected = item.isSelected
             binding.tvMonthDay.text = ""
             if (item.dayType != DayType.PADDING) {
-                if (startDayWithMonthFlags[item.date.monthValue] == item.date.toString()) {
+                val startDayWithDayKey = "${item.date.year}${item.date.monthValue}"
+                if (startDayWithMonthFlags[startDayWithDayKey] == item.date.toString()) {
                     binding.tvMonthDay.text = "${item.date.monthValue}. ${item.date.dayOfMonth}"
                     binding.tvMonthDay.typeface = Typeface.DEFAULT_BOLD
                 } else {
@@ -117,7 +127,9 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
             val hasAnySchedule = scheduleContainer.any { it != null }
             binding.layoutMonthSchedule.removeAllViews()
             if (hasAnySchedule) {
-                scheduleContainer.map { it ?: makeDefaultScheduleTextView() }
+                val lastIndex = scheduleContainer.indexOfLast { it != null }
+                scheduleContainer.take(lastIndex + 1)
+                    .map { it ?: makeDefaultScheduleTextView() }
                     .forEach {
                         binding.layoutMonthSchedule.addView(it)
                     }
