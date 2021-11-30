@@ -14,6 +14,7 @@
         <!-- Customize your theme here. -->
         <item name="fontFamily">@font/inter_medium</item>
         <item name="drawerArrowStyle">@style/LightArrowStyle</item>
+        <item name="android:includeFontPadding">false</item>
     </style>
 
     <style name="LightArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">

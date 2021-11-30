@@ -8,6 +8,7 @@
     <color name="searchSchedule_hint">@color/white_alpha_50</color>
 
     <color name="dark_grey">#4D4D4D</color>
+    <color name="light_grey">#F1F1F1</color>
     <color name="light_pink">#FBC4FF</color>
     <color name="dark_pink">#FB60C4</color>
 
