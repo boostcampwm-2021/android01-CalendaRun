@@ -33,7 +33,6 @@ abstract class Database : RoomDatabase() {
     companion object {
 
         val MIGRATION_4_5 = object : Migration(4, 5) {
-            // TODO: 2021-11-30 migration 코드 짜기
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL(
                     """
