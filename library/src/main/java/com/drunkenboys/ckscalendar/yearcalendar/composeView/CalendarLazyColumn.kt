@@ -45,7 +45,7 @@ fun CalendarLazyColumn(
     // state hoisting
     val dayColumnModifier = { day: CalendarDate ->
         when (clickedDay) {
-            day.date -> {
+            day.date ->
                 Modifier
                     .border(
                         border = BorderStroke(width = 2.dp, color = Color(viewModel.design.value.selectedFrameColor)),
@@ -54,15 +54,13 @@ fun CalendarLazyColumn(
                     .clickable(onClick = {
                         onDaySecondClickListener?.onDayClick(day.date, 0)
                     })
-            }
 
-            else -> {
+            else ->
                 Modifier
                     .clickable(onClick = {
                         onDayClickListener?.onDayClick(day.date, 0)
                         clickedDay = day.date
                     })
-            }
         }
     }
 
@@ -81,7 +79,7 @@ fun CalendarLazyColumn(
             val firstOfYear = LocalDate.of(slice.startDate.year, 1, 1)
 
             // 해가 갱신될 때마다 상단에 연표시
-            if (firstOfYear in slice.startDate..slice.endDate || firstOfYear.plusYears(1L) in slice.startDate..slice.endDate) {
+            if (firstOfYear in slice.startDate..slice.endDate || firstOfYear.plusYears(1L) in slice.startDate..slice.endDate)
                 Text(
                     text = "${slice.startDate.year}년",
                     color = MaterialTheme.colors.primary,
@@ -90,7 +88,6 @@ fun CalendarLazyColumn(
                         .padding(top = 16.dp, bottom = 16.dp),
                     textAlign = TextAlign.Center
                 )
-            }
 
             MonthCalendar(
                 month = slice,
