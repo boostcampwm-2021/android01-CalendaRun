@@ -15,6 +15,6 @@ object RemoteDataSourceModule {
 
     @Provides
     @Singleton
-    fun provideHolidayDataSource(holidayRemoteService: HolidayRemoteService): HolidayRemoteDataSource =
+    fun provideHolidayRemoteDataSource(holidayRemoteService: HolidayRemoteService): HolidayRemoteDataSource =
         HolidayRemoteDataSourceImpl(holidayRemoteService)
 }
