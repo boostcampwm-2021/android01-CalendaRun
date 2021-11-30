@@ -1,8 +1,8 @@
 package com.drunkenboys.calendarun.di
 
-import com.drunkenboys.calendarun.data.holiday.remote.HolidayDataSource
-import com.drunkenboys.calendarun.data.holiday.remote.HolidayDataSourceImpl
-import com.drunkenboys.calendarun.data.holiday.remote.HolidayService
+import com.drunkenboys.calendarun.data.holiday.remote.HolidayRemoteDataSource
+import com.drunkenboys.calendarun.data.holiday.remote.HolidayRemoteDataSourceImpl
+import com.drunkenboys.calendarun.data.holiday.remote.HolidayRemoteService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,6 +15,6 @@ object RemoteDataSourceModule {
 
     @Provides
     @Singleton
-    fun provideHolidayDataSource(holidayService: HolidayService): HolidayDataSource =
-        HolidayDataSourceImpl(holidayService)
+    fun provideHolidayDataSource(holidayRemoteService: HolidayRemoteService): HolidayRemoteDataSource =
+        HolidayRemoteDataSourceImpl(holidayRemoteService)
 }

@@ -5,7 +5,7 @@ import com.drunkenboys.calendarun.data.holiday.ResponseHolidayInfo
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface HolidayService {
+interface HolidayRemoteService {
 
     @GET("/B090041/openapi/service/SpcdeInfoService/getRestDeInfo")
     suspend fun fetchHolidayOnMonth(

@@ -2,7 +2,7 @@ package com.drunkenboys.calendarun.data.holiday.remote
 
 import com.drunkenboys.calendarun.data.holiday.ResponseHolidayInfo
 
-interface HolidayDataSource {
+interface HolidayRemoteDataSource {
 
     suspend fun fetchHolidayOnMonth(year: Int, month: Int): ResponseHolidayInfo
 
