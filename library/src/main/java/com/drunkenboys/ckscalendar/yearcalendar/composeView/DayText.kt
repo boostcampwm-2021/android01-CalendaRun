@@ -1,6 +1,8 @@
 package com.drunkenboys.ckscalendar.yearcalendar.composeView
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -24,23 +26,23 @@ fun DayText(
     viewModel: YearCalendarViewModel,
     isFirstOfCalendarSet: Boolean
 ) {
-    val color = when (day.dayType) { // FIXME: month 와 통합
-        DayType.HOLIDAY -> Color(viewModel.design.value.holidayTextColor)
-        DayType.SATURDAY -> Color(viewModel.design.value.saturdayTextColor)
-        DayType.SUNDAY -> Color(viewModel.design.value.sundayTextColor)
-        else -> MaterialTheme.colors.primary
-    }
-
-    val text = if (isFirstOfCalendarSet) {
-        "${day.date.monthValue}. "
-    } else {
-        ""
-    } + "${day.date.dayOfMonth}"
-
     Text(
-        text = text,
-        color = color,
-        modifier = Modifier.layoutId(day.date.toString()).padding(start = 5.dp, end = 5.dp),
+        text = if (isFirstOfCalendarSet) "${day.date.monthValue}. " else "" + "${day.date.dayOfMonth}",
+        color = when (day.dayType) {
+            DayType.HOLIDAY -> Color(viewModel.design.value.holidayTextColor)
+            DayType.SATURDAY -> Color(viewModel.design.value.saturdayTextColor)
+            DayType.SUNDAY -> Color(viewModel.design.value.sundayTextColor)
+            else -> MaterialTheme.colors.primary
+        },
+        modifier = Modifier
+            .layoutId(day.date.toString())
+            .border(
+                width = 1.dp,
+                shape = CircleShape,
+                color = if (LocalDate.now() == day.date) MaterialTheme.colors.primary else Color.Transparent
+            )
+            .padding(5.dp)
+        ,
         textAlign = GravityMapper.toTextAlign(viewModel.design.value.textAlign),
         fontSize = viewModel.design.value.textSize.dp(),
         fontWeight = if (isFirstOfCalendarSet) FontWeight.Bold else null
