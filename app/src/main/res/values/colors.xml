@@ -14,5 +14,7 @@
     <color name="light_pink">#FBC4FF</color>
     <color name="dark_pink">#FB60C4</color>
 
+    <color name="fab_color">@color/black</color>
+
     <color name="onError">#e20000</color>
 </resources>

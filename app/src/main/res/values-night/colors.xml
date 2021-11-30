@@ -4,4 +4,6 @@
     <color name="background_black">#ffffff</color>
     <color name="light_grey">#4D4D4D</color>
     <color name="dark_grey">#F1F1F1</color>
+
+    <color name="fab_color">@color/light_grey</color>
 </resources>
