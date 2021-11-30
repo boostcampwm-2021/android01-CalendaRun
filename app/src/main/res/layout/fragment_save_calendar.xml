@@ -104,7 +104,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:background="@color/white"
+                    android:background="@color/background_white"
                     android:padding="16dp"
                     android:text="@string/calendar_slice"
                     android:textColor="?colorOnSurface"
