@@ -8,5 +8,5 @@ interface HolidayLocalDataSource {
     suspend fun insertHoliday(holiday: Holiday)
 
     fun fetchAllHoliday(): Flow<List<Holiday>>
-
+    
 }

@@ -13,7 +13,7 @@ interface HolidayDao {
     @Insert(onConflict = REPLACE)
     suspend fun insertHoliday(holiday: Holiday)
 
-    @Query("SELECT * FROM `holiday`")
+    @Query("SELECT * FROM `Holiday`")
     fun fetchAllHoliday(): Flow<List<Holiday>>
-
+    
 }
