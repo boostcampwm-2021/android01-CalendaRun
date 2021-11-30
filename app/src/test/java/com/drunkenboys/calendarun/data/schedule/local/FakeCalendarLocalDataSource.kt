@@ -19,7 +19,7 @@ class FakeCalendarLocalDataSource : CalendarLocalDataSource {
         return Calendar(0, "test calendar", LocalDate.now(), LocalDate.now())
     }
 
-    override suspend fun fetchCustomCalendar(): List<Calendar> {
+    override fun fetchCustomCalendar(): Flow<List<Calendar>> {
         TODO("Not yet implemented")
     }
 

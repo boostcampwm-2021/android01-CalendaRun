@@ -11,6 +11,7 @@ data class CalendarItem(
     val endDate: LocalDate,
     var check: Boolean = false
 ) {
+
     fun toCalendar() = Calendar(
         id = id,
         name = name,
@@ -19,6 +20,7 @@ data class CalendarItem(
     )
 
     companion object {
+
         val diffUtil by lazy {
             object : DiffUtil.ItemCallback<CalendarItem>() {
                 override fun areItemsTheSame(oldItem: CalendarItem, newItem: CalendarItem) = oldItem.id == newItem.id
@@ -26,6 +28,12 @@ data class CalendarItem(
                 override fun areContentsTheSame(oldItem: CalendarItem, newItem: CalendarItem) = oldItem == newItem
             }
         }
+
+        fun from(calendar: Calendar) = CalendarItem(
+            id = calendar.id,
+            name = calendar.name,
+            startDate = calendar.startDate,
+            endDate = calendar.endDate
+        )
     }
 }
-

@@ -51,8 +51,6 @@ class DayScheduleDialog : DialogFragment() {
             launch { collectScheduleClickEvent() }
         }
 
-        dayScheduleViewModel.fetchScheduleList(LocalDate.parse(args.localDate))
-
         return binding.root
     }
 

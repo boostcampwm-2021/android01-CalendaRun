@@ -9,7 +9,7 @@ interface CalendarLocalDataSource {
 
     fun fetchAllCalendar(): Flow<List<Calendar>>
 
-    suspend fun fetchCustomCalendar(): List<Calendar>
+    fun fetchCustomCalendar(): Flow<List<Calendar>>
 
     suspend fun fetchCalendar(id: Long): Calendar
 
