@@ -10,6 +10,9 @@ plugins {
     id 'com.google.android.gms.oss-licenses-plugin'
 }
 
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
 android {
     compileSdk 31
 
@@ -22,6 +25,8 @@ android {
 
         multiDexEnabled = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField "String", "HOLIDAY_API_KEY", properties['holiday_api_key']
     }
 
     buildTypes {
