@@ -1,12 +1,13 @@
 package com.drunkenboys.calendarun.ui.searchschedule
 
-import androidx.lifecycle.viewModelScope
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import com.drunkenboys.calendarun.data.schedule.local.FakeScheduleLocalDataSource
 import com.drunkenboys.calendarun.data.schedule.local.ScheduleLocalDataSource
 import com.drunkenboys.calendarun.ui.searchschedule.model.ScheduleItem
 import com.drunkenboys.ckscalendar.data.ScheduleColorType
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.test.*
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -112,15 +113,15 @@ class SearchScheduleViewModelTest {
     }
 
     @Test
-    fun `이전_일정_검색_페이징_테스트`() = runBlocking {
+    fun `이전_일정_검색_페이징_테스트`() = testScope.runBlockingTest {
         initDataSource(dateList = arrayOf(tomorrow, tomorrow, tomorrow, tomorrow))
         initData((1..35).toSchedules(yesterday.minusDays(1)))
         initData((36..70).toSchedules(yesterday))
 
         viewModel.searchSchedule()
-        delay(500)
+        advanceTimeBy(500)
         viewModel.trySearchPrev()
-        delay(600)
+        Thread.sleep(600)
         viewModel.trySearchPrev()
         val result = viewModel.listItem.value
 
@@ -128,7 +129,23 @@ class SearchScheduleViewModelTest {
         result.filterIsInstance<ScheduleItem>()
             .all { it.schedule.startDate < today }
             .let { assertTrue(it) }
-        viewModel.viewModelScope.cancel()
+    }
+
+    @Test
+    fun `이후_일정_검색_페이징_테스트`() = testScope.runBlockingTest {
+        initDataSource(dateList = arrayOf(tomorrow, tomorrow, tomorrow, tomorrow))
+        initData((1..35).toSchedules(tomorrow.plusDays(1)))
+        initData((36..70).toSchedules(tomorrow.plusDays(2)))
+
+        viewModel.searchSchedule()
+        advanceTimeBy(500)
+        viewModel.trySearchNext()
+        val result = viewModel.listItem.value
+
+        assertEquals(63, result.size)
+        result.filterIsInstance<ScheduleItem>()
+            .all { it.schedule.startDate > today }
+            .let { assertTrue(it) }
     }
 
     private suspend fun initDataSource(name: String = "name", vararg dateList: LocalDateTime) {
