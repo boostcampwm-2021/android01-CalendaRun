@@ -3,6 +3,7 @@ package com.drunkenboys.calendarun
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
@@ -29,6 +30,8 @@ class CalendaRunAppWidget : AppWidgetProvider() {
 
         val updateIntent = Intent(context, CalendaRunAppWidget::class.java)
             .setAction(context.getString(R.string.ACTION_BTN_CLICK))
+            .putExtra(APPWIDGET_ID, AppWidgetManager.EXTRA_APPWIDGET_ID)
+
         val pendingIntent = PendingIntent.getBroadcast(context, 0, updateIntent, 0)
         remoteViews.setOnClickPendingIntent(R.id.btn_appWidget_update, pendingIntent)
 
@@ -45,7 +48,20 @@ class CalendaRunAppWidget : AppWidgetProvider() {
 
         val action = intent.action
         if (action.equals(context.getString(R.string.ACTION_BTN_CLICK))) {
-            // TODO: 2021-11-30 listview 갱신
+            coroutineScope.launch {
+                val appWidgetManager =
+                    AppWidgetManager.getInstance(context)
+                val appWidget = ComponentName(
+                    context.packageName,
+                    CalendaRunAppWidget::class.java.name
+                )
+                val appWidgetIds = appWidgetManager.getAppWidgetIds(appWidget)
+                appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.lv_appWidget_scheduleList)
+            }
         }
+    }
+
+    companion object {
+        private const val APPWIDGET_ID = "id"
     }
 }

@@ -36,7 +36,6 @@ class CalendaRunRemoteViewsFactory constructor(
                 scheduleList = newScheduleList.map { schedule ->
                     ScheduleItem(schedule) {}
                 }
-                println(count)
             }
         }
     }
