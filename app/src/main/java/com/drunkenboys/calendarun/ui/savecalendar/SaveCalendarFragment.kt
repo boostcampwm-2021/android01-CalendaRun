@@ -95,8 +95,11 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
 
     private suspend fun collectUseDefaultCalendar() {
         saveCalendarViewModel.useDefaultCalendar.collect { checked ->
-            binding.rvSaveCalendarCheckPointList.isVisible = !checked
-            binding.tvSaveCalendarAddCheckPointView.isVisible = !checked
+            with(binding) {
+                rvSaveCalendarCheckPointList.isVisible = !checked
+                tvSaveCalendarAddCheckPointView.isVisible = !checked
+                toolbarSaveCalendar.menu.findItem(R.id.menu_delete_checkPoint).isVisible = !checked
+            }
         }
     }
 
