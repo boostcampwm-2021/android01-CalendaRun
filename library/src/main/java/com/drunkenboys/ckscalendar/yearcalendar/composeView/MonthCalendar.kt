@@ -6,12 +6,12 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -32,6 +32,7 @@ fun MonthCalendar(
     viewModel: YearCalendarViewModel
 ) {
     var weekSchedules: Array<Array<CalendarScheduleObject?>> // 1주 스케줄
+    val weekDayColor = MaterialTheme.colors.primary
 
     calendarSetToCalendarDatesList(month).forEach { week ->
         weekSchedules = Array(7) { Array(viewModel.design.value.visibleScheduleCount) { null } }
@@ -47,12 +48,9 @@ fun MonthCalendar(
                 when (day.dayType) {
                     // 빈 날짜
                     DayType.PADDING -> Column(
-                        modifier = Modifier.layoutId(day.date.toString())
-                            .border(border = BorderStroke(
-                                width = 0.1f.dp,
-                                color = Color(viewModel.design.value.weekDayTextColor).copy(alpha = 0.1f)
-                            )
-                        )
+                        modifier = Modifier
+                            .layoutId(day.date.toString())
+                            .border(border = BorderStroke(width = 0.1f.dp, color = weekDayColor.copy(alpha = 0.1f)))
                     ) {
                         repeat(viewModel.design.value.visibleScheduleCount + 1) {
                             Text(text = " ")
@@ -64,15 +62,21 @@ fun MonthCalendar(
                         modifier = Modifier.layoutId(day.date.toString())
                             .then(dayColumnModifier(day))
                             .drawBehind {
-                                drawLine(start = Offset(0f, 0f),
+                                drawLine(
+                                    start = Offset(0f, 0f),
                                     end = Offset(size.width, 0f),
-                                    color = Color.Black.copy(alpha = 0.1f))
-                                drawLine(start = Offset(size.width, 0f),
+                                    color = weekDayColor.copy(alpha = 0.1f)
+                                )
+                                drawLine(
+                                    start = Offset(size.width, 0f),
                                     end = Offset(size.width, size.height),
-                                    color = Color.Black.copy(alpha = 0.1f))
-                                drawLine(start = Offset(size.width, size.height),
+                                    color = weekDayColor.copy(alpha = 0.1f)
+                                )
+                                drawLine(
+                                    start = Offset(size.width, size.height),
                                     end = Offset(0f, size.height),
-                                    color = Color.Black.copy(alpha = 0.1f))
+                                    color = weekDayColor.copy(alpha = 0.1f)
+                                )
                             },
                         horizontalAlignment = GravityMapper.toColumnAlign(viewModel.design.value.textAlign)
                     ) {
