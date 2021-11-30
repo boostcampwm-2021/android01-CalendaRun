@@ -100,9 +100,14 @@
     <string name="resetTheme">테마 초기화</string>
     <string name="resetThemeMessage">테마를 초기화 하시겠습니까?\n\n변경된 내용은 저장되지 않습니다.</string>
     <string name="drawer_license">라이브러리 라이센스</string>
+  
     <string name="calendar_manage_no_data">😥 추가된 달력이 없습니다.\n 달력을 추가해 보세요!</string>
     <string name="calendar_list">달력 목록</string>
     <string name="calendar_slice">슬라이스</string>
     <string name="schedule_no_data">📚 일정이 없습니다.</string>
 
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
+    <string name="app_widget_description">This is an app widget description</string>
+    <string name="ACTION_BTN_CLICK">update</string>
 </resources>
