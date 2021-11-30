@@ -1,7 +1,6 @@
-package com.drunkenboys.calendarun.data.schedule.local
+package com.drunkenboys.calendarun.data.calendar.local
 
 import com.drunkenboys.calendarun.data.calendar.entity.Calendar
-import com.drunkenboys.calendarun.data.calendar.local.CalendarLocalDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 

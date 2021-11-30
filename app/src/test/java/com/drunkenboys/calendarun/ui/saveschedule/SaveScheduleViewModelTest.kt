@@ -5,8 +5,8 @@ import app.cash.turbine.test
 import com.drunkenboys.calendarun.KEY_CALENDAR_ID
 import com.drunkenboys.calendarun.KEY_SCHEDULE_ID
 import com.drunkenboys.calendarun.data.calendar.local.CalendarLocalDataSource
+import com.drunkenboys.calendarun.data.calendar.local.FakeCalendarLocalDataSource
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
-import com.drunkenboys.calendarun.data.schedule.local.FakeCalendarLocalDataSource
 import com.drunkenboys.calendarun.data.schedule.local.FakeScheduleLocalDataSource
 import com.drunkenboys.calendarun.data.schedule.local.ScheduleLocalDataSource
 import kotlinx.coroutines.Dispatchers
