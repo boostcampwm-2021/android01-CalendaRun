@@ -13,11 +13,11 @@ class FakeCalendarLocalDataSource : CalendarLocalDataSource {
         return database.size.toLong()
     }
 
-    override fun fetchAllCalendar(): Flow<List<Calendar>> = flow { database.toList() }
+    override fun fetchAllCalendar(): Flow<List<Calendar>> = flow { emit(database.toList()) }
 
     override suspend fun fetchCalendar(id: Long): Calendar = database.find { it.id == id } ?: throw IllegalArgumentException()
 
-    override fun fetchCustomCalendar(): Flow<List<Calendar>> = flow { database.filter { it.id != 1 } }
+    override fun fetchCustomCalendar(): Flow<List<Calendar>> = flow { emit(database.filter { it.id != 1 }) }
 
     override suspend fun deleteCalendar(calendar: Calendar) {
         database.remove(calendar)

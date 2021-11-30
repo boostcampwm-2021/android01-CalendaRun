@@ -18,7 +18,7 @@ class FakeCheckPointLocalDataSource : CheckPointLocalDataSource {
     override suspend fun fetchCheckPoint(id: Long) = database.find { it.id == id } ?: throw IllegalArgumentException()
 
     override fun fetchCalendarCheckPoints(calendarId: Long): Flow<List<CheckPoint>> =
-        flow { database.filter { it.calendarId == calendarId } }
+        flow { emit(database.filter { it.calendarId == calendarId }) }
 
     override suspend fun updateCheckPoint(checkPoint: CheckPoint) {
         val targetIndex = database.indexOfFirst { it.id == checkPoint.id }

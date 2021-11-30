@@ -24,7 +24,7 @@ class FakeScheduleLocalDataSource : ScheduleLocalDataSource {
     }
 
     override fun fetchCalendarSchedules(calendarId: Long): Flow<List<Schedule>> {
-        return flow { database.filter { it.calendarId == calendarId } }
+        return flow { emit(database.filter { it.calendarId == calendarId }) }
     }
 
     override suspend fun updateSchedule(schedule: Schedule) {
