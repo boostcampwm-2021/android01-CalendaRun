@@ -27,7 +27,11 @@ fun DayText(
     isFirstOfCalendarSet: Boolean
 ) {
     Text(
-        text = if (isFirstOfCalendarSet) "${day.date.monthValue}. " else "" + "${day.date.dayOfMonth}",
+        text = if (isFirstOfCalendarSet) {
+            "${day.date.monthValue}. "
+        } else {
+            ""
+        } + "${day.date.dayOfMonth}",
         color = when (day.dayType) {
             DayType.HOLIDAY -> Color(viewModel.design.value.holidayTextColor)
             DayType.SATURDAY -> Color(viewModel.design.value.saturdayTextColor)
