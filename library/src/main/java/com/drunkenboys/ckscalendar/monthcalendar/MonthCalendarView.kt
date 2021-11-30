@@ -49,6 +49,7 @@ class MonthCalendarView @JvmOverloads constructor(
     private val today = LocalDate.now()
 
     private var hasRestore = false
+    private var lastCalendarType = MonthState.CalendarType.NONE
     private var lastPagePosition = -1
     private var lastPageName = ""
 
@@ -112,13 +113,13 @@ class MonthCalendarView @JvmOverloads constructor(
         pageAdapter.setItems(calendarList, false)
         binding.tvMonthCalendarViewCurrentMonth.text = calendarList.first().name
         hasRestore = false
+        lastCalendarType = MonthState.CalendarType.CUSTOM
     }
 
     fun setupDefaultCalendarSet() {
         calendarList = CalendarSet.generateCalendarOfYear(context, today.year)
         pageAdapter.setItems(calendarList, true)
-
-        if (hasRestore) {
+        if (hasRestore && lastCalendarType == MonthState.CalendarType.DEFAULT) {
             hasRestore = false
             binding.vpMonthPage.setCurrentItem(lastPagePosition, false)
             binding.tvMonthCalendarViewCurrentMonth.text = lastPageName
@@ -132,6 +133,7 @@ class MonthCalendarView @JvmOverloads constructor(
                 }
             }
         }
+        lastCalendarType = MonthState.CalendarType.DEFAULT
     }
 
     fun setOnDayClickListener(onDayClickListener: OnDayClickListener) {
@@ -150,9 +152,9 @@ class MonthCalendarView @JvmOverloads constructor(
         val weekTextViews = listOf(
             binding.tvMonthCalendarViewSunday,
             binding.tvMonthCalendarViewMonday,
-            binding.tvMonthCalendarViewThursday,
-            binding.tvMonthCalendarViewWednesday,
             binding.tvMonthCalendarViewTuesday,
+            binding.tvMonthCalendarViewWednesday,
+            binding.tvMonthCalendarViewThursday,
             binding.tvMonthCalendarViewFriday,
             binding.tvMonthCalendarViewSaturday,
         )
@@ -169,7 +171,7 @@ class MonthCalendarView @JvmOverloads constructor(
 
     override fun onSaveInstanceState(): Parcelable? {
         val parcelable = super.onSaveInstanceState() ?: return null
-        return MonthState(parcelable, lastPageName, lastPagePosition)
+        return MonthState(parcelable, lastPageName, lastPagePosition, lastCalendarType)
     }
 
     override fun onRestoreInstanceState(state: Parcelable?) {
@@ -178,6 +180,7 @@ class MonthCalendarView @JvmOverloads constructor(
                 super.onRestoreInstanceState(state.superState)
                 lastPagePosition = state.lastPagePosition
                 lastPageName = state.lastPageName
+                lastCalendarType = state.lastCalendarType
                 hasRestore = true
             }
             else -> super.onRestoreInstanceState(state)

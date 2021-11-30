@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_mainCalendar_addCalendar"
+        android:icon="@drawable/ic_add"
+        android:title="@string/calendar_add"
+        app:showAsAction="ifRoom" />
+    <group android:id="@+id/menuGroup_mainCalendar_calendarManage">
+        <item
+            android:id="@+id/menuSubtitl_mainCalendar_calendarManage"
+            android:title="@string/drawer_calendar_manage">
+            <menu>
+                <item
+                    android:id="@+id/menu_mainCalendar_calendarManage"
+                    android:icon="@drawable/ic_calendar_today"
+                    android:title="@string/drawer_calendar_manage"
+                    app:showAsAction="ifRoom" />
+                <item
+                    android:id="@+id/menu_mainCalendar_themeSetting"
+                    android:icon="@drawable/ic_palette"
+                    android:title="@string/drawer_theme_setting"
+                    app:showAsAction="ifRoom" />
+                <item
+                    android:id="@+id/menu_mainCalendar_license"
+                    android:icon="@drawable/ic_license"
+                    android:title="@string/drawer_license"
+                    app:showAsAction="ifRoom" />
+            </menu>
+        </item>
+    </group>
+</menu>

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -25,7 +26,7 @@ class DayScheduleDialog : DialogFragment() {
 
     private val dayScheduleViewModel by viewModels<DayScheduleViewModel>()
 
-    private val dayScheduleAdapter = DayScheduleAdapter()
+    private lateinit var dayScheduleAdapter: DayScheduleAdapter
 
     private val navController by lazy { findNavController() }
     private val args by navArgs<DayScheduleDialogArgs>()
@@ -34,6 +35,8 @@ class DayScheduleDialog : DialogFragment() {
         _binding = DialogDayScheduleBinding.inflate(layoutInflater)
         binding.viewModel = dayScheduleViewModel
         binding.lifecycleOwner = this
+        dayScheduleAdapter = DayScheduleAdapter(LocalDate.parse(args.localDate))
+
         return AlertDialog.Builder(requireContext())
             .setView(binding.root)
             .create()
@@ -47,8 +50,6 @@ class DayScheduleDialog : DialogFragment() {
             launch { collectListItem() }
             launch { collectScheduleClickEvent() }
         }
-
-        dayScheduleViewModel.fetchScheduleList(LocalDate.parse(args.localDate))
 
         return binding.root
     }
@@ -67,6 +68,8 @@ class DayScheduleDialog : DialogFragment() {
     private suspend fun collectListItem() {
         dayScheduleViewModel.listItem.collect { listItem ->
             dayScheduleAdapter.submitList(listItem)
+            binding.rvDaySchedule.isVisible = listItem.isNotEmpty()
+            binding.tvEmpty.isVisible = listItem.isEmpty()
         }
     }
 

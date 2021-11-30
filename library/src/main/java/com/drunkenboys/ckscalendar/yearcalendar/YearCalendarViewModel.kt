@@ -9,7 +9,7 @@ import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-class YearCalendarViewModel: ViewModel() {
+class YearCalendarViewModel {
 
     private val _schedules = mutableStateOf<List<CalendarScheduleObject>>(emptyList())
     val schedules: State<List<CalendarScheduleObject>> = _schedules
@@ -19,9 +19,6 @@ class YearCalendarViewModel: ViewModel() {
 
     private var _calendar = mutableStateOf(createCalendarSets(LocalDate.now().year))
     val calendar: State<List<CalendarSet>> = _calendar
-
-    private val _clickedDay = mutableStateOf<LocalDate?>(LocalDate.now())
-    val clickedDay: State<LocalDate?> = _clickedDay
 
     private var recomposeScope: RecomposeScope? = null
 
@@ -45,11 +42,6 @@ class YearCalendarViewModel: ViewModel() {
 
     fun setDefaultDesign() {
         _design.value = CalendarDesignObject.getDefaultDesign()
-    }
-
-    // FIXME: 체크포인트 속에서 오늘의 날짜 찾기
-    fun getDayItemIndex(day: LocalDate = LocalDate.now()): Int {
-        return day.monthValue
     }
 
     fun setWeekSchedules(
@@ -86,10 +78,6 @@ class YearCalendarViewModel: ViewModel() {
 
     fun isFirstWeek(week: List<CalendarDate>, month: CalendarSet) = week.any { day ->
         day.date == month.startDate && day.dayType != DayType.PADDING
-    }
-
-    fun clickDay(day: CalendarDate) {
-        _clickedDay.value = day.date
     }
 
     fun getDaySchedules(day: LocalDateTime) = schedules.value.filter { schedule ->
@@ -138,8 +126,5 @@ class YearCalendarViewModel: ViewModel() {
         fetchPrevCalendarSet()
         _calendar.value = createCalendarSets(LocalDate.now().year)
         fetchNextCalendarSet()
-
-        // 오늘 선택
-        _clickedDay.value = LocalDate.now()
     }
 }

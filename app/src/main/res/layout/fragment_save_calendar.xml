@@ -96,9 +96,7 @@
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintEnd_toEndOf="@+id/switch_saveCalendar_defaultCalendar"
                     app:layout_constraintStart_toStartOf="@id/tv_saveCalendar_calendarName"
-                    app:layout_constraintTop_toBottomOf="@+id/et_saveCalendar_calendarName"
-                    app:reverseLayout="true"
-                    app:stackFromEnd="true" />
+                    app:layout_constraintTop_toBottomOf="@+id/et_saveCalendar_calendarName" />
 
                 <TextView
                     android:id="@+id/tv_saveCalendar_addCheckPointView"

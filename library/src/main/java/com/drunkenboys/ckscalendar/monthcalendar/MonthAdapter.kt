@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.drunkenboys.ckscalendar.data.CalendarDate
 import com.drunkenboys.ckscalendar.data.CalendarDesignObject
@@ -29,7 +28,8 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
 
     private val currentList = mutableListOf<CalendarDate>()
 
-    private val startDayWithMonthFlags = HashMap<Int, String>()
+    private val startDayWithMonthFlags = HashMap<String, String>()
+    val startDayWithYearFlags = HashMap<Int, Int>()
 
     private lateinit var calendarDesign: CalendarDesignObject
 
@@ -39,7 +39,7 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
     var onDayClickListener: OnDayClickListener? = null
     var onDaySecondClickListener: OnDaySecondClickListener? = null
 
-    private val lineIndex = HashMap<String, Int>()
+    private val lineIndex = HashMap<String, MonthCellPositionStore>()
 
     fun setItems(
         list: List<CalendarDate>,
@@ -47,12 +47,21 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
         calendarDesign: CalendarDesignObject,
         currentPagePosition: Int
     ) {
+        startDayWithMonthFlags.clear()
+        startDayWithYearFlags.clear()
         list.forEachIndexed { index, calendarDate ->
             if (calendarDate.isSelected) {
                 selectedPosition = index
             }
-            if (calendarDate.dayType != DayType.PADDING && startDayWithMonthFlags[calendarDate.date.monthValue] == null) {
-                startDayWithMonthFlags[calendarDate.date.monthValue] = "${calendarDate.date}"
+            // find FirstDay of Month
+            val startDayWithDayKey = "${calendarDate.date.year}${calendarDate.date.monthValue}"
+            if (calendarDate.dayType != DayType.PADDING && startDayWithMonthFlags[startDayWithDayKey] == null) {
+                startDayWithMonthFlags[startDayWithDayKey] = "${calendarDate.date}"
+            }
+
+            // find FirstDay of Year
+            if (list.size > 42 && calendarDate.date.year != 1970 && startDayWithYearFlags[calendarDate.date.year] == null) {
+                startDayWithYearFlags[calendarDate.date.year] = index
             }
         }
 
@@ -103,7 +112,8 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
             binding.layoutMonthCell.isSelected = item.isSelected
             binding.tvMonthDay.text = ""
             if (item.dayType != DayType.PADDING) {
-                if (startDayWithMonthFlags[item.date.monthValue] == item.date.toString()) {
+                val startDayWithDayKey = "${item.date.year}${item.date.monthValue}"
+                if (startDayWithMonthFlags[startDayWithDayKey] == item.date.toString()) {
                     binding.tvMonthDay.text = "${item.date.monthValue}. ${item.date.dayOfMonth}"
                     binding.tvMonthDay.typeface = Typeface.DEFAULT_BOLD
                 } else {
@@ -115,9 +125,11 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
 
             val scheduleContainer = makePaddingScheduleList(item, schedules)
             val hasAnySchedule = scheduleContainer.any { it != null }
+            binding.layoutMonthSchedule.removeAllViews()
             if (hasAnySchedule) {
-                binding.layoutMonthSchedule.removeAllViews()
-                scheduleContainer.map { it ?: makeDefaultScheduleTextView() }
+                val lastIndex = scheduleContainer.indexOfLast { it != null }
+                scheduleContainer.take(lastIndex + 1)
+                    .map { it ?: makeDefaultScheduleTextView() }
                     .forEach {
                         binding.layoutMonthSchedule.addView(it)
                     }
@@ -143,43 +155,49 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
                         item.date <= it.endDate.toLocalDate()
             }
 
-            val scheduleListContainer = arrayOfNulls<TextView>(SCHEDULE_CONTAINER_SIZE)
-            filteredScheduleList.forEach {
-                val isFirstShowSchedule = item.date == it.startDate.toLocalDate() || item.dayType == DayType.SUNDAY
-                val paddingKey = "${adapterPosition / CALENDAR_COLUMN_SIZE}:${it.id}"
-                val paddingLineIndex = lineIndex[paddingKey]
+            val scheduleListContainer = arrayOfNulls<TextView>(calendarDesign.visibleScheduleCount)
+            filteredScheduleList.take(calendarDesign.visibleScheduleCount)
+                .forEach {
+                    val paddingKey = "${adapterPosition / CALENDAR_COLUMN_SIZE}:${it.id}"
+                    val paddingLineIndex = lineIndex[paddingKey]?.savedLineIndex
+                    val lastSelectedPosition = lineIndex[paddingKey]?.lastSelectedPosition
+                    val isFirstShowSchedule = item.date == it.startDate.toLocalDate() ||
+                            item.dayType == DayType.SUNDAY ||
+                            adapterPosition == lastSelectedPosition
 
-                if (paddingLineIndex != null) {
-                    scheduleListContainer[paddingLineIndex] = mappingScheduleTextView(it, isFirstShowSchedule)
-                } else {
-                    for (i in scheduleListContainer.indices) {
-                        if (scheduleListContainer[i] == null) {
-                            scheduleListContainer[i] = mappingScheduleTextView(it, isFirstShowSchedule)
-                            lineIndex[paddingKey] = i
-                            break
+                    if (paddingLineIndex != null) {
+                        scheduleListContainer[paddingLineIndex] = mappingScheduleTextView(it, isFirstShowSchedule)
+                    } else {
+                        for (i in scheduleListContainer.indices) {
+                            if (scheduleListContainer[i] == null) {
+                                scheduleListContainer[i] = mappingScheduleTextView(it, true)
+                                lineIndex[paddingKey] = MonthCellPositionStore(i, adapterPosition)
+                                break
+                            }
                         }
                     }
                 }
-            }
             // 보여줄 갯수만 뽑아서 반환 SCHEDULE_CONTAINER_SIZE 보다 크면 안됨
             return scheduleListContainer.sliceArray(0 until calendarDesign.visibleScheduleCount)
         }
 
         private fun mappingScheduleTextView(it: CalendarScheduleObject, isFirstShowSchedule: Boolean): TextView {
-            val textView = makeDefaultScheduleTextView()
+            val startMargin = if (isFirstShowSchedule) 2f else 0f
+            val textView = makeDefaultScheduleTextView(startMargin)
+            textView.layoutParams
             textView.text = if (isFirstShowSchedule) it.text else ""
             textView.setTextColor(Color.WHITE)
             textView.setBackgroundColor(it.color)
             return textView
         }
 
-        private fun makeDefaultScheduleTextView(): TextView {
+        private fun makeDefaultScheduleTextView(startMargin: Float = 0f): TextView {
             val textView = TextView(itemView.context)
             val layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
             )
-            layoutParams.setMargins(0, 0, 0, context().dp2px(2.0f).toInt())
+            layoutParams.setMargins(context().dp2px(startMargin).toInt(), 0, 0, context().dp2px(2.0f).toInt())
             textView.includeFontPadding = false
             textView.isSingleLine = true
             textView.layoutParams = layoutParams
@@ -216,18 +234,8 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
 
     companion object {
 
-        private val diffUtil = object : DiffUtil.ItemCallback<CalendarDate>() {
-
-            override fun areItemsTheSame(oldItem: CalendarDate, newItem: CalendarDate) = oldItem.date == newItem.date
-
-            override fun areContentsTheSame(oldItem: CalendarDate, newItem: CalendarDate) = oldItem == newItem
-        }
-
         private const val CALENDAR_COLUMN_SIZE = 7
 
         private const val SCHEDULE_HEIGHT_DIVIDE_RATIO = 10
-
-        //TODO : 10개넘어가는 일정이 있으면 오류 가능성 있음
-        private const val SCHEDULE_CONTAINER_SIZE = 10
     }
 }

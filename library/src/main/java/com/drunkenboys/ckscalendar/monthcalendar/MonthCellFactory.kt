@@ -11,12 +11,55 @@ class MonthCellFactory {
 
     fun makeCell(item: CalendarSet): MutableList<CalendarDate> {
         val dates = mutableListOf<CalendarDate>()
+
+        val startYear = item.startDate.year
+        val endYear = item.endDate.year
+
         val startMonth = item.startDate.monthValue
-        val startDay = item.startDate.dayOfWeek
         val endMonth = item.endDate.monthValue
-        (startMonth..endMonth).forEach { month ->
+        if (startYear == endYear) {
+            dates.addAll(makeMonthCells(item.startDate, item.endDate, startYear))
+        } else {
+            (startYear..endYear).forEach { year ->
+                when (year) {
+                    startYear -> {
+                        val startLocalDate = LocalDate.of(year, startMonth, item.startDate.dayOfMonth)
+                        val endLocalDate = LocalDate.of(year, 12, 31)
+                        dates.addAll(makeMonthCells(startLocalDate, endLocalDate, year))
+                    }
+                    endYear -> {
+                        val startLocalDate = LocalDate.of(year, 1, 1)
+                        val endLocalDate = LocalDate.of(year, endMonth, item.endDate.dayOfMonth)
+                        dates.addAll(makeMonthCells(startLocalDate, endLocalDate, year))
+                    }
+                    else -> {
+                        val startLocalDate = LocalDate.of(year, 1, 1)
+                        val endLocalDate = LocalDate.of(year, 12, 31)
+                        dates.addAll(makeMonthCells(startLocalDate, endLocalDate, year))
+                    }
+                }
+            }
+        }
+
+        // add FullSize Padding
+        if (dates.size < CALENDAR_FULL_SIZE) {
+            val fullSizePadding = CALENDAR_FULL_SIZE - dates.size - 1
+            dates.addAll(makePadding(fullSizePadding))
+        }
+
+        return dates
+    }
+
+    private fun makeMonthCells(
+        startMonth: LocalDate,
+        endMonth: LocalDate,
+        year: Int
+    ): MutableList<CalendarDate> {
+        val startDay = startMonth.dayOfWeek
+        val dates = mutableListOf<CalendarDate>()
+        (startMonth.monthValue..endMonth.monthValue).forEach { month ->
             when (month) {
-                startMonth -> {
+                startMonth.monthValue -> {
                     // add Start Padding
                     if (startDay != DayOfWeek.SUNDAY) {
                         dates.addAll(makePadding(startDay.ordinal))
@@ -24,30 +67,25 @@ class MonthCellFactory {
 
                     // add Start Dates
                     if (startMonth == endMonth) {
-                        dates.addAll(makeDates(item.startDate.dayOfMonth, item.endDate.dayOfMonth, month, item.startDate.year))
+                        dates.addAll(makeDates(startMonth.dayOfMonth, endMonth.dayOfMonth, month, year))
                     } else {
-                        dates.addAll(makeDates(item.startDate.dayOfMonth, item.startDate.lengthOfMonth(), month, item.startDate.year))
+                        dates.addAll(makeDates(startMonth.dayOfMonth, startMonth.lengthOfMonth(), month, year))
                     }
                 }
-                endMonth -> {
-                    dates.addAll(makeDates(1, item.endDate.dayOfMonth, month, item.endDate.year))
+                endMonth.monthValue -> {
+                    dates.addAll(makeDates(1, endMonth.dayOfMonth, month, year))
                 }
                 else -> {
                     // add Normal Dates
-                    val monthDate = LocalDate.of(item.endDate.year, month, 1)
-                    dates.addAll(makeDates(1, monthDate.lengthOfMonth(), month, monthDate.year))
+                    val monthDate = LocalDate.of(year, month, 1)
+                    dates.addAll(makeDates(1, monthDate.lengthOfMonth(), month, year))
                 }
             }
         }
+
         // add End Padding
         val weekPadding = 6 - dates.size % WEEK_SIZE
         dates.addAll(makePadding(weekPadding))
-
-        // add FullSize Padding
-        if (dates.size < CALENDAR_FULL_SIZE) {
-            val fullSizePadding = CALENDAR_FULL_SIZE - dates.size - 1
-            dates.addAll(makePadding(fullSizePadding))
-        }
 
         return dates
     }
