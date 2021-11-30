@@ -2,7 +2,12 @@ package com.drunkenboys.calendarun.data.holiday
 
 import com.google.gson.annotations.SerializedName
 
+
 data class ResponseHolidayInfo(
+    val response: Response
+)
+
+data class Response(
     val header: Header,
     val body: Body
 )
@@ -13,13 +18,16 @@ data class Header(
 )
 
 data class Body(
-    val items: List<Item>
+    val items: Items
+)
+
+data class Items(
+    val item: List<Item>
 )
 
 data class Item(
-    val dataKind: String,
     val dateName: String,
-    val isHoliday: String,
     @SerializedName("locdate")
-    val localDate: Long
+    val localDate: Int
 )
+
