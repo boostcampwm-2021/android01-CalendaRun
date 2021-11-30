@@ -27,6 +27,7 @@ import com.drunkenboys.ckscalendar.listener.OnDaySecondClickListener
 import com.drunkenboys.ckscalendar.utils.InitScroll
 import com.drunkenboys.ckscalendar.utils.ShouldNextScroll
 import com.drunkenboys.ckscalendar.utils.ShouldPrevScroll
+import com.drunkenboys.ckscalendar.utils.calendarSetToCalendarDatesList
 import com.drunkenboys.ckscalendar.yearcalendar.CustomTheme
 import com.drunkenboys.ckscalendar.yearcalendar.YearCalendarViewModel
 import java.time.LocalDate
@@ -45,24 +46,18 @@ fun CalendarLazyColumn(
     // state hoisting
     val dayColumnModifier = { day: CalendarDate ->
         when (clickedDay) {
-            day.date -> {
-                Modifier
-                    .border(
-                        border = BorderStroke(width = 2.dp, color = Color(viewModel.design.value.selectedFrameColor)),
-                        shape = RoundedCornerShape(6.dp)
-                    )
-                    .clickable(onClick = {
-                        onDaySecondClickListener?.onDayClick(day.date, 0)
-                    })
-            }
-
-            else -> {
-                Modifier
-                    .clickable(onClick = {
-                        onDayClickListener?.onDayClick(day.date, 0)
-                        clickedDay = day.date
-                    })
-            }
+            day.date -> Modifier
+                .border(
+                    border = BorderStroke(width = 2.dp, color = Color(viewModel.design.value.selectedFrameColor)),
+                    shape = RoundedCornerShape(6.dp)
+                )
+                .clickable(onClick = {
+                    onDaySecondClickListener?.onDayClick(day.date, 0)
+                })
+            else -> Modifier.clickable(onClick = {
+                onDayClickListener?.onDayClick(day.date, 0)
+                clickedDay = day.date
+            })
         }
     }
 
@@ -76,28 +71,35 @@ fun CalendarLazyColumn(
             .background(color = MaterialTheme.colors.background)
             .fillMaxHeight()
     ) {
-        items(calendar, key = { slice -> slice.startDate }) { slice ->
+        calendar.forEach { slice ->
+            items(
+                items = calendarSetToCalendarDatesList(slice),
+                key = { week -> week.first { day -> day.dayType != DayType.PADDING }.date }
+            ) { week ->
+                val firstOfYear = LocalDate.of(slice.startDate.year, 1, 1)
+                val startDate = week.first { day -> day.dayType != DayType.PADDING }.date
+                val endDate = week.last { day -> day.dayType != DayType.PADDING }.date
 
-            val firstOfYear = LocalDate.of(slice.startDate.year, 1, 1)
+                // 해가 갱신될 때마다 상단에 연표시
+                if (firstOfYear in startDate..endDate ||
+                    firstOfYear.plusYears(1L) in startDate..endDate)
+                        Text(
+                            text = "${startDate.year}년",
+                            color = MaterialTheme.colors.primary,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 16.dp, bottom = 16.dp),
+                            textAlign = TextAlign.Center
+                        )
 
-            // 해가 갱신될 때마다 상단에 연표시
-            if (firstOfYear in slice.startDate..slice.endDate || firstOfYear.plusYears(1L) in slice.startDate..slice.endDate) {
-                Text(
-                    text = "${slice.startDate.year}년",
-                    color = MaterialTheme.colors.primary,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 16.dp, bottom = 16.dp),
-                    textAlign = TextAlign.Center
+                WeekCalendar(
+                    month = slice,
+                    listState = listState,
+                    week = week,
+                    dayColumnModifier = dayColumnModifier,
+                    viewModel = viewModel
                 )
             }
-
-            MonthCalendar(
-                month = slice,
-                listState = listState,
-                dayColumnModifier = dayColumnModifier,
-                viewModel = viewModel
-            )
         }
     }
 
