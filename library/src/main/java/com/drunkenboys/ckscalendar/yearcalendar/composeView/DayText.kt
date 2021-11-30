@@ -24,22 +24,14 @@ fun DayText(
     viewModel: YearCalendarViewModel,
     isFirstOfCalendarSet: Boolean
 ) {
-    val color = when (day.dayType) { // FIXME: month 와 통합
-        DayType.HOLIDAY -> Color(viewModel.design.value.holidayTextColor)
-        DayType.SATURDAY -> Color(viewModel.design.value.saturdayTextColor)
-        DayType.SUNDAY -> Color(viewModel.design.value.sundayTextColor)
-        else -> MaterialTheme.colors.primary
-    }
-
-    val text = if (isFirstOfCalendarSet) {
-        "${day.date.monthValue}. "
-    } else {
-        ""
-    } + "${day.date.dayOfMonth}"
-
     Text(
-        text = text,
-        color = color,
+        text = if (isFirstOfCalendarSet) "${day.date.monthValue}. " else "" + "${day.date.dayOfMonth}",
+        color = when (day.dayType) {
+            DayType.HOLIDAY -> Color(viewModel.design.value.holidayTextColor)
+            DayType.SATURDAY -> Color(viewModel.design.value.saturdayTextColor)
+            DayType.SUNDAY -> Color(viewModel.design.value.sundayTextColor)
+            else -> MaterialTheme.colors.primary
+        },
         modifier = Modifier.layoutId(day.date.toString()).padding(start = 5.dp, end = 5.dp),
         textAlign = GravityMapper.toTextAlign(viewModel.design.value.textAlign),
         fontSize = viewModel.design.value.textSize.dp(),
