@@ -17,6 +17,10 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.toRect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.text.style.TextAlign
@@ -48,7 +52,6 @@ fun CalendarLazyColumn(
         when (clickedDay) {
             day.date -> {
                 Modifier
-                    .layoutId(day.date.toString())
                     .border(
                         border = BorderStroke(width = 2.dp, color = Color(viewModel.design.value.selectedFrameColor)),
                         shape = RoundedCornerShape(6.dp)
@@ -60,10 +63,6 @@ fun CalendarLazyColumn(
 
             else -> {
                 Modifier
-                    .layoutId(day.date.toString())
-                    .border(
-                        border = BorderStroke(width = 0.1f.dp, color = Color(viewModel.design.value.weekDayTextColor).copy(alpha = 0.1f))
-                    )
                     .clickable(onClick = {
                         onDayClickListener?.onDayClick(day.date, 0)
                         clickedDay = day.date
@@ -84,13 +83,12 @@ fun CalendarLazyColumn(
     ) {
         items(calendar, key = { slice -> slice.startDate }) { slice ->
 
-            val firstOfYear = LocalDate.of(slice.endDate.year, 1, 1)
+            val firstOfYear = LocalDate.of(slice.startDate.year, 1, 1)
 
             // 해가 갱신될 때마다 상단에 연표시
-            if (firstOfYear in slice.startDate..slice.endDate) {
-
+            if (firstOfYear in slice.startDate..slice.endDate || firstOfYear.plusYears(1L) in slice.startDate..slice.endDate) {
                 Text(
-                    text = "${firstOfYear.year}년",
+                    text = "${slice.startDate.year}년",
                     color = MaterialTheme.colors.primary,
                     modifier = Modifier
                         .fillMaxWidth()
