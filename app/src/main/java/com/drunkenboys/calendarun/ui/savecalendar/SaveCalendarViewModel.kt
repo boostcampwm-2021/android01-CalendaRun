@@ -6,9 +6,9 @@ import androidx.lifecycle.viewModelScope
 import com.drunkenboys.calendarun.KEY_CALENDAR_ID
 import com.drunkenboys.calendarun.data.calendar.entity.Calendar
 import com.drunkenboys.calendarun.data.calendar.local.CalendarLocalDataSource
-import com.drunkenboys.calendarun.data.checkpoint.entity.CheckPoint
-import com.drunkenboys.calendarun.data.checkpoint.local.CheckPointLocalDataSource
-import com.drunkenboys.calendarun.ui.savecalendar.model.CheckPointItem
+import com.drunkenboys.calendarun.data.slice.entity.Slice
+import com.drunkenboys.calendarun.data.slice.local.SliceLocalDataSource
+import com.drunkenboys.calendarun.ui.savecalendar.model.SliceItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -20,13 +20,13 @@ import javax.inject.Inject
 class SaveCalendarViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val calendarLocalDataSource: CalendarLocalDataSource,
-    private val checkPointLocalDataSource: CheckPointLocalDataSource
+    private val sliceLocalDataSource: SliceLocalDataSource
 ) : ViewModel() {
 
     private val calendarId = savedStateHandle[KEY_CALENDAR_ID] ?: 0L
 
-    private val _checkPointItemList = MutableStateFlow(listOf(CheckPointItem()))
-    val checkPointItemList: StateFlow<List<CheckPointItem>> = _checkPointItemList
+    private val _sliceItemList = MutableStateFlow(listOf(SliceItem()))
+    val sliceItemList: StateFlow<List<SliceItem>> = _sliceItemList
 
     val calendarName = MutableStateFlow("")
 
@@ -44,19 +44,19 @@ class SaveCalendarViewModel @Inject constructor(
 
             calendarName.emit(calendar.name)
 
-            val checkPointItemList = mutableListOf<CheckPointItem>()
-            val checkPointList = checkPointLocalDataSource.fetchCalendarCheckPoints(calendarId).firstOrNull() ?: return@launch
-            checkPointList.forEach { checkPoint ->
-                checkPointItemList.add(
-                    CheckPointItem(
-                        id = checkPoint.id,
-                        name = MutableStateFlow(checkPoint.name),
-                        startDate = MutableStateFlow(checkPoint.startDate),
-                        endDate = MutableStateFlow(checkPoint.endDate)
+            val sliceItemList = mutableListOf<SliceItem>()
+            val sliceList = sliceLocalDataSource.fetchCalendarSliceList(calendarId).firstOrNull() ?: return@launch
+            sliceList.forEach { slice ->
+                sliceItemList.add(
+                    SliceItem(
+                        id = slice.id,
+                        name = MutableStateFlow(slice.name),
+                        startDate = MutableStateFlow(slice.startDate),
+                        endDate = MutableStateFlow(slice.endDate)
                     )
                 )
             }
-            _checkPointItemList.emit(checkPointItemList)
+            _sliceItemList.emit(sliceItemList)
             setUseDefaultCalendar()
         }
     }
@@ -67,31 +67,31 @@ class SaveCalendarViewModel @Inject constructor(
         }
     }
 
-    fun addCheckPoint() {
+    fun addSlice() {
         viewModelScope.launch {
-            val newList = mutableListOf<CheckPointItem>()
-            newList.addAll(checkPointItemList.value)
-            newList.add(CheckPointItem())
-            _checkPointItemList.emit(newList.toList())
+            val newList = mutableListOf<SliceItem>()
+            newList.addAll(sliceItemList.value)
+            newList.add(SliceItem())
+            _sliceItemList.emit(newList.toList())
         }
     }
 
-    private fun deleteCheckPointList(calendarId: Long) {
+    private fun deleteSliceList(calendarId: Long) {
         viewModelScope.launch {
-            checkPointLocalDataSource.deleteCheckPointList(calendarId)
+            sliceLocalDataSource.deleteSliceList(calendarId)
         }
     }
 
-    fun deleteCheckPointItem(currentCheckPointItemList: List<CheckPointItem>) {
+    fun deleteSliceItem(currentSliceItemList: List<SliceItem>) {
         viewModelScope.launch {
-            val newCheckPointItemList = currentCheckPointItemList.filter { checkPointItem -> !checkPointItem.check }
-            _checkPointItemList.emit(newCheckPointItemList.toMutableList())
+            val newSliceItemList = currentSliceItemList.filter { sliceItem -> !sliceItem.check }
+            _sliceItemList.emit(newSliceItemList.toMutableList())
         }
     }
 
     private fun setUseDefaultCalendar() {
         viewModelScope.launch {
-            useDefaultCalendar.emit(checkPointItemList.value.isEmpty())
+            useDefaultCalendar.emit(sliceItemList.value.isEmpty())
         }
     }
 
@@ -104,7 +104,7 @@ class SaveCalendarViewModel @Inject constructor(
     private suspend fun saveCalendarInfo(): Boolean {
         val useDefaultCalendar = useDefaultCalendar.value
         val calendarName = calendarName.value
-        val checkPointList = _checkPointItemList.value
+        val sliceList = _sliceItemList.value
         var canSave = true
 
         if (calendarName.isBlank()) {
@@ -114,17 +114,17 @@ class SaveCalendarViewModel @Inject constructor(
 
         if (useDefaultCalendar && canSave) {
             saveCalendar(calendarId, calendarName)
-            deleteCheckPointList(calendarId)
+            deleteSliceList(calendarId)
             return true
         }
 
-        var calendarStartDate = checkPointList.getOrNull(0)?.startDate?.value ?: LocalDate.now()
-        var calendarEndDate = checkPointList.getOrNull(0)?.endDate?.value ?: LocalDate.now()
+        var calendarStartDate = sliceList.getOrNull(0)?.startDate?.value ?: LocalDate.now()
+        var calendarEndDate = sliceList.getOrNull(0)?.endDate?.value ?: LocalDate.now()
 
-        checkPointList.forEach { item ->
+        sliceList.forEach { item ->
             val name = item.name.value
-            var startDate = item.startDate.value
-            var endDate = item.endDate.value
+            val startDate = item.startDate.value
+            val endDate = item.endDate.value
 
             if (name.isBlank()) {
                 emitBlankSliceNameEvent(item)
@@ -153,8 +153,8 @@ class SaveCalendarViewModel @Inject constructor(
 
         val newCalendarId = saveCalendar(calendarId, calendarName, calendarStartDate, calendarEndDate)
 
-        checkPointList.forEach { item ->
-            saveCheckPoint(item, newCalendarId)
+        sliceList.forEach { item ->
+            saveSlice(item, newCalendarId)
         }
 
         return true
@@ -187,8 +187,8 @@ class SaveCalendarViewModel @Inject constructor(
         return calendarId
     }
 
-    private fun saveCheckPoint(item: CheckPointItem, newCalendarId: Long) {
-        val newCheckPoint = CheckPoint(
+    private fun saveSlice(item: SliceItem, newCalendarId: Long) {
+        val newSlice = Slice(
             id = item.id,
             calendarId = newCalendarId,
             name = item.name.value,
@@ -198,26 +198,26 @@ class SaveCalendarViewModel @Inject constructor(
 
         viewModelScope.launch {
             if (item.id != 0L) {
-                checkPointLocalDataSource.updateCheckPoint(newCheckPoint)
+                sliceLocalDataSource.updateSlice(newSlice)
             } else {
-                checkPointLocalDataSource.insertCheckPoint(newCheckPoint)
+                sliceLocalDataSource.insertSlice(newSlice)
             }
         }
     }
 
-    private fun emitBlankSliceNameEvent(item: CheckPointItem) {
+    private fun emitBlankSliceNameEvent(item: SliceItem) {
         viewModelScope.launch {
             item.isNameBlank.emit(Unit)
         }
     }
 
-    private fun emitBlankSliceStartDateEvent(item: CheckPointItem) {
+    private fun emitBlankSliceStartDateEvent(item: SliceItem) {
         viewModelScope.launch {
             item.isStartDateBlank.emit(Unit)
         }
     }
 
-    private fun emitBlankSliceEndDateEvent(item: CheckPointItem) {
+    private fun emitBlankSliceEndDateEvent(item: SliceItem) {
         viewModelScope.launch {
             item.isEndDateBlank.emit(Unit)
         }

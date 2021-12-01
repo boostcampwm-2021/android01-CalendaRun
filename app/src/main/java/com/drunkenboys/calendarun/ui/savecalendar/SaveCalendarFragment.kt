@@ -11,7 +11,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.databinding.FragmentSaveCalendarBinding
 import com.drunkenboys.calendarun.ui.base.BaseFragment
-import com.drunkenboys.calendarun.ui.savecalendar.model.CheckPointItem
+import com.drunkenboys.calendarun.ui.savecalendar.model.SliceItem
 import com.drunkenboys.calendarun.util.extensions.launchAndRepeatWithViewLifecycle
 import com.drunkenboys.calendarun.util.extensions.pickRangeDateInMillis
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,7 +24,7 @@ import java.time.LocalDate
 class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.fragment_save_calendar) {
 
     private val saveCalendarViewModel by viewModels<SaveCalendarViewModel>()
-    private val saveCalendarAdapter by lazy { SaveCalendarAdapter(viewLifecycleOwner, ::onCheckPointClick) }
+    private val saveCalendarAdapter by lazy { SaveCalendarAdapter(viewLifecycleOwner, ::onSliceClick) }
 
     private val args: SaveCalendarFragmentArgs by navArgs()
 
@@ -37,22 +37,22 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
         setupToolbarMenuOnItemClickListener()
 
         launchAndRepeatWithViewLifecycle {
-            launch { collectCheckPointItemList() }
+            launch { collectSliceItemList() }
             launch { collectSaveCalendarEvent() }
             launch { collectUseDefaultCalendar() }
             launch { collectBlankTitleEvent() }
         }
     }
 
-    private fun onCheckPointClick(checkPointItem: CheckPointItem) {
+    private fun onSliceClick(sliceItem: SliceItem) {
         lifecycleScope.launch {
             val dateInMillis = pickRangeDateInMillis() ?: return@launch
 
             val startTime = LocalDate.ofEpochDay(dateInMillis.first / 1000 / 60 / 60 / 24)
             val endTime = LocalDate.ofEpochDay(dateInMillis.second / 1000 / 60 / 60 / 24)
 
-            checkPointItem.startDate.emit(startTime)
-            checkPointItem.endDate.emit(endTime)
+            sliceItem.startDate.emit(startTime)
+            sliceItem.endDate.emit(endTime)
         }
     }
 
@@ -71,14 +71,14 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
     }
 
     private fun setupRecyclerView() {
-        binding.rvSaveCalendarCheckPointList.adapter = saveCalendarAdapter
+        binding.rvSaveCalendarSliceList.adapter = saveCalendarAdapter
     }
 
     private fun setupToolbarMenuOnItemClickListener() {
         binding.toolbarSaveCalendar.setOnMenuItemClickListener { item ->
-            if (item.itemId == R.id.menu_delete_checkPoint) {
-                val currentCheckPointItemList = saveCalendarAdapter.currentList
-                saveCalendarViewModel.deleteCheckPointItem(currentCheckPointItemList)
+            if (item.itemId == R.id.menu_delete_slice) {
+                val currentSliceItemList = saveCalendarAdapter.currentList
+                saveCalendarViewModel.deleteSliceItem(currentSliceItemList)
                 true
             } else {
                 false
@@ -86,8 +86,8 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
         }
     }
 
-    private suspend fun collectCheckPointItemList() {
-        saveCalendarViewModel.checkPointItemList.collect { list ->
+    private suspend fun collectSliceItemList() {
+        saveCalendarViewModel.sliceItemList.collect { list ->
             saveCalendarAdapter.submitList(list.sortedWith(compareBy(nullsLast()) { it.startDate.value }))
             delay(300)
             binding.svSaveCalendar.smoothScrollTo(0, binding.tvSaveCalendarSaveCalendar.bottom)
@@ -98,9 +98,9 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
         // TODO: data Binding 으로 이동
         saveCalendarViewModel.useDefaultCalendar.collect { checked ->
             with(binding) {
-                rvSaveCalendarCheckPointList.isVisible = !checked
-                tvSaveCalendarAddCheckPointView.isVisible = !checked
-                toolbarSaveCalendar.menu.findItem(R.id.menu_delete_checkPoint).isVisible = !checked
+                rvSaveCalendarSliceList.isVisible = !checked
+                tvSaveCalendarAddSliceView.isVisible = !checked
+                toolbarSaveCalendar.menu.findItem(R.id.menu_delete_slice).isVisible = !checked
                 tvSaveCalendarSliceCaption.setTextColor(
                     if (checked) {
                         ContextCompat.getColor(requireContext(), R.color.light_grey)

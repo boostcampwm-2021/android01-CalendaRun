@@ -9,24 +9,30 @@ import com.drunkenboys.calendarun.data.calendar.entity.Calendar
 import com.drunkenboys.calendarun.data.calendar.local.CalendarDao
 import com.drunkenboys.calendarun.data.calendartheme.entity.CalendarTheme
 import com.drunkenboys.calendarun.data.calendartheme.local.CalendarThemeDao
-import com.drunkenboys.calendarun.data.checkpoint.entity.CheckPoint
-import com.drunkenboys.calendarun.data.checkpoint.local.CheckPointDao
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import com.drunkenboys.calendarun.data.schedule.local.ScheduleDao
+import com.drunkenboys.calendarun.data.slice.entity.Slice
+import com.drunkenboys.calendarun.data.slice.local.SliceDao
 
-@Database(entities = [Calendar::class, CheckPoint::class, Schedule::class, CalendarTheme::class], version = 4)
+@Database(entities = [Calendar::class, Slice::class, Schedule::class, CalendarTheme::class], version = 5)
 @TypeConverters(Converters::class)
 abstract class Database : RoomDatabase() {
 
     abstract fun calendarDao(): CalendarDao
 
-    abstract fun checkPointDao(): CheckPointDao
+    abstract fun sliceDao(): SliceDao
 
     abstract fun scheduleDao(): ScheduleDao
 
     abstract fun calendarThemeDao(): CalendarThemeDao
 
     companion object {
+
+        val MIGRATION_4_5 = object : Migration(4, 5) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("ALTER TABLE `CheckPoint` RENAME TO `Slice`")
+            }
+        }
 
         // CalendarTheme TextSize 데이터 타입 변경 Int -> Float
         val MIGRATION_3_4 = object : Migration(3, 4) {
@@ -75,8 +81,8 @@ abstract class Database : RoomDatabase() {
                        FROM CalendarTheme
                            """.trimMargin()
                 )
-                database.execSQL("DROP TABLE CalendarTheme");
-                database.execSQL("ALTER TABLE CalendarTheme_tmp RENAME TO CalendarTheme");
+                database.execSQL("DROP TABLE CalendarTheme")
+                database.execSQL("ALTER TABLE CalendarTheme_tmp RENAME TO CalendarTheme")
             }
         }
 

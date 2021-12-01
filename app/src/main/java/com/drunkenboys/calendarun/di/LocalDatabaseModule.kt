@@ -24,13 +24,14 @@ object LocalDatabaseModule {
         .createFromAsset("default.db")
         .addMigrations(Database.MIGRATION_2_3)
         .addMigrations(Database.MIGRATION_3_4)
+        .addMigrations(Database.MIGRATION_4_5)
         .build()
 
     @Provides
     fun provideCalendarDao(database: Database) = database.calendarDao()
 
     @Provides
-    fun provideCheckPointDao(database: Database) = database.checkPointDao()
+    fun provideSliceDao(database: Database) = database.sliceDao()
 
     @Provides
     fun provideScheduleDao(database: Database) = database.scheduleDao()
