@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="common_month">월</string>
-    <string name="sunday">일</string>
-    <string name="monday">월</string>
-    <string name="tuesday">화</string>
-    <string name="wednesday">수</string>
-    <string name="thursday">목</string>
-    <string name="friday">금</string>
-    <string name="saturday">토</string>
+    <string name="common_year">년</string>
+    <string name="calendar_sunday">일</string>
+    <string name="calendar_monday">월</string>
+    <string name="calendar_tuesday">화</string>
+    <string name="calendar_wednesday">수</string>
+    <string name="calendar_thursday">목</string>
+    <string name="calendar_friday">금</string>
+    <string name="calendar_saturday">토</string>
 </resources>

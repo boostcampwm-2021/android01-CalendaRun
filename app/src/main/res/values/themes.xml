@@ -14,6 +14,7 @@
         <!-- Customize your theme here. -->
         <item name="fontFamily">@font/inter_medium</item>
         <item name="drawerArrowStyle">@style/LightArrowStyle</item>
+        <item name="android:includeFontPadding">false</item>
     </style>
 
     <style name="LightArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
@@ -25,4 +26,31 @@
         <item name="itemTextColor">@color/navigation_item_color</item>
         <item name="itemShapeFillColor">@color/navigation_item_background_color</item>
     </style>
+
+    <style name="Theme.With.ActionBar" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="actionBarWidgetTheme">@null</item>
+        <item name="actionBarTheme">@style/ThemeOverlay.MaterialComponents.Dark.ActionBar</item>
+        <item name="colorPrimary">@color/dark_grey</item>
+        <item name="colorPrimaryVariant">@color/black</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <item name="listChoiceBackgroundIndicator">@drawable/abc_list_selector_holo_dark</item>
+        <item name="windowActionBar">true</item>
+        <item name="windowActionModeOverlay">false</item>
+        <item name="windowNoTitle">false</item>
+    </style>
+  
+    <style name="ButtonTheme" parent="Widget.AppCompat.TextView">
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:background">@drawable/btn_rect_black_background</item>
+    </style>
+
+    <style name="Theme.달려달력.AppWidgetContainerParent" parent="@android:style/Theme.DeviceDefault">
+        <item name="appWidgetRadius">8dp</item>
+        <item name="appWidgetPadding">4dp</item>
+        <item name="appWidgetInnerRadius">4dp</item>
+    </style>
+
+    <style name="Theme.달려달력.AppWidgetContainer" parent="Theme.달려달력.AppWidgetContainerParent" />
 </resources>

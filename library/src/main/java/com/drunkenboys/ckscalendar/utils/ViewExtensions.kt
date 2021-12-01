@@ -39,4 +39,7 @@ fun RecyclerView.ViewHolder.context(): Context {
 }
 
 @Composable
-fun Int.dp() = with(LocalDensity.current) {  Dp(this@dp.toFloat()).toSp()  }
+fun Int.dp() = with(LocalDensity.current) { Dp(this@dp.toFloat()).toSp() }
+
+@Composable
+fun Float.dp() = with(LocalDensity.current) { Dp(this@dp).toSp() }

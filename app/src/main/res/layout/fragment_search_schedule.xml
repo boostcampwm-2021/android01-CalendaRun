@@ -60,14 +60,23 @@
             app:layout_constraintTop_toBottomOf="@id/layout_searchSchedule_toolbar"
             tools:listitem="@layout/item_date" />
 
-        <ProgressBar
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+        <androidx.cardview.widget.CardView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             android:layout_marginTop="16dp"
+            android:padding="4dp"
             android:visibility="@{viewModel.isSearching() ? View.VISIBLE : View.GONE}"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="4dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/layout_searchSchedule_toolbar" />
+            app:layout_constraintTop_toBottomOf="@id/layout_searchSchedule_toolbar">
+
+            <ProgressBar
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center" />
+        </androidx.cardview.widget.CardView>
 
         <TextView
             android:layout_width="wrap_content"

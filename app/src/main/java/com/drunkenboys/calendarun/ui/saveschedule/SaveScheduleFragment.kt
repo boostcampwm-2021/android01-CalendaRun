@@ -3,7 +3,6 @@ package com.drunkenboys.calendarun.ui.saveschedule
 import android.app.AlarmManager
 import android.content.res.ColorStateList
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import androidx.appcompat.widget.ListPopupWindow
@@ -11,17 +10,18 @@ import androidx.core.content.getSystemService
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
-import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import com.drunkenboys.calendarun.databinding.FragmentSaveScheduleBinding
 import com.drunkenboys.calendarun.receiver.ScheduleAlarmReceiver
 import com.drunkenboys.calendarun.ui.base.BaseFragment
-import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
+import com.drunkenboys.calendarun.ui.searchschedule.SearchScheduleFragment
 import com.drunkenboys.calendarun.util.*
 import com.drunkenboys.calendarun.util.extensions.*
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.util.*
@@ -42,36 +42,43 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
 
         setupToolbar()
         setupNotificationPopupWindow()
-        collectPickDateTimeEvent()
-        collectPickNotificationTypeEvent()
-        collectNotificationType()
-        collectTagColor()
-        collectIsPickTagColorPopupVisible()
-        collectSaveScheduleEvent()
-        collectDeleteScheduleEvent()
 
-        saveScheduleViewModel.init(args.behaviorType, args.localDate)
+        launchAndRepeatWithViewLifecycle {
+            launch { collectPickDateTimeEvent() }
+            launch { collectPickNotificationTypeEvent() }
+            launch { collectNotificationType() }
+            launch { collectTagColor() }
+            launch { collectIsPickTagColorPopupVisible() }
+            launch { collectSaveScheduleEvent() }
+            launch { collectDeleteScheduleEvent() }
+            launch { collectBlankTitleEvent() }
+        }
     }
 
     private fun setupToolbar() = with(binding) {
-        when (args.behaviorType) {
-            BehaviorType.INSERT -> toolbarSaveSchedule.title = "일정 추가"
-            BehaviorType.UPDATE -> {
-                toolbarSaveSchedule.title = "일정 수정"
-                toolbarSaveSchedule.inflateMenu(R.menu.menu_save_schedule_toolbar)
-            }
+        setupToolbarTitle()
+        setupToolbarMenuItemClickListener()
+        toolbarSaveSchedule.setupWithNavController(navController)
+    }
+
+    private fun setupToolbarTitle() = with(binding) {
+        if (args.scheduleId == 0L) {
+            toolbarSaveSchedule.title = getString(R.string.saveSchedule_toolbarTitle_insert)
+        } else {
+            toolbarSaveSchedule.title = getString(R.string.saveSchedule_toolbarTitle_update)
+            toolbarSaveSchedule.inflateMenu(R.menu.menu_save_schedule_toolbar)
         }
+    }
+
+    private fun setupToolbarMenuItemClickListener() = with(binding) {
         toolbarSaveSchedule.setOnMenuItemClickListener { item ->
             if (item.itemId == R.id.menu_delete_schedule) {
-                navController.navigate(SaveScheduleFragmentDirections.actionSaveScheduleFragmentToDeleteScheduleDialog())
+                navController.navigate(SaveScheduleFragmentDirections.toDeleteScheduleDialog())
                 true
             } else {
                 false
             }
         }
-
-        val appBarConfig = AppBarConfiguration(navController.graph)
-        toolbarSaveSchedule.setupWithNavController(navController, appBarConfig)
     }
 
     private fun setupNotificationPopupWindow() {
@@ -91,11 +98,11 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
         }
     }
 
-    private fun collectPickDateTimeEvent() {
-        sharedCollect(saveScheduleViewModel.pickDateTimeEvent) { dateType ->
-            val dateInMillis = pickDateInMillis() ?: return@sharedCollect
+    private suspend fun collectPickDateTimeEvent() {
+        saveScheduleViewModel.pickDateTimeEvent.collect { (dateType, localDateTime) ->
+            val dateInMillis = pickDateInMillis(localDateTime.toLocalDate()) ?: return@collect
 
-            val (hour, minute) = pickTime() ?: return@sharedCollect
+            val (hour, minute) = pickTime(localDateTime.toLocalTime()) ?: return@collect
 
             val dateTime = LocalDateTime.ofEpochSecond(dateInMillis / 1000, 0, ZoneOffset.UTC)
                 .withHour(hour)
@@ -105,14 +112,14 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
         }
     }
 
-    private fun collectPickNotificationTypeEvent() {
-        sharedCollect(saveScheduleViewModel.pickNotificationTypeEvent) {
+    private suspend fun collectPickNotificationTypeEvent() {
+        saveScheduleViewModel.pickNotificationTypeEvent.collect {
             notificationPopupWidow?.show()
         }
     }
 
-    private fun collectNotificationType() {
-        stateCollect(saveScheduleViewModel.notificationType) { type ->
+    private suspend fun collectNotificationType() {
+        saveScheduleViewModel.notificationType.collect { type ->
             binding.tvSaveScheduleNotification.text = when (type) {
                 Schedule.NotificationType.NONE -> getString(R.string.saveSchedule_notificationNone)
                 Schedule.NotificationType.TEN_MINUTES_AGO -> getString(R.string.saveSchedule_notificationTenMinutesAgo)
@@ -122,14 +129,14 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
         }
     }
 
-    private fun collectTagColor() {
-        stateCollect(saveScheduleViewModel.tagColor) { color ->
+    private suspend fun collectTagColor() {
+        saveScheduleViewModel.tagColor.collect { color ->
             binding.viewSaveScheduleTagColor.backgroundTintList = ColorStateList.valueOf(color)
         }
     }
 
-    private fun collectIsPickTagColorPopupVisible() {
-        stateCollect(saveScheduleViewModel.isPickTagColorPopupVisible) { isVisible ->
+    private suspend fun collectIsPickTagColorPopupVisible() {
+        saveScheduleViewModel.isPickTagColorPopupVisible.collect { isVisible ->
             togglePickTagColorPopup(isVisible)
         }
     }
@@ -147,15 +154,15 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
         }
     }
 
-    private fun collectSaveScheduleEvent() {
-        sharedCollect(saveScheduleViewModel.saveScheduleEvent) { schedule ->
-            saveNotification(schedule)
+    private suspend fun collectSaveScheduleEvent() {
+        saveScheduleViewModel.saveScheduleEvent.collect { (schedule, calendarName) ->
+            saveNotification(schedule, calendarName)
             showToast(getString(R.string.toast_schedule_saved))
             navController.navigateUp()
         }
     }
 
-    private fun saveNotification(schedule: Schedule) {
+    private fun saveNotification(schedule: Schedule, calendarName: String) {
         val alarmManager = requireContext().getSystemService<AlarmManager>() ?: return
 
         val triggerAtMillis = schedule.notificationDateTimeMillis()
@@ -164,21 +171,35 @@ class SaveScheduleFragment : BaseFragment<FragmentSaveScheduleBinding>(R.layout.
         alarmManager.set(
             AlarmManager.RTC_WAKEUP,
             triggerAtMillis,
-            ScheduleAlarmReceiver.createPendingIntent(requireContext(), schedule)
+            ScheduleAlarmReceiver.createPendingIntent(requireContext(), schedule, calendarName)
         )
     }
 
-    private fun collectDeleteScheduleEvent() {
-        sharedCollect(saveScheduleViewModel.deleteScheduleEvent) { schedule ->
-            deleteNotification(schedule)
-            showToast(getString(R.string.toast_schedule_deleted))
+    private suspend fun collectDeleteScheduleEvent() {
+        saveScheduleViewModel.deleteScheduleEvent.collect { (schedule, calendarName) ->
+            deleteNotification(schedule, calendarName)
+            tryNotifyDeleteEvent(schedule.id)
             navController.navigateUp()
         }
     }
 
-    private fun deleteNotification(schedule: Schedule) {
+    private fun deleteNotification(schedule: Schedule, calendarName: String) {
         val alarmManager = requireContext().getSystemService<AlarmManager>() ?: return
 
-        alarmManager.cancel(ScheduleAlarmReceiver.createPendingIntent(requireContext(), schedule))
+        alarmManager.cancel(ScheduleAlarmReceiver.createPendingIntent(requireContext(), schedule, calendarName))
+    }
+
+    private fun tryNotifyDeleteEvent(id: Long) {
+        if (navController.previousBackStackEntry?.destination?.id == R.id.searchScheduleFragment) {
+            navController.previousBackStackEntry
+                ?.savedStateHandle
+                ?.set(SearchScheduleFragment.DELETE_SCHEDULE_ID, id)
+        }
+    }
+
+    private suspend fun collectBlankTitleEvent() {
+        saveScheduleViewModel.blankTitleEvent.collect {
+            binding.etSaveScheduleTitleInput.isError = true
+        }
     }
 }

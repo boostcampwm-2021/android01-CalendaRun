@@ -2,7 +2,8 @@ package com.drunkenboys.calendarun.ui.savecalendar
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
+import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
@@ -11,11 +12,11 @@ import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.databinding.FragmentSaveCalendarBinding
 import com.drunkenboys.calendarun.ui.base.BaseFragment
 import com.drunkenboys.calendarun.ui.savecalendar.model.CheckPointItem
-import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
-import com.drunkenboys.calendarun.util.extensions.pickDateInMillis
-import com.drunkenboys.calendarun.util.extensions.sharedCollect
-import com.drunkenboys.calendarun.util.extensions.stateCollect
+import com.drunkenboys.calendarun.util.extensions.launchAndRepeatWithViewLifecycle
+import com.drunkenboys.calendarun.util.extensions.pickRangeDateInMillis
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -33,26 +34,35 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
         setupToolbar()
         setupDataBinding()
         setupRecyclerView()
-        collectCheckPointItemList()
-        collectPickDateTimeEvent()
-        collectSaveCalendarEvent()
+        setupToolbarMenuOnItemClickListener()
+
+        launchAndRepeatWithViewLifecycle {
+            launch { collectCheckPointItemList() }
+            launch { collectSaveCalendarEvent() }
+            launch { collectUseDefaultCalendar() }
+            launch { collectBlankTitleEvent() }
+        }
     }
 
     private fun onCheckPointClick(checkPointItem: CheckPointItem) {
         lifecycleScope.launch {
-            val dateInMillis = pickDateInMillis() ?: return@launch
+            val dateInMillis = pickRangeDateInMillis() ?: return@launch
 
-            val dateTime = LocalDate.ofEpochDay(dateInMillis / 1000 / 60 / 60 / 24)
+            val startTime = LocalDate.ofEpochDay(dateInMillis.first / 1000 / 60 / 60 / 24)
+            val endTime = LocalDate.ofEpochDay(dateInMillis.second / 1000 / 60 / 60 / 24)
 
-            checkPointItem.date.emit(dateTime)
+            checkPointItem.startDate.emit(startTime)
+            checkPointItem.endDate.emit(endTime)
         }
     }
 
     private fun setupToolbar() = with(binding) {
         toolbarSaveCalendar.setupWithNavController(navController)
-        when (args.behaviorType) {
-            BehaviorType.INSERT -> toolbarSaveCalendar.title = "달력 추가"
-            BehaviorType.UPDATE -> toolbarSaveCalendar.title = "달력 수정"
+
+        if (args.calendarId == 0L) {
+            toolbarSaveCalendar.title = getString(R.string.calendar_add)
+        } else {
+            toolbarSaveCalendar.title = getString(R.string.calendar_edit)
         }
     }
 
@@ -64,29 +74,52 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
         binding.rvSaveCalendarCheckPointList.adapter = saveCalendarAdapter
     }
 
-    private fun collectCheckPointItemList() {
-        stateCollect(saveCalendarViewModel.checkPointItemList) { list ->
-            saveCalendarAdapter.submitList(list)
+    private fun setupToolbarMenuOnItemClickListener() {
+        binding.toolbarSaveCalendar.setOnMenuItemClickListener { item ->
+            if (item.itemId == R.id.menu_delete_checkPoint) {
+                val currentCheckPointItemList = saveCalendarAdapter.currentList
+                saveCalendarViewModel.deleteCheckPointItem(currentCheckPointItemList)
+                true
+            } else {
+                false
+            }
         }
     }
 
-    private fun collectPickDateTimeEvent() {
-        sharedCollect(saveCalendarViewModel.pickDateEvent) { dateType ->
-            val dateInMillis = pickDateInMillis() ?: return@sharedCollect
-
-            val date = LocalDate.ofEpochDay(dateInMillis / 1000 / 60 / 60 / 24)
-
-            saveCalendarViewModel.updateDate(date, dateType)
+    private suspend fun collectCheckPointItemList() {
+        saveCalendarViewModel.checkPointItemList.collect { list ->
+            saveCalendarAdapter.submitList(list.sortedWith(compareBy(nullsLast()) { it.startDate.value }))
+            delay(300)
+            binding.svSaveCalendar.smoothScrollTo(0, binding.tvSaveCalendarSaveCalendar.bottom)
         }
     }
 
-    private fun collectSaveCalendarEvent() {
-        sharedCollect(saveCalendarViewModel.saveCalendarEvent) { isSaved ->
+    private suspend fun collectUseDefaultCalendar() {
+        // TODO: data Binding 으로 이동
+        saveCalendarViewModel.useDefaultCalendar.collect { checked ->
+            binding.rvSaveCalendarCheckPointList.isVisible = !checked
+            binding.tvSaveCalendarAddCheckPointView.isVisible = !checked
+            binding.tvSaveCalendarSliceCaption.setTextColor(
+                if (checked) {
+                    ContextCompat.getColor(requireContext(), R.color.light_grey)
+                } else {
+                    ContextCompat.getColor(requireContext(), R.color.background_black)
+                }
+            )
+        }
+    }
+
+    private suspend fun collectSaveCalendarEvent() {
+        saveCalendarViewModel.saveCalendarEvent.collect { isSaved ->
             if (isSaved) {
                 navController.navigateUp()
-            } else {
-                Toast.makeText(context, "입력 값이 이상해요", Toast.LENGTH_LONG).show()
             }
+        }
+    }
+
+    private suspend fun collectBlankTitleEvent() {
+        saveCalendarViewModel.blankTitleEvent.collect {
+            binding.etSaveCalendarCalendarName.isError = true
         }
     }
 }

@@ -1,76 +1,66 @@
 package com.drunkenboys.calendarun.ui.maincalendar
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.TextView
-import androidx.core.view.GravityCompat
-import androidx.core.view.get
-import androidx.core.view.isEmpty
-import androidx.core.view.isVisible
-import androidx.fragment.app.viewModels
+import androidx.navigation.navGraphViewModels
 import androidx.navigation.ui.setupWithNavController
+import com.drunkenboys.calendarun.KEY_CALENDAR_ID
+import com.drunkenboys.calendarun.MainActivity
 import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.data.calendar.entity.Calendar
-import com.drunkenboys.calendarun.data.idstore.IdStore
+import com.drunkenboys.calendarun.databinding.DrawerHeaderBinding
 import com.drunkenboys.calendarun.databinding.FragmentMainCalendarBinding
 import com.drunkenboys.calendarun.ui.base.BaseFragment
-import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
-import com.drunkenboys.calendarun.util.extensions.stateCollect
+import com.drunkenboys.calendarun.util.extensions.*
+import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
+@ExperimentalCoroutinesApi
 class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.fragment_main_calendar) {
 
-    private val mainCalendarViewModel by viewModels<MainCalendarViewModel>()
-    private var isMonthCalendar = true
+    private val mainCalendarViewModel
+            by navGraphViewModels<MainCalendarViewModel>(R.id.mainCalendarFragment) { defaultViewModelProviderFactory }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        mainCalendarViewModel.fetchCalendarList()
-        setupCalendarView()
         setupDataBinding()
         setupToolbar()
-        setupFab()
-        setupMonthCalendar()
-        collectCalendarList()
-        collectCheckPointList()
-        collectScheduleList()
-    }
 
-    private fun setupCalendarView() {
-        // TODO: CalendarView 내부로 전환
-        binding.calendarMonth.isVisible = isMonthCalendar
-        binding.calendarYear.isVisible = !isMonthCalendar
+        launchAndRepeatWithViewLifecycle {
+            launch { collectCalendarId() }
+            launch { collectCalendarList() }
+            launch { collectCalendarSet() }
+            launch { collectScheduleList() }
+            launch { collectFabClickEvent() }
+            launch { collectDaySecondClickListener() }
+            launch { collectCalendarDesignObject() }
+            launch { collectLicenseClickEvent() }
+        }
     }
 
     private fun setupDataBinding() {
         binding.mainCalendarViewModel = mainCalendarViewModel
+        val drawerHeaderBinding = DrawerHeaderBinding.bind(binding.navView.getHeaderView(FIRST_HEADER))
+        drawerHeaderBinding.viewModel = mainCalendarViewModel
+        drawerHeaderBinding.lifecycleOwner = viewLifecycleOwner
     }
 
     private fun setupToolbar() {
         binding.toolbarMainCalendar.setupWithNavController(navController, binding.layoutDrawer)
         setupOnMenuItemClickListener()
-        setupNavigationOnClickListener()
-    }
-
-    private fun setupNavigationOnClickListener() = with(binding) {
-        toolbarMainCalendar.setNavigationOnClickListener {
-            val menuItemOrder = this@MainCalendarFragment.mainCalendarViewModel.menuItemOrder.value
-            layoutDrawer.openDrawer(GravityCompat.START)
-            if (binding.navView.menu.isEmpty()) return@setNavigationOnClickListener
-            binding.navView.menu[menuItemOrder].isChecked = true
-            binding.root.findViewById<TextView>(R.id.tv_drawerHeader_title).text = binding.navView.menu[menuItemOrder].title
-        }
     }
 
     private fun setupOnMenuItemClickListener() {
         binding.toolbarMainCalendar.setOnMenuItemClickListener { item ->
             when (item.itemId) {
-                R.id.menu_main_calendar_calendar -> {
-                    isMonthCalendar = !isMonthCalendar
-                    setupCalendarView()
-                }
+                R.id.menu_main_calendar_calendar -> mainCalendarViewModel.toggleCalendar()
                 R.id.menu_main_calendar_search -> navigateToSearchSchedule()
                 else -> return@setOnMenuItemClickListener false
             }
@@ -79,92 +69,131 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
     }
 
     private fun navigateToSearchSchedule() {
-        val action = MainCalendarFragmentDirections.actionMainCalendarFragmentToSearchScheduleFragment()
+        val action = MainCalendarFragmentDirections.toSearchSchedule()
         navController.navigate(action)
     }
 
-    private fun setupFab() {
-        binding.fabMainCalenderAddSchedule.setOnClickListener {
-            IdStore.clearId(IdStore.KEY_SCHEDULE_ID)
-            val action = MainCalendarFragmentDirections.actionMainCalendarFragmentToSaveScheduleFragment(BehaviorType.INSERT)
-            navController.navigate(action)
+    private suspend fun collectCalendarId() {
+        mainCalendarViewModel.calendarId.collect { calendarId ->
+            val pref = requireContext().getSharedPreferences(MainActivity.CALENDAR_ID_PREF, Context.MODE_PRIVATE)
+            pref.edit()
+                .putLong(KEY_CALENDAR_ID, calendarId)
+                .apply()
         }
     }
 
-    private fun setupMonthCalendar() {
-        binding.calendarMonth.setOnDaySecondClickListener { date, _ ->
-            val action = MainCalendarFragmentDirections.actionMainCalendarFragmentToDayScheduleDialog(date.toString())
-            navController.navigate(action)
-        }
-    }
-
-    private fun collectCalendarList() {
-        stateCollect(mainCalendarViewModel.calendarList) { calendarList ->
+    private suspend fun collectCalendarList() {
+        mainCalendarViewModel.calendarList.collect { calendarList ->
             setupNavigationView(calendarList)
-
-            val menuItemOrder = mainCalendarViewModel.menuItemOrder.value
-            if (calendarList.isEmpty()) return@stateCollect
-            val calendar = calendarList[menuItemOrder]
-            mainCalendarViewModel.setCalendar(calendar)
         }
     }
 
     private fun setupNavigationView(calendarList: List<Calendar>) {
+        addCalendarMenu(calendarList)
+        inflateDrawerMenu()
+    }
+
+    private fun addCalendarMenu(calendarList: List<Calendar>) {
         val menu = binding.navView.menu
         menu.clear()
-
-        calendarList.forEachIndexed { index, calendar ->
-            menu.add(calendar.name)
+        calendarList.forEach { calendar ->
+            menu.add(0, calendar.id.toInt(), 0, calendar.name)
                 .setIcon(R.drawable.ic_favorite_24)
                 .setCheckable(true)
                 .setOnMenuItemClickListener {
-                    mainCalendarViewModel.setMenuItemOrder(index)
-                    // TODO: 2021-11-11 item에 맞는 캘린더 뷰로 변경
-                    mainCalendarViewModel.setCalendar(calendar)
-                    binding.layoutDrawer.closeDrawer(GravityCompat.START)
+                    mainCalendarViewModel.setCalendarId(calendar.id)
+                    binding.layoutDrawer.close()
+                    LoadingDialog().show(childFragmentManager, this::class.simpleName)
                     true
                 }
         }
+        val currentCalendarId = mainCalendarViewModel.calendarId.value
+        menu.findItem(currentCalendarId.toInt())?.isChecked = true
+    }
 
-        menu.add(getString(R.string.drawer_calendar_add))
-            .setIcon(R.drawable.ic_add)
-            .setOnMenuItemClickListener {
-                navigateToSaveCalendar()
-                true
+    private fun inflateDrawerMenu() {
+        binding.navView.inflateMenu(R.menu.menu_main_calendar_nav_drawer)
+        binding.navView.setNavigationItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.menu_mainCalendar_addCalendar -> navigateToSaveCalendar()
+                R.id.menu_mainCalendar_calendarManage -> navigateToManageCalendar()
+                R.id.menu_mainCalendar_themeSetting -> navigateToThemeFragment()
+                R.id.menu_mainCalendar_license -> mainCalendarViewModel.emitLicenseClickEvent()
             }
-
-        val manageMenu = menu.addSubMenu(getString(R.string.drawer_calendar_manage))
-        manageMenu.add(getString(R.string.drawer_calendar_manage))
-            .setIcon(R.drawable.ic_calendar_today)
-            .setOnMenuItemClickListener {
-                // TODO: 2021-11-11 달력 관리 화면으로 이동
-                true
-            }
-
-        manageMenu.add(getString(R.string.drawer_theme_setting))
-            .setIcon(R.drawable.ic_palette)
-            .setOnMenuItemClickListener {
-                // TODO: 2021-11-11 테마 설정 화면으로 이동동
-                true
-            }
+            binding.layoutDrawer.close()
+            true
+        }
     }
 
     private fun navigateToSaveCalendar() {
-        val action = MainCalendarFragmentDirections.actionMainCalendarFragmentToSaveCalendarFragment()
+        val action = MainCalendarFragmentDirections.toSaveCalendar()
         navController.navigate(action)
-        binding.layoutDrawer.closeDrawer(GravityCompat.START)
     }
 
-    private fun collectCheckPointList() {
-        stateCollect(mainCalendarViewModel.checkPointList) { checkPointList ->
-            // TODO: 2021-11-10 CheckPoint 날짜 읽어서 뷰 나누기
+    private fun navigateToManageCalendar() {
+        val action = MainCalendarFragmentDirections.toManageCalendar()
+        navController.navigate(action)
+    }
+
+    private fun navigateToThemeFragment() {
+        val action = MainCalendarFragmentDirections.toThemeFragment()
+        navController.navigate(action)
+    }
+
+    private suspend fun collectCalendarSet() {
+        mainCalendarViewModel.calendarSetList.collect { calendarSetList ->
+            if (calendarSetList.isEmpty()) {
+                binding.calendarMonth.setupDefaultCalendarSet()
+                binding.calendarYear.setupDefaultCalendarSet()
+            } else {
+                binding.calendarMonth.setCalendarSetList(calendarSetList)
+                binding.calendarYear.setCalendarSetList(calendarSetList)
+            }
         }
     }
 
-    private fun collectScheduleList() {
-        stateCollect(mainCalendarViewModel.scheduleList) { scheduleList ->
+    private suspend fun collectScheduleList() {
+        mainCalendarViewModel.scheduleList.collect { scheduleList ->
             binding.calendarMonth.setSchedules(scheduleList)
             binding.calendarYear.setSchedules(scheduleList)
         }
+    }
+
+    private suspend fun collectFabClickEvent() {
+        mainCalendarViewModel.fabClickEvent.collect { calendarId ->
+            val action = MainCalendarFragmentDirections.toSaveSchedule(calendarId, 0)
+            navController.navigate(action)
+        }
+    }
+
+    private suspend fun collectDaySecondClickListener() {
+        mainCalendarViewModel.daySecondClickEvent
+            .throttleFirst(DEFAULT_TOUCH_THROTTLE_PERIOD)
+            .collect { date ->
+                val action = MainCalendarFragmentDirections.toDayScheduleDialog(mainCalendarViewModel.calendarId.value, date.toString())
+                navController.navigateSafe(action)
+            }
+    }
+
+    private suspend fun collectCalendarDesignObject() {
+        mainCalendarViewModel.calendarDesignObject.collect { designObj ->
+            designObj ?: return@collect
+            binding.calendarMonth.setDesign(designObj)
+            binding.calendarYear.setTheme(designObj)
+        }
+    }
+
+    private suspend fun collectLicenseClickEvent() {
+        mainCalendarViewModel.licenseClickEvent
+            .throttleFirst(DEFAULT_TOUCH_THROTTLE_PERIOD)
+            .collect {
+                startActivity(Intent(this@MainCalendarFragment.context, OssLicensesMenuActivity::class.java))
+            }
+    }
+
+    companion object {
+
+        private const val FIRST_HEADER = 0
+        private const val DEFAULT_TOUCH_THROTTLE_PERIOD = 500L
     }
 }

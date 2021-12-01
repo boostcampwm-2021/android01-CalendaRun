@@ -1,8 +1,10 @@
 package com.drunkenboys.calendarun.util.extensions
 
+import android.graphics.drawable.Drawable
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.TextView
 
 fun View.startAnimation(animationResId: Int) {
     val anim = AnimationUtils.loadAnimation(context, animationResId)
@@ -23,4 +25,13 @@ fun View.startAnimation(animationResId: Int, onAnimationEnd: () -> Unit) {
         }
     })
     this.startAnimation(anim)
+}
+
+fun TextView.updateCompoundDrawablesRelativeWithIntrinsicBounds(
+    start: Drawable? = compoundDrawablesRelative[0],
+    top: Drawable? = compoundDrawablesRelative[1],
+    end: Drawable? = compoundDrawablesRelative[2],
+    bottom: Drawable? = compoundDrawablesRelative[3]
+) {
+    setCompoundDrawablesRelativeWithIntrinsicBounds(start, top, end, bottom)
 }

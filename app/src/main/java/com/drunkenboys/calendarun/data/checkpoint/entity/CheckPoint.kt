@@ -13,7 +13,8 @@ import java.time.LocalDate
             entity = Calendar::class,
             parentColumns = ["id"],
             childColumns = ["calendarId"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
+            onUpdate = ForeignKey.CASCADE
         )
     ]
 )
@@ -21,6 +22,7 @@ data class CheckPoint(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val calendarId: Long,
     val name: String,
-    val date: LocalDate
+    val startDate: LocalDate,
+    val endDate: LocalDate
 )
 

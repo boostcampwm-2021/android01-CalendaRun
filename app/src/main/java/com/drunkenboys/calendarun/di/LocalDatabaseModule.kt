@@ -22,6 +22,8 @@ object LocalDatabaseModule {
         "AppDatabase.db"
     )
         .createFromAsset("default.db")
+        .addMigrations(Database.MIGRATION_2_3)
+        .addMigrations(Database.MIGRATION_3_4)
         .build()
 
     @Provides
@@ -32,4 +34,7 @@ object LocalDatabaseModule {
 
     @Provides
     fun provideScheduleDao(database: Database) = database.scheduleDao()
+
+    @Provides
+    fun provideCalendarThemeDao(database: Database) = database.calendarThemeDao()
 }

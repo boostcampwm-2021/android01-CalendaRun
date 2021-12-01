@@ -1,8 +1,6 @@
 package com.drunkenboys.calendarun
 
-import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.GestureDetector
@@ -12,10 +10,12 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.core.content.getSystemService
 import androidx.core.view.GestureDetectorCompat
+import androidx.navigation.NavDeepLinkBuilder
+import androidx.navigation.fragment.NavHostFragment
 import com.drunkenboys.calendarun.databinding.ActivityMainBinding
-import com.drunkenboys.calendarun.receiver.ScheduleAlarmReceiver
 import com.drunkenboys.calendarun.ui.base.BaseViewActivity
-import com.drunkenboys.calendarun.util.extensions.PendingIntentExt
+import com.drunkenboys.calendarun.ui.maincalendar.MainCalendarFragmentArgs
+import com.drunkenboys.calendarun.ui.maincalendar.MainCalendarFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -25,12 +25,27 @@ class MainActivity : BaseViewActivity<ActivityMainBinding>(ActivityMainBinding::
 
     private var prevFocus: View? = null
 
+    private val calendarId by lazy {
+        val pref = getSharedPreferences(CALENDAR_ID_PREF, Context.MODE_PRIVATE)
+        pref.getLong(KEY_CALENDAR_ID, 1)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mDetector = GestureDetectorCompat(this, SingleTapListener())
+
+        if (savedInstanceState == null) {
+            setupNavHostFragment()
+        }
     }
 
-    // TODO: 2021-11-09 알림 클릭 시 Fragment 내비게이션 구현
+    private fun setupNavHostFragment() {
+        val navHost = NavHostFragment.create(R.navigation.nav_main, MainCalendarFragmentArgs(calendarId).toBundle())
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.layout_main_container, navHost)
+            .setPrimaryNavigationFragment(navHost)
+            .commit()
+    }
 
     // 터치 영역에 따라 키보드를 숨기기 위해 구현
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
@@ -71,20 +86,12 @@ class MainActivity : BaseViewActivity<ActivityMainBinding>(ActivityMainBinding::
 
     companion object {
 
-        private const val CODE_SCHEDULE_NOTIFICATION = 1000
+        const val CALENDAR_ID_PREF = "calendar_id_pref"
 
-        fun createNavigationPendingIntent(context: Context, calendarId: Long, scheduleId: Long): PendingIntent {
-            val contentIntent = Intent(context, MainActivity::class.java).apply {
-                putExtra(ScheduleAlarmReceiver.KEY_SCHEDULE_NOTIFICATION_CALENDAR_ID, calendarId)
-                putExtra(ScheduleAlarmReceiver.KEY_SCHEDULE_NOTIFICATION_SCHEDULE_ID, scheduleId)
-            }
-
-            return PendingIntent.getActivity(
-                context,
-                CODE_SCHEDULE_NOTIFICATION,
-                contentIntent,
-                PendingIntentExt.FLAG_UPDATE_CURRENT
-            )
-        }
+        fun createNavigationPendingIntent(context: Context, calendarId: Long, startDate: String) = NavDeepLinkBuilder(context)
+            .setGraph(R.navigation.nav_main)
+            .setDestination(R.id.dayScheduleDialog)
+            .setArguments(MainCalendarFragmentDirections.toDayScheduleDialog(calendarId, startDate).arguments)
+            .createPendingIntent()
     }
 }

@@ -2,19 +2,21 @@ package com.drunkenboys.calendarun.ui.searchschedule
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.drunkenboys.calendarun.data.idstore.IdStore
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
+import com.drunkenboys.calendarun.data.schedule.local.ScheduleDao
 import com.drunkenboys.calendarun.data.schedule.local.ScheduleLocalDataSource
 import com.drunkenboys.calendarun.ui.searchschedule.model.DateItem
 import com.drunkenboys.calendarun.ui.searchschedule.model.DateScheduleItem
+import com.drunkenboys.calendarun.ui.searchschedule.model.ScheduleItem
+import com.drunkenboys.calendarun.util.defaultZoneOffset
+import com.drunkenboys.calendarun.util.extensions.throttleFirst
+import com.drunkenboys.calendarun.util.seconds
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import java.time.LocalDateTime
 import javax.inject.Inject
 
@@ -25,76 +27,113 @@ class SearchScheduleViewModel @Inject constructor(
 
     val word = MutableStateFlow("")
 
-    private val _listItem = MutableStateFlow<List<DateItem>>(emptyList())
-    val listItem: StateFlow<List<DateItem>> = _listItem
+    private val scheduleList = MutableStateFlow<List<Schedule>>(emptyList())
 
-    private val _scheduleClickEvent = MutableSharedFlow<Unit>()
-    val scheduleClickEvent: SharedFlow<Unit> = _scheduleClickEvent
+    val listItem: StateFlow<List<DateScheduleItem>> = scheduleList.map { scheduleList ->
+        scheduleList.map { schedule -> ScheduleItem(schedule) { emitScheduleClickEvent(schedule) } }
+            .groupBy { scheduleItem -> scheduleItem.schedule.startDate.toLocalDate() }
+            .flatMap { (localDate, scheduleList) -> listOf(DateItem(localDate)) + scheduleList }
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     private val _isSearching = MutableStateFlow(false)
     val isSearching: StateFlow<Boolean> = _isSearching
 
+    private val _scheduleClickEvent = MutableSharedFlow<Schedule>()
+    val scheduleClickEvent: SharedFlow<Schedule> = _scheduleClickEvent
+
+    private val searchPrevEvent = MutableSharedFlow<Unit>()
+    private val searchNextEvent = MutableSharedFlow<Unit>()
+
     private var debounceJob: Job = Job()
 
-    fun fetchScheduleList() {
+    private var prevKey: LocalDateTime?
+    private var nextKey: LocalDateTime?
+
+    init {
+        val today = LocalDateTime.now()
+        prevKey = today
+        nextKey = today
+        collectSearchEvent()
+        searchSchedule()
+    }
+
+    fun trySearchPrev() {
         viewModelScope.launch {
-            if (word.value.isEmpty()) {
-                _isSearching.emit(true)
+            searchPrevEvent.emit(Unit)
+        }
+    }
 
-                val today = LocalDateTime.now()
+    fun trySearchNext() {
+        viewModelScope.launch {
+            searchNextEvent.emit(Unit)
+        }
+    }
 
-                scheduleDataSource.fetchAllSchedule()
-                    .filter { schedule -> schedule.startDate >= today }
-                    .mapToDateItem()
-                    .let { _listItem.emit(it) }
-
-                _isSearching.emit(false)
-            } else {
-                searchSchedule(word.value)
+    private fun collectSearchEvent() {
+        viewModelScope.launch {
+            launch {
+                searchPrevEvent.throttleFirst(PAGING_THROTTLE_DURATION)
+                    .collect { prevKey?.let { searchPrev(it) } }
+            }
+            launch {
+                searchNextEvent.throttleFirst(PAGING_THROTTLE_DURATION)
+                    .collect { nextKey?.let { searchNext(it) } }
             }
         }
     }
 
-    private fun List<Schedule>.mapToDateItem() = groupBy { schedule -> schedule.startDate.toLocalDate() }
-        .map { (localDate, scheduleList) ->
-            val dateScheduleList = scheduleList.map { schedule ->
-                DateScheduleItem(schedule) { emitScheduleClickEvent(schedule) }
-            }
-            DateItem(localDate, dateScheduleList)
+    fun searchSchedule(word: String = this.word.value) {
+        debounceJob.cancel()
+        debounceJob = viewModelScope.launch {
+            _isSearching.value = true
+            delay(DEBOUNCE_DURATION)
+
+            val today = LocalDate.now()
+
+            scheduleList.value = scheduleDataSource.fetchMatchedScheduleAfter(word, today.seconds - 1)
+            if (scheduleList.value.isEmpty()) scheduleList.value = scheduleDataSource.fetchMatchedScheduleBefore(word, today.seconds)
+            prevKey = scheduleList.value.firstOrNull()?.startDate
+            nextKey = scheduleList.value.lastOrNull()?.startDate
+
+            _isSearching.value = false
         }
-        .sortedBy { dateItem -> dateItem.date }
+    }
+
+    private suspend fun searchPrev(key: LocalDateTime) {
+        val newList = scheduleDataSource.fetchMatchedScheduleBefore(word.value, key.toEpochSecond(defaultZoneOffset))
+        if (newList.isEmpty()) {
+            prevKey = null
+        } else {
+            scheduleList.value = newList + scheduleList.value.take(ScheduleDao.SCHEDULE_PAGING_SIZE)
+            prevKey = scheduleList.value.firstOrNull()?.startDate
+            nextKey = scheduleList.value.lastOrNull()?.startDate
+        }
+    }
+
+    private suspend fun searchNext(key: LocalDateTime) {
+        val newList = scheduleDataSource.fetchMatchedScheduleAfter(word.value, key.toEpochSecond(defaultZoneOffset))
+        if (newList.isEmpty()) {
+            nextKey = null
+        } else {
+            scheduleList.value = scheduleList.value.takeLast(ScheduleDao.SCHEDULE_PAGING_SIZE) + newList
+            prevKey = scheduleList.value.firstOrNull()?.startDate
+            nextKey = scheduleList.value.lastOrNull()?.startDate
+        }
+    }
 
     private fun emitScheduleClickEvent(schedule: Schedule) {
         viewModelScope.launch {
-            IdStore.putId(IdStore.KEY_CALENDAR_ID, schedule.calendarId)
-            IdStore.putId(IdStore.KEY_SCHEDULE_ID, schedule.id)
-            _scheduleClickEvent.emit(Unit)
+            _scheduleClickEvent.emit(schedule)
         }
     }
 
-    fun searchSchedule(word: String) {
-        debounceJob.cancel()
-        debounceJob = Job()
-        if (word.isEmpty()) {
-            fetchScheduleList()
-            return
-        }
-
-        viewModelScope.launch(debounceJob) {
-            _isSearching.emit(true)
-
-            delay(DEBOUNCE_DURATION)
-            scheduleDataSource.fetchAllSchedule()
-                .filter { schedule -> word in schedule.name }
-                .mapToDateItem()
-                .let { _listItem.emit(it) }
-
-            _isSearching.emit(false)
-        }
+    fun deleteSchedule(id: Long) {
+        scheduleList.value = scheduleList.value.filter { it.id != id }
     }
 
     companion object {
 
         private const val DEBOUNCE_DURATION = 500L
+        private const val PAGING_THROTTLE_DURATION = 600L
     }
 }

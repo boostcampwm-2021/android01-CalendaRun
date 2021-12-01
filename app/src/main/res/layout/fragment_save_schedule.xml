@@ -44,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="16dp">
 
-                <EditText
+                <com.drunkenboys.calendarun.view.ErrorGuideEditText
                     android:id="@+id/et_saveSchedule_titleInput"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -54,12 +54,11 @@
                     android:inputType="text"
                     android:paddingVertical="16dp"
                     android:text="@={viewModel.title}"
-                    android:textColor="@color/black"
+                    android:textColor="?colorOnSurface"
                     android:textSize="24sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:text="해커톤" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <View
                     android:id="@+id/divider_saveSchedule_titleBottom"
@@ -74,8 +73,9 @@
                     android:id="@+id/tv_saveSchedule_scheduleStart"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
+                    android:layout_marginStart="8dp"
                     android:text="@string/saveSchedule_start"
+                    android:textColor="?colorOnSurface"
                     app:layout_constraintBottom_toTopOf="@id/tv_saveSchedule_scheduleEnd"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/divider_saveSchedule_titleBottom" />
@@ -84,8 +84,9 @@
                     android:id="@+id/tv_saveSchedule_scheduleEnd"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
+                    android:layout_marginStart="8dp"
                     android:text="@string/saveSchedule_end"
+                    android:textColor="?colorOnSurface"
                     app:layout_constraintBottom_toTopOf="@id/divider_saveSchedule_timeBottom"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_saveSchedule_scheduleStart" />
@@ -98,7 +99,7 @@
                     android:onClick="@{() -> viewModel.emitPickDateTimeEvent(DateType.START) }"
                     android:paddingVertical="8dp"
                     android:text="@{viewModel.toFormatString(viewModel.startDate)}"
-                    android:textColor="@color/black"
+                    android:textColor="?colorOnSurface"
                     android:textSize="16sp"
                     app:layout_constraintBottom_toTopOf="@id/tv_saveSchedule_scheduleEndInput"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -114,7 +115,7 @@
                     android:onClick="@{() -> viewModel.emitPickDateTimeEvent(DateType.END) }"
                     android:paddingVertical="8dp"
                     android:text="@{viewModel.toFormatString(viewModel.endDate)}"
-                    android:textColor="@color/black"
+                    android:textColor="?colorOnSurface"
                     android:textSize="16sp"
                     app:layout_constraintBottom_toTopOf="@id/divider_saveSchedule_timeBottom"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -144,7 +145,7 @@
                     android:inputType="text"
                     android:paddingVertical="16dp"
                     android:text="@={viewModel.memo}"
-                    android:textColor="@color/black"
+                    android:textColor="?colorOnSurface"
                     android:textSize="14sp"
                     app:drawableStartCompat="@drawable/ic_assignment"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -169,7 +170,7 @@
                     android:gravity="center_vertical"
                     android:paddingVertical="16dp"
                     android:text="@{viewModel.calendarName}"
-                    android:textColor="@color/black"
+                    android:textColor="?colorOnSurface"
                     app:drawableStartCompat="@drawable/ic_calendar_today"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -193,7 +194,7 @@
                     android:gravity="center_vertical"
                     android:onClick="@{() -> viewModel.emitPickNotificationTypeEvent()}"
                     android:paddingVertical="16dp"
-                    android:textColor="@color/black"
+                    android:textColor="?colorOnSurface"
                     app:drawableStartCompat="@drawable/ic_notifications"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -217,7 +218,7 @@
                     android:gravity="center_vertical"
                     android:paddingVertical="16dp"
                     android:text="@string/saveSchedule_tagColor"
-                    android:textColor="@color/black"
+                    android:textColor="?colorOnSurface"
                     app:drawableStartCompat="@drawable/ic_palette"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -256,13 +257,12 @@
 
         </ScrollView>
 
-        <Button
+        <TextView
+            style="@style/ButtonTheme"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:layout_marginHorizontal="4dp"
             android:onClick="@{() -> viewModel.saveSchedule()}"
-            android:text="@string/saveSchedule_save"
-            app:backgroundTint="@color/black" />
+            android:text="@string/saveSchedule_save" />
 
     </LinearLayout>
 

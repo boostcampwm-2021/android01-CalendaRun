@@ -2,5 +2,8 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="calendar_white">#FFFFFFFF</color>
+    <color name="calendar_black">#FF000000</color>
+    <color name="calendar_shadow">#CFCFCF</color>
     <color name="primary_color">#9C27B0</color>
 </resources>

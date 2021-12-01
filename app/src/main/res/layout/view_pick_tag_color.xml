@@ -23,12 +23,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
-            android:background="@drawable/bg_white_radius_8dp"
+            android:background="@drawable/bg_on_surface_radius_8dp"
             android:elevation="4dp"
             android:padding="16dp">
 
             <View
-                android:id="@+id/view_pickTagColor_red"
+                android:id="@+id/view_colorSet_red"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:background="@drawable/bg_tag_color"
@@ -36,7 +36,7 @@
                 android:onClick="@{() -> viewModel.pickTagColor(ScheduleColorType.RED.color)}" />
 
             <View
-                android:id="@+id/view_pickTagColor_orange"
+                android:id="@+id/view_colorSet_orange"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:background="@drawable/bg_tag_color"
@@ -45,7 +45,7 @@
                 tools:ignore="MissingConstraints" />
 
             <View
-                android:id="@+id/view_pickTagColor_yellow"
+                android:id="@+id/view_colorSet_yellow"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:background="@drawable/bg_tag_color"
@@ -54,7 +54,7 @@
                 tools:ignore="MissingConstraints" />
 
             <View
-                android:id="@+id/view_pickTagColor_green"
+                android:id="@+id/view_colorSet_green"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:background="@drawable/bg_tag_color"
@@ -63,7 +63,7 @@
                 tools:ignore="MissingConstraints" />
 
             <View
-                android:id="@+id/view_pickTagColor_blue"
+                android:id="@+id/view_colorSet_blue"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:background="@drawable/bg_tag_color"
@@ -72,7 +72,7 @@
                 tools:ignore="MissingConstraints" />
 
             <View
-                android:id="@+id/view_pickTagColor_navy"
+                android:id="@+id/view_colorSet_navy"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:background="@drawable/bg_tag_color"
@@ -81,7 +81,7 @@
                 tools:ignore="MissingConstraints" />
 
             <View
-                android:id="@+id/view_pickTagColor_purple"
+                android:id="@+id/view_colorSet_purple"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:background="@drawable/bg_tag_color"
@@ -90,7 +90,7 @@
                 tools:ignore="MissingConstraints" />
 
             <View
-                android:id="@+id/view_pickTagColor_grey"
+                android:id="@+id/view_colorSet_grey"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:background="@drawable/bg_tag_color"
@@ -99,7 +99,7 @@
                 tools:ignore="MissingConstraints" />
 
             <View
-                android:id="@+id/view_pickTagColor_cyan"
+                android:id="@+id/view_colorSet_cyan"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:background="@drawable/bg_tag_color"
@@ -108,7 +108,7 @@
                 tools:ignore="MissingConstraints" />
 
             <View
-                android:id="@+id/view_tagColor_magenta"
+                android:id="@+id/view_colorSet_magenta"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:background="@drawable/bg_tag_color"
@@ -120,7 +120,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:constraint_referenced_ids="view_pickTagColor_red, view_pickTagColor_orange, view_pickTagColor_yellow, view_pickTagColor_green, view_pickTagColor_blue, view_pickTagColor_navy, view_pickTagColor_purple, view_pickTagColor_grey, view_pickTagColor_cyan, view_tagColor_magenta"
+                app:constraint_referenced_ids="view_colorSet_red, view_colorSet_orange, view_colorSet_yellow, view_colorSet_green, view_colorSet_blue, view_colorSet_navy, view_colorSet_purple, view_colorSet_grey, view_colorSet_cyan, view_colorSet_magenta"
                 app:flow_horizontalGap="16dp"
                 app:flow_maxElementsWrap="5"
                 app:flow_verticalGap="16dp"

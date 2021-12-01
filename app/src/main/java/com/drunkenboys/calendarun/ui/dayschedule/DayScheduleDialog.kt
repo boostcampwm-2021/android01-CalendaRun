@@ -5,17 +5,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.drunkenboys.calendarun.R
-import com.drunkenboys.calendarun.data.idstore.IdStore
 import com.drunkenboys.calendarun.databinding.DialogDayScheduleBinding
-import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
-import com.drunkenboys.calendarun.util.extensions.sharedCollect
-import com.drunkenboys.calendarun.util.extensions.stateCollect
+import com.drunkenboys.calendarun.util.extensions.launchAndRepeatWithViewLifecycle
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 @AndroidEntryPoint
@@ -26,7 +26,7 @@ class DayScheduleDialog : DialogFragment() {
 
     private val dayScheduleViewModel by viewModels<DayScheduleViewModel>()
 
-    private val dayScheduleAdapter = DayScheduleAdapter()
+    private lateinit var dayScheduleAdapter: DayScheduleAdapter
 
     private val navController by lazy { findNavController() }
     private val args by navArgs<DayScheduleDialogArgs>()
@@ -35,6 +35,8 @@ class DayScheduleDialog : DialogFragment() {
         _binding = DialogDayScheduleBinding.inflate(layoutInflater)
         binding.viewModel = dayScheduleViewModel
         binding.lifecycleOwner = this
+        dayScheduleAdapter = DayScheduleAdapter(LocalDate.parse(args.localDate))
+
         return AlertDialog.Builder(requireContext())
             .setView(binding.root)
             .create()
@@ -42,11 +44,12 @@ class DayScheduleDialog : DialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         setupRvDaySchedule()
-        setupIvAddSchedule()
-        collectListItem()
-        collectScheduleClickEvent()
+        setupImgAddSchedule()
 
-        dayScheduleViewModel.fetchScheduleList(LocalDate.parse(args.localDate))
+        launchAndRepeatWithViewLifecycle {
+            launch { collectListItem() }
+            launch { collectScheduleClickEvent() }
+        }
 
         return binding.root
     }
@@ -55,23 +58,24 @@ class DayScheduleDialog : DialogFragment() {
         binding.rvDaySchedule.adapter = dayScheduleAdapter
     }
 
-    private fun setupIvAddSchedule() {
+    private fun setupImgAddSchedule() {
         binding.imgDayScheduleAddSchedule.setOnClickListener {
-            IdStore.clearId(IdStore.KEY_SCHEDULE_ID)
-            val action = DayScheduleDialogDirections.actionDayScheduleDialogToSaveScheduleFragment(BehaviorType.INSERT, args.localDate)
+            val action = DayScheduleDialogDirections.toSaveSchedule(args.calendarId, 0, localDate = args.localDate)
             navController.navigate(action)
         }
     }
 
-    private fun collectListItem() {
-        stateCollect(dayScheduleViewModel.listItem) { listItem ->
+    private suspend fun collectListItem() {
+        dayScheduleViewModel.listItem.collect { listItem ->
             dayScheduleAdapter.submitList(listItem)
+            binding.rvDaySchedule.isVisible = listItem.isNotEmpty()
+            binding.tvEmpty.isVisible = listItem.isEmpty()
         }
     }
 
-    private fun collectScheduleClickEvent() {
-        sharedCollect(dayScheduleViewModel.scheduleClickEvent) {
-            val action = DayScheduleDialogDirections.actionDayScheduleDialogToSaveScheduleFragment(BehaviorType.UPDATE)
+    private suspend fun collectScheduleClickEvent() {
+        dayScheduleViewModel.scheduleClickEvent.collect { schedule ->
+            val action = DayScheduleDialogDirections.toSaveSchedule(schedule.calendarId, schedule.id)
             navController.navigate(action)
         }
     }
@@ -81,7 +85,9 @@ class DayScheduleDialog : DialogFragment() {
 
         val displayMetrics = resources.displayMetrics
         dialog?.window?.setBackgroundDrawableResource(R.drawable.bg_white_radius_24dp)
-        dialog?.window?.setLayout((displayMetrics.widthPixels * 0.9).toInt(), (displayMetrics.heightPixels * 0.7).toInt())
+        val (width, height) = (displayMetrics.widthPixels * 0.9).toInt() to (displayMetrics.heightPixels * 0.7).toInt()
+        dialog?.window?.setLayout(width, height)
+        binding.root.layoutParams.height = height
     }
 
     override fun onDestroyView() {

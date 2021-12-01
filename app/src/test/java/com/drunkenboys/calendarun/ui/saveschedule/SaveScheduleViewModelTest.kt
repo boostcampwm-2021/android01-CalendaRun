@@ -1,12 +1,14 @@
 package com.drunkenboys.calendarun.ui.saveschedule
 
+import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
+import com.drunkenboys.calendarun.KEY_CALENDAR_ID
+import com.drunkenboys.calendarun.KEY_SCHEDULE_ID
 import com.drunkenboys.calendarun.data.calendar.local.CalendarLocalDataSource
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import com.drunkenboys.calendarun.data.schedule.local.FakeCalendarLocalDataSource
 import com.drunkenboys.calendarun.data.schedule.local.FakeScheduleLocalDataSource
 import com.drunkenboys.calendarun.data.schedule.local.ScheduleLocalDataSource
-import com.drunkenboys.calendarun.ui.saveschedule.model.BehaviorType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -36,8 +38,14 @@ class SaveScheduleViewModelTest {
         Dispatchers.setMain(testDispatcher)
         scheduleDataSource = FakeScheduleLocalDataSource()
         calendarDataSource = FakeCalendarLocalDataSource()
-        viewModel = SaveScheduleViewModel(0, 0, calendarDataSource, scheduleDataSource)
+        viewModel = createSaveScheduleViewModel(0)
     }
+
+    private fun createSaveScheduleViewModel(scheduleId: Long) = SaveScheduleViewModel(
+        SavedStateHandle(mapOf(KEY_CALENDAR_ID to 0L, KEY_SCHEDULE_ID to scheduleId)),
+        calendarDataSource,
+        scheduleDataSource
+    )
 
     @After
     fun tearDown() {
@@ -49,8 +57,6 @@ class SaveScheduleViewModelTest {
     fun `뷰모델_초기화_테스트`() {
         val calendarName = "test calendar"
 
-        viewModel.init(BehaviorType.INSERT)
-
         assertEquals(calendarName, viewModel.calendarName.value)
     }
 
@@ -58,9 +64,9 @@ class SaveScheduleViewModelTest {
     fun `일정_수정_시_뷰모델_초기화_테스트`() = testScope.runBlockingTest {
         val startDate = LocalDateTime.now()
         val endDate = LocalDateTime.now()
-        scheduleDataSource.insertSchedule(Schedule(0, 0, "test", startDate, endDate, Schedule.NotificationType.A_HOUR_AGO, "memo", 0))
+        scheduleDataSource.insertSchedule(Schedule(1, 0, "test", startDate, endDate, Schedule.NotificationType.A_HOUR_AGO, "memo", 0))
 
-        viewModel.init(BehaviorType.UPDATE)
+        viewModel = createSaveScheduleViewModel(1)
 
         assertEquals("test", viewModel.title.value)
         assertEquals(startDate, viewModel.startDate.value)
@@ -72,8 +78,6 @@ class SaveScheduleViewModelTest {
 
     @Test
     fun `제목_미입력_시_저장_테스트`() = testScope.runBlockingTest {
-        viewModel.init(BehaviorType.INSERT)
-
         viewModel.saveScheduleEvent.test {
             viewModel.saveSchedule()
 
@@ -88,7 +92,6 @@ class SaveScheduleViewModelTest {
 
     @Test
     fun `정상_입력_시_저장_테스트`() = testScope.runBlockingTest {
-        viewModel.init(BehaviorType.INSERT)
         val title = "test title"
         val memo = "test memo"
         viewModel.title.value = title
@@ -98,8 +101,8 @@ class SaveScheduleViewModelTest {
             viewModel.saveSchedule()
             val result = awaitItem()
 
-            assertEquals(title, result.name)
-            assertEquals(memo, result.memo)
+            assertEquals(title, result.first.name)
+            assertEquals(memo, result.first.memo)
             cancelAndConsumeRemainingEvents()
         }
     }
@@ -108,14 +111,15 @@ class SaveScheduleViewModelTest {
     fun `일정_삭제_테스트`() = testScope.runBlockingTest {
         val startDate = LocalDateTime.now()
         val endDate = LocalDateTime.now()
-        val schedule = Schedule(0, 0, "test", startDate, endDate, Schedule.NotificationType.A_HOUR_AGO, "memo", 0)
+        val schedule = Schedule(1, 0, "test", startDate, endDate, Schedule.NotificationType.A_HOUR_AGO, "memo", 0)
+        scheduleDataSource.insertSchedule(schedule)
+        viewModel = createSaveScheduleViewModel(1)
 
         viewModel.deleteScheduleEvent.test {
-            scheduleDataSource.insertSchedule(schedule)
-            viewModel.init(BehaviorType.UPDATE)
             viewModel.deleteSchedule()
+            val result = awaitItem()
 
-            assertEquals(schedule, awaitItem())
+            assertEquals(schedule, result.first)
             cancelAndConsumeRemainingEvents()
         }
     }

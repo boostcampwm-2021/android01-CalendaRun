@@ -6,6 +6,8 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="mainCalendarViewModel"
             type="com.drunkenboys.calendarun.ui.maincalendar.MainCalendarViewModel" />
@@ -33,7 +35,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="?actionBarSize"
                     app:menu="@menu/menu_main_calendar_toolbar"
-                    app:title="@{mainCalendarViewModel.calendar.name}"
+                    app:title="@{mainCalendarViewModel.calendarName}"
                     app:titleTextColor="@color/white"
                     tools:title="수능 캘린더" />
 
@@ -43,20 +45,23 @@
                 android:id="@+id/calendar_year"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:visibility="gone"
+                android:visibility="@{mainCalendarViewModel.isMonthCalendar() ? View.GONE : View.VISIBLE}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/layout_mainCalendar_toolbar" />
+                app:layout_constraintTop_toBottomOf="@+id/layout_mainCalendar_toolbar"
+                app:onDaySecondClick="@{(date, position) -> mainCalendarViewModel.emitDaySecondClickEvent(date)}" />
 
-            <com.drunkenboys.ckscalendar.month.MonthCalendarView
+            <com.drunkenboys.ckscalendar.monthcalendar.MonthCalendarView
                 android:id="@+id/calendar_month"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
+                android:visibility="@{mainCalendarViewModel.isMonthCalendar() ? View.VISIBLE : View.GONE}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/layout_mainCalendar_toolbar" />
+                app:layout_constraintTop_toBottomOf="@+id/layout_mainCalendar_toolbar"
+                app:onDaySecondClick="@{(date, position) -> mainCalendarViewModel.emitDaySecondClickEvent(date)}" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fab_mainCalender_addSchedule"
@@ -64,11 +69,12 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
                 android:contentDescription="@string/mainCalender_addScheduleDescription"
-                app:backgroundTint="?colorPrimaryVariant"
+                android:onClick="@{() -> mainCalendarViewModel.emitFabClickEvent()}"
+                app:backgroundTint="@color/fab_color"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:srcCompat="@drawable/ic_add"
-                app:tint="@color/white" />
+                app:tint="@color/background_white" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
