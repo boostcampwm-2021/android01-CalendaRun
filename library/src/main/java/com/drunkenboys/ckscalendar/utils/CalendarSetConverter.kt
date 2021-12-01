@@ -32,11 +32,13 @@ fun calendarSetToCalendarDatesList(calendarSet: CalendarSet, schedules: List<Cal
 
         // 1일 추가
         weekList.last()
-            .add(CalendarDate(
-                date = oneDay,
-                dayType = if (holidaySchedule.any { day -> day == oneDay }) DayType.HOLIDAY
-                else TimeUtils.parseDayWeekToDayType(oneDay.dayOfWeek)
-            ))
+            .add(
+                CalendarDate(
+                    date = oneDay,
+                    dayType = if (oneDay in holidaySchedule) DayType.HOLIDAY
+                    else TimeUtils.parseDayWeekToDayType(oneDay.dayOfWeek)
+                )
+            )
 
         oneDay = oneDay.plusDays(1L)
     }

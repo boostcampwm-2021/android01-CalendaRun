@@ -40,7 +40,7 @@ fun ScheduleText(
                     .padding(4.dp),
                 overflow = TextOverflow.Ellipsis,
                 fontSize = viewModel.design.value.textSize.dp(),
-                color = Color.White
+                color = if (schedule?.isHoliday == true) Color.Red else Color.White
             )
         }
         Spacer(modifier = Modifier.height(2.dp))
@@ -53,13 +53,17 @@ fun PreviewSchedule() {
     val viewModel = YearCalendarViewModel()
     ScheduleText(
         today = LocalDate.now(),
-        weekScheduleList =  Array(7) { Array(viewModel.design.value.visibleScheduleCount) { CalendarScheduleObject(
-            id = 1,
-            color = TimeUtils.getColorInt(255, 0, 0),
-            text = "test",
-            startDate = LocalDateTime.now(),
-            endDate = LocalDateTime.now()
-        ) } },
+        weekScheduleList = Array(7) {
+            Array(viewModel.design.value.visibleScheduleCount) {
+                CalendarScheduleObject(
+                    id = 1,
+                    color = TimeUtils.getColorInt(255, 0, 0),
+                    text = "test",
+                    startDate = LocalDateTime.now(),
+                    endDate = LocalDateTime.now()
+                )
+            }
+        },
         viewModel = viewModel
     )
 }
