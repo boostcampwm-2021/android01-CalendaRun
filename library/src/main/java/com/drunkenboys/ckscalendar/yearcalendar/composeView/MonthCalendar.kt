@@ -19,7 +19,7 @@ fun MonthCalendar(
     dayColumnModifier: (CalendarDate) -> Modifier,
     viewModel: YearCalendarViewModel
 ) {
-    calendarSetToCalendarDatesList(month).forEach { week ->
+    calendarSetToCalendarDatesList(month, viewModel.schedules.value).forEach { week ->
         WeekCalendar(
             viewModel = viewModel,
             listState = listState,
