@@ -7,10 +7,10 @@ import androidx.lifecycle.viewModelScope
 import com.drunkenboys.calendarun.KEY_CALENDAR_ID
 import com.drunkenboys.calendarun.data.calendar.local.CalendarLocalDataSource
 import com.drunkenboys.calendarun.data.calendartheme.local.CalendarThemeLocalDataSource
-import com.drunkenboys.calendarun.data.checkpoint.entity.CheckPoint
-import com.drunkenboys.calendarun.data.checkpoint.local.CheckPointLocalDataSource
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import com.drunkenboys.calendarun.data.schedule.local.ScheduleLocalDataSource
+import com.drunkenboys.calendarun.data.slice.entity.Slice
+import com.drunkenboys.calendarun.data.slice.local.SliceLocalDataSource
 import com.drunkenboys.calendarun.ui.theme.toCalendarDesignObject
 import com.drunkenboys.ckscalendar.data.CalendarScheduleObject
 import com.drunkenboys.ckscalendar.data.CalendarSet
@@ -25,7 +25,7 @@ import javax.inject.Inject
 class MainCalendarViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val calendarLocalDataSource: CalendarLocalDataSource,
-    private val checkPointLocalDataSource: CheckPointLocalDataSource,
+    private val sliceLocalDataSource: SliceLocalDataSource,
     private val scheduleLocalDataSource: ScheduleLocalDataSource,
     calendarThemeDataSource: CalendarThemeLocalDataSource
 ) : ViewModel() {
@@ -43,9 +43,9 @@ class MainCalendarViewModel @Inject constructor(
 
     @ExperimentalCoroutinesApi
     val calendarSetList = calendarId.flatMapLatest { calendarId ->
-        checkPointLocalDataSource.fetchCalendarCheckPoints(calendarId)
-            .map { checkPointList ->
-                checkPointList.map { checkPoint -> checkPoint.toCalendarSet() }
+        sliceLocalDataSource.fetchCalendarSliceList(calendarId)
+            .map { sliceList ->
+                sliceList.map { slice -> slice.toCalendarSet() }
             }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
@@ -99,7 +99,7 @@ class MainCalendarViewModel @Inject constructor(
         }
     }
 
-    private fun CheckPoint.toCalendarSet() = CalendarSet(
+    private fun Slice.toCalendarSet() = CalendarSet(
         id = this@MainCalendarViewModel.calendarId.value.toInt(),
         name = name,
         startDate = startDate,

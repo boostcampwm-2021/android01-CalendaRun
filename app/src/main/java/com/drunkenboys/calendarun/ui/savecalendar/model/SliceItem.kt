@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.time.LocalDate
 
-data class CheckPointItem(
+data class SliceItem(
     val id: Long = 0L,
     val name: MutableStateFlow<String> = MutableStateFlow(""),
     val startDate: MutableStateFlow<LocalDate?> = MutableStateFlow(null),
@@ -14,18 +14,19 @@ data class CheckPointItem(
     val isNameBlank: MutableSharedFlow<Unit> = MutableSharedFlow(),
     val isStartDateBlank: MutableSharedFlow<Unit> = MutableSharedFlow(),
     val isEndDateBlank: MutableSharedFlow<Unit> = MutableSharedFlow()
-) : Comparable<CheckPointItem> {
+) : Comparable<SliceItem> {
 
-    override fun compareTo(other: CheckPointItem): Int =
-        compareValuesBy(this, other) { checkPoint -> checkPoint.startDate.value }
+    override fun compareTo(other: SliceItem): Int =
+        compareValuesBy(this, other) { slice -> slice.startDate.value }
 
     companion object {
+
         val diffUtil by lazy {
-            object : DiffUtil.ItemCallback<CheckPointItem>() {
-                override fun areItemsTheSame(oldItem: CheckPointItem, newItem: CheckPointItem) =
+            object : DiffUtil.ItemCallback<SliceItem>() {
+                override fun areItemsTheSame(oldItem: SliceItem, newItem: SliceItem) =
                     oldItem.startDate == newItem.startDate
 
-                override fun areContentsTheSame(oldItem: CheckPointItem, newItem: CheckPointItem) =
+                override fun areContentsTheSame(oldItem: SliceItem, newItem: SliceItem) =
                     oldItem == newItem
             }
         }

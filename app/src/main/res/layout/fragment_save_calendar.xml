@@ -114,7 +114,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/et_saveCalendar_calendarName" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_save_calendar_check_point_list"
+                    android:id="@+id/rv_save_calendar_slice_list"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:clipChildren="false"
@@ -133,20 +133,20 @@
                     android:layout_marginBottom="8dp"
                     app:cardCornerRadius="16dp"
                     app:cardElevation="2dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/rv_save_calendar_check_point_list"
+                    app:layout_constraintBottom_toBottomOf="@+id/rv_save_calendar_slice_list"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent">
 
                     <TextView
-                        android:id="@+id/tv_saveCalendar_addCheckPointView"
+                        android:id="@+id/tv_saveCalendar_addSliceView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="?android:selectableItemBackground"
                         android:gravity="center"
-                        android:onClick="@{() -> saveCalendarViewModel.addCheckPoint()}"
+                        android:onClick="@{() -> saveCalendarViewModel.addSlice()}"
                         android:paddingHorizontal="16dp"
                         android:paddingVertical="4dp"
-                        android:text="@string/check_point_footer_save"
+                        android:text="@string/slice_footer_save"
                         app:drawableStartCompat="@drawable/ic_add_circle_24" />
 
                 </androidx.cardview.widget.CardView>

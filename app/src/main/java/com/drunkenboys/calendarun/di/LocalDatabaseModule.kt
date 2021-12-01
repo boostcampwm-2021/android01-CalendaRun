@@ -30,7 +30,7 @@ object LocalDatabaseModule {
     fun provideCalendarDao(database: Database) = database.calendarDao()
 
     @Provides
-    fun provideCheckPointDao(database: Database) = database.checkPointDao()
+    fun provideSliceDao(database: Database) = database.sliceDao()
 
     @Provides
     fun provideScheduleDao(database: Database) = database.scheduleDao()

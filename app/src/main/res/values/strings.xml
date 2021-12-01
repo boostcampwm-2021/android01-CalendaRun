@@ -15,14 +15,14 @@
     <string name="saveCalendar_defaultCalendar">기본 캘린더</string>
     <string name="menuSaveCalendarToolbar_delete">삭제</string>
 
-    <!-- view_check_point -->
-    <string name="check_point_name">이름</string>
-    <string name="check_point_startDate">시작일</string>
-    <string name="check_point_endDate">종료일</string>
-    <string name="check_point_pickDate">날짜 선택</string>
+    <!-- view_slice -->
+    <string name="slice_name">이름</string>
+    <string name="slice_startDate">시작일</string>
+    <string name="slice_endDate">종료일</string>
+    <string name="slice_pickDate">날짜 선택</string>
 
-    <!-- view_check_point_footer-->
-    <string name="check_point_footer_save">추가</string>
+    <!-- view_slice_footer-->
+    <string name="slice_footer_save">추가</string>
 
     <string name="saveSchedule_title">일정 제목</string>
     <string name="saveSchedule_start">시작</string>
