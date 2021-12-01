@@ -109,6 +109,9 @@
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
     <string name="app_widget_description">This is an app widget description</string>
+  
+    <string name="action_refresh_click">refresh</string>
+    <string name="widget_refresh">widget_refresh</string>
     <string name="ACTION_BTN_CLICK">update</string>
 
     <string name="setting_toolbarTitle">앱 설정</string>
@@ -117,5 +120,5 @@
     <string name="appInfo_developerValue">boostcamp Android01</string>
     <string name="appInfo_contact">이메일</string>
     <string name="appInfo_contactValue">andrunken1107@gmail.com</string>
-
+  
 </resources>

@@ -28,12 +28,12 @@ class CalendaRunAppWidget : AppWidgetProvider() {
         val serviceIntent = Intent(context, CalendaRunRemoteViewsService::class.java)
         remoteViews.setRemoteAdapter(R.id.lv_appWidget_scheduleList, serviceIntent)
 
-        val updateIntent = Intent(context, CalendaRunAppWidget::class.java)
-            .setAction(context.getString(R.string.ACTION_BTN_CLICK))
+        val refreshIntent = Intent(context, CalendaRunAppWidget::class.java)
+            .setAction(context.getString(R.string.action_refresh_click))
             .putExtra(APPWIDGET_ID, AppWidgetManager.EXTRA_APPWIDGET_ID)
 
-        val pendingIntent = PendingIntent.getBroadcast(context, 0, updateIntent, 0)
-        remoteViews.setOnClickPendingIntent(R.id.btn_appWidget_update, pendingIntent)
+        val pendingIntent = PendingIntent.getBroadcast(context, 0, refreshIntent, 0)
+        remoteViews.setOnClickPendingIntent(R.id.iv_appWidget_refresh, pendingIntent)
 
         coroutineScope.launch {
             appWidgetManager.updateAppWidget(appWidgetIds, remoteViews)
@@ -47,7 +47,8 @@ class CalendaRunAppWidget : AppWidgetProvider() {
         super.onReceive(context, intent)
 
         val action = intent.action
-        if (action.equals(context.getString(R.string.ACTION_BTN_CLICK))) {
+
+        if (action.equals(context.getString(R.string.action_refresh_click))) {
             coroutineScope.launch {
                 val appWidgetManager =
                     AppWidgetManager.getInstance(context)
