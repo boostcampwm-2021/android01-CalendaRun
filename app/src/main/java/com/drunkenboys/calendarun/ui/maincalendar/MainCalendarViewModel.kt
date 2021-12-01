@@ -70,8 +70,8 @@ class MainCalendarViewModel @Inject constructor(
     private val _daySecondClickEvent = MutableSharedFlow<LocalDate>()
     val daySecondClickEvent: SharedFlow<LocalDate> = _daySecondClickEvent
 
-    private val _licenseClickEvent = MutableSharedFlow<Unit>()
-    val licenseClickEvent: SharedFlow<Unit> = _licenseClickEvent
+    private val _settingClickEvent = MutableSharedFlow<Unit>()
+    val settingClickEvent: SharedFlow<Unit> = _settingClickEvent
 
     fun setCalendarId(calendarId: Long) {
         savedStateHandle.set(KEY_CALENDAR_ID, calendarId)
@@ -93,9 +93,9 @@ class MainCalendarViewModel @Inject constructor(
         }
     }
 
-    fun emitLicenseClickEvent() {
+    fun emitSettingClickEvent() {
         viewModelScope.launch {
-            _licenseClickEvent.emit(Unit)
+            _settingClickEvent.emit(Unit)
         }
     }
 
