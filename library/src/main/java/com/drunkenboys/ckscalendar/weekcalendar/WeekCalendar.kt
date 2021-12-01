@@ -28,7 +28,7 @@ private val currentMonth = CalendarSet(
     endDate = LocalDate.now().withDayOfMonth(LocalDate.now().dayOfMonth)
 )
 
-private val currentWeeks = calendarSetToCalendarDatesList(currentMonth)
+private val currentWeeks = calendarSetToCalendarDatesList(currentMonth, emptyList())
 
 @Composable
 fun WeekCalendar(
