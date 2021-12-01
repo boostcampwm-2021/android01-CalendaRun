@@ -24,7 +24,7 @@ class FakeScheduleLocalDataSource : ScheduleLocalDataSource {
     }
 
     override fun fetchCalendarSchedules(calendarId: Long): Flow<List<Schedule>> {
-        return flow { database.filter { it.calendarId == calendarId } }
+        return flow { emit(database.filter { it.calendarId == calendarId }) }
     }
 
     override suspend fun updateSchedule(schedule: Schedule) {
@@ -37,13 +37,15 @@ class FakeScheduleLocalDataSource : ScheduleLocalDataSource {
         database.remove(schedule)
     }
 
-    override suspend fun fetchMatchedScheduleAfter(word: String, time: Long): List<Schedule> {
-        return database.filter { it.startDate.toEpochSecond(defaultZoneOffset) > time && word in it.name }
-    }
+    override suspend fun fetchMatchedScheduleAfter(word: String, time: Long) =
+        database.filter { it.startDate.toEpochSecond(defaultZoneOffset) > time && word in it.name }
+            .sortedBy { it.startDate }
+            .take(ScheduleDao.SCHEDULE_PAGING_SIZE)
 
-    override suspend fun fetchMatchedScheduleBefore(word: String, time: Long): List<Schedule> {
-        return database.filter { it.startDate.toEpochSecond(defaultZoneOffset) < time && word in it.name }
-    }
+    override suspend fun fetchMatchedScheduleBefore(word: String, time: Long) =
+        database.filter { it.startDate.toEpochSecond(defaultZoneOffset) < time && word in it.name }
+            .sortedBy { it.startDate }
+            .takeLast(ScheduleDao.SCHEDULE_PAGING_SIZE)
 
     override fun fetchDateSchedule(date: LocalDateTime): Flow<List<Schedule>> {
         TODO("Not yet implemented")
