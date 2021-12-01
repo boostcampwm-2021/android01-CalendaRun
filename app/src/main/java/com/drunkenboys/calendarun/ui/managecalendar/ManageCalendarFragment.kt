@@ -36,6 +36,7 @@ class ManageCalendarFragment : BaseFragment<FragmentManageCalendarBinding>(R.lay
             launch { collectCalendarItemList() }
             launch { collectDeleteCalendar() }
             launch { collectOpenDeleteDialog() }
+            launch { collectCheckedCalendarNum() }
         }
     }
 
@@ -46,7 +47,6 @@ class ManageCalendarFragment : BaseFragment<FragmentManageCalendarBinding>(R.lay
 
     private fun setupToolbar() {
         binding.toolbarManageCalendar.setupWithNavController(navController)
-        // TODO: 2021-11-15 메뉴 아이템 클릭 리스너 추가
     }
 
     private fun setupAdapter() {
@@ -101,6 +101,12 @@ class ManageCalendarFragment : BaseFragment<FragmentManageCalendarBinding>(R.lay
             }
     }
 
+    private suspend fun collectCheckedCalendarNum() {
+        manageCalendarAdapter.checkedCalendarNum.collect() { nums ->
+            binding.toolbarManageCalendar.menu.findItem(R.id.menu_delete_schedule).isVisible = nums > 0
+        }
+    }
+    
     companion object {
 
         private const val DEFAULT_TOUCH_THROTTLE_PERIOD = 500L

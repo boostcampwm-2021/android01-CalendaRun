@@ -8,7 +8,9 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-
+    env:
+      HOLIDAY_API_KEY: ${{ secrets.HOLIDAY_API_KEY }}
+      
     steps:
     - uses: actions/checkout@v2
     - name: set up JDK 11
