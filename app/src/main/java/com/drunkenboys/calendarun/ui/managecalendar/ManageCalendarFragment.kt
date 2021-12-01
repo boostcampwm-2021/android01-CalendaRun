@@ -5,14 +5,13 @@ import android.view.View
 import androidx.core.view.isVisible
 import androidx.navigation.navGraphViewModels
 import androidx.navigation.ui.setupWithNavController
-import androidx.recyclerview.widget.RecyclerView
 import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.databinding.FragmentManageCalendarBinding
 import com.drunkenboys.calendarun.ui.base.BaseFragment
 import com.drunkenboys.calendarun.ui.maincalendar.MainCalendarViewModel
 import com.drunkenboys.calendarun.ui.managecalendar.model.CalendarItem
-import com.drunkenboys.calendarun.util.HorizontalInsetDividerDecoration
 import com.drunkenboys.calendarun.util.extensions.launchAndRepeatWithViewLifecycle
+import com.drunkenboys.calendarun.util.extensions.throttleFirst
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -36,6 +35,7 @@ class ManageCalendarFragment : BaseFragment<FragmentManageCalendarBinding>(R.lay
         launchAndRepeatWithViewLifecycle {
             launch { collectCalendarItemList() }
             launch { collectDeleteCalendar() }
+            launch { collectOpenDeleteDialog() }
         }
     }
 
@@ -63,7 +63,7 @@ class ManageCalendarFragment : BaseFragment<FragmentManageCalendarBinding>(R.lay
     private fun setupToolbarMenuItemOnClickListener() {
         binding.toolbarManageCalendar.setOnMenuItemClickListener { item ->
             if (item.itemId == R.id.menu_delete_schedule) {
-                navController.navigate(ManageCalendarFragmentDirections.toDeleteCalendarDialog())
+                manageCalendarViewModel.emitOpenDeleteDialogEvent(item.itemId)
                 true
             } else {
                 false
@@ -91,5 +91,18 @@ class ManageCalendarFragment : BaseFragment<FragmentManageCalendarBinding>(R.lay
                 mainCalendarViewModel.setCalendarId(1)
             }
         }
+    }
+
+    private suspend fun collectOpenDeleteDialog() {
+        manageCalendarViewModel.openDeleteDialogEvent
+            .throttleFirst(DEFAULT_TOUCH_THROTTLE_PERIOD)
+            .collect {
+                navController.navigate(ManageCalendarFragmentDirections.toDeleteCalendarDialog())
+            }
+    }
+
+    companion object {
+
+        private const val DEFAULT_TOUCH_THROTTLE_PERIOD = 500L
     }
 }
