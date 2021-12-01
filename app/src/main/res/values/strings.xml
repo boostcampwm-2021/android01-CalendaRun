@@ -112,6 +112,10 @@
     <string name="ACTION_BTN_CLICK">update</string>
 
     <string name="setting_toolbarTitle">앱 설정</string>
-    <string name="Info">앱 정보</string>
+    <string name="info">앱 정보</string>
+    <string name="appInfo_developer">제작자</string>
+    <string name="appInfo_developerValue">boostcamp Android01</string>
+    <string name="appInfo_contact">이메일</string>
+    <string name="appInfo_contactValue">andrunken1107@gmail.com</string>
 
 </resources>
