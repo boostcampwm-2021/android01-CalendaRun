@@ -64,7 +64,8 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(R.layout.fragment_s
         settingViewModel.infoClickEvent
             .throttleFirst(DEFAULT_TOUCH_THROTTLE_PERIOD)
             .collectLatest {
-
+                val action = SettingFragmentDirections.toAppInfoFragment()
+                navController.navigate(action)
             }
     }
 

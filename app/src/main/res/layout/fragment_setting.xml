@@ -70,7 +70,7 @@
                 android:onClick="@{() -> viewModel.emitInfoClickEvent()}"
                 android:paddingVertical="16dp"
                 android:paddingStart="16dp"
-                android:text="@string/Info"
+                android:text="@string/info"
                 app:drawableStartCompat="@drawable/ic_favorite_24" />
 
             <TextView
