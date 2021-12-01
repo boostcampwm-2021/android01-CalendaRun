@@ -55,7 +55,7 @@ class MainCalendarViewModel @Inject constructor(
             }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    val holidayList = holidayLocalDataSource.fetchAllHoliday()
+    private val holidayList = holidayLocalDataSource.fetchAllHoliday()
         .map { holidayList ->
             holidayList.map { holiday -> holiday.toCalendarScheduleObject() }
         }
@@ -67,7 +67,10 @@ class MainCalendarViewModel @Inject constructor(
             .map { scheduleList ->
                 scheduleList.map { schedule -> schedule.toCalendarScheduleObject() }
             }
+    }.combine(holidayList) { scheduleList, holidayList ->
+        scheduleList + holidayList
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
 
     val calendarDesignObject = calendarThemeDataSource.fetchCalendarTheme()
         .map { it.toCalendarDesignObject() }

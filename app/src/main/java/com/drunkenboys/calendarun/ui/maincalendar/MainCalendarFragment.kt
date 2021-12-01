@@ -37,7 +37,6 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
             launch { collectCalendarId() }
             launch { collectCalendarList() }
             launch { collectCalendarSet() }
-            launch { collectHolidayList() }
             launch { collectScheduleList() }
             launch { collectFabClickEvent() }
             launch { collectDaySecondClickListener() }
@@ -150,13 +149,6 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
                 binding.calendarMonth.setCalendarSetList(calendarSetList)
                 binding.calendarYear.setCalendarSetList(calendarSetList)
             }
-        }
-    }
-
-    private suspend fun collectHolidayList() {
-        mainCalendarViewModel.holidayList.collect { holidayList ->
-            binding.calendarYear.setSchedules(holidayList)
-            binding.calendarMonth.setSchedules(holidayList)
         }
     }
 
