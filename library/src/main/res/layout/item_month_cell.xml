@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_month_cell"
     android:layout_width="match_parent"
+    android:background="@drawable/bg_calendar_line_05px"
     android:layout_height="wrap_content">
 
     <TextView
