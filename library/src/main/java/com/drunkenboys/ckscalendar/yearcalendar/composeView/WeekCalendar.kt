@@ -1,11 +1,11 @@
 package com.drunkenboys.ckscalendar.yearcalendar.composeView
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -23,7 +23,9 @@ import com.drunkenboys.ckscalendar.data.CalendarScheduleObject
 import com.drunkenboys.ckscalendar.data.CalendarSet
 import com.drunkenboys.ckscalendar.data.DayType
 import com.drunkenboys.ckscalendar.utils.GravityMapper
+import com.drunkenboys.ckscalendar.utils.dp
 import com.drunkenboys.ckscalendar.yearcalendar.YearCalendarViewModel
+import java.time.LocalDate
 
 @Composable
 fun WeekCalendar(
@@ -54,19 +56,24 @@ fun WeekCalendar(
                 ) {
                     // 빈 날짜
                     Text(
-                        text = "padding",
+                        text = "1",
                         modifier = Modifier.padding(5.dp),
-                        maxLines = 1,
+                        fontSize = viewModel.design.value.textSize.dp(),
                         color = Color.Transparent,
                     )
 
                     // 빈 스케줄
                     repeat(viewModel.design.value.visibleScheduleCount) {
                         Text(
-                            text = "",
-                            modifier = Modifier,
+                            text = " ",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(Color.Transparent)
+                                .padding(4.dp),
+                            fontSize = viewModel.design.value.textSize.dp(),
                             color = Color.Transparent
                         )
+                        Spacer(modifier = Modifier.height(2.dp))
                     }
                 }
 
