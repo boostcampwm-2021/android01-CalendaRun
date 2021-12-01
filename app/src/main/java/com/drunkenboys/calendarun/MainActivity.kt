@@ -18,6 +18,7 @@ import com.drunkenboys.calendarun.databinding.ActivityMainBinding
 import com.drunkenboys.calendarun.ui.base.BaseViewActivity
 import com.drunkenboys.calendarun.ui.maincalendar.MainCalendarFragmentArgs
 import com.drunkenboys.calendarun.ui.maincalendar.MainCalendarFragmentDirections
+import com.drunkenboys.calendarun.util.extensions.getNetworkConnectState
 import com.google.gson.JsonSyntaxException
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -55,7 +56,7 @@ class MainActivity : BaseViewActivity<ActivityMainBinding>(ActivityMainBinding::
             setupNavHostFragment()
         }
 
-        if (isFirstRun) {
+        if (isFirstRun && getNetworkConnectState()) {
             fetchHoliday()
 
             val pref = getSharedPreferences(APP_FIRST_RUN_PREF, Context.MODE_PRIVATE)
