@@ -8,6 +8,8 @@ import com.drunkenboys.calendarun.data.checkpoint.local.CheckPointLocalDataSourc
 import com.drunkenboys.calendarun.data.checkpoint.local.CheckPointLocalDataSourceImpl
 import com.drunkenboys.calendarun.data.holiday.local.HolidayLocalDataSource
 import com.drunkenboys.calendarun.data.holiday.local.HolidayLocalDataSourceImpl
+import com.drunkenboys.calendarun.data.holiday.remote.HolidayRemoteDataSource
+import com.drunkenboys.calendarun.data.holiday.remote.HolidayRemoteDataSourceImpl
 import com.drunkenboys.calendarun.data.schedule.local.ScheduleLocalDataSource
 import com.drunkenboys.calendarun.data.schedule.local.ScheduleLocalDataSourceImpl
 import dagger.Binds
@@ -32,5 +34,8 @@ abstract class DataSourceModule {
     abstract fun bindCalendarThemeDataSource(dataSource: CalendarThemeLocalDataSourceImpl): CalendarThemeLocalDataSource
 
     @Binds
-    abstract fun bindHolidayDataSource(dataSource: HolidayLocalDataSourceImpl): HolidayLocalDataSource
+    abstract fun bindHolidayLocalDataSource(dataSource: HolidayLocalDataSourceImpl): HolidayLocalDataSource
+
+    @Binds
+    abstract fun bindHolidayRemoteDataSource(dataSource: HolidayRemoteDataSourceImpl): HolidayRemoteDataSource
 }
