@@ -1,6 +1,5 @@
 package com.drunkenboys.calendarun.ui.maincalendar
 
-import android.graphics.Color
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asFlow
@@ -11,7 +10,7 @@ import com.drunkenboys.calendarun.data.calendartheme.local.CalendarThemeLocalDat
 import com.drunkenboys.calendarun.data.checkpoint.entity.CheckPoint
 import com.drunkenboys.calendarun.data.checkpoint.local.CheckPointLocalDataSource
 import com.drunkenboys.calendarun.data.holiday.entity.Holiday
-import com.drunkenboys.calendarun.data.holiday.local.HolidayLocalDataSource
+import com.drunkenboys.calendarun.data.holiday.repository.HolidayRepository
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import com.drunkenboys.calendarun.data.schedule.local.ScheduleLocalDataSource
 import com.drunkenboys.calendarun.ui.theme.toCalendarDesignObject
@@ -32,7 +31,7 @@ class MainCalendarViewModel @Inject constructor(
     private val calendarLocalDataSource: CalendarLocalDataSource,
     private val checkPointLocalDataSource: CheckPointLocalDataSource,
     private val scheduleLocalDataSource: ScheduleLocalDataSource,
-    private val holidayLocalDataSource: HolidayLocalDataSource,
+    private val holidayRepository: HolidayRepository,
     calendarThemeDataSource: CalendarThemeLocalDataSource
 ) : ViewModel() {
 
@@ -55,7 +54,7 @@ class MainCalendarViewModel @Inject constructor(
             }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    private val holidayList = holidayLocalDataSource.fetchAllHoliday()
+    private val holidayList = holidayRepository.fetchAllHoliday()
         .map { holidayList ->
             holidayList.map { holiday -> holiday.toCalendarScheduleObject() }
         }
@@ -131,9 +130,9 @@ class MainCalendarViewModel @Inject constructor(
 
     private fun Holiday.toCalendarScheduleObject() = CalendarScheduleObject(
         id = id.toInt(),
-        color = Color.RED,
         text = name,
         startDate = LocalDateTime.of(date, LocalTime.MIN),
-        endDate = LocalDateTime.of(date, LocalTime.MIN)
+        endDate = LocalDateTime.of(date, LocalTime.MIN),
+        isHoliday = true
     )
 }
