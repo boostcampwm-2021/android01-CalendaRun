@@ -112,6 +112,6 @@
     <string name="ACTION_BTN_CLICK">update</string>
 
     <string name="setting_toolbarTitle">앱 설정</string>
-    <string name="help">도움말</string>
+    <string name="Info">앱 정보</string>
 
 </resources>

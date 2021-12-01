@@ -5,6 +5,9 @@
 
     <data>
 
+        <variable
+            name="viewModel"
+            type="com.drunkenboys.calendarun.ui.setting.SettingViewModel" />
     </data>
 
     <ScrollView
@@ -40,6 +43,7 @@
                 android:layout_height="wrap_content"
                 android:drawablePadding="8dp"
                 android:gravity="center_vertical"
+                android:onClick="@{() -> viewModel.emitManageCalendarClickEvent()}"
                 android:paddingVertical="16dp"
                 android:paddingStart="16dp"
                 android:text="@string/manageCalendar_toolbarTitle_manage"
@@ -51,20 +55,22 @@
                 android:layout_height="wrap_content"
                 android:drawablePadding="8dp"
                 android:gravity="center_vertical"
+                android:onClick="@{() -> viewModel.emitThemeClickEvent()}"
                 android:paddingVertical="16dp"
                 android:paddingStart="16dp"
                 android:text="@string/drawer_theme_setting"
                 app:drawableStartCompat="@drawable/ic_palette" />
 
             <TextView
-                android:id="@+id/tv_setting_help"
+                android:id="@+id/tv_setting_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:drawablePadding="8dp"
                 android:gravity="center_vertical"
+                android:onClick="@{() -> viewModel.emitInfoClickEvent()}"
                 android:paddingVertical="16dp"
                 android:paddingStart="16dp"
-                android:text="@string/help"
+                android:text="@string/Info"
                 app:drawableStartCompat="@drawable/ic_favorite_24" />
 
             <TextView
@@ -73,6 +79,7 @@
                 android:layout_height="wrap_content"
                 android:drawablePadding="8dp"
                 android:gravity="center_vertical"
+                android:onClick="@{() -> viewModel.emitLicenseClickEvent()}"
                 android:paddingVertical="16dp"
                 android:paddingStart="16dp"
                 android:text="@string/drawer_license"
