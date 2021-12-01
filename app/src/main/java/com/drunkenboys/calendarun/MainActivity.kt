@@ -13,8 +13,7 @@ import androidx.core.view.GestureDetectorCompat
 import androidx.navigation.NavDeepLinkBuilder
 import androidx.navigation.fragment.NavHostFragment
 import com.drunkenboys.calendarun.data.holiday.entity.Holiday
-import com.drunkenboys.calendarun.data.holiday.local.HolidayLocalDataSource
-import com.drunkenboys.calendarun.data.holiday.remote.HolidayRemoteDataSource
+import com.drunkenboys.calendarun.data.holiday.repository.HolidayRepository
 import com.drunkenboys.calendarun.databinding.ActivityMainBinding
 import com.drunkenboys.calendarun.ui.base.BaseViewActivity
 import com.drunkenboys.calendarun.ui.maincalendar.MainCalendarFragmentArgs
@@ -32,10 +31,7 @@ import javax.inject.Inject
 class MainActivity : BaseViewActivity<ActivityMainBinding>(ActivityMainBinding::inflate) {
 
     @Inject
-    lateinit var holidayRemoteDataSource: HolidayRemoteDataSource
-
-    @Inject
-    lateinit var holidayLocalDataSource: HolidayLocalDataSource
+    lateinit var holidayRepository: HolidayRepository
 
     private lateinit var mDetector: GestureDetectorCompat
 
@@ -121,11 +117,11 @@ class MainActivity : BaseViewActivity<ActivityMainBinding>(ActivityMainBinding::
             for (year in 2004 until 2024) {
                 for (month in monthList) {
                     try {
-                        holidayRemoteDataSource.fetchHolidayListOnMonth(
+                        holidayRepository.fetchHolidayListOnMonth(
                             year.toString(),
                             month
                         ).response.body.items.item.forEach { item ->
-                            holidayLocalDataSource.insertHoliday(
+                            holidayRepository.insertHoliday(
                                 Holiday(
                                     id = 0L,
                                     name = item.dateName,
@@ -135,8 +131,8 @@ class MainActivity : BaseViewActivity<ActivityMainBinding>(ActivityMainBinding::
                         }
                     } catch (e: JsonSyntaxException) {
                         try {
-                            val item = holidayRemoteDataSource.fetchHolidayOnMonth(year.toString(), month).response.body.items.item
-                            holidayLocalDataSource.insertHoliday(
+                            val item = holidayRepository.fetchHolidayOnMonth(year.toString(), month).response.body.items.item
+                            holidayRepository.insertHoliday(
                                 Holiday(
                                     id = 0L,
                                     name = item.dateName,
