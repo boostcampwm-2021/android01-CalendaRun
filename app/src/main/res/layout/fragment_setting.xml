@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            tools:context=".ui.setting.SettingFragment">
+
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/layout_setting_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.google.android.material.appbar.MaterialToolbar
+                    android:id="@+id/toolbar_setting"
+                    android:layout_width="match_parent"
+                    android:layout_height="?actionBarSize"
+                    app:title="@string/setting_toolbarTitle"
+                    app:titleTextColor="@color/white" />
+
+            </com.google.android.material.appbar.AppBarLayout>
+
+            <TextView
+                android:id="@+id/tv_setting_manageCalendar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawablePadding="8dp"
+                android:gravity="center_vertical"
+                android:paddingVertical="16dp"
+                android:paddingStart="16dp"
+                android:text="@string/manageCalendar_toolbarTitle_manage"
+                app:drawableStartCompat="@drawable/ic_calendar_today" />
+
+            <TextView
+                android:id="@+id/tv_setting_theme"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawablePadding="8dp"
+                android:gravity="center_vertical"
+                android:paddingVertical="16dp"
+                android:paddingStart="16dp"
+                android:text="@string/drawer_theme_setting"
+                app:drawableStartCompat="@drawable/ic_palette" />
+
+            <TextView
+                android:id="@+id/tv_setting_help"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawablePadding="8dp"
+                android:gravity="center_vertical"
+                android:paddingVertical="16dp"
+                android:paddingStart="16dp"
+                android:text="@string/help"
+                app:drawableStartCompat="@drawable/ic_favorite_24" />
+
+            <TextView
+                android:id="@+id/tv_setting_license"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawablePadding="8dp"
+                android:gravity="center_vertical"
+                android:paddingVertical="16dp"
+                android:paddingStart="16dp"
+                android:text="@string/drawer_license"
+                app:drawableStartCompat="@drawable/ic_license" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</layout>
