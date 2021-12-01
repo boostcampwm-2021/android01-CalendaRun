@@ -9,7 +9,7 @@ import java.time.format.DateTimeFormatter
 
 val defaultZoneOffset: ZoneOffset = ZoneOffset.systemDefault().rules.getOffset(Instant.now())
 
-fun LocalDate?.localDateToString(): String = this?.format(DateTimeFormatter.ofPattern("yyyy.M.d")) ?: ""
+fun LocalDate?.localDateToString(): String = this?.format(DateTimeFormatter.ofPattern("yyyy. M. d")) ?: ""
 
 val LocalDate.milliseconds get() = seconds * 1000
 

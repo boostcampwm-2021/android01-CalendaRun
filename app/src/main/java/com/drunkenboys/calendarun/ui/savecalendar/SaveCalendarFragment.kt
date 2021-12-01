@@ -2,6 +2,7 @@ package com.drunkenboys.calendarun.ui.savecalendar
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -94,11 +95,19 @@ class SaveCalendarFragment : BaseFragment<FragmentSaveCalendarBinding>(R.layout.
     }
 
     private suspend fun collectUseDefaultCalendar() {
+        // TODO: data Binding 으로 이동
         saveCalendarViewModel.useDefaultCalendar.collect { checked ->
             with(binding) {
                 rvSaveCalendarCheckPointList.isVisible = !checked
                 tvSaveCalendarAddCheckPointView.isVisible = !checked
                 toolbarSaveCalendar.menu.findItem(R.id.menu_delete_checkPoint).isVisible = !checked
+                tvSaveCalendarSliceCaption.setTextColor(
+                    if (checked) {
+                        ContextCompat.getColor(requireContext(), R.color.light_grey)
+                    } else {
+                        ContextCompat.getColor(requireContext(), R.color.background_black)
+                    }
+                )
             }
         }
     }

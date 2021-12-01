@@ -70,11 +70,11 @@
                 android:layout_margin="16dp"
                 android:contentDescription="@string/mainCalender_addScheduleDescription"
                 android:onClick="@{() -> mainCalendarViewModel.emitFabClickEvent()}"
-                app:backgroundTint="?colorPrimaryVariant"
+                app:backgroundTint="@color/fab_color"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:srcCompat="@drawable/ic_add"
-                app:tint="@color/white" />
+                app:tint="@color/background_white" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
