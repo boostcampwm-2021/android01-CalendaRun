@@ -8,7 +8,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
@@ -39,7 +38,6 @@ fun DayText(
             else -> MaterialTheme.colors.primary
         },
         modifier = Modifier
-            .layoutId(day.date.toString())
             .border(
                 width = 1.dp,
                 shape = CircleShape,
