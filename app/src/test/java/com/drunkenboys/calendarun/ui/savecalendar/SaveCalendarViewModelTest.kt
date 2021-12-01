@@ -185,7 +185,6 @@ class SearchScheduleViewModelTest {
         val checkPoint = viewModel.checkPointItemList.value.first()
         checkPoint.name.value = "checkpoint"
         checkPoint.startDate.value = LocalDate.now()
-        checkPoint.endDate.value = LocalDate.now()
 
         viewModel.saveCalendarEvent.test {
             viewModel.emitSaveCalendar()

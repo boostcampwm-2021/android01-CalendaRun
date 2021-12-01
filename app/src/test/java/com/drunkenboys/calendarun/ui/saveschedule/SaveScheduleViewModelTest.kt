@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
 import com.drunkenboys.calendarun.KEY_CALENDAR_ID
 import com.drunkenboys.calendarun.KEY_SCHEDULE_ID
+import com.drunkenboys.calendarun.data.calendar.entity.Calendar
 import com.drunkenboys.calendarun.data.calendar.local.CalendarLocalDataSource
 import com.drunkenboys.calendarun.data.calendar.local.FakeCalendarLocalDataSource
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
@@ -17,6 +18,7 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 @ObsoleteCoroutinesApi
@@ -52,8 +54,10 @@ class SaveScheduleViewModelTest {
     }
 
     @Test
-    fun `뷰모델_초기화_테스트`() {
+    fun `뷰모델_초기화_테스트`() = testScope.runBlockingTest {
         val calendarName = "test calendar"
+        calendarDataSource.insertCalendar(Calendar(0, calendarName, LocalDate.now(), LocalDate.now()))
+        viewModel = createSaveScheduleViewModel(0)
 
         assertEquals(calendarName, viewModel.calendarName.value)
     }
