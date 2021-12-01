@@ -11,10 +11,12 @@ import com.drunkenboys.calendarun.data.calendartheme.entity.CalendarTheme
 import com.drunkenboys.calendarun.data.calendartheme.local.CalendarThemeDao
 import com.drunkenboys.calendarun.data.checkpoint.entity.CheckPoint
 import com.drunkenboys.calendarun.data.checkpoint.local.CheckPointDao
+import com.drunkenboys.calendarun.data.holiday.entity.Holiday
+import com.drunkenboys.calendarun.data.holiday.local.HolidayDao
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import com.drunkenboys.calendarun.data.schedule.local.ScheduleDao
 
-@Database(entities = [Calendar::class, CheckPoint::class, Schedule::class, CalendarTheme::class], version = 4)
+@Database(entities = [Calendar::class, CheckPoint::class, Schedule::class, CalendarTheme::class, Holiday::class], version = 5)
 @TypeConverters(Converters::class)
 abstract class Database : RoomDatabase() {
 
@@ -26,7 +28,23 @@ abstract class Database : RoomDatabase() {
 
     abstract fun calendarThemeDao(): CalendarThemeDao
 
+    abstract fun holidayDao(): HolidayDao
+
     companion object {
+
+        val MIGRATION_4_5 = object : Migration(4, 5) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL(
+                    """
+                        CREATE TABLE Holiday (
+                            id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                            name TEXT NOT NULL,
+                            date INTEGER NOT NULL
+                        )
+                    """.trimIndent()
+                )
+            }
+        }
 
         // CalendarTheme TextSize 데이터 타입 변경 Int -> Float
         val MIGRATION_3_4 = object : Migration(3, 4) {

@@ -9,6 +9,8 @@ import com.drunkenboys.calendarun.data.calendar.local.CalendarLocalDataSource
 import com.drunkenboys.calendarun.data.calendartheme.local.CalendarThemeLocalDataSource
 import com.drunkenboys.calendarun.data.checkpoint.entity.CheckPoint
 import com.drunkenboys.calendarun.data.checkpoint.local.CheckPointLocalDataSource
+import com.drunkenboys.calendarun.data.holiday.entity.Holiday
+import com.drunkenboys.calendarun.data.holiday.repository.HolidayRepository
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import com.drunkenboys.calendarun.data.schedule.local.ScheduleLocalDataSource
 import com.drunkenboys.calendarun.ui.theme.toCalendarDesignObject
@@ -19,6 +21,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
 import javax.inject.Inject
 
 @HiltViewModel
@@ -27,6 +31,7 @@ class MainCalendarViewModel @Inject constructor(
     private val calendarLocalDataSource: CalendarLocalDataSource,
     private val checkPointLocalDataSource: CheckPointLocalDataSource,
     private val scheduleLocalDataSource: ScheduleLocalDataSource,
+    private val holidayRepository: HolidayRepository,
     calendarThemeDataSource: CalendarThemeLocalDataSource
 ) : ViewModel() {
 
@@ -49,13 +54,22 @@ class MainCalendarViewModel @Inject constructor(
             }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
+    private val holidayList = holidayRepository.fetchAllHoliday()
+        .map { holidayList ->
+            holidayList.map { holiday -> holiday.toCalendarScheduleObject() }
+        }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
     @ExperimentalCoroutinesApi
     val scheduleList = calendarId.flatMapLatest { calendarId ->
         scheduleLocalDataSource.fetchCalendarSchedules(calendarId)
             .map { scheduleList ->
                 scheduleList.map { schedule -> schedule.toCalendarScheduleObject() }
             }
+    }.combine(holidayList) { scheduleList, holidayList ->
+        scheduleList + holidayList
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
 
     val calendarDesignObject = calendarThemeDataSource.fetchCalendarTheme()
         .map { it.toCalendarDesignObject() }
@@ -112,5 +126,13 @@ class MainCalendarViewModel @Inject constructor(
         text = name,
         startDate = startDate,
         endDate = endDate
+    )
+
+    private fun Holiday.toCalendarScheduleObject() = CalendarScheduleObject(
+        id = id.toInt(),
+        text = name,
+        startDate = LocalDateTime.of(date, LocalTime.MIN),
+        endDate = LocalDateTime.of(date, LocalTime.MIN),
+        isHoliday = true
     )
 }
