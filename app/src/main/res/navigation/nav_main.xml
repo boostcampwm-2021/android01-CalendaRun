@@ -42,7 +42,18 @@
             app:destination="@id/dayScheduleDialog" />
         <action
             android:id="@+id/to_themeFragment"
-            app:destination="@id/themeFragment" />
+            app:destination="@id/themeFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/to_setting"
+            app:destination="@+id/settingFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
         <argument
             android:name="calendarId"
             app:argType="long" />
@@ -154,5 +165,37 @@
         android:id="@+id/themeResetDialog"
         android:name="com.drunkenboys.calendarun.ui.theme.ThemeResetDialog"
         android:label="ThemeResetDialog" />
+
+    <fragment
+        android:id="@+id/settingFragment"
+        android:name="com.drunkenboys.calendarun.ui.setting.SettingFragment"
+        tools:layout="@layout/fragment_setting">
+        <action
+            android:id="@+id/to_manageCalendar"
+            app:destination="@+id/manageCalendarFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/to_themeFragment"
+            app:destination="@id/themeFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/to_appInfoFragment"
+            app:destination="@id/appInfoFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/appInfoFragment"
+        android:name="com.drunkenboys.calendarun.ui.appinfo.AppInfoFragment"
+        tools:layout="@layout/fragment_app_info" />
 
 </navigation>
