@@ -36,4 +36,8 @@ class SliceLocalDataSourceImpl @Inject constructor(
     override suspend fun deleteSlice(slice: Slice) {
         sliceDao.deleteSlice(slice)
     }
+
+    override suspend fun deleteSliceById(id: Long) {
+        sliceDao.deleteSliceById(id)
+    }
 }
