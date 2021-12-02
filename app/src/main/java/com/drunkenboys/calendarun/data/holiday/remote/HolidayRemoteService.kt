@@ -11,6 +11,7 @@ interface HolidayRemoteService {
     @GET("/B090041/openapi/service/SpcdeInfoService/getRestDeInfo")
     suspend fun fetchHolidayListOnYear(
         @Query("solYear") year: String,
+        @Query("pageNo") pageNo: Int,
         @Query("_type") type: String = "json",
         @Query("ServiceKey") serviceKey: String = BuildConfig.HOLIDAY_API_KEY
     ): ResponseHolidayListInfo
@@ -26,6 +27,7 @@ interface HolidayRemoteService {
     @GET("/B090041/openapi/service/SpcdeInfoService/getRestDeInfo")
     suspend fun fetchHolidayOnYear(
         @Query("solYear") year: String,
+        @Query("pageNo") pageNo: Int,
         @Query("_type") type: String = "json",
         @Query("ServiceKey") serviceKey: String = BuildConfig.HOLIDAY_API_KEY
     ): ResponseHolidayInfo
