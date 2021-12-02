@@ -11,6 +11,9 @@ import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import com.drunkenboys.calendarun.data.schedule.local.ScheduleLocalDataSource
 import com.drunkenboys.calendarun.data.slice.entity.Slice
 import com.drunkenboys.calendarun.data.slice.local.SliceLocalDataSource
+import com.drunkenboys.calendarun.fake.getFakeCalendar
+import com.drunkenboys.calendarun.fake.getFakeSchedules
+import com.drunkenboys.calendarun.fake.getFakeSlices
 import com.drunkenboys.calendarun.ui.theme.toCalendarDesignObject
 import com.drunkenboys.ckscalendar.data.CalendarScheduleObject
 import com.drunkenboys.ckscalendar.data.CalendarSet
@@ -72,6 +75,12 @@ class MainCalendarViewModel @Inject constructor(
 
     private val _settingClickEvent = MutableSharedFlow<Unit>()
     val settingClickEvent: SharedFlow<Unit> = _settingClickEvent
+
+    init {
+        viewModelScope.launch { calendarLocalDataSource.insertCalendar(getFakeCalendar()) }
+        viewModelScope.launch { getFakeSlices().forEach { slice -> sliceLocalDataSource.insertSlice(slice) } }
+        viewModelScope.launch { getFakeSchedules().forEach { schedule -> scheduleLocalDataSource.insertSchedule(schedule) }}
+    }
 
     fun setCalendarId(calendarId: Long) {
         savedStateHandle.set(KEY_CALENDAR_ID, calendarId)
