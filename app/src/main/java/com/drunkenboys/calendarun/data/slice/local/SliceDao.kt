@@ -1,9 +1,6 @@
 package com.drunkenboys.calendarun.data.slice.local
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Update
+import androidx.room.*
 import com.drunkenboys.calendarun.data.slice.entity.Slice
 import kotlinx.coroutines.flow.Flow
 
@@ -28,4 +25,7 @@ interface SliceDao {
     @Query("DELETE FROM `Slice` WHERE calendarId == :calendarId")
     suspend fun deleteSliceList(calendarId: Long)
 
+    @Delete
+    suspend fun deleteSlice(slice: Slice)
+    
 }
