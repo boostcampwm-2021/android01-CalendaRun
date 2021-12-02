@@ -19,4 +19,6 @@ interface SliceLocalDataSource {
 
     suspend fun deleteSlice(slice: Slice)
 
+    suspend fun deleteSliceById(id: Long)
+
 }
