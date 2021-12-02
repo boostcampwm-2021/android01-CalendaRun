@@ -22,9 +22,7 @@ object LocalDatabaseModule {
         "AppDatabase.db"
     )
         .createFromAsset("default.db")
-        .addMigrations(Database.MIGRATION_2_3)
-        .addMigrations(Database.MIGRATION_3_4)
-        .addMigrations(Database.MIGRATION_4_5)
+        .addMigrations(Database.MIGRATION_2_3, Database.MIGRATION_3_4, Database.MIGRATION_4_5, Database.MIGRATION_5_6)
         .build()
 
     @Provides

@@ -32,14 +32,7 @@ abstract class Database : RoomDatabase() {
 
     companion object {
 
-        val MIGRATION_4_5 = object : Migration(4, 5) {
-            override fun migrate(database: SupportSQLiteDatabase) {
-                database.execSQL("ALTER TABLE `CheckPoint` RENAME TO `Slice`")
-            }
-        }
-
         val MIGRATION_5_6 = object : Migration(5, 6) {
-            // TODO: 2021-11-30 migration 코드 짜기
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL(
                     """
@@ -52,6 +45,13 @@ abstract class Database : RoomDatabase() {
                 )
             }
         }
+
+        val MIGRATION_4_5 = object : Migration(4, 5) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("ALTER TABLE `CheckPoint` RENAME TO `Slice`")
+            }
+        }
+
 
         // CalendarTheme TextSize 데이터 타입 변경 Int -> Float
         val MIGRATION_3_4 = object : Migration(3, 4) {
