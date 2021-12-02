@@ -22,7 +22,14 @@ jobs:
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
+      
+    - name: Generate Keystore file from Github Secrets 
+      run: echo "$KEYSTORE" > ./local.properties
+      env: 
+        KEYSTORE: ${{ secrets.HOLIDAY_API_KEY }}
+      
     - name: Build with Gradle
       run: ./gradlew build
+      
     - name: Unit Test
       run: ./gradlew testDebugUnitTest
