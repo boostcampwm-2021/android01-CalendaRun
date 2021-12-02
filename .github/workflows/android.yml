@@ -23,6 +23,7 @@ jobs:
       
     - name: Generate Keystore file from Github Secrets 
       run: |
+        echo "echo test"
         echo "$KEYSTORE"
         echo "$KEYSTORE" > ./local.properties
         cat ./local.properties
