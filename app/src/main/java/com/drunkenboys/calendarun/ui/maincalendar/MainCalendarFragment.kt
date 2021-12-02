@@ -1,7 +1,6 @@
 package com.drunkenboys.calendarun.ui.maincalendar
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.navigation.navGraphViewModels
@@ -14,7 +13,6 @@ import com.drunkenboys.calendarun.databinding.DrawerHeaderBinding
 import com.drunkenboys.calendarun.databinding.FragmentMainCalendarBinding
 import com.drunkenboys.calendarun.ui.base.BaseFragment
 import com.drunkenboys.calendarun.util.extensions.*
-import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
@@ -41,7 +39,7 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
             launch { collectFabClickEvent() }
             launch { collectDaySecondClickListener() }
             launch { collectCalendarDesignObject() }
-            launch { collectLicenseClickEvent() }
+            launch { collectSettingClickEvent() }
         }
     }
 
@@ -118,7 +116,6 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
                 R.id.menu_mainCalendar_addCalendar -> navigateToSaveCalendar()
                 R.id.menu_mainCalendar_calendarManage -> navigateToManageCalendar()
                 R.id.menu_mainCalendar_themeSetting -> navigateToThemeFragment()
-                R.id.menu_mainCalendar_license -> mainCalendarViewModel.emitLicenseClickEvent()
             }
             binding.layoutDrawer.close()
             true
@@ -183,11 +180,13 @@ class MainCalendarFragment : BaseFragment<FragmentMainCalendarBinding>(R.layout.
         }
     }
 
-    private suspend fun collectLicenseClickEvent() {
-        mainCalendarViewModel.licenseClickEvent
+    private suspend fun collectSettingClickEvent() {
+        mainCalendarViewModel.settingClickEvent
             .throttleFirst(DEFAULT_TOUCH_THROTTLE_PERIOD)
             .collect {
-                startActivity(Intent(this@MainCalendarFragment.context, OssLicensesMenuActivity::class.java))
+                val action = MainCalendarFragmentDirections.toSetting()
+                navController.navigate(action)
+                binding.layoutDrawer.close()
             }
     }
 

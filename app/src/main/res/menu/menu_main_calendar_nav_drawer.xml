@@ -21,11 +21,6 @@
                     android:icon="@drawable/ic_palette"
                     android:title="@string/drawer_theme_setting"
                     app:showAsAction="ifRoom" />
-                <item
-                    android:id="@+id/menu_mainCalendar_license"
-                    android:icon="@drawable/ic_license"
-                    android:title="@string/drawer_license"
-                    app:showAsAction="ifRoom" />
             </menu>
         </item>
     </group>

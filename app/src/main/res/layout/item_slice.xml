@@ -11,7 +11,7 @@
 
         <variable
             name="item"
-            type="com.drunkenboys.calendarun.ui.savecalendar.model.CheckPointItem" />
+            type="com.drunkenboys.calendarun.ui.savecalendar.model.SliceItem" />
 
         <variable
             name="adapter"
@@ -27,84 +27,84 @@
         android:paddingHorizontal="18dp">
 
         <TextView
-            android:id="@+id/tv_checkPoint_name"
+            android:id="@+id/tv_slice_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="@string/check_point_name"
+            android:text="@string/slice_name"
             android:textColor="?colorOnSurface"
             android:textSize="14dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.drunkenboys.calendarun.view.ErrorGuideEditText
-            android:id="@+id/et_checkPoint_name"
+            android:id="@+id/et_slice_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="@string/check_point_name"
+            android:hint="@string/slice_name"
             android:inputType="text"
             android:text="@={item.name}"
             android:textSize="16dp"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_checkPoint_name"
-            app:layout_constraintEnd_toEndOf="@+id/tv_checkPoint_startDatePicker"
-            app:layout_constraintStart_toStartOf="@+id/tv_checkPoint_startDatePicker"
-            app:layout_constraintTop_toTopOf="@+id/tv_checkPoint_name"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_slice_name"
+            app:layout_constraintEnd_toEndOf="@+id/tv_slice_startDatePicker"
+            app:layout_constraintStart_toStartOf="@+id/tv_slice_startDatePicker"
+            app:layout_constraintTop_toTopOf="@+id/tv_slice_name"
             tools:text="3월 모의고사" />
 
         <TextView
-            android:id="@+id/tv_checkPoint_startDate"
+            android:id="@+id/tv_slice_startDate"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="@string/check_point_startDate"
+            android:text="@string/slice_startDate"
             android:textColor="?colorOnSurface"
             android:textSize="14dp"
-            app:layout_constraintStart_toStartOf="@+id/tv_checkPoint_name"
-            app:layout_constraintTop_toBottomOf="@+id/tv_checkPoint_name" />
+            app:layout_constraintStart_toStartOf="@+id/tv_slice_name"
+            app:layout_constraintTop_toBottomOf="@+id/tv_slice_name" />
 
         <com.drunkenboys.calendarun.view.ErrorGuideTextView
-            android:id="@+id/tv_checkPoint_startDatePicker"
+            android:id="@+id/tv_slice_startDatePicker"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:hint="@string/check_point_pickDate"
+            android:hint="@string/slice_pickDate"
             android:onClick="@{() -> adapter.onClick.invoke(item)}"
             android:text="@{DateConverterKt.localDateToString(item.startDate)}"
             android:textSize="16dp"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_checkPoint_startDate"
-            app:layout_constraintEnd_toStartOf="@+id/cb_checkPoint_select"
-            app:layout_constraintStart_toEndOf="@+id/tv_checkPoint_startDate"
-            app:layout_constraintTop_toTopOf="@+id/tv_checkPoint_startDate" />
+            app:layout_constraintBottom_toBottomOf="@+id/tv_slice_startDate"
+            app:layout_constraintEnd_toStartOf="@+id/cb_slice_select"
+            app:layout_constraintStart_toEndOf="@+id/tv_slice_startDate"
+            app:layout_constraintTop_toTopOf="@+id/tv_slice_startDate" />
 
         <TextView
-            android:id="@+id/tv_checkPoint_endDate"
+            android:id="@+id/tv_slice_endDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
-            android:text="@string/check_point_endDate"
+            android:text="@string/slice_endDate"
             android:textColor="?colorOnSurface"
             android:textSize="14dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/tv_checkPoint_startDate"
-            app:layout_constraintTop_toBottomOf="@+id/tv_checkPoint_startDate" />
+            app:layout_constraintStart_toStartOf="@+id/tv_slice_startDate"
+            app:layout_constraintTop_toBottomOf="@+id/tv_slice_startDate" />
 
         <com.drunkenboys.calendarun.view.ErrorGuideTextView
-            android:id="@+id/tv_checkPoint_endDatePicker"
+            android:id="@+id/tv_slice_endDatePicker"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="@string/check_point_pickDate"
+            android:hint="@string/slice_pickDate"
             android:onClick="@{() -> adapter.onClick.invoke(item)}"
             android:text="@{DateConverterKt.localDateToString(item.endDate)}"
             android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_checkPoint_endDate"
-            app:layout_constraintEnd_toEndOf="@+id/tv_checkPoint_startDatePicker"
-            app:layout_constraintStart_toStartOf="@+id/tv_checkPoint_startDatePicker"
-            app:layout_constraintTop_toTopOf="@+id/tv_checkPoint_endDate" />
+            app:layout_constraintBottom_toBottomOf="@+id/tv_slice_endDate"
+            app:layout_constraintEnd_toEndOf="@+id/tv_slice_startDatePicker"
+            app:layout_constraintStart_toStartOf="@+id/tv_slice_startDatePicker"
+            app:layout_constraintTop_toTopOf="@+id/tv_slice_endDate" />
 
         <com.google.android.material.checkbox.MaterialCheckBox
-            android:id="@+id/cb_checkPoint_select"
+            android:id="@+id/cb_slice_select"
             android:layout_width="32dp"
             android:layout_height="wrap_content"
             android:button="@drawable/selector_check_box_18"

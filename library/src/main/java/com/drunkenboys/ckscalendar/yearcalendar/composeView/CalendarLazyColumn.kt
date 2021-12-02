@@ -73,7 +73,7 @@ fun CalendarLazyColumn(
     ) {
         calendar.forEach { slice ->
             items(
-                items = calendarSetToCalendarDatesList(slice, viewModel.schedules.value),
+                items = calendarSetToCalendarDatesList(slice),
                 key = { week -> week.first { day -> day.dayType != DayType.PADDING }.date }
             ) { week ->
                 val firstOfYear = LocalDate.of(slice.startDate.year, 1, 1)
@@ -104,7 +104,7 @@ fun CalendarLazyColumn(
     }
 
     with(listState) {
-        InitScroll(clickedDay = clickedDay)
+        InitScroll()
 
         ShouldNextScroll {
             viewModel.fetchNextCalendarSet()

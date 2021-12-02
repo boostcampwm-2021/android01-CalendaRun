@@ -47,16 +47,8 @@ class CalendaRunRemoteViewsFactory constructor(
     override fun getViewAt(position: Int): RemoteViews {
         val widget = RemoteViews(context.packageName, R.layout.item_app_widget_schedule).apply {
             setTextViewText(R.id.tv_appWidget_schedule_name, scheduleList[position].schedule.name)
-            setTextViewText(R.id.tv_appWidget_schedule_time, scheduleList[position].schedule.startDate.toString())
+            setTextViewText(R.id.tv_appWidget_schedule_memo, scheduleList[position].schedule.memo)
         }
-
-        /*val dataIntent = Intent()
-        dataIntent.putExtra("item_id", scheduleList[position].schedule.calendarId)
-        dataIntent.putExtra("item_name", scheduleList[position].schedule.name)
-        dataIntent.putExtra("item_time", scheduleList[position].schedule.startDate.toString())
-        widget.setOnClickFillInIntent(R.id.layout_appWidget_schedule, dataIntent)
-        //setOnClickFillInIntent 브로드캐스트 리시버에서 항목 선택 이벤트가 발생할 때 실행을 의뢰한 인텐트에 각 항목의 데이터를 추가해주는 함수
-        //브로드캐스트 리시버의 인텐트와 Extra 데이터가 담긴 인텐트를 합치는 역할을 한다.*/
 
         return widget
     }

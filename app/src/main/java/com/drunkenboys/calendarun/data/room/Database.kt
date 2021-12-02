@@ -11,28 +11,30 @@ import com.drunkenboys.calendarun.data.calendartheme.entity.CalendarTheme
 import com.drunkenboys.calendarun.data.calendartheme.local.CalendarThemeDao
 import com.drunkenboys.calendarun.data.checkpoint.entity.CheckPoint
 import com.drunkenboys.calendarun.data.checkpoint.local.CheckPointDao
-import com.drunkenboys.calendarun.data.holiday.entity.Holiday
-import com.drunkenboys.calendarun.data.holiday.local.HolidayDao
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
 import com.drunkenboys.calendarun.data.schedule.local.ScheduleDao
 
-@Database(entities = [Calendar::class, CheckPoint::class, Schedule::class, CalendarTheme::class, Holiday::class], version = 5)
+@Database(entities = [Calendar::class, CheckPoint::class, Schedule::class, CalendarTheme::class], version = 4)
 @TypeConverters(Converters::class)
 abstract class Database : RoomDatabase() {
 
     abstract fun calendarDao(): CalendarDao
 
-    abstract fun checkPointDao(): CheckPointDao
+    abstract fun sliceDao(): SliceDao
 
     abstract fun scheduleDao(): ScheduleDao
 
     abstract fun calendarThemeDao(): CalendarThemeDao
 
-    abstract fun holidayDao(): HolidayDao
-
     companion object {
 
         val MIGRATION_4_5 = object : Migration(4, 5) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("ALTER TABLE `CheckPoint` RENAME TO `Slice`")
+            }
+        }
+
+        val MIGRATION_5_6 = object : Migration(5, 6) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL(
                     """
@@ -93,8 +95,8 @@ abstract class Database : RoomDatabase() {
                        FROM CalendarTheme
                            """.trimMargin()
                 )
-                database.execSQL("DROP TABLE CalendarTheme");
-                database.execSQL("ALTER TABLE CalendarTheme_tmp RENAME TO CalendarTheme");
+                database.execSQL("DROP TABLE CalendarTheme")
+                database.execSQL("ALTER TABLE CalendarTheme_tmp RENAME TO CalendarTheme")
             }
         }
 

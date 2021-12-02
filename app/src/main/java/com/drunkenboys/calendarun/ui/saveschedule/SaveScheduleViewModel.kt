@@ -74,6 +74,9 @@ class SaveScheduleViewModel @Inject constructor(
     private val _blankTitleEvent = MutableSharedFlow<Unit>()
     val blankTitleEvent: SharedFlow<Unit> = _blankTitleEvent
 
+    private val _openDeleteDialog = MutableSharedFlow<Int>()
+    val openDeleteDialog: SharedFlow<Int> = _openDeleteDialog
+
     init {
         restoreScheduleData()
     }
@@ -182,6 +185,12 @@ class SaveScheduleViewModel @Inject constructor(
             scheduleDataSource.deleteSchedule(deleteSchedule)
 
             _deleteScheduleEvent.emit(deleteSchedule to calendarName.value)
+        }
+    }
+
+    fun emitOpenDeleteDialog(id: Int) {
+        viewModelScope.launch {
+            _openDeleteDialog.emit(id)
         }
     }
 }

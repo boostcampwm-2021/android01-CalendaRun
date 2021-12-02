@@ -1,4 +1,4 @@
-package com.drunkenboys.calendarun.data.checkpoint.entity
+package com.drunkenboys.calendarun.data.slice.entity
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
@@ -7,7 +7,7 @@ import com.drunkenboys.calendarun.data.calendar.entity.Calendar
 import java.time.LocalDate
 
 @Entity(
-    tableName = "Checkpoint",
+    tableName = "Slice",
     foreignKeys = [
         ForeignKey(
             entity = Calendar::class,
@@ -18,11 +18,10 @@ import java.time.LocalDate
         )
     ]
 )
-data class CheckPoint(
+data class Slice(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val calendarId: Long,
     val name: String,
     val startDate: LocalDate,
     val endDate: LocalDate
 )
-
