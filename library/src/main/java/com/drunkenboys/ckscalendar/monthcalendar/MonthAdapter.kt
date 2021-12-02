@@ -92,6 +92,7 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
 
         private val weekDayColor = calendarDesign.weekDayTextColor
         private val holidayColor = calendarDesign.holidayTextColor
+        private val sundayColor = calendarDesign.sundayTextColor
         private val saturdayColor = calendarDesign.saturdayTextColor
 
         init {
@@ -138,7 +139,8 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
 
         private fun setDateCellTextDesign(item: CalendarDate) {
             val textColor = when (item.dayType) {
-                DayType.HOLIDAY, DayType.SUNDAY -> holidayColor
+                DayType.SUNDAY -> sundayColor
+                DayType.HOLIDAY -> holidayColor
                 DayType.SATURDAY -> saturdayColor
                 else -> weekDayColor
             }
@@ -186,8 +188,14 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
             val textView = makeDefaultScheduleTextView(startMargin)
             textView.layoutParams
             textView.text = if (isFirstShowSchedule) it.text else ""
-            textView.setTextColor(Color.WHITE)
             textView.setBackgroundColor(it.color)
+            if (it.isHoliday) {
+                textView.setTextColor(holidayColor)
+                binding.tvMonthDay.setTextColor(holidayColor)
+            } else {
+                textView.setTextColor(Color.WHITE)
+            }
+
             return textView
         }
 
