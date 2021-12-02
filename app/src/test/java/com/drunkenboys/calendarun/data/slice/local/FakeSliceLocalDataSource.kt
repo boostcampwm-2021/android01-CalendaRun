@@ -29,4 +29,12 @@ class FakeSliceLocalDataSource : SliceLocalDataSource {
     override suspend fun deleteSliceList(calendarId: Long) {
         database.removeAll { it.calendarId == calendarId }
     }
+
+    override suspend fun deleteSlice(slice: Slice) {
+
+    }
+
+    override suspend fun deleteSliceById(id: Long) {
+
+    }
 }
