@@ -24,7 +24,8 @@ class MonthCellFactory {
                 when (year) {
                     startYear -> {
                         val startLocalDate = LocalDate.of(year, startMonth, item.startDate.dayOfMonth)
-                        val endLocalDate = LocalDate.of(year, 12, 31)
+                        val endLocalDate = if(startYear != endYear) LocalDate.of(year, 12, 31)
+                        else LocalDate.of(year, item.endDate.monthValue, item.endDate.dayOfMonth)
                         dates.addAll(makeMonthCells(startLocalDate, endLocalDate, year))
                     }
                     endYear -> {
@@ -66,7 +67,7 @@ class MonthCellFactory {
                     }
 
                     // add Start Dates
-                    if (startMonth == endMonth) {
+                    if (startMonth.monthValue == endMonth.monthValue) {
                         dates.addAll(makeDates(startMonth.dayOfMonth, endMonth.dayOfMonth, month, year))
                     } else {
                         dates.addAll(makeDates(startMonth.dayOfMonth, startMonth.lengthOfMonth(), month, year))
