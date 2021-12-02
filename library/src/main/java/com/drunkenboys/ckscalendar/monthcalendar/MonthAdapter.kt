@@ -8,9 +8,11 @@ import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.drunkenboys.ckscalendar.R
 import com.drunkenboys.ckscalendar.data.CalendarDate
 import com.drunkenboys.ckscalendar.data.CalendarDesignObject
 import com.drunkenboys.ckscalendar.data.CalendarScheduleObject
@@ -21,6 +23,7 @@ import com.drunkenboys.ckscalendar.listener.OnDaySecondClickListener
 import com.drunkenboys.ckscalendar.utils.context
 import com.drunkenboys.ckscalendar.utils.dp2px
 import com.drunkenboys.ckscalendar.utils.tintStroke
+import java.time.LocalDate
 
 class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : RecyclerView.Adapter<MonthAdapter.Holder>() {
 
@@ -144,8 +147,14 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
                 DayType.SATURDAY -> saturdayColor
                 else -> weekDayColor
             }
+            if (item.date == LocalDate.now()) {
+                binding.tvMonthDay.setBackgroundResource(R.drawable.bg_calendar_today)
+                binding.tvMonthDay.tintStroke(weekDayColor, context().dp2px(0.3f))
+            } else {
+                binding.tvMonthDay.setBackgroundResource(0)
+            }
             binding.tvMonthDay.setTextColor(textColor)
-            binding.tvMonthDay.gravity = calendarDesign.textAlign
+            (binding.tvMonthDay.layoutParams as FrameLayout.LayoutParams).gravity = calendarDesign.textAlign
             binding.tvMonthDay.setTextSize(TypedValue.COMPLEX_UNIT_DIP, calendarDesign.textSize)
         }
 

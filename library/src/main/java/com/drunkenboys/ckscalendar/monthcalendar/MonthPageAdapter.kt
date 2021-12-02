@@ -177,14 +177,14 @@ class MonthPageAdapter : RecyclerView.Adapter<MonthPageAdapter.Holder>() {
                     monthAdapter.selectedPosition = -1
                 }
 
-                //TODO : isFirstToday가 notifyitemchanged일 때 무시되는 현상 존재
-                if (isFirstToday) {
-                    dates.find { it.date == today }
-                        ?.let {
-                            it.isSelected = true
-                            isFirstToday = false
-                        }
-                }
+                //TODO : isFirstToday가 notifyitemchanged일 때 무시되는 현상 존재 2021-12-02 비활성화
+//                if (isFirstToday) {
+//                    dates.find { it.date == today }
+//                        ?.let {
+//                            it.isSelected = true
+//                            isFirstToday = false
+//                        }
+//                }
                 withContext(Dispatchers.Main) {
                     monthAdapter.setItems(dates, schedules, calendarDesign, adapterPosition)
                     monthAdapter.onDayClickListener = onDayClick
