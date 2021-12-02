@@ -10,16 +10,28 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.core.content.getSystemService
 import androidx.core.view.GestureDetectorCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavDeepLinkBuilder
 import androidx.navigation.fragment.NavHostFragment
+import com.drunkenboys.calendarun.data.holiday.entity.Holiday
+import com.drunkenboys.calendarun.data.holiday.repository.HolidayRepository
 import com.drunkenboys.calendarun.databinding.ActivityMainBinding
 import com.drunkenboys.calendarun.ui.base.BaseViewActivity
 import com.drunkenboys.calendarun.ui.maincalendar.MainCalendarFragmentArgs
 import com.drunkenboys.calendarun.ui.maincalendar.MainCalendarFragmentDirections
+import com.drunkenboys.calendarun.util.extensions.getNetworkConnectState
+import com.google.gson.JsonSyntaxException
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : BaseViewActivity<ActivityMainBinding>(ActivityMainBinding::inflate) {
+
+    @Inject
+    lateinit var holidayRepository: HolidayRepository
 
     private lateinit var mDetector: GestureDetectorCompat
 
@@ -30,12 +42,24 @@ class MainActivity : BaseViewActivity<ActivityMainBinding>(ActivityMainBinding::
         pref.getLong(KEY_CALENDAR_ID, 1)
     }
 
+    private val isFirstRun by lazy {
+        val pref = getSharedPreferences(APP_FIRST_RUN_PREF, Context.MODE_PRIVATE)
+        pref.getBoolean(IS_FIRST_RUN, true)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mDetector = GestureDetectorCompat(this, SingleTapListener())
 
         if (savedInstanceState == null) {
             setupNavHostFragment()
+        }
+
+        if (isFirstRun && getNetworkConnectState()) {
+            val pref = getSharedPreferences(APP_FIRST_RUN_PREF, Context.MODE_PRIVATE)
+            pref.edit().putBoolean(IS_FIRST_RUN, false).apply()
+
+            fetchHoliday()
         }
     }
 
@@ -84,9 +108,52 @@ class MainActivity : BaseViewActivity<ActivityMainBinding>(ActivityMainBinding::
         }
     }
 
+    private fun fetchHoliday() {
+        val formatter = DateTimeFormatter.ofPattern("yyyyMMdd")
+
+        lifecycleScope.launch {
+            // 현재 API에서 2004년부터 2023년까지의 공휴일 정보를 제공해줌
+            for (year in 2004 until 2024) {
+                for (pageNo in 1..3) {
+                    launch {
+                        try {
+                            holidayRepository.fetchHolidayListOnYear(
+                                year.toString(),
+                                pageNo
+                            ).response.body.items.item.forEach { item ->
+                                holidayRepository.insertHoliday(
+                                    Holiday(
+                                        id = 0L,
+                                        name = item.dateName,
+                                        date = LocalDate.parse(item.localDate.toString(), formatter)
+                                    )
+                                )
+                            }
+                        } catch (e: JsonSyntaxException) {
+                            try {
+                                val item = holidayRepository.fetchHolidayOnYear(year.toString(), pageNo).response.body.items.item
+                                holidayRepository.insertHoliday(
+                                    Holiday(
+                                        id = 0L,
+                                        name = item.dateName,
+                                        date = LocalDate.parse(item.localDate.toString(), formatter)
+                                    )
+                                )
+                            } catch (e: JsonSyntaxException) {
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
     companion object {
 
         const val CALENDAR_ID_PREF = "calendar_id_pref"
+        private const val APP_FIRST_RUN_PREF = "app_first_run_pref"
+        private const val IS_FIRST_RUN = "is_first_run"
 
         fun createNavigationPendingIntent(context: Context, calendarId: Long, startDate: String) = NavDeepLinkBuilder(context)
             .setGraph(R.navigation.nav_main)
