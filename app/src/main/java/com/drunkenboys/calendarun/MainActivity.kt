@@ -10,6 +10,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.core.content.getSystemService
 import androidx.core.view.GestureDetectorCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavDeepLinkBuilder
 import androidx.navigation.fragment.NavHostFragment
 import com.drunkenboys.calendarun.data.holiday.entity.Holiday
@@ -21,8 +22,6 @@ import com.drunkenboys.calendarun.ui.maincalendar.MainCalendarFragmentDirections
 import com.drunkenboys.calendarun.util.extensions.getNetworkConnectState
 import com.google.gson.JsonSyntaxException
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -57,10 +56,10 @@ class MainActivity : BaseViewActivity<ActivityMainBinding>(ActivityMainBinding::
         }
 
         if (isFirstRun && getNetworkConnectState()) {
-            fetchHoliday()
-
             val pref = getSharedPreferences(APP_FIRST_RUN_PREF, Context.MODE_PRIVATE)
             pref.edit().putBoolean(IS_FIRST_RUN, false).apply()
+
+            fetchHoliday()
         }
     }
 
@@ -110,42 +109,44 @@ class MainActivity : BaseViewActivity<ActivityMainBinding>(ActivityMainBinding::
     }
 
     private fun fetchHoliday() {
-        val monthList = listOf("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12")
         val formatter = DateTimeFormatter.ofPattern("yyyyMMdd")
 
-        CoroutineScope(Dispatchers.IO).launch {
+        lifecycleScope.launch {
             // 현재 API에서 2004년부터 2023년까지의 공휴일 정보를 제공해줌
             for (year in 2004 until 2024) {
-                for (month in monthList) {
-                    try {
-                        holidayRepository.fetchHolidayListOnMonth(
-                            year.toString(),
-                            month
-                        ).response.body.items.item.forEach { item ->
-                            holidayRepository.insertHoliday(
-                                Holiday(
-                                    id = 0L,
-                                    name = item.dateName,
-                                    date = LocalDate.parse(item.localDate.toString(), formatter)
-                                )
-                            )
-                        }
-                    } catch (e: JsonSyntaxException) {
+                for (pageNo in 1..3) {
+                    launch {
                         try {
-                            val item = holidayRepository.fetchHolidayOnMonth(year.toString(), month).response.body.items.item
-                            holidayRepository.insertHoliday(
-                                Holiday(
-                                    id = 0L,
-                                    name = item.dateName,
-                                    date = LocalDate.parse(item.localDate.toString(), formatter)
+                            holidayRepository.fetchHolidayListOnYear(
+                                year.toString(),
+                                pageNo
+                            ).response.body.items.item.forEach { item ->
+                                holidayRepository.insertHoliday(
+                                    Holiday(
+                                        id = 0L,
+                                        name = item.dateName,
+                                        date = LocalDate.parse(item.localDate.toString(), formatter)
+                                    )
                                 )
-                            )
+                            }
                         } catch (e: JsonSyntaxException) {
+                            try {
+                                val item = holidayRepository.fetchHolidayOnYear(year.toString(), pageNo).response.body.items.item
+                                holidayRepository.insertHoliday(
+                                    Holiday(
+                                        id = 0L,
+                                        name = item.dateName,
+                                        date = LocalDate.parse(item.localDate.toString(), formatter)
+                                    )
+                                )
+                            } catch (e: JsonSyntaxException) {
+                            }
                         }
                     }
                 }
             }
         }
+
     }
 
     companion object {
