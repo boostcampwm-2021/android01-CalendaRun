@@ -16,4 +16,8 @@ class Test {
     class Test4 {
 
     }
+
+    class Test5 {
+
+    }
 }
