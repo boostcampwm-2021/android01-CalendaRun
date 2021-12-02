@@ -40,7 +40,7 @@ fun ScheduleText(
                     .padding(4.dp),
                 overflow = TextOverflow.Ellipsis,
                 fontSize = viewModel.design.value.textSize.dp(),
-                color = if (schedule?.isHoliday == true) Color.Red else Color.White
+                color = if (schedule?.isHoliday == true) Color(viewModel.design.value.holidayTextColor) else Color.White
             )
         }
         Spacer(modifier = Modifier.height(2.dp))
