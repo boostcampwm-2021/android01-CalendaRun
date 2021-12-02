@@ -13,10 +13,8 @@ class HolidayRemoteDataSourceImpl @Inject constructor(
     override suspend fun fetchHolidayListOnMonth(year: String, month: String) =
         holidayRemoteService.fetchHolidayListOnMonth(year, month)
 
-
     override suspend fun fetchHolidayOnYear(year: String): ResponseHolidayInfo =
         holidayRemoteService.fetchHolidayOnYear(year)
-
 
     override suspend fun fetchHolidayOnMonth(year: String, month: String): ResponseHolidayInfo =
         holidayRemoteService.fetchHolidayOnMonth(year, month)
