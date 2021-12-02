@@ -2,10 +2,7 @@ name: Android CI
 
 on:
   pull_request:
-    branches: [ develop, master ]
-    
-env: 
-  KEYSTORE: ${{ secrets.HOLIDAY_API_KEY }}
+    branches: [ develop, master 
 
 jobs:
   build:
@@ -27,8 +24,9 @@ jobs:
     - name: Generate Keystore file from Github Secrets 
       run: |
         echo "echo test"
-        echo "$KEYSTORE"
-        echo "$KEYSTORE" > ./local.properties
+        echo "echo api key=${{ secrets.HOLIDAY_API_KEY }}"
+        echo ${{ secrets.HOLIDAY_API_KEY }}
+        echo "${{ secrets.HOLIDAY_API_KEY }}" > ./local.properties
         cat ./local.properties
       
     - name: Build with Gradle
