@@ -1,7 +1,7 @@
 package com.drunkenboys.calendarun.fake
 
-import android.graphics.Color
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
+import com.drunkenboys.ckscalendar.data.ScheduleColorType
 import java.time.LocalDateTime
 
 private var id = 20211202L
@@ -15,7 +15,7 @@ fun getFakeSchedules() = listOf(
         endDate = LocalDateTime.of(2021, 10, 27, 23, 59),
         memo = "",
         notificationType = Schedule.NotificationType.NONE,
-        color = Color.BLUE
+        color = ScheduleColorType.BLUE.color
     ),
 
     Schedule(
@@ -26,7 +26,7 @@ fun getFakeSchedules() = listOf(
         endDate = LocalDateTime.of(2021, 10, 28, 23, 59),
         memo = "",
         notificationType = Schedule.NotificationType.NONE,
-        color = Color.YELLOW
+        color = ScheduleColorType.YELLOW.color
     ),
 
     Schedule(
@@ -37,7 +37,7 @@ fun getFakeSchedules() = listOf(
         endDate = LocalDateTime.of(2021, 10, 28, 23, 59),
         memo = "",
         notificationType = Schedule.NotificationType.NONE,
-        color = Color.MAGENTA
+        color = ScheduleColorType.MAGENTA.color
     ),
 
     Schedule(
@@ -48,7 +48,7 @@ fun getFakeSchedules() = listOf(
         endDate = LocalDateTime.of(2021, 10, 29, 23, 59),
         memo = "",
         notificationType = Schedule.NotificationType.NONE,
-        color = Color.CYAN
+        color = ScheduleColorType.CYAN.color
     ),
 
     // ============================2주차 ======================================================
@@ -60,7 +60,7 @@ fun getFakeSchedules() = listOf(
         endDate = LocalDateTime.of(2021, 11, 1, 23, 59),
         memo = "",
         notificationType = Schedule.NotificationType.NONE,
-        color = Color.RED
+        color = ScheduleColorType.RED.color
     ),
 
     Schedule(
@@ -71,7 +71,7 @@ fun getFakeSchedules() = listOf(
         endDate = LocalDateTime.of(2021, 11, 1, 23, 59),
         memo = "",
         notificationType = Schedule.NotificationType.NONE,
-        color = Color.GREEN
+        color = ScheduleColorType.GREEN.color
     ),
 
     Schedule(
@@ -82,7 +82,7 @@ fun getFakeSchedules() = listOf(
         endDate = LocalDateTime.of(2021, 11, 3, 23, 59),
         memo = "",
         notificationType = Schedule.NotificationType.NONE,
-        color = Color.BLUE
+        color = ScheduleColorType.BLUE.color
     ),
 
     Schedule(
@@ -93,7 +93,7 @@ fun getFakeSchedules() = listOf(
         endDate = LocalDateTime.of(2021, 11, 3, 23, 59),
         memo = "",
         notificationType = Schedule.NotificationType.NONE,
-        color = Color.YELLOW
+        color = ScheduleColorType.YELLOW.color
     ),
 
     Schedule(
@@ -104,7 +104,7 @@ fun getFakeSchedules() = listOf(
         endDate = LocalDateTime.of(2021, 11, 2, 23, 59),
         memo = "",
         notificationType = Schedule.NotificationType.NONE,
-        color = Color.BLACK
+        color = ScheduleColorType.RED.color
     ),
 
     Schedule(
@@ -115,7 +115,7 @@ fun getFakeSchedules() = listOf(
         endDate = LocalDateTime.of(2021, 11, 4, 23, 59),
         memo = "",
         notificationType = Schedule.NotificationType.NONE,
-        color = Color.MAGENTA
+        color = ScheduleColorType.MAGENTA.color
     ),
 
     Schedule(
@@ -126,7 +126,7 @@ fun getFakeSchedules() = listOf(
         endDate = LocalDateTime.of(2021, 11, 5, 23, 59),
         memo = "",
         notificationType = Schedule.NotificationType.NONE,
-        color = Color.CYAN
+        color = ScheduleColorType.CYAN.color
     ),
 
     Schedule(
@@ -137,7 +137,7 @@ fun getFakeSchedules() = listOf(
         endDate = LocalDateTime.of(2021, 11, 4, 23, 59),
         memo = "",
         notificationType = Schedule.NotificationType.NONE,
-        color = Color.RED
+        color = ScheduleColorType.RED.color
     ),
 
     Schedule(
@@ -148,7 +148,7 @@ fun getFakeSchedules() = listOf(
         endDate = LocalDateTime.of(2021, 11, 4, 23, 59),
         memo = "",
         notificationType = Schedule.NotificationType.NONE,
-        color = Color.BLACK
+        color = ScheduleColorType.RED.color
     ),
 
     // ======================3주차 ===============================
@@ -160,7 +160,7 @@ fun getFakeSchedules() = listOf(
         endDate = LocalDateTime.of(2021, 11, 10, 23, 59),
         memo = "",
         notificationType = Schedule.NotificationType.NONE,
-        color = Color.CYAN
+        color = ScheduleColorType.CYAN.color
     ),
 
     Schedule(
@@ -171,7 +171,7 @@ fun getFakeSchedules() = listOf(
         endDate = LocalDateTime.of(2021, 11, 10, 23, 59),
         memo = "",
         notificationType = Schedule.NotificationType.NONE,
-        color = Color.BLUE
+        color = ScheduleColorType.BLUE.color
     ),
 
     Schedule(
@@ -182,7 +182,7 @@ fun getFakeSchedules() = listOf(
         endDate = LocalDateTime.of(2021, 11, 11, 23, 59),
         memo = "",
         notificationType = Schedule.NotificationType.NONE,
-        color = Color.RED
+        color = ScheduleColorType.RED.color
     ),
 
     Schedule(
@@ -193,7 +193,7 @@ fun getFakeSchedules() = listOf(
         endDate = LocalDateTime.of(2021, 11, 11, 23, 59),
         memo = "",
         notificationType = Schedule.NotificationType.NONE,
-        color = Color.GREEN
+        color = ScheduleColorType.GREEN.color
     ),
 
 
@@ -206,7 +206,7 @@ fun getFakeSchedules() = listOf(
         endDate = LocalDateTime.of(2021, 11, 15, 23, 59),
         memo = "",
         notificationType = Schedule.NotificationType.NONE,
-        color = Color.CYAN
+        color = ScheduleColorType.CYAN.color
     ),
 
     Schedule(
@@ -217,7 +217,7 @@ fun getFakeSchedules() = listOf(
         endDate = LocalDateTime.of(2021, 11, 18, 23, 59),
         memo = "",
         notificationType = Schedule.NotificationType.NONE,
-        color = Color.BLACK
+        color = ScheduleColorType.RED.color
     ),
 
 
@@ -229,7 +229,7 @@ fun getFakeSchedules() = listOf(
         endDate = LocalDateTime.of(2021, 11, 18, 23, 59),
         memo = "",
         notificationType = Schedule.NotificationType.NONE,
-        color = Color.GREEN
+        color = ScheduleColorType.GREEN.color
     ),
 
     Schedule(
@@ -240,7 +240,7 @@ fun getFakeSchedules() = listOf(
         endDate = LocalDateTime.of(2021, 11, 18, 23, 59),
         memo = "",
         notificationType = Schedule.NotificationType.NONE,
-        color = Color.BLUE
+        color = ScheduleColorType.BLUE.color
     ),
 
     // =================================5주차 ======================
@@ -252,7 +252,7 @@ fun getFakeSchedules() = listOf(
         endDate = LocalDateTime.of(2021, 11, 25, 23, 59),
         memo = "",
         notificationType = Schedule.NotificationType.NONE,
-        color = Color.BLACK
+        color = ScheduleColorType.RED.color
     ),
 
     Schedule(
@@ -263,7 +263,7 @@ fun getFakeSchedules() = listOf(
         endDate = LocalDateTime.of(2021, 11, 25, 23, 59),
         memo = "",
         notificationType = Schedule.NotificationType.NONE,
-        color = Color.YELLOW
+        color = ScheduleColorType.YELLOW.color
     ),
 
     // ===========================6주차===============================
@@ -275,7 +275,7 @@ fun getFakeSchedules() = listOf(
         endDate = LocalDateTime.of(2021, 12, 1, 23, 59),
         memo = "",
         notificationType = Schedule.NotificationType.NONE,
-        color = Color.MAGENTA
+        color = ScheduleColorType.MAGENTA.color
     ),
 
     Schedule(
@@ -286,7 +286,7 @@ fun getFakeSchedules() = listOf(
         endDate = LocalDateTime.of(2021, 12, 2, 23, 59),
         memo = "",
         notificationType = Schedule.NotificationType.NONE,
-        color = Color.BLACK
+        color = ScheduleColorType.RED.color
     ),
 
     Schedule(
@@ -297,7 +297,7 @@ fun getFakeSchedules() = listOf(
         endDate = LocalDateTime.of(2021, 12, 2, 23, 59),
         memo = "",
         notificationType = Schedule.NotificationType.NONE,
-        color = Color.BLACK
+        color = ScheduleColorType.RED.color
     ),
 )
 
