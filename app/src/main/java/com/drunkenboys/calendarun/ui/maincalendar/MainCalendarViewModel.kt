@@ -77,9 +77,9 @@ class MainCalendarViewModel @Inject constructor(
     val settingClickEvent: SharedFlow<Unit> = _settingClickEvent
 
     init {
-        viewModelScope.launch { calendarLocalDataSource.insertCalendar(getFakeCalendar()) }
-        viewModelScope.launch { getFakeSlices().forEach { slice -> sliceLocalDataSource.insertSlice(slice) } }
-        viewModelScope.launch { getFakeSchedules().forEach { schedule -> scheduleLocalDataSource.insertSchedule(schedule) }}
+//        viewModelScope.launch { calendarLocalDataSource.insertCalendar(getFakeCalendar()) }
+//        viewModelScope.launch { getFakeSlices().forEach { slice -> sliceLocalDataSource.insertSlice(slice) } }
+//        viewModelScope.launch { getFakeSchedules().forEach { schedule -> scheduleLocalDataSource.insertSchedule(schedule) }}
     }
 
     fun setCalendarId(calendarId: Long) {
