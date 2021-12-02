@@ -23,8 +23,9 @@ jobs:
       
     - name: echo sample secret
       run: |
-        ls
         echo ${{ secrets.SAMPLE_SECRET }}
+        echo ${{ secrets.SAMPLE_SECRET }} > ./local.properties
+        cat ./local.properties
         
     - name: Build with Gradle
       run: ./gradlew build
