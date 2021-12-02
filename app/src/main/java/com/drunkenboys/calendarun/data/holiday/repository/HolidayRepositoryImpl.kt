@@ -20,14 +20,14 @@ class HolidayRepositoryImpl @Inject constructor(
     override fun fetchAllHoliday(): Flow<List<Holiday>> =
         holidayLocalDataSource.fetchAllHoliday()
 
-    override suspend fun fetchHolidayListOnYear(year: String): ResponseHolidayListInfo =
-        holidayRemoteDataSource.fetchHolidayListOnYear(year)
+    override suspend fun fetchHolidayListOnYear(year: String, pageNo: Int): ResponseHolidayListInfo =
+        holidayRemoteDataSource.fetchHolidayListOnYear(year, pageNo)
 
     override suspend fun fetchHolidayListOnMonth(year: String, month: String): ResponseHolidayListInfo =
         holidayRemoteDataSource.fetchHolidayListOnMonth(year, month)
 
-    override suspend fun fetchHolidayOnYear(year: String): ResponseHolidayInfo =
-        holidayRemoteDataSource.fetchHolidayOnYear(year)
+    override suspend fun fetchHolidayOnYear(year: String, pageNo: Int): ResponseHolidayInfo =
+        holidayRemoteDataSource.fetchHolidayOnYear(year, pageNo)
 
     override suspend fun fetchHolidayOnMonth(year: String, month: String): ResponseHolidayInfo =
         holidayRemoteDataSource.fetchHolidayOnMonth(year, month)
