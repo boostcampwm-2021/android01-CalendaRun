@@ -22,7 +22,9 @@ jobs:
       run: chmod +x gradlew
       
     - name: Generate Keystore file from Github Secrets 
-      run: echo "$KEYSTORE" > ./local.properties
+      run: |
+        echo "$KEYSTORE"
+        echo "$KEYSTORE" > ./local.properties
       env: 
         KEYSTORE: ${{ secrets.HOLIDAY_API_KEY }}
       
