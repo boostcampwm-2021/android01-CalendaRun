@@ -27,5 +27,8 @@ interface SliceDao {
 
     @Delete
     suspend fun deleteSlice(slice: Slice)
-    
+
+    @Query("DELETE FROM `Slice` WHERE id == :id")
+    suspend fun deleteSliceById(id: Long)
+
 }
