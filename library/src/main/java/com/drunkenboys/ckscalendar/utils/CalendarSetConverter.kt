@@ -1,16 +1,11 @@
 package com.drunkenboys.ckscalendar.utils
 
 import com.drunkenboys.ckscalendar.data.CalendarDate
-import com.drunkenboys.ckscalendar.data.CalendarScheduleObject
 import com.drunkenboys.ckscalendar.data.CalendarSet
 import com.drunkenboys.ckscalendar.data.DayType
 import java.time.DayOfWeek
 
-fun calendarSetToCalendarDatesList(calendarSet: CalendarSet, schedules: List<CalendarScheduleObject>): List<List<CalendarDate>> {
-    val holidaySchedule = schedules.filter { schedule -> schedule.isHoliday }
-        .map { schedule -> schedule.startDate.toLocalDate() }
-        .sortedDescending()
-
+fun calendarSetToCalendarDatesList(calendarSet: CalendarSet): List<List<CalendarDate>> {
     // n주
     val weekList = mutableListOf<MutableList<CalendarDate>>()
     var oneDay = calendarSet.startDate
@@ -31,14 +26,7 @@ fun calendarSetToCalendarDatesList(calendarSet: CalendarSet, schedules: List<Cal
         if (oneDay.dayOfWeek == DayOfWeek.SUNDAY) weekList.add(mutableListOf())
 
         // 1일 추가
-        weekList.last()
-            .add(
-                CalendarDate(
-                    date = oneDay,
-                    dayType = if (oneDay in holidaySchedule) DayType.HOLIDAY
-                    else TimeUtils.parseDayWeekToDayType(oneDay.dayOfWeek)
-                )
-            )
+        weekList.last().add(CalendarDate(oneDay, TimeUtils.parseDayWeekToDayType(oneDay.dayOfWeek)))
 
         oneDay = oneDay.plusDays(1L)
     }

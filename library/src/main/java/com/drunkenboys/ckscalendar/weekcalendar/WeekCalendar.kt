@@ -28,12 +28,12 @@ private val currentMonth = CalendarSet(
     endDate = LocalDate.now().withDayOfMonth(LocalDate.now().dayOfMonth)
 )
 
-private val currentWeeks = calendarSetToCalendarDatesList(currentMonth, emptyList())
+private val currentWeeks = calendarSetToCalendarDatesList(currentMonth)
 
 @Composable
 fun WeekCalendar(
     viewModel: YearCalendarViewModel = YearCalendarViewModel(),
-    week: List<CalendarDate> = currentWeeks.find { currentWeek -> currentWeek.any { day -> day.date == LocalDate.now()} }!!,
+    week: List<CalendarDate> = currentWeeks.find { currentWeek -> currentWeek.any { day -> day.date == LocalDate.now() } }!!,
     dayModifier: (CalendarDate) -> Modifier = { Modifier }
 ) {
     viewModel.setRecomposeScope(currentRecomposeScope)
@@ -48,10 +48,13 @@ fun WeekCalendar(
         week.forEach { day ->
             when (day.dayType) {
                 // 빈 날짜
-                DayType.PADDING -> { }
+                DayType.PADDING -> {}
 
                 // 1일
-                else -> Column(modifier = dayModifier(day).layoutId(day.date.toString()), horizontalAlignment = Alignment.CenterHorizontally) {
+                else -> Column(
+                    modifier = dayModifier(day).layoutId(day.date.toString()),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     DayText(day = day, viewModel = viewModel, false)
                     ScheduleText(today = day.date, weekSchedules, viewModel = viewModel)
                 }

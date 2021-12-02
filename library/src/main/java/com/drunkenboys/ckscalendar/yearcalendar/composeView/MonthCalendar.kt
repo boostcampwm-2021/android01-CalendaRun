@@ -7,7 +7,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.tooling.preview.Preview
-import com.drunkenboys.ckscalendar.data.*
+import com.drunkenboys.ckscalendar.data.CalendarDate
+import com.drunkenboys.ckscalendar.data.CalendarDesignObject
+import com.drunkenboys.ckscalendar.data.CalendarSet
 import com.drunkenboys.ckscalendar.utils.calendarSetToCalendarDatesList
 import com.drunkenboys.ckscalendar.yearcalendar.YearCalendarViewModel
 import java.time.LocalDate
@@ -19,7 +21,7 @@ fun MonthCalendar(
     dayColumnModifier: (CalendarDate) -> Modifier,
     viewModel: YearCalendarViewModel
 ) {
-    calendarSetToCalendarDatesList(month, viewModel.schedules.value).forEach { week ->
+    calendarSetToCalendarDatesList(month).forEach { week ->
         WeekCalendar(
             viewModel = viewModel,
             listState = listState,
@@ -44,9 +46,11 @@ fun PreviewMonth() {
     }
 
     val viewModel = YearCalendarViewModel()
-    viewModel.setDesign(CalendarDesignObject(
-        textAlign = Gravity.END
-    ))
+    viewModel.setDesign(
+        CalendarDesignObject(
+            textAlign = Gravity.END
+        )
+    )
 
     MonthCalendar(
         month = month,

@@ -7,8 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.drunkenboys.calendarun.KEY_CALENDAR_ID
 import com.drunkenboys.calendarun.data.calendar.local.CalendarLocalDataSource
 import com.drunkenboys.calendarun.data.calendartheme.local.CalendarThemeLocalDataSource
-import com.drunkenboys.calendarun.data.checkpoint.entity.CheckPoint
-import com.drunkenboys.calendarun.data.checkpoint.local.CheckPointLocalDataSource
 import com.drunkenboys.calendarun.data.holiday.entity.Holiday
 import com.drunkenboys.calendarun.data.holiday.repository.HolidayRepository
 import com.drunkenboys.calendarun.data.schedule.entity.Schedule
@@ -33,6 +31,7 @@ class MainCalendarViewModel @Inject constructor(
     private val calendarLocalDataSource: CalendarLocalDataSource,
     private val sliceLocalDataSource: SliceLocalDataSource,
     private val scheduleLocalDataSource: ScheduleLocalDataSource,
+    private val holidayRepository: HolidayRepository,
     calendarThemeDataSource: CalendarThemeLocalDataSource
 ) : ViewModel() {
 
