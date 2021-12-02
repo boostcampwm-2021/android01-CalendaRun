@@ -146,14 +146,13 @@ class MonthAdapter(val onDaySelectStateListener: OnDaySelectStateListener) : Rec
                 else -> weekDayColor
             }
             if (item.date == LocalDate.now()) {
-                binding.viewIsToday.setBackgroundResource(R.drawable.bg_calendar_today)
-                binding.viewIsToday.tintStroke(calendarDesign.selectedFrameColor, context().dp2px(0.5f))
-                (binding.viewIsToday.layoutParams as FrameLayout.LayoutParams).gravity = calendarDesign.textAlign
+                binding.tvMonthDay.setBackgroundResource(R.drawable.bg_calendar_today)
+                binding.tvMonthDay.tintStroke(weekDayColor, context().dp2px(0.3f))
             } else {
-                binding.viewIsToday.setBackgroundResource(0)
+                binding.tvMonthDay.setBackgroundResource(0)
             }
             binding.tvMonthDay.setTextColor(textColor)
-            binding.tvMonthDay.gravity = calendarDesign.textAlign
+            (binding.tvMonthDay.layoutParams as FrameLayout.LayoutParams).gravity = calendarDesign.textAlign
             binding.tvMonthDay.setTextSize(TypedValue.COMPLEX_UNIT_DIP, calendarDesign.textSize)
         }
 
