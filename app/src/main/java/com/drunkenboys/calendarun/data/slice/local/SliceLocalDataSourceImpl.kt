@@ -32,4 +32,12 @@ class SliceLocalDataSourceImpl @Inject constructor(
     override suspend fun deleteSliceList(calendarId: Long) {
         sliceDao.deleteSliceList(calendarId)
     }
+
+    override suspend fun deleteSlice(slice: Slice) {
+        sliceDao.deleteSlice(slice)
+    }
+
+    override suspend fun deleteSliceById(id: Long) {
+        sliceDao.deleteSliceById(id)
+    }
 }

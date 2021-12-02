@@ -38,6 +38,8 @@ class SaveCalendarViewModel @Inject constructor(
     private val _blankTitleEvent = MutableSharedFlow<Unit>()
     val blankTitleEvent: SharedFlow<Unit> = _blankTitleEvent
 
+    private val deleteSliceIdList = mutableListOf<Long>()
+
     init {
         viewModelScope.launch {
             val calendar = calendarLocalDataSource.fetchCalendar(calendarId) ?: return@launch
@@ -84,8 +86,12 @@ class SaveCalendarViewModel @Inject constructor(
 
     fun deleteSliceItem(currentSliceItemList: List<SliceItem>) {
         viewModelScope.launch {
-            val newSliceItemList = currentSliceItemList.filter { sliceItem -> !sliceItem.check }
-            _sliceItemList.emit(newSliceItemList.toMutableList())
+            deleteSliceIdList.addAll(currentSliceItemList
+                .filter { sliceItem -> sliceItem.check }
+                .map { sliceItem -> sliceItem.id }
+            )
+
+            _sliceItemList.emit(currentSliceItemList.filter { sliceItem -> !sliceItem.check })
         }
     }
 
@@ -157,6 +163,8 @@ class SaveCalendarViewModel @Inject constructor(
             saveSlice(item, newCalendarId)
         }
 
+        deleteSlice()
+
         return true
     }
 
@@ -201,6 +209,14 @@ class SaveCalendarViewModel @Inject constructor(
                 sliceLocalDataSource.updateSlice(newSlice)
             } else {
                 sliceLocalDataSource.insertSlice(newSlice)
+            }
+        }
+    }
+
+    private fun deleteSlice() {
+        viewModelScope.launch {
+            deleteSliceIdList.forEach { id ->
+                sliceLocalDataSource.deleteSliceById(id)
             }
         }
     }

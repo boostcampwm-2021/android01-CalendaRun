@@ -16,4 +16,9 @@ interface SliceLocalDataSource {
     suspend fun updateSlice(slice: Slice)
 
     suspend fun deleteSliceList(calendarId: Long)
+
+    suspend fun deleteSlice(slice: Slice)
+
+    suspend fun deleteSliceById(id: Long)
+
 }

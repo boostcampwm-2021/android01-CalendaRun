@@ -67,7 +67,7 @@ class MainCalendarViewModel @Inject constructor(
                 scheduleList.map { schedule -> schedule.toCalendarScheduleObject() }
             }
     }.combine(holidayList) { scheduleList, holidayList ->
-        scheduleList + holidayList
+        holidayList + scheduleList
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
 
