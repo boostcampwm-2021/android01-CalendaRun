@@ -16,7 +16,7 @@ interface SliceDao {
     @Query("SELECT * FROM `Slice` WHERE id == :id")
     suspend fun fetchSlice(id: Long): Slice
 
-    @Query("SELECT * FROM `Slice` WHERE calendarId == :calendarId")
+    @Query("SELECT * FROM `Slice` WHERE calendarId == :calendarId ORDER BY startDate ASC")
     fun fetchCalendarSliceList(calendarId: Long): Flow<List<Slice>>
 
     @Update
