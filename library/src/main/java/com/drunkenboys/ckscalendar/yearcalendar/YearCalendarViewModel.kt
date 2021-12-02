@@ -56,6 +56,10 @@ class YearCalendarViewModel {
                 else todaySchedule.endDate.dayOfWeek.dayValue()
 
             weekSchedules[todayOfWeek].forEachIndexed { index, space ->
+                if (space == todaySchedule) {
+                    return@forEach
+                }
+
                 if (space == null) {
                     (todayOfWeek..weekEndDate).forEach { weekNum ->
                         weekSchedules[weekNum][index] = todaySchedule
