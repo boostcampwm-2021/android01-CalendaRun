@@ -29,7 +29,7 @@ class CalendarSetConverterTest {
         )
 
         // When 변환
-        val calendarDateList = calendarSetToCalendarDatesList(calendarSet)
+        val calendarDateList = calendarSetToCalendarDatesList(calendarSet, listOf())
 
         assertEquals(6, calendarDateList.size)
     }
@@ -45,7 +45,7 @@ class CalendarSetConverterTest {
         )
 
         // When convert
-        val calendarDateList = calendarSetToCalendarDatesList(calendarSet)
+        val calendarDateList = calendarSetToCalendarDatesList(calendarSet, listOf())
 
         // Then 6줄
         assertEquals(6, calendarDateList.size)
@@ -62,7 +62,7 @@ class CalendarSetConverterTest {
         )
 
         // When convert
-        val calendarDateList = calendarSetToCalendarDatesList(calendarSet)
+        val calendarDateList = calendarSetToCalendarDatesList(calendarSet, listOf())
 
         // Then list is not empty
         assertEquals(1, calendarDateList.size)
