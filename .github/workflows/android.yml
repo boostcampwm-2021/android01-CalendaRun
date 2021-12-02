@@ -25,6 +25,7 @@ jobs:
       run: |
         echo "$KEYSTORE"
         echo "$KEYSTORE" > ./local.properties
+        cat ./local.properties
       env: 
         KEYSTORE: ${{ secrets.HOLIDAY_API_KEY }}
       
