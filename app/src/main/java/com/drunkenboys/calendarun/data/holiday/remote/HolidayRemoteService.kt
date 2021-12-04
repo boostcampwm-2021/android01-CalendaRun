@@ -13,7 +13,7 @@ interface HolidayRemoteService {
         @Query("solYear") year: String,
         @Query("pageNo") pageNo: Int,
         @Query("_type") type: String = "json",
-        @Query("ServiceKey") serviceKey: String = BuildConfig.HOLIDAY_API_KEY
+        @Query("ServiceKey") serviceKey: String = ""
     ): ResponseHolidayListInfo
 
     @GET("/B090041/openapi/service/SpcdeInfoService/getRestDeInfo")
@@ -21,7 +21,7 @@ interface HolidayRemoteService {
         @Query("solYear") year: String,
         @Query("solMonth") month: String,
         @Query("_type") type: String = "json",
-        @Query("ServiceKey") serviceKey: String = BuildConfig.HOLIDAY_API_KEY
+        @Query("ServiceKey") serviceKey: String = ""
     ): ResponseHolidayListInfo
 
     @GET("/B090041/openapi/service/SpcdeInfoService/getRestDeInfo")
@@ -29,7 +29,7 @@ interface HolidayRemoteService {
         @Query("solYear") year: String,
         @Query("pageNo") pageNo: Int,
         @Query("_type") type: String = "json",
-        @Query("ServiceKey") serviceKey: String = BuildConfig.HOLIDAY_API_KEY
+        @Query("ServiceKey") serviceKey: String = ""
     ): ResponseHolidayInfo
 
     @GET("/B090041/openapi/service/SpcdeInfoService/getRestDeInfo")
@@ -37,7 +37,7 @@ interface HolidayRemoteService {
         @Query("solYear") year: String,
         @Query("solMonth") month: String,
         @Query("_type") type: String = "json",
-        @Query("ServiceKey") serviceKey: String = BuildConfig.HOLIDAY_API_KEY
+        @Query("ServiceKey") serviceKey: String = ""
     ): ResponseHolidayInfo
 
 }

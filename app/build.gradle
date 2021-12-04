@@ -26,7 +26,7 @@ android {
         multiDexEnabled = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField "String", "HOLIDAY_API_KEY", properties['holiday_api_key']
+        //buildConfigField "String", "HOLIDAY_API_KEY", properties['holiday_api_key']
     }
 
     buildTypes {
