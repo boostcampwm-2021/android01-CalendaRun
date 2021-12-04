@@ -293,22 +293,3 @@ AWS Management Console의 간단하고 직관적인 웹 인터페이스를 통�
 [연달력]: https://i.imgur.com/SxdTJro.png
 [jitpack-shield]: https://jitpack.io/v/boostcampwm-2021/android01-CalendaRun.svg
 [jitpack-url]: https://jitpack.io/#boostcampwm-2021/android01-CalendaRun
-
-
-
-
-```kotlin
-//기존
-items(items = calendar) { month ->
-    month.forEach { week ->
-        WeekCalendar(week)
-    }
-}
-
-//변경
-calendar.forEach { month ->
-    items(items = month) { week ->
-        WeekCalendar(week)
-    }
-}
-```
