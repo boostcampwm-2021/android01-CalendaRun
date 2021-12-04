@@ -1,112 +1,314 @@
-# 📅 달려달력(CalendaRun)
+# CKS Calendar
 
-안녕 난 달려달력이야! 너의 일정 수행을 도와줄 스케줄러란다! 🧙‍♂️
+[![jitpack-shield]][jitpack-url] [![gmail-shield]][gmail-url] [![google-shield]][배포링크]
 
-방금 "흔하디 흔한 스케줄러가 또 나왔네"라고 생각했지? 🤬
+<!-- TABLE OF CONTENTS -->
+<details open="open">
+    <summary>CKS Calendar 라이브러리</summary>
+        <ol>
+            <li><a href="#설치법">설치법</a></li>
+            <li>
+                <a href="#사용법">사용법</a>
+                <ul>
+                    <li><a href="#제공-함수">제공 함수</a></li>
+                    <li><a href="#리스너">리스너</a></li>
+                </ul>
+            </li>
+            <li><a href="#커스텀-테마">커스텀</a></li>
+            <li><a href="#관련-링크">관련 링크</a></li>
+            <li><a href="#기여">기여</a></li>
+        </ol>
+</details>
 
-과연 내 프로필을 다 읽고도 그런 말이 나올까?
+<!-- TABLE OF CONTENTS -->
+<details open="open">
+  <summary>달려달력 앱</summary>
+  <ol>
+    <li><a href="#설치">설치</a></li>
+    <li><a href="#Preview">Preview</a></li>
+    <li><a href="#용어-정리">용어 정리</a></li>
+    <li><a href="#기술-스택">기술 스택</a></li>
+  </ol>
+</details>
 
-많고 많은 스케줄러 앱 중에 내가 제일 잘 났다는 걸 알게 해줄게!
+**CalendarSet**
+```
+달력의 한 페이지로, 한 화면에 보여줄 기간
+```
+**MonthCalendarView**
+```
+가로 스와이프로 달력을 보여줍니다.
+```
+**YearCalendarView**
+```
+세로 스크롤로 달력을 보여줍니다.
+```
+<img src="https://i.imgur.com/ajouDWe.png" width=350 alt="월달력"/> <img src="https://i.imgur.com/SxdTJro.png" width=350 alt="연달력"/>
 
-## 🍵 목차
+## 설치법
 
-[1.창조 신화](#✨창조-신화)
+Step 1. JitPack repository를 prject  build.gradle에 추가합니다.
 
-[2.수호천사](#🤸%E2%80%8D♂%EF%B8%8F수호천사🤸%E2%80%8D♀%EF%B8%8F)
+```groovy
+allprojects {
+  repositories {
+    ...
+    maven { url 'https://jitpack.io' }
+  }
+}
+```
 
-[3.사용 가이드](#사용-가이드)
+Step 2. dependency를 추가합니다.
 
-[4.신체 검사](#신체-검사)
+```groovy
+dependencies {
+    implementation 'com.github.boostcampwm-2021:android01-CalendaRun:${version}'
+}
+```
 
-[5.마무리](#마무리)
+## 사용법
 
-[6.관련 링크](#관련-링크)
+### 제공 함수
 
-## ✨창조 신화
-- 혹시 이런 적 있어? 일정을 달력에 체크하고 관리하는데, 일정이 길어서 달력을 넘어갈 때! 달력을 넘겨가면서 일정을 체크하는거, 너무 귀찮지 않아??(맞G맞G)
-- 또는 일정이 너무 많아서 분류하고 싶은데 달력은 단 하나뿐??? 정말 난처해...
-- 왜 굳이 달력에 스케줄을 적어야하지? 일정대로 나누면 되잖아!
-- 그래서 나 달려달력이 태어났어(응-애!) 그럼 잘 부탁해~
+```kotlin
+fun setOnDateClickListener(onDateClickListener: OnDayClickListener)
+fun setOnDaySecondClickListener(onDateSecondClickListener: OnDaySecondClickListener)
+fun setSchedule(schedule: CalendarScheduleObject)
+fun setSchedules(schedules: List<CalendarScheduleObject>)
+fun setTheme(designObject: CalendarDesignObject)
+fun resetTheme()
+fun getDaySchedules(day: LocalDateTime): List<CalendarScheduleObject>
+fun setCalendarSetList(calendarSetList: List<CalendarSet>)
+fun setupDefaultCalendarSet()
+```
 
-## 🤸‍♂️수호천사🤸‍♀️
-잠깐! 내 소개를 더 하기 전에 먼저 소개해야할게 있어!
+### 리스너
+1. `YearCalendarView` 또는 `MonthCalendarView`를 레이아웃 또는 뷰 계층에 추가합니다.
+2. 필요하다면 `OnDayClickListener` 또는 `onDaySecondClickListener` 를 추가할 수 있습니다.
+- `onDayClickListner`는 날짜를 선택할 때 실행됩니다.
+- `onDaySecondClickListner`는 클릭된 날짜를 선택할 때 실행됩니다.
 
-|K003|K005|K033|K056|
-|:--:|:--:|:--:|:--:|
-🎸[김민석](https://github.com/PsPLoG)<br>(ISFP)|:fire:[김성환](https://github.com/shshksh)<br>(ISTJ)|🥑[심은석](https://poised-party-c87.notion.site/53ecb5bfb44d48b0aba237b0ce3ae4a6)<br>(ESTJ)|[🥕차지원](https://github.com/Cha-Ji)<br>(ENTJ)
+Example:
 
-짜잔~~ 바로 날 만든 수호천사들이야!
+```xml
+<com.drunkenboys.ckscalendar.yearcalendar.YearCalendarView
+    android:id="@+id/calendar_year"
+    app:onDayClick="@{(date, position) -> dayClickEvent(date)}"
+    app:onDaySecondClick="@{(date, position) -> daySecondClickEvent(date)}" />
 
-명색에 수호천사인데 듣는 바에 의하면, 날 만들다가 머리가 다 빠질 뻔 했다는데? ~~최초로 대머리 수호천사가 될 뻔 했대~~
+<com.drunkenboys.ckscalendar.monthcalendar.MonthCalendarView
+    android:id="@+id/calendar_month"
+    app:onDayClick="@{(date, position) -> dayClickEvent(date)}"
+    app:onDaySecondClick="@{(date, position) -> daySecondClickEvent(date)}" />
+```
 
-이름을 클릭하면 수호천사의 살아생전 기록을 볼 수 있어! 근데 우리 수호천사들이 부끄럼이 많아서 몇몇 문서는 숨겨놨대! 궁금하면 직접 물어보면 친절하게 알려주겠대!!
+### 일정 추가
 
-그리고 이름 아래에 적힌 영문 네 글자는 그... 뭐더라... MBTMI?? 그거라더라! 나도 잘 모르는데 요즘 유행이니까 꼭 적어달라더라! 정말 투머치인포메이션이야~
+```kotlin
+data class CalendarScheduleObject(
+    val id: Int,
+    val color: Int,
+    val text: String,
+    val startDate: LocalDateTime,
+    val endDate: LocalDateTime,
+    val isHoliday: Boolean = false
+)
+```
 
-## 📜사용 가이드
+```kotlin
+val scheduleList = listOf(
+    CalendarScheduleObject(
+        0,
+        ScheduleColorType.ORANGE.color,
+        "Schedule01",
+        LocalDateTime.now(),
+        LocalDateTime.now()
+    ),
+    CalendarScheduleObject(
+        1,
+        ScheduleColorType.BLUE.color,
+        "Schedule02",
+        LocalDateTime.now(),
+        LocalDateTime.now()
+    ),
+    CalendarScheduleObject(
+        2,
+        ScheduleColorType.GRAY.color,
+        "Schedule03",
+        LocalDateTime.now(),
+        LocalDateTime.now()
+    ),
+)
+binding.calendarMonth.setSchedules(scheduleList)
+binding.calendarYear.setSchedules(scheduleList)
+```
+### 적용 사진
 
-### 😴 이론
-- 내 이름은 달려달력이지만, 사실 달력은 아니야!
-- 달력은 달별로 구성되어있잖아! 나는 일정에 좀 더 집중할 수 있게 철저히 **일정** 위주의 스케줄러야
-- 따라서 우리는 일정에 따라 스케줄러를 구성하고 너에게 보여주지
-- 하지만 겉보기에는 달력과 똑같아 보일 수 있어! 그건 너희가 달력처럼 생긴 일정표에 익숙하니까 우리가 그 부분은 양보하기로 했어! (정말 착하지? 😉)
-- 우리는 일정을 총 세 단위로 나눌거야
-![](https://i.imgur.com/VpUPLc3.png)
-- 먼저 가장 큰 단위인 **최종 목표**! 최종 목표는 너가 일정표를 만드는 기준이 될거야!
-- 그 다음 단위는 **체크 포인트**! 체크 포인트는 최종 목표에 도달하기 전까지, 너를 점검하거나 시험하는 날이라고 생각하면 돼!
-- 마지막으로 **단기 일정**! 단기 일정은 하루 ~ 일주일 단위의 스케줄로, 너가 목표를 이루기위해 지금 당장(Now)! 해야할 일이야.
-- 우리는 너가 뭘 하고싶은지 물어보고, 언제 시작해서 언제 끝낼건지, 그리고 중간에 체크포인트는 어떻게 두고 스케줄을 짜고 싶은지 물어볼거야!(물론 중간에 바꾸고싶으면 너만 특별히 바꾸게 해줄게~)
+<img src="https://i.imgur.com/7yqLL0G.jpg" width=350 alt="월달력"/> <img src="https://i.imgur.com/28WvNjs.jpg" width=350 alt="월달력"/>
 
-![](https://i.imgur.com/XUIEhZx.png)
+### 커스텀 테마
 
-- 아직은 내가 무슨 말 하는지 모르겠지?? 이따 어떻게 쓰면 좋은지 시범을 보여줄테니까 너는 스크롤만 계속 내리면 돼!
+`XML`에서는 아래의 속성들을, 프로그래밍적 수정으로는 `CalendarDesignObject`를 통해 달력의 커스텀 요소를 지원합니다
 
-### 👩‍💻 기능 
-#### 🎊 일정 생성
-- 나는 일단 일정표니까! 당연히 일정을 관리하는 걸 도와주겠지? 하루 일정부터 프로젝트 전체 일정을 너에게 보여줄거야!
-- 그리고 일정을 한 화면에 보여주기 위한 단위인 체크 포인트를 둘거야! 체크 포인트는 너가 목표를 위한 점검이나 모의 테스트 날짜를 잡으면 좋아!
-#### ✔ 일정 관리
-- 모든 프로젝트 일정이나 체크 포인트, 단기 일정은 여러 개를 만들 수 있어! 큰 프로젝트 하나에 여러 체크 포인트를, 체크 포인트까지 다가갈 수 많은 단기 일정을 만들 수 있지!
-- 또한 일정 삭제나 추가도 쉽고 간단하게 만들었어!
-#### :pencil: 일정 메모
-- 일정에는 할 일만 메모하는게 아니야! 너가 언제 어디서 무엇을 할지 추가로 더 적을 수 있어!(적기 싫으면 안적어도 되고!) 
-- 타자 치기 귀찮거나 두 손 쓰기 불편하면, 특별히 드로잉 기능을 사용해서 메모하게 해줄게!
-#### 📢일정 알림
-- 일정을 기록만 하고 까먹을 수도 있잖아? 그래서 일정이 다가오기 전에 알람을 줄거야! 알람을 받으면 일정을 까먹을 수 없겠지???
-#### 🎠스케줄 위젯
-- 이렇게 멋진 나를 위젯으로도 만나볼 수 있다? 굳이 일정 보려고 날 클릭할 필요 없이 너의 기본 화면을 둥둥 떠다닐 수 있어! 이러면 너랑 내가 더 친해질 수 있지 않을까?
-#### 🎨테마 변경
-- 그리고 난 말이야...(히힝~) 카멜레온처럼 색을 바꿀 수도 있어! 근데 나는 아직 응애라서 미적 감각이 부족해서 무슨 색 옷을 입을지 매순간 고민이야. 너가 조금만 도와준다면, 완전히 색 달라진 나를 보여줄게!
+#### XML
+| Attribute  | Type |description|
+|---|---|---|
+|  weekDayTextColor | Color  | 평일 색상|
+| holidayTextColor  |  Color |공휴일 색상|
+|  saturdayTextColor | Color  |토요일 색상|
+|  sundayTextColor |  Color | 일요일 색상|
+|  selectedFrameColor | Color  | 날짜 선택 테두리 색상 Stroke 색상을 변경|
+|  backgroundColor | Color  |달력 배경 색상|
+|  selectedFrameDrawable | Shape Drawable |날짜 선택 테두리|
+|  visibleScheduleCount | Integer  | 보여질 일정 개수(5개 이하)|
 
-
-## 📏신체 검사
-앗 방금 내 신체 검사 결과가 나왔대! 
-
-여기서 바로 보여주고 싶은데 그 뭐라카더라... 내 수호천사 여기선 호환이 안 된대
-
-그래서 잠시 다른 곳으로 이동을 해야할 거 같아!
-
-[그럼 가보자고~](https://www.figma.com/proto/f1V4JJinMyF0ZPv5Krqa39/%EB%8B%AC%EB%A0%A4%EB%8B%AC%EB%A0%A5-%ED%94%84%EB%A1%9C%ED%86%A0%ED%83%80%EC%9E%85?node-id=64%3A10815&scaling=scale-down&page-id=0%3A1&starting-point-node-id=64%3A10815&show-proto-sidebar=1)
-
-근데 혹시 육군 신체 검사 생각한 사람 없지?? 난 군대 안가 ㅎ (대한민국 육군장병 화이팅!)
-
-## :sunny: 마무리
-
-준비된 소개는 여기까지야. 글로만 본 친구들은 많이 부족하다고 느낄거야.
-
-그래서 내가 이번 주 금요일에 수호천사들한테 부탁해서 내 소개를 자세히 해달라고 부탁했어!
-
-글보다 부스에서 먼저 날 본 친구들은 아마 수호천사가 자세하게 소개해줬을것같아
-
-잘 들었다면 우리 수호천사한테 뜨거운 함성, 박수와 함께 수고했다고 말 한 마디 해줘!
-
-그럼 업데이트되면 또 보자~
-
-
+#### CalendarDesignObject
+```kotlin 
+data class CalendarDesignObject(
+    @ColorInt var weekDayTextColor: Int = Color.BLACK,
+    @ColorInt var holidayTextColor: Int = ScheduleColorType.RED.color,
+    @ColorInt var saturdayTextColor: Int = ScheduleColorType.BLUE.color,
+    @ColorInt var sundayTextColor: Int = ScheduleColorType.RED.color,
+    @ColorInt var selectedFrameColor: Int = ScheduleColorType.GRAY.color,
+    @ColorInt var backgroundColor: Int = Color.WHITE,
+    @DrawableRes var selectedFrameDrawable: Int = R.drawable.bg_month_date_selected,
+    var textSize: Float = 10f,
+    var textAlign: Int = Gravity.CENTER,
+    val weekSimpleStringSet: List<String> = listOf("일", "월", "화", "수", "목", "금", "토"),
+    val weekFullStringSet: List<String> = listOf("일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"),
+    var visibleScheduleCount: Int = 3
+) 
+```
 
 ## 관련 링크
 
-- [백로그](https://docs.google.com/spreadsheets/d/11td2bnmG7gzeYL5YFO96Hj5Sy3nQfgub6IWgPe18LpA/edit#gid=2081874115)
-- [프로토타입](https://www.figma.com/file/f1V4JJinMyF0ZPv5Krqa39/Untitled?node-id=0%3A1)
-- [화이트보드](https://www.figma.com/file/vAAmBNwDsIiC9YzSEiSxCv/Untitled?node-id=0%3A1)
-- [위키](https://github.com/boostcampwm-2021/android01-CalendaRun/wiki)
+모든 문서는 [위키][위키]에 저장되어 있습니다.
+- [백로그]
+- [화이트보드]
+- [프로토타입]
+<!-- CONTRIBUTING -->
+## 기여
+
+1. Fork Project
+2. 이슈 등록
+3. Feature Branch 생성 (`git checkout -b feature/#IssueNumber`)
+4. Commit (`git commit -m 'Issue-#{Number} feat: AmazingFeature'`)
+5. Push Branch (`git push origin feature/#IssueNumber`)
+6. Pull Request 요청
+
+<!-- # 개발 가이드 샘플
+
+**네이버 클로바 개발 가이드**
+(범주) 클로바는 네이버가 개발 및 서비스하고 있는 인공지는 플랫폼입니다.
+
+(용도) 클로바는 사용자의 음성이나 이미지를 인식하고 이를 분석하여 사용자가 원하는 정보나 서비스를 제공합니다.
+
+(특징) 서드파티 개발자는 클로바가 가진 기술을 활용하여 인공 지능 서비스를 제공하는 기기 또는 가전제품을 만들거나 보유하고 있는 콘텐츠나 서비스를 클로바를 통해 사용자에게 제공할 수 있습니다.
+
+**아마존 S3**
+Amazon Sinple Storage Service(Amazon S3)는 인터넷 스토리지 서비스입니다.
+
+Amazon S3를 사용하면 인터넷을 통해 언제 어디서든 원하는 양의 데이터를 저장하고 검색할 수 있습니다.
+
+AWS Management Console의 간단하고 직관적인 웹 인터페이스를 통해 이러한 작업을 수행할 수 있습니다. -->
+
+
+# 달려달력
+
+<img src="https://i.imgur.com/UlaKxI9.jpg" width=100 />
+
+
+달려달력은 부스트캠프 웹•모바일 6기 Andrunken 팀이 개발 및 서비스하고 있는 달력 애플리케이션입니다.
+
+달려달력은 사용자가 원하는 대로 달력을 구성하고 일정을 관리할 수 있습니다.
+
+**커스텀 달력**
+사용자는 달력의 한 페이지를 월 단위(30일)가 아닌 임의의 기간을 설정할 수 있습니다.
+또한 스와이프를 통해 달력의 일부 기간을 따로 확인할 수 있습니다.
+
+**일정 관리**
+달력에 일정을 추가하여 관리할 수 있습니다.
+
+**일정 알림**
+일정에 알림을 설정하여 선택된 시간에 알림을 받을 수 있습니다.
+
+**홈 화면 위젯**
+홈 화면에 위젯을 추가하여 오늘 일정을 확인할 수 있습니다.
+
+**테마 변경**
+다크 모드를 지원합니다.
+달력의 디자인(달력, 글자 색 등)을 변경할 수 있습니다.
+
+
+## 설치
+
+<a href='https://play.google.com/store/apps/details?id=com.drunkenboys.calendarun'><img src='https://simplemobiletools.com/images/button-google-play.svg' alt='Get it on Google Play' height='45' /></a>
+
+## Preview
+데모 영상
+
+## 용어 정리
+
+**달력**
+사용자의 최종 일정 또는 목표 (수능, 프로젝트 등)
+
+**슬라이스**
+달력의 한 페이지로 한 화면에 보여줄 기간
+
+**일정**
+단기간에 이룰 목표
+
+## 기술 스택
+- Android Jetpack
+    - Lifecycle
+    - Databinding
+    - Navigation
+    - Room
+    - Hilt
+- Coroutine / Flow
+- MVVM
+- Retrofit2
+
+<!-- url 변수-->
+[forks-shield]: https://img.shields.io/github/forks/boostcampwm-2021/android01-CalendaRun.svg?style=for-the-badge
+[forks-url]: https://github.com/boostcampwm-2021/android01-CalendaRun/network/members
+[stars-shield]: https://img.shields.io/github/stars/boostcampwm-2021/android01-CalendaRun.svg?style=for-the-badge
+[stars-url]: https://github.com/boostcampwm-2021/android01-CalendaRun/stargazers
+[issues-shield]: https://img.shields.io/github/issues/boostcampwm-2021/android01-CalendaRun.svg?style=for-the-badge
+[issues-url]: https://github.com/boostcampwm-2021/android01-CalendaRun/issues
+[gmail-shield]: https://img.shields.io/badge/gmail-EA4335?style=flat-square&logo=gmail&logoColor=white
+[gmail-url]: mailto:andrunken1107@gmail.com
+[google-shield]: https://img.shields.io/badge/Google-Play-414141?style=flat-square&logo=GooglePlay&logoColor=white
+[product-screenshot]: images/screenshot.png
+[위키]: https://github.com/boostcampwm-2021/android01-CalendaRun/wiki
+[사용법]: .
+[커스텀 가능 요소]: .
+[배포링크]: https://play.google.com/store/apps/details?id=com.drunkenboys.calendarun
+[플레이스토어 이미지]: https://simplemobiletools.com/images/button-google-play.svg?
+[앱 아이콘]: https://i.imgur.com/UlaKxI9.jpg
+[프로토타입]: https://www.figma.com/file/f1V4JJinMyF0ZPv5Krqa39/Untitled?node-id=0%3A1
+[화이트보드]: https://www.figma.com/file/vAAmBNwDsIiC9YzSEiSxCv/Untitled?node-id=0%3A1
+[백로그]: https://docs.google.com/spreadsheets/d/11td2bnmG7gzeYL5YFO96Hj5Sy3nQfgub6IWgPe18LpA/edit#gid=2081874115
+[월달력]: https://i.imgur.com/ajouDWe.png
+[연달력]: https://i.imgur.com/SxdTJro.png
+[jitpack-shield]: https://jitpack.io/v/boostcampwm-2021/android01-CalendaRun.svg
+[jitpack-url]: https://jitpack.io/#boostcampwm-2021/android01-CalendaRun
+
+
+
+
+```kotlin
+//기존
+items(items = calendar) { month ->
+    month.forEach { week ->
+        WeekCalendar(week)
+    }
+}
+
+//변경
+calendar.forEach { month ->
+    items(items = month) { week ->
+        WeekCalendar(week)
+    }
+}
+```
