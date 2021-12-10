@@ -72,16 +72,13 @@ fun CalendarLazyColumn(
             .fillMaxHeight()
     ) {
         calendar.forEach { slice ->
-            items(
-                items = calendarSetToCalendarDatesList(slice, viewModel.schedules.value),
-            ) { week ->
-                val firstOfYear = LocalDate.of(slice.startDate.year, 1, 1)
+            items(items = calendarSetToCalendarDatesList(slice, viewModel.schedules.value)) { week ->
                 val startDate = week.first { day -> day.dayType != DayType.PADDING }.date
                 val endDate = week.last { day -> day.dayType != DayType.PADDING }.date
+                val firstOfYear = LocalDate.of(endDate.year, 1, 1)
 
                 // 해가 갱신될 때마다 상단에 연표시
-                if (firstOfYear in startDate..endDate ||
-                    firstOfYear.plusYears(1L) in startDate..endDate)
+                if (firstOfYear in startDate..endDate)
                         Text(
                             text = "${startDate.year}년",
                             color = MaterialTheme.colors.primary,
@@ -103,7 +100,7 @@ fun CalendarLazyColumn(
     }
 
     with(listState) {
-        InitScroll()
+        InitScroll() // FIXME: listState의 initIndex 속성이 존재
 
         ShouldNextScroll {
             viewModel.fetchNextCalendarSet()
