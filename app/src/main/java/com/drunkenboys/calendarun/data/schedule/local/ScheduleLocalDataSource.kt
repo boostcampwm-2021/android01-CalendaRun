@@ -22,6 +22,6 @@ interface ScheduleLocalDataSource {
 
     suspend fun fetchMatchedScheduleBefore(word: String, time: Long): List<Schedule>
 
-    fun fetchDateSchedule(date: LocalDateTime): Flow<List<Schedule>>
+    fun fetchDateSchedule(startOfDate: LocalDateTime, endOfDate: LocalDateTime): Flow<List<Schedule>>
 
 }

@@ -42,7 +42,7 @@ class ScheduleLocalDataSourceImpl @Inject constructor(
         scheduleDao.fetchMatchedScheduleBefore(word, time)
     }
 
-    override fun fetchDateSchedule(date: LocalDateTime) =
-        scheduleDao.fetchDateSchedule(date)
+    override fun fetchDateSchedule(startOfDate: LocalDateTime, endOfDate: LocalDateTime) =
+        scheduleDao.fetchDateSchedule(startOfDate, endOfDate)
 
 }

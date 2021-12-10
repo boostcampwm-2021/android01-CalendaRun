@@ -32,8 +32,8 @@ interface ScheduleDao {
     @Query("SELECT * FROM (SELECT * FROM `schedule` WHERE startDate < :time AND `name` LIKE '%' || :word || '%' ORDER BY startDate DESC LIMIT $SCHEDULE_PAGING_SIZE) A ORDER BY A.startDate ASC")
     suspend fun fetchMatchedScheduleBefore(word: String, time: Long): List<Schedule>
 
-    @Query("SELECT * FROM `schedule` WHERE startDate <= :date AND endDate >= :date")
-    fun fetchDateSchedule(date: LocalDateTime): Flow<List<Schedule>>
+    @Query("SELECT * FROM `schedule` WHERE startDate <= :endOfDate AND endDate >= :startOfDate ORDER BY startDate ASC")
+    fun fetchDateSchedule(startOfDate: LocalDateTime, endOfDate: LocalDateTime): Flow<List<Schedule>>
 
     companion object {
 
