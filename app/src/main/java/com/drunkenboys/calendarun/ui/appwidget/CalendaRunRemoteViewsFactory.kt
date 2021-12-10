@@ -1,8 +1,9 @@
-package com.drunkenboys.calendarun
+package com.drunkenboys.calendarun.ui.appwidget
 
 import android.content.Context
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
+import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.data.schedule.local.ScheduleLocalDataSource
 import com.drunkenboys.calendarun.util.getEndOfDate
 import com.drunkenboys.calendarun.util.getStartOfDate
