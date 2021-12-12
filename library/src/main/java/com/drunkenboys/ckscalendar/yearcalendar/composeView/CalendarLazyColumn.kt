@@ -27,13 +27,7 @@ import com.drunkenboys.ckscalendar.listener.OnDaySecondClickListener
 import com.drunkenboys.ckscalendar.utils.*
 import com.drunkenboys.ckscalendar.yearcalendar.CustomTheme
 import com.drunkenboys.ckscalendar.yearcalendar.YearCalendarViewModel
-import java.time.DayOfWeek
 import java.time.LocalDate
-import java.util.*
-
-private const val DAY_OF_WEEK = 7
-
-private const val TIME_MILLIS_OF_DAY = 24 * 60 * 60 * 1000
 
 @Composable
 fun CalendarLazyColumn(
@@ -42,7 +36,7 @@ fun CalendarLazyColumn(
     viewModel: YearCalendarViewModel
 ) {
     // RecyclerView의 상태를 관찰
-    val listState = rememberLazyListState((getStartDayToToday() / DAY_OF_WEEK / TIME_MILLIS_OF_DAY).toInt() + getPaddingWeeks())
+    val listState = rememberLazyListState(initialFirstVisibleItemIndex = viewModel.getInitScroll())
     val calendar by remember { viewModel.calendar }
     var clickedDay by rememberSaveable { mutableStateOf(LocalDate.now()) }
 
@@ -100,8 +94,6 @@ fun CalendarLazyColumn(
     }
 
     with(listState) {
-//        InitScroll() // FIXME: listState의 initIndex 속성이 존재
-
         ShouldNextScroll {
             viewModel.fetchNextCalendarSet()
         }
@@ -110,36 +102,6 @@ fun CalendarLazyColumn(
             viewModel.fetchPrevCalendarSet()
         }
     }
-}
-
-
-private fun getStartDayToToday(): Long {
-    val startDay = Calendar.getInstance().apply {
-        set(Calendar.YEAR, LocalDate.now().year - 1)
-        set(Calendar.MONTH, 1)
-        set(Calendar.DAY_OF_MONTH, 1)
-    }.timeInMillis
-
-    val today = Calendar.getInstance().apply {
-        set(Calendar.YEAR, LocalDate.now().year)
-        set(Calendar.MONTH, LocalDate.now().monthValue)
-        set(Calendar.DAY_OF_MONTH, LocalDate.now().dayOfMonth)
-    }.timeInMillis
-
-    return today - startDay
-}
-
-private fun getPaddingWeeks(): Int {
-    var startDay = LocalDate.of(LocalDate.now().year - 1, 1, 1)
-    val today = LocalDate.now()
-    var result = 0
-
-    while (startDay < today) {
-        if (startDay.dayOfWeek != DayOfWeek.SUNDAY) result += 1
-        startDay = startDay.plusMonths(1L)
-    }
-
-    return result
 }
 
 @Preview
