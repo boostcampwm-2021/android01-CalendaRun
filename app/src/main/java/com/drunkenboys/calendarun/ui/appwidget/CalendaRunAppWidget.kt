@@ -1,23 +1,23 @@
-package com.drunkenboys.calendarun
+package com.drunkenboys.calendarun.ui.appwidget
 
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
+import android.appwidget.AppWidgetManager.ACTION_APPWIDGET_UPDATE
 import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
+import com.drunkenboys.calendarun.R
 import com.drunkenboys.calendarun.util.localDateToString
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 class CalendaRunAppWidget : AppWidgetProvider() {
 
-    private val job = SupervisorJob()
-    private val coroutineScope = CoroutineScope(Dispatchers.Main + job)
+    private val coroutineScope = CoroutineScope(Dispatchers.Main)
 
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
         val remoteViews = RemoteViews(context.packageName, R.layout.calendarun_app_widget)
@@ -28,9 +28,7 @@ class CalendaRunAppWidget : AppWidgetProvider() {
         val serviceIntent = Intent(context, CalendaRunRemoteViewsService::class.java)
         remoteViews.setRemoteAdapter(R.id.lv_appWidget_scheduleList, serviceIntent)
 
-        val refreshIntent = Intent(context, CalendaRunAppWidget::class.java)
-            .setAction(context.getString(R.string.action_refresh_click))
-            .putExtra(APPWIDGET_ID, AppWidgetManager.EXTRA_APPWIDGET_ID)
+        val refreshIntent = getUpdateIntent(context)
 
         val pendingIntent = PendingIntent.getBroadcast(context, 0, refreshIntent, 0)
         remoteViews.setOnClickPendingIntent(R.id.iv_appWidget_refresh, pendingIntent)
@@ -48,21 +46,24 @@ class CalendaRunAppWidget : AppWidgetProvider() {
 
         val action = intent.action
 
-        if (action.equals(context.getString(R.string.action_refresh_click))) {
+        if (action.equals(ACTION_APPWIDGET_UPDATE)) {
             coroutineScope.launch {
-                val appWidgetManager =
-                    AppWidgetManager.getInstance(context)
-                val appWidget = ComponentName(
-                    context.packageName,
-                    CalendaRunAppWidget::class.java.name
-                )
+                val appWidgetManager = AppWidgetManager.getInstance(context)
+                val appWidget = ComponentName(context.packageName, CalendaRunAppWidget::class.java.name)
                 val appWidgetIds = appWidgetManager.getAppWidgetIds(appWidget)
-                appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.lv_appWidget_scheduleList)
+
+                onUpdate(context, appWidgetManager, appWidgetIds)
             }
         }
     }
 
     companion object {
-        private const val APPWIDGET_ID = "id"
+        private fun getUpdateIntent(context: Context) = Intent(context, CalendaRunAppWidget::class.java)
+            .setAction(ACTION_APPWIDGET_UPDATE)
+
+        fun sendUpdateBroadcast(context: Context) {
+            context.sendBroadcast(getUpdateIntent(context))
+        }
     }
 }
+
