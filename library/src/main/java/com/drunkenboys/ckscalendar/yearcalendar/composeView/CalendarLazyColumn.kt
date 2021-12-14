@@ -73,18 +73,21 @@ fun CalendarLazyColumn(
 
                 // 해가 갱신될 때마다 상단에 연표시
                 if (firstOfYear in startDate..endDate)
-                        Text(
-                            text = "${startDate.year}년",
-                            color = MaterialTheme.colors.primary,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 16.dp, bottom = 16.dp),
-                            textAlign = TextAlign.Center
-                        )
+                    Text(
+                        text = "${startDate.year}년",
+                        color = MaterialTheme.colors.primary,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 16.dp, bottom = 16.dp),
+                        textAlign = TextAlign.Center
+                    )
+
+                // 월 표시
+                if (viewModel.isFirstWeek(week, slice))
+                    AnimatedMonthHeader(listState = listState, monthName = slice.name)
 
                 WeekCalendar(
                     month = slice,
-                    listState = listState,
                     week = week,
                     dayColumnModifier = dayColumnModifier,
                     viewModel = viewModel
