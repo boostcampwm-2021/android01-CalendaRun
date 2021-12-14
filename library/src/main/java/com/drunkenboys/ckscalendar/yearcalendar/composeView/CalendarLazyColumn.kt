@@ -24,10 +24,7 @@ import androidx.compose.ui.unit.dp
 import com.drunkenboys.ckscalendar.data.*
 import com.drunkenboys.ckscalendar.listener.OnDayClickListener
 import com.drunkenboys.ckscalendar.listener.OnDaySecondClickListener
-import com.drunkenboys.ckscalendar.utils.InitScroll
-import com.drunkenboys.ckscalendar.utils.ShouldNextScroll
-import com.drunkenboys.ckscalendar.utils.ShouldPrevScroll
-import com.drunkenboys.ckscalendar.utils.calendarSetToCalendarDatesList
+import com.drunkenboys.ckscalendar.utils.*
 import com.drunkenboys.ckscalendar.yearcalendar.CustomTheme
 import com.drunkenboys.ckscalendar.yearcalendar.YearCalendarViewModel
 import java.time.LocalDate
@@ -39,7 +36,7 @@ fun CalendarLazyColumn(
     viewModel: YearCalendarViewModel
 ) {
     // RecyclerView의 상태를 관찰
-    val listState = rememberLazyListState()
+    val listState = rememberLazyListState(initialFirstVisibleItemIndex = viewModel.getInitScroll())
     val calendar by remember { viewModel.calendar }
     var clickedDay by rememberSaveable { mutableStateOf(LocalDate.now()) }
 
@@ -47,10 +44,7 @@ fun CalendarLazyColumn(
     val dayColumnModifier = { day: CalendarDate ->
         when (clickedDay) {
             day.date -> Modifier
-                .border(
-                    border = BorderStroke(width = 2.dp, color = Color(viewModel.design.value.selectedFrameColor)),
-                    shape = RoundedCornerShape(6.dp)
-                )
+                .border(BorderStroke(2.dp, Color(viewModel.design.value.selectedFrameColor)), RoundedCornerShape(6.dp))
                 .clickable(onClick = {
                     onDaySecondClickListener?.onDayClick(day.date, 0)
                 })
@@ -68,7 +62,7 @@ fun CalendarLazyColumn(
     LazyColumn(
         state = listState,
         modifier = Modifier
-            .background(color = MaterialTheme.colors.background)
+            .background(MaterialTheme.colors.background)
             .fillMaxHeight()
     ) {
         calendar.forEach { slice ->
@@ -100,8 +94,6 @@ fun CalendarLazyColumn(
     }
 
     with(listState) {
-        InitScroll() // FIXME: listState의 initIndex 속성이 존재
-
         ShouldNextScroll {
             viewModel.fetchNextCalendarSet()
         }

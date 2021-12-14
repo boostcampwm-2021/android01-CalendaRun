@@ -1,13 +1,13 @@
 package com.drunkenboys.ckscalendar.yearcalendar
 
 import androidx.compose.runtime.*
-import androidx.lifecycle.ViewModel
 import com.drunkenboys.ckscalendar.data.*
 import com.drunkenboys.ckscalendar.utils.TimeUtils.dayValue
 import com.drunkenboys.ckscalendar.utils.TimeUtils.isSameWeek
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.util.*
 
 class YearCalendarViewModel {
 
@@ -104,7 +104,7 @@ class YearCalendarViewModel {
         }
     }
 
-    fun isDefaultCalendar() = _calendar.value.all { month -> month.id < 0}
+    private fun isDefaultCalendar() = _calendar.value.all { month -> month.id < 0}
 
     private fun createCalendarSets(year: Int): List<CalendarSet> {
         val calendarMonth = mutableListOf<CalendarSet>()
@@ -130,5 +130,48 @@ class YearCalendarViewModel {
         fetchPrevCalendarSet()
         _calendar.value = createCalendarSets(LocalDate.now().year)
         fetchNextCalendarSet()
+    }
+
+    fun getInitScroll(): Int {
+        // 기본 캘린더일 때 몇 주차에 오늘 날짜가 있는지 반환.
+        // 몇 주차는 LazyColumn에서 items의 인덱스를 뜻함.
+
+        return (getStartDayToToday() / DAY_OF_WEEK / TIME_MILLIS_OF_DAY).toInt() + getPaddingWeeks()
+    }
+
+    private fun getStartDayToToday(): Long {
+        val startDay = Calendar.getInstance().apply {
+            set(Calendar.YEAR, LocalDate.now().year - 1)
+            set(Calendar.MONTH, 1)
+            set(Calendar.DAY_OF_MONTH, 1)
+        }.timeInMillis
+
+        val today = Calendar.getInstance().apply {
+            set(Calendar.YEAR, LocalDate.now().year)
+            set(Calendar.MONTH, LocalDate.now().monthValue)
+            set(Calendar.DAY_OF_MONTH, LocalDate.now().dayOfMonth)
+        }.timeInMillis
+
+        return today - startDay
+    }
+
+    private fun getPaddingWeeks(): Int {
+        var startDay = LocalDate.of(LocalDate.now().year - 1, 1, 1)
+        val today = LocalDate.now()
+        var result = 0
+
+        while (startDay < today) {
+            if (startDay.dayOfWeek != DayOfWeek.SUNDAY) result += 1
+            startDay = startDay.plusMonths(1L)
+        }
+
+        return result
+    }
+
+
+    companion object {
+        private const val DAY_OF_WEEK = 7
+
+        private const val TIME_MILLIS_OF_DAY = 24 * 60 * 60 * 1000
     }
 }
