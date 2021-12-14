@@ -45,13 +45,14 @@ fun CalendarLazyColumn(
         when (clickedDay) {
             day.date -> Modifier
                 .border(BorderStroke(2.dp, Color(viewModel.design.value.selectedFrameColor)), RoundedCornerShape(6.dp))
-                .clickable(onClick = {
+                .clickable {
                     onDaySecondClickListener?.onDayClick(day.date, 0)
-                })
-            else -> Modifier.clickable(onClick = {
-                onDayClickListener?.onDayClick(day.date, 0)
-                clickedDay = day.date
-            })
+                }
+            else -> Modifier
+                .clickable {
+                    onDayClickListener?.onDayClick(day.date, 0)
+                    clickedDay = day.date
+                }
         }
     }
 
