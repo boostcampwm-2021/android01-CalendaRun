@@ -24,7 +24,6 @@ fun MonthCalendar(
     calendarSetToCalendarDatesList(month, viewModel.schedules.value).forEach { week ->
         WeekCalendar(
             viewModel = viewModel,
-            listState = listState,
             month = month,
             dayColumnModifier = dayColumnModifier,
             week = week
