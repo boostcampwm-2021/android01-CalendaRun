@@ -30,7 +30,6 @@ import java.time.LocalDate
 @Composable
 fun WeekCalendar(
     month: CalendarSet,
-    listState: LazyListState,
     week: List<CalendarDate>,
     dayColumnModifier: (CalendarDate) -> Modifier,
     viewModel: YearCalendarViewModel
@@ -44,8 +43,6 @@ fun WeekCalendar(
         constraintSet = dayOfWeekConstraints(week.map { day -> day.date.toString() }),
         modifier = Modifier.fillMaxWidth()
     ) {
-        // 월 표시
-        if (viewModel.isFirstWeek(week, month)) AnimatedMonthHeader(listState = listState, monthName = month.name)
 
         week.forEach { day ->
             when (day.dayType) {
