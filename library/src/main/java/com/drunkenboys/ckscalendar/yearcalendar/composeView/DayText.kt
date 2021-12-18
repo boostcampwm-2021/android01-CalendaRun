@@ -31,12 +31,11 @@ fun DayText(
             ""
         } + "${day.date.dayOfMonth}",
         type = day.dayType,
-        modifier = Modifier
-            .border(
-                width = 1.dp,
-                shape = CircleShape,
-                color = if (LocalDate.now() == day.date) MaterialTheme.colors.primary else Color.Transparent
-            )
+        modifier = Modifier.border(
+            width = 1.dp,
+            shape = CircleShape,
+            color = if (LocalDate.now() == day.date) MaterialTheme.colors.primary else Color.Transparent
+        )
             .padding(5.dp),
         textAlign = GravityMapper.toTextAlign(viewModel.design.value.textAlign),
         fontWeight = if (isFirstOfCalendarSet) FontWeight.Bold else null,

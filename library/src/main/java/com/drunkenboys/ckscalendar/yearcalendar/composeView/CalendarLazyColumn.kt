@@ -43,16 +43,14 @@ fun CalendarLazyColumn(
     // state hoisting
     val dayColumnModifier = { day: CalendarDate ->
         when (clickedDay) {
-            day.date -> Modifier
-                .border(BorderStroke(2.dp, Color(viewModel.design.value.selectedFrameColor)), RoundedCornerShape(6.dp))
+            day.date -> Modifier.border(BorderStroke(2.dp, Color(viewModel.design.value.selectedFrameColor)), RoundedCornerShape(6.dp))
                 .clickable {
                     onDaySecondClickListener?.onDayClick(day.date, 0)
                 }
-            else -> Modifier
-                .clickable {
-                    onDayClickListener?.onDayClick(day.date, 0)
-                    clickedDay = day.date
-                }
+            else -> Modifier.clickable {
+                onDayClickListener?.onDayClick(day.date, 0)
+                clickedDay = day.date
+            }
         }
     }
 
@@ -62,9 +60,7 @@ fun CalendarLazyColumn(
     // RecyclerView와 유사
     LazyColumn(
         state = listState,
-        modifier = Modifier
-            .background(MaterialTheme.colors.background)
-            .fillMaxHeight()
+        modifier = Modifier.background(MaterialTheme.colors.background).fillMaxHeight()
     ) {
         calendar.forEach { slice ->
             items(items = calendarSetToCalendarDatesList(slice, viewModel.schedules.value)) { week ->
@@ -77,9 +73,7 @@ fun CalendarLazyColumn(
                     Text(
                         text = "${startDate.year}년",
                         color = MaterialTheme.colors.primary,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 16.dp, bottom = 16.dp),
+                        modifier = Modifier.fillMaxWidth().padding(top = 16.dp, bottom = 16.dp),
                         textAlign = TextAlign.Center
                     )
 

@@ -47,9 +47,8 @@ fun WeekCalendar(
         week.forEach { day ->
             when (day.dayType) {
                 DayType.PADDING -> Column(
-                    modifier = Modifier
-                        .layoutId(day.date.toString())
-                        .border(border = BorderStroke(width = 0.1f.dp, color = weekDayColor.copy(alpha = 0.1f)))
+                    modifier = Modifier.layoutId(day.date.toString())
+                        .border(BorderStroke(width = 0.1f.dp, color = weekDayColor.copy(alpha = 0.1f)))
                 ) {
                     // 빈 날짜
                     BaseText(
@@ -62,10 +61,7 @@ fun WeekCalendar(
                     repeat(viewModel.design.value.visibleScheduleCount) {
                         BaseText(
                             type = DayType.PADDING,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .background(Color.Transparent)
-                                .padding(4.dp),
+                            modifier = Modifier.fillMaxWidth().background(Color.Transparent).padding(4.dp),
                             design = viewModel.design.value
                         )
                         Spacer(modifier = Modifier.height(2.dp))
@@ -74,8 +70,7 @@ fun WeekCalendar(
 
                 // 1일
                 else -> Column(
-                    modifier = Modifier
-                        .layoutId(day.date.toString())
+                    modifier = Modifier.layoutId(day.date.toString())
                         .then(dayColumnModifier(day))
                         .drawBehind {
                             drawLine(

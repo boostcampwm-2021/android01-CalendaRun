@@ -19,9 +19,7 @@ fun WeekHeader(
     viewModel: YearCalendarViewModel
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colors.background),
+        modifier = Modifier.fillMaxWidth().background(MaterialTheme.colors.background),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         viewModel.design.value.weekSimpleStringSet.forEach { dayId ->
