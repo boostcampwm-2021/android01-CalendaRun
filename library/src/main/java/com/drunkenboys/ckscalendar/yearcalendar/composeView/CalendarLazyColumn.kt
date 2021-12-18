@@ -43,15 +43,14 @@ fun CalendarLazyColumn(
     // state hoisting
     val dayColumnModifier = { day: CalendarDate ->
         when (clickedDay) {
-            day.date -> Modifier
-                .border(BorderStroke(2.dp, Color(viewModel.design.value.selectedFrameColor)), RoundedCornerShape(6.dp))
-                .clickable(onClick = {
+            day.date -> Modifier.border(BorderStroke(2.dp, Color(viewModel.design.value.selectedFrameColor)), RoundedCornerShape(6.dp))
+                .clickable {
                     onDaySecondClickListener?.onDayClick(day.date, 0)
-                })
-            else -> Modifier.clickable(onClick = {
+                }
+            else -> Modifier.clickable {
                 onDayClickListener?.onDayClick(day.date, 0)
                 clickedDay = day.date
-            })
+            }
         }
     }
 
@@ -61,9 +60,7 @@ fun CalendarLazyColumn(
     // RecyclerView와 유사
     LazyColumn(
         state = listState,
-        modifier = Modifier
-            .background(MaterialTheme.colors.background)
-            .fillMaxHeight()
+        modifier = Modifier.background(MaterialTheme.colors.background).fillMaxHeight()
     ) {
         calendar.forEach { slice ->
             items(items = calendarSetToCalendarDatesList(slice, viewModel.schedules.value)) { week ->
@@ -73,18 +70,19 @@ fun CalendarLazyColumn(
 
                 // 해가 갱신될 때마다 상단에 연표시
                 if (firstOfYear in startDate..endDate)
-                        Text(
-                            text = "${startDate.year}년",
-                            color = MaterialTheme.colors.primary,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 16.dp, bottom = 16.dp),
-                            textAlign = TextAlign.Center
-                        )
+                    Text(
+                        text = "${startDate.year}년",
+                        color = MaterialTheme.colors.primary,
+                        modifier = Modifier.fillMaxWidth().padding(top = 16.dp, bottom = 16.dp),
+                        textAlign = TextAlign.Center
+                    )
+
+                // 월 표시
+                if (viewModel.isFirstWeek(week, slice))
+                    AnimatedMonthHeader(listState = listState, monthName = slice.name)
 
                 WeekCalendar(
                     month = slice,
-                    listState = listState,
                     week = week,
                     dayColumnModifier = dayColumnModifier,
                     viewModel = viewModel

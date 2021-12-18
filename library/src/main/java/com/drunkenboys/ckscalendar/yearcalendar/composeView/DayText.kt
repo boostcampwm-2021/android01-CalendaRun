@@ -25,29 +25,21 @@ fun DayText(
     viewModel: YearCalendarViewModel,
     isFirstOfCalendarSet: Boolean
 ) {
-    Text(
-        text = if (isFirstOfCalendarSet) {
-            "${day.date.monthValue}. "
+    BaseText(
+        text = if (isFirstOfCalendarSet) { "${day.date.monthValue}. "
         } else {
             ""
         } + "${day.date.dayOfMonth}",
-        color = when (day.dayType) {
-            DayType.HOLIDAY -> Color(viewModel.design.value.holidayTextColor)
-            DayType.SATURDAY -> Color(viewModel.design.value.saturdayTextColor)
-            DayType.SUNDAY -> Color(viewModel.design.value.sundayTextColor)
-            else -> MaterialTheme.colors.primary
-        },
-        modifier = Modifier
-            .border(
-                width = 1.dp,
-                shape = CircleShape,
-                color = if (LocalDate.now() == day.date) MaterialTheme.colors.primary else Color.Transparent
-            )
-            .padding(5.dp)
-        ,
+        type = day.dayType,
+        modifier = Modifier.border(
+            width = 1.dp,
+            shape = CircleShape,
+            color = if (LocalDate.now() == day.date) MaterialTheme.colors.primary else Color.Transparent
+        )
+            .padding(5.dp),
         textAlign = GravityMapper.toTextAlign(viewModel.design.value.textAlign),
-        fontSize = viewModel.design.value.textSize.dp(),
-        fontWeight = if (isFirstOfCalendarSet) FontWeight.Bold else null
+        fontWeight = if (isFirstOfCalendarSet) FontWeight.Bold else null,
+        design =  viewModel.design.value
     )
 }
 

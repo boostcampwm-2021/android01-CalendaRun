@@ -30,7 +30,6 @@ import java.time.LocalDate
 @Composable
 fun WeekCalendar(
     month: CalendarSet,
-    listState: LazyListState,
     week: List<CalendarDate>,
     dayColumnModifier: (CalendarDate) -> Modifier,
     viewModel: YearCalendarViewModel
@@ -44,34 +43,26 @@ fun WeekCalendar(
         constraintSet = dayOfWeekConstraints(week.map { day -> day.date.toString() }),
         modifier = Modifier.fillMaxWidth()
     ) {
-        // 월 표시
-        if (viewModel.isFirstWeek(week, month)) AnimatedMonthHeader(listState = listState, monthName = month.name)
 
         week.forEach { day ->
             when (day.dayType) {
                 DayType.PADDING -> Column(
-                    modifier = Modifier
-                        .layoutId(day.date.toString())
-                        .border(border = BorderStroke(width = 0.1f.dp, color = weekDayColor.copy(alpha = 0.1f)))
+                    modifier = Modifier.layoutId(day.date.toString())
+                        .border(BorderStroke(width = 0.1f.dp, color = weekDayColor.copy(alpha = 0.1f)))
                 ) {
                     // 빈 날짜
-                    Text(
-                        text = "1",
+                    BaseText(
+                        type = DayType.PADDING,
                         modifier = Modifier.padding(5.dp),
-                        fontSize = viewModel.design.value.textSize.dp(),
-                        color = Color.Transparent,
+                        design = viewModel.design.value
                     )
 
                     // 빈 스케줄
                     repeat(viewModel.design.value.visibleScheduleCount) {
-                        Text(
-                            text = " ",
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .background(Color.Transparent)
-                                .padding(4.dp),
-                            fontSize = viewModel.design.value.textSize.dp(),
-                            color = Color.Transparent
+                        BaseText(
+                            type = DayType.PADDING,
+                            modifier = Modifier.fillMaxWidth().background(Color.Transparent).padding(4.dp),
+                            design = viewModel.design.value
                         )
                         Spacer(modifier = Modifier.height(2.dp))
                     }

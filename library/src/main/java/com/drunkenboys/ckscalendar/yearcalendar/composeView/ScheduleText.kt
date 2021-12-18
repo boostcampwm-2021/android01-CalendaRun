@@ -34,8 +34,7 @@ fun ScheduleText(
                 text = if (schedule != null && (schedule.startDate.toLocalDate() == today || today.dayOfWeek == DayOfWeek.SUNDAY))
                     schedule.text else " ",
                 maxLines = 1,
-                modifier = Modifier
-                    .fillMaxWidth()
+                modifier = Modifier.fillMaxWidth()
                     .background(color = if (schedule != null) Color(schedule.color) else Color.Transparent)
                     .padding(4.dp),
                 overflow = TextOverflow.Ellipsis,

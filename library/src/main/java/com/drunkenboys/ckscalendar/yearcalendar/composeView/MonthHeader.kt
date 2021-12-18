@@ -34,22 +34,14 @@ fun AnimatedMonthHeader(
     )
 
     Card(
-        modifier = Modifier
-            .alpha(density)
-            .zIndex(10f),
+        modifier = Modifier.alpha(density).zIndex(10f),
         backgroundColor = MaterialTheme.colors.background,
         elevation = 10.dp
     ) {
         Text(
             text = monthName,
             color = MaterialTheme.colors.primary,
-            modifier = Modifier
-                .padding(
-                    start = 20.dp,
-                    end = 20.dp,
-                    top = 5.dp,
-                    bottom = 5.dp
-                )
+            modifier = Modifier.padding(start = 20.dp, end = 20.dp,top = 5.dp, bottom = 5.dp)
         )
     }
 }
@@ -66,13 +58,7 @@ fun PreviewMonthHeader() {
             Text(
                 text = "1월",
                 color = MaterialTheme.colors.primary,
-                modifier = Modifier
-                    .padding(
-                        start = 20.dp,
-                        end = 20.dp,
-                        top = 5.dp,
-                        bottom = 5.dp
-                    )
+                modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 5.dp, bottom = 5.dp)
             )
         }
     }
