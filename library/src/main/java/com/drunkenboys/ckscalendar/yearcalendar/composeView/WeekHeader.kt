@@ -14,6 +14,10 @@ import com.drunkenboys.ckscalendar.utils.GravityMapper
 import com.drunkenboys.ckscalendar.yearcalendar.CustomTheme
 import com.drunkenboys.ckscalendar.yearcalendar.YearCalendarViewModel
 
+/**
+ * 요일 표시
+ * 일월화수목금토 를 표시한다.
+ */
 @Composable
 fun WeekHeader(
     viewModel: YearCalendarViewModel
@@ -22,6 +26,8 @@ fun WeekHeader(
         modifier = Modifier.fillMaxWidth().background(MaterialTheme.colors.background),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
+
+        // design 속성에 있는 Simple String Set을 모두 표시한다.
         viewModel.design.value.weekSimpleStringSet.forEach { dayId ->
             Text(
                 text = dayId,
