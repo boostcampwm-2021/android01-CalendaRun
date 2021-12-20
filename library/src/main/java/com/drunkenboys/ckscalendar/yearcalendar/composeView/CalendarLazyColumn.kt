@@ -79,7 +79,7 @@ fun CalendarLazyColumn(
             // items = calendarSet (슬라이스) -> List<List<calendarDates>> (1슬라이스를 n주일, 1주일을 n일로 나타낸 2중 배열)
             items(items = calendarSetToCalendarDatesList(slice, viewModel.schedules.value)) { week ->
                 // 해가 갱신될 때마다 상단에 연표시
-                Year(week)
+                YearHeader(week)
 
                 // 날짜를 가리지 않게 월 표시
                 if (viewModel.isFirstWeek(week, slice))
@@ -111,24 +111,6 @@ private fun InfiniteScroll(listState: LazyListState, viewModel: YearCalendarView
     ShouldPrevScroll {
         viewModel.fetchPrevCalendarSet()
     }
-}
-
-@Composable
-private fun Year(week: List<CalendarDate>) {
-    val startDate = week.first { day -> day.dayType != DayType.PADDING }.date
-    val endDate = week.last { day -> day.dayType != DayType.PADDING }.date
-    val firstOfYear = LocalDate.of(endDate.year, 1, 1)
-
-    // 해가 갱신될 때마다 상단에 연표시
-    if (firstOfYear in startDate..endDate)
-        Text(
-            text = "${startDate.year}년",
-            color = MaterialTheme.colors.primary,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 16.dp, bottom = 16.dp),
-            textAlign = TextAlign.Center
-        )
 }
 
 @Preview
