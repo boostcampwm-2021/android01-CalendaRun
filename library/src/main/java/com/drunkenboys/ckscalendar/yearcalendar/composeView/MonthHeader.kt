@@ -20,11 +20,16 @@ import androidx.compose.ui.zIndex
 import com.drunkenboys.ckscalendar.yearcalendar.CustomTheme
 import com.drunkenboys.ckscalendar.yearcalendar.YearCalendarViewModel
 
+/**
+ * 월 표시
+ */
 @Composable
 fun AnimatedMonthHeader(
     listState: LazyListState,
     monthName: String
 ) {
+    // 0 ~ 1을 부드럽게 오가는 애니메이션
+    // 스크롤을 하는 중이면 1이 된다.
     val density: Float by animateFloatAsState(
         targetValue = if(listState.isScrollInProgress) 1f else 0f,
         animationSpec = spring(
@@ -33,6 +38,7 @@ fun AnimatedMonthHeader(
         )
     )
 
+    // 스크롤 할 때 투명도가 사라지는 애니메이션
     Card(
         modifier = Modifier.alpha(density).zIndex(10f),
         backgroundColor = MaterialTheme.colors.background,
