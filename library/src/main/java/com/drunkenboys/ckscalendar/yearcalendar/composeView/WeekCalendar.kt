@@ -38,13 +38,14 @@ fun WeekCalendar(
     val weekSchedules: Array<Array<CalendarScheduleObject?>> =
         Array(7) { Array(viewModel.design.value.visibleScheduleCount) { null } }
 
-    // 1주일
+    // 1주일 TODO: Row로 변환
     ConstraintLayout(
         constraintSet = dayOfWeekConstraints(week.map { day -> day.date.toString() }),
         modifier = Modifier.fillMaxWidth()
     ) {
 
         week.forEach { day ->
+            // 빈 날짜인지 구분
             when (day.dayType) {
                 DayType.PADDING -> Column(
                     modifier = Modifier.layoutId(day.date.toString())
@@ -68,7 +69,9 @@ fun WeekCalendar(
                     }
                 }
 
-                // 1일
+                // 날짜 표시 + 일정 표시
+                // 선택될 때 함께 테두리를 지정하기 위해 Column으로 감싼다.
+                // 테두리는 draw로 그림.
                 else -> Column(
                     modifier = Modifier.layoutId(day.date.toString())
                         .then(dayColumnModifier(day))

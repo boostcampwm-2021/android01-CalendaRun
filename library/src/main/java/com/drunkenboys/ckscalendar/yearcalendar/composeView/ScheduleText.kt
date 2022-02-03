@@ -18,18 +18,25 @@ import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalDateTime
 
+/**
+ * 일정을 보여준다.
+ */
 @Composable
 fun ScheduleText(
     today: LocalDate,
     weekScheduleList: Array<Array<CalendarScheduleObject?>>,
     viewModel: YearCalendarViewModel
 ) {
+    // 7 * visibleCount 만큼의 배열을 관리
     viewModel.setWeekSchedules(weekScheduleList, today)
 
     weekScheduleList[today.dayOfWeek.dayValue()].forEach { schedule ->
+        // 일정의 시작일에 2dp의 패딩으로 시작 표시를 해주기 위해 Row를 사용.
         Row {
+            // 일정 시작일 패딩
             if (schedule != null && (schedule.startDate.toLocalDate() == today)) Spacer(modifier = Modifier.width(2.dp))
 
+            // 일정 표시
             Text(
                 text = if (schedule != null && (schedule.startDate.toLocalDate() == today || today.dayOfWeek == DayOfWeek.SUNDAY))
                     schedule.text else " ",
@@ -42,6 +49,8 @@ fun ScheduleText(
                 color = if (schedule?.isHoliday == true) Color(viewModel.design.value.holidayTextColor) else Color.White
             )
         }
+
+        // 일정 표시 간의 패딩
         Spacer(modifier = Modifier.height(2.dp))
     }
 }

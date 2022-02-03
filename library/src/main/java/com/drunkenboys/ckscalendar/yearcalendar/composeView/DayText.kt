@@ -19,6 +19,9 @@ import com.drunkenboys.ckscalendar.yearcalendar.CustomTheme
 import com.drunkenboys.ckscalendar.yearcalendar.YearCalendarViewModel
 import java.time.LocalDate
 
+/**
+ * 하루 날짜를 표시합니다.
+ */
 @Composable
 fun DayText(
     day: CalendarDate,
@@ -26,17 +29,13 @@ fun DayText(
     isFirstOfCalendarSet: Boolean
 ) {
     BaseText(
-        text = if (isFirstOfCalendarSet) { "${day.date.monthValue}. "
-        } else {
-            ""
-        } + "${day.date.dayOfMonth}",
+        text = if (isFirstOfCalendarSet) { "${day.date.monthValue}. " } else { "" } + "${day.date.dayOfMonth}",
         type = day.dayType,
         modifier = Modifier.border(
             width = 1.dp,
             shape = CircleShape,
             color = if (LocalDate.now() == day.date) MaterialTheme.colors.primary else Color.Transparent
-        )
-            .padding(5.dp),
+        ).padding(5.dp),
         textAlign = GravityMapper.toTextAlign(viewModel.design.value.textAlign),
         fontWeight = if (isFirstOfCalendarSet) FontWeight.Bold else null,
         design =  viewModel.design.value
